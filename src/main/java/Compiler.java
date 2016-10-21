@@ -59,6 +59,8 @@ public class Compiler {
                     NestedSymbolTable experiementTable = new NestedSymbolTable();
                     experiementTable.setParent(__benchtopControlFlowGraph.getSymbolTable());
                     CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment.getInstructions(), experiementTable);
+
+
                     ProcessExperimentCFG(controlFlow,experiment);
 
                     __experimentControlFlowGraphs.add(controlFlow);
@@ -145,33 +147,55 @@ public class Compiler {
             instructionInputs.add(input);
 
 
-            //check to see if the input is GlobalDeclaaration
+            //check to see if the input is GlobalDeclaaration Global definitions do not go through renaming
             if (controlFlowGraph.getSymbolTable().contains(inputKey)) {
-                if(controlFlowGraph.getSymbolTable().get(inputKey).IsGlobal()) {
-                    logger.warn("Should create implicit Dispense for: " + inputKey);
-                    Dispense disp = new Dispense(controlFlowGraph.getNewID(),"dispense: "+ inputKey);
+                if (controlFlowGraph.getSymbolTable().get(inputKey).IsGlobal()) {
+                    // logger.warn("Should create implicit Dispense for: " + inputKey);
+                    Dispense disp = new Dispense(controlFlowGraph.getNewID(), "dispense: " + inputKey);
+
                     InstructionNode dispenseNode = new InstructionNode(controlFlowGraph.getNewID(), disp);
-                    basicBlock.addInstruction( dispenseNode);
-                    controlFlowGraph.addUse(inputKey,dispenseNode.ID());
+                    basicBlock.addInstruction(0,dispenseNode);
+                    controlFlowGraph.addUse(inputKey, dispenseNode.ID());
+                    basicBlock.AddEdge(dispenseNode.ID(),node.ID());
                 }
+
+                //TODO::Check to see if Input is a partial reference, if so do not update tracking
+                //TODO::If Ansestor has a branch add to list of possible uses, not concrete.
+                //Add/Update the usage of the variable.
+                controlFlowGraph.addUse(inputKey, node.ID());
+
+            } else {
+                //Check to see if someone already used the variable. if so add Edge
+
+                List<String> renamedList = controlFlowGraph.getSymbolTable().getRenamedVariables(inputKey);
+
+                if (renamedList != null) {
+                    if (renamedList.size() > 2)
+                        logger.fatal("Possible PHI node needed");
+                    else {
+                        inputKey = renamedList.get(0);
+
+                        if (controlFlowGraph.getUseTable().containsKey(inputKey))
+                        {
+                            int lastElement = controlFlowGraph.getUseTable().get(inputKey).size() - 1;
+                            if (lastElement >= 0)
+                                basicBlock.AddEdge(controlFlowGraph.getUseTable().get(inputKey).get(lastElement), node.ID());
+                        } else if (controlFlowGraph.getDefintionTable().containsKey(inputKey)) {
+
+                            int definitionLocation = controlFlowGraph.getDefintionTable().get(inputKey).size() - 1;
+                            if (definitionLocation >= 0)
+                                basicBlock.AddEdge(controlFlowGraph.getDefintionTable().get(inputKey).get(definitionLocation), node.ID());
+                        }
+
+                        //TODO::Check to see if Input is a partial reference, if so do not update tracking
+                        //TODO::If Ansestor has a branch add to list of possible uses, not concrete.
+                        //Add/Update the usage of the variable.
+                        controlFlowGraph.addUse(inputKey, node.ID());
+                    }
+
+                }
+
             }
-            //Check to see if someone already used the variable. if so ad Edge
-            if (controlFlowGraph.getUseTable().containsKey(inputKey)) {
-
-                int lastElement = controlFlowGraph.getUseTable().get(inputKey).size() - 1;
-
-                if(lastElement >= 0)
-                    basicBlock.AddEdge(controlFlowGraph.getUseTable().get(inputKey).get(lastElement),node.ID());
-            }else if(controlFlowGraph.getDefintionTable().containsKey(inputKey)) {
-                int definitionLocation = controlFlowGraph.getDefintionTable().get(inputKey).size() - 1;
-                if(definitionLocation >= 0)
-                    basicBlock.AddEdge(controlFlowGraph.getDefintionTable().get(inputKey).get(definitionLocation),node.ID());
-            }
-
-            //TODO::Check to see if Input is a partial reference, if so do not update tracking
-            //TODO::If Ansestor has a branch add to list of possible uses, not concrete.
-            //Add/Update the usage of the variable.
-            controlFlowGraph.addUse(inputKey,node.ID());
         }
         return instructionInputs;
     }
@@ -204,8 +228,8 @@ public class Compiler {
 
     //TODO::Once substance refrence is resolved this can be fixed.
     private ChemicalResolution ResolveVariable(Variable variable, CFG controlFlowGraph) {
-        if(controlFlowGraph.getSymbolTable().contains(variable.getId()))
-            return controlFlowGraph.getSymbolTable().get(variable.getId());
+        if(controlFlowGraph.getSymbolTable().contains(variable.getID()))
+            return controlFlowGraph.getSymbolTable().get(variable.getID());
 
         ChemicalResolution resolution = new ChemicalResolution(variable.getName());
         if(variable instanceof Instance) {

@@ -1,5 +1,6 @@
 package CFGBuilder;
 
+import DominatorTree.DominatorTree;
 import SymbolTable.NestedSymbolTable;
 import executable.Executable;
 import executable.conditionals.Branch;
@@ -19,6 +20,8 @@ public class CFGBuilder {
 
         ProcessNestedInstructions(controlFlowGraph, controlFlowGraph.newBasicBlock(), instructions);
 
+        controlFlowGraph.addDominatorTree(new DominatorTree(controlFlowGraph));
+        controlFlowGraph.renameVariables();
         return controlFlowGraph;
     }
 

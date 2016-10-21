@@ -27,7 +27,7 @@ public class Main {
         //SimpleMixTest();
         try {
             BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/SimpleLoop.json").getPath());
-            logger.info(Benchtop.INSTANCE.toString());
+            //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {
             logger.fatal("File not found.");

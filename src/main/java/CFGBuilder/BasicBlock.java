@@ -28,6 +28,10 @@ public class BasicBlock {
         __instructions.add(instruction);
     }
 
+    public void addInstruction(int index, InstructionNode instruction) {
+        __instructions.add(index, instruction);
+    }
+
     public void AddEdge(InstructionNode source, InstructionNode destination) {
         this.AddEdge(source.ID(),destination.ID());
     }

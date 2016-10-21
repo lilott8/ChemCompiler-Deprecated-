@@ -41,6 +41,10 @@ public class ChemicalResolution {
 
     @Override
     public String toString() {
+        if (__isLiteral){
+            return __name;
+        }
+
         String ret=this.__name + ": {";
 
         for (int i =0; i < __chemicalLiterals.size(); ++i) {

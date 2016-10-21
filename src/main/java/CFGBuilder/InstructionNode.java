@@ -43,7 +43,17 @@ public class InstructionNode {
         return this.toString("");
     }
     public String toString(String indentBuffer) {
-        return indentBuffer + __ID.toString() + ":" + __instruction.getName();
+        String ret = indentBuffer + __ID.toString() + ":\t";
+        for(String out: __instruction.getOutputs().keySet())
+            ret += out + " = ";
+
+        ret +=  __instruction.getName() + " ";
+
+        for(String input : __instruction.getInputs().keySet())
+            ret+=  "\"" + input + "\" ";
+
+
+        return  ret;
     }
 
 }
