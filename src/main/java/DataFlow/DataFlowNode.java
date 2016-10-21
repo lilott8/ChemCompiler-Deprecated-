@@ -43,5 +43,38 @@ abstract public class DataFlowNode {
 
 
     }
+    public String toString() {
+        String ret = "";
+        if(__gen!= null && __gen.size()>0) {
+            ret += "Gen: ";
+            for (String item : __gen) {
+                ret += item + " ";
+            }
+            ret += '\n';
+        }
+        if(__kill!= null && __kill.size()>0) {
+            ret += "Kill: ";
+            for (String item : __kill) {
+                ret += item + " ";
+            }
+            ret += '\n';
+        }
+        if(__out!= null && __out.size()>0) {
+            ret += "Out: ";
+            for (String item : __out) {
+                ret += item + " ";
+            }
+            ret += '\n';
+        }
+        if(__in!= null && __in.size()>0) {
+            ret += "In: ";
+            for (String item : __in) {
+                ret += item + " ";
+            }
+            ret += '\n';
+        }
+
+        return ret;
+    }
 
 }

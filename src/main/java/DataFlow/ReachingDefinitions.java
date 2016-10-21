@@ -50,6 +50,14 @@ public class ReachingDefinitions extends DataFlowAnalysis {
 
     }
 
+    public String toString(){
+        String ret = "";
+        for(Integer i : __finalAnswer.keySet()){
+            ret += i + __finalAnswer.get(i).toString() +'\n';
+        }
+        return ret;
+    }
+
 
 
 }
