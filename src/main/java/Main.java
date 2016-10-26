@@ -1,24 +1,10 @@
-import CFGBuilder.BasicBlock;
-import CFGBuilder.CFG;
+import ControlFlowGraph.BasicBlock;
+import ControlFlowGraph.CFG;
 import DominatorTree.DominatorTree;
-import executable.Experiment;
-import executable.instructions.Combine;
-import executable.instructions.Heat;
-import executable.instructions.Output;
-import executable.instructions.Split;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import parsing.BenchtopParser;
-import substance.Chemical;
-import substance.Property;
-import substance.Substance;
-import substance.Units;
-import variable.Instance;
-import variable.Reference;
-import variable.Variable;
-
-import java.util.ArrayList;
 
 public class Main {
     public static final Logger logger = LogManager.getLogger(Main.class);

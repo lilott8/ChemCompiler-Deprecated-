@@ -1,4 +1,4 @@
-package CFGBuilder;
+package ControlFlowGraph;
 
 import ChemicalInteractions.ChemicalInteraction;
 import com.sun.org.apache.xpath.internal.operations.Bool;

@@ -1,21 +1,22 @@
-import CFGBuilder.*;
-import ChemicalInteractions.ChemicalInteraction;
 import ChemicalInteractions.ChemicalResolution;
-import SymbolTable.NestedSymbolTable;
-import executable.Executable;
+import ControlFlowGraph.BasicBlock;
+import ControlFlowGraph.CFG;
+import ControlFlowGraph.CFGBuilder;
+import ControlFlowGraph.InstructionNode;
+import Translators.TypeSystemTanslator;
 import executable.Experiment;
-import executable.instructions.*;
+import executable.instructions.Combine;
+import executable.instructions.Output;
+import executable.instructions.Split;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import substance.Chemical;
-import substance.Substance;
-import variable.Instance;
 import variable.Variable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by chriscurtis on 9/29/16.
@@ -50,28 +51,20 @@ public class Compiler {
             this.initializeData();
 
             for(String inputKey: benchtop.getInputs().keySet()) {
-                this.addResolution(inputKey,benchtop.getInputs().get(inputKey),__benchtopControlFlowGraph, true);
-                __benchtopControlFlowGraph.addDefinition(inputKey,-1);
+                __benchtopControlFlowGraph.addResolution(inputKey,benchtop.getInputs().get(inputKey), true);
+                __benchtopControlFlowGraph.addDefinition(inputKey,__benchtopControlFlowGraph.ID());
             }
-
             for(String experimentKey :  benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : benchtop.getExperiments().get(experimentKey)) {
-                    NestedSymbolTable experiementTable = new NestedSymbolTable();
-                    experiementTable.setParent(__benchtopControlFlowGraph.getSymbolTable());
-                    CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment.getInstructions(), experiementTable);
-
-
+                    CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment.getInstructions());
                     ProcessExperimentCFG(controlFlow,experiment);
-
                     __experimentControlFlowGraphs.add(controlFlow);
                     logger.info(controlFlow);
+                    TypeSystemTanslator trans = new TypeSystemTanslator(controlFlow);
 
+                    logger.debug(trans);
                 }
             }
-
-
-
-
           //  logger.info(__variableTable);
         }
         catch(Exception e) {
@@ -84,140 +77,116 @@ public class Compiler {
 
 
     private void ProcessExperimentCFG(CFG controlFlowGraph, Experiment experiment){
+        //Global Input Chemicals
         for(String inputKey: experiment.getInputs().keySet()) {
-            controlFlowGraph.addDefinition(inputKey);
-            this.addResolution(inputKey,experiment.getInputs().get(inputKey),controlFlowGraph,true);
+            controlFlowGraph.addResolution(inputKey,experiment.getInputs().get(inputKey),true);
+            controlFlowGraph.getSymbolTable().addDefinition(inputKey, controlFlowGraph.ID());
         }
-        for (BasicBlock bb : controlFlowGraph.getBasicBlocks()) {
-            ProcessBasicBlockInstructions(controlFlowGraph, bb);
+
+        Boolean changed = true;
+        while(changed) {
+            changed = false;
+            for (BasicBlock bb : controlFlowGraph.getBasicBlocks()) {
+                //clear old usage information on consecutive passes.
+                bb.getSymbolTable().clear();
+                if(ProcessBasicBlockInstructions(controlFlowGraph, bb))
+                    changed = true;
+                //logger.info(bb.metaToString());
+            }
         }
     }
 
-    private void ProcessBasicBlockInstructions(CFG controlFlowGraph, BasicBlock bb) {
-//Since Processing instructions can possibly add implict dispense nodes. I am pulling the instruction list first then processing on the static list.
+    private Boolean ProcessBasicBlockInstructions(CFG controlFlowGraph, BasicBlock bb) {
+        Boolean changed = false;
+        ArrayList<BasicBlock> predecessors = new ArrayList<BasicBlock>();
+
+        if(controlFlowGraph.hasPredecessors(bb.ID())) {
+            for (Integer predecessor : controlFlowGraph.getPredecessors(bb.ID()))
+                predecessors.add(controlFlowGraph.getBasicBlock(predecessor));
+        }
+        if(bb.processPredecessors(predecessors))
+            changed = true;
+
         List<InstructionNode> nodes = new ArrayList<InstructionNode>();
         for(InstructionNode node : bb.getInstructions()) {
             nodes.add(node);
         }
-
+        bb.getEdges().clear();
         for(InstructionNode node : nodes) {
-            List<Variable> instructionInputs = ProcessOperationInput(controlFlowGraph, bb, node);
+            Collection<Variable> instructionInputs = node.Instruction().getInputs().values();
+
+            ProcessOperationInput(controlFlowGraph, bb, node);
             ProcessOperationOutput(controlFlowGraph, bb, node , instructionInputs);
+        }
 
-        /*
-         *        ChemicalInteraction interaction = null;
-        if (instruction instanceof Combine )
-            interaction = new ChemicalInteraction(node.ID(), ChemicalInteraction.Operation.MIX);
-        else if (instruction instanceof Heat)
-            interaction = new ChemicalInteraction(node.ID(), ChemicalInteraction.Operation.HEAT);
-        else if (instruction instanceof Detect)
-            interaction = new ChemicalInteraction(node.ID(), ChemicalInteraction.Operation.DETECT);
-        else if (instruction instanceof Split)
-            interaction = new ChemicalInteraction(node.ID(), ChemicalInteraction.Operation.SPLIT);
-        else if (instruction instanceof Output)
-            interaction = new ChemicalInteraction(node.ID(), ChemicalInteraction.Operation.OUTPUT);
+        if(bb.processOutput())
+            changed = true;
 
-
-        if (interaction == null )
-            return;
-
-        //process chemicals
-        for(Variable variable: instructionInputs) {
-            logger.info("Resolving" + variable.getName());
-                interaction.addChemical(c);
-
+        return changed;
     }
 
-            //TODO::This is something something that still needs to be added into the Framework:
-            // https://github.com/lilott8/ChemLibrary/issues/2
-            // for(String key : instruction)
-
-            node.addChemicalInteraction(interaction);
-        }
-         */
-        }
-    }
-
-    private List<Variable> ProcessOperationInput( CFG controlFlowGraph, BasicBlock basicBlock, InstructionNode node){
+    private void ProcessOperationInput( CFG controlFlowGraph, BasicBlock basicBlock, InstructionNode node){
         //TODO:: Insert Implicit Dispense Nodes!
-        List<Variable> instructionInputs = new ArrayList<Variable>();
-
         for(String inputKey : node.Instruction().getInputs().keySet()) {
-            Variable input = node.Instruction().getInputs().get(inputKey);
-            instructionInputs.add(input);
 
+            if(basicBlock.getSymbolTable().getUsagedTable().containsKey(inputKey)){
+                Integer lastUsedIn =  basicBlock.getSymbolTable().lastUsedIn(inputKey);
+                if(lastUsedIn < 0) {
+                    // A negative usage indicates that the Chemical was killed. so check at global
 
-            //check to see if the input is GlobalDeclaaration Global definitions do not go through renaming
-            if (controlFlowGraph.getSymbolTable().contains(inputKey)) {
-                if (controlFlowGraph.getSymbolTable().get(inputKey).IsGlobal()) {
-                    // logger.warn("Should create implicit Dispense for: " + inputKey);
-                    Dispense disp = new Dispense(controlFlowGraph.getNewID(), "dispense: " + inputKey);
-
-                    InstructionNode dispenseNode = new InstructionNode(controlFlowGraph.getNewID(), disp);
-                    basicBlock.addInstruction(0,dispenseNode);
-                    controlFlowGraph.addUse(inputKey, dispenseNode.ID());
-                    basicBlock.AddEdge(dispenseNode.ID(),node.ID());
+                    logger.fatal("Found ODD ID in Usage table:" + lastUsedIn + "For: " + inputKey);
                 }
-
-                //TODO::Check to see if Input is a partial reference, if so do not update tracking
-                //TODO::If Ansestor has a branch add to list of possible uses, not concrete.
-                //Add/Update the usage of the variable.
-                controlFlowGraph.addUse(inputKey, node.ID());
-
-            } else {
-                //Check to see if someone already used the variable. if so add Edge
-
-                List<String> renamedList = controlFlowGraph.getSymbolTable().getRenamedVariables(inputKey);
-
-                if (renamedList != null) {
-                    if (renamedList.size() > 2)
-                        logger.fatal("Possible PHI node needed");
-                    else {
-                        inputKey = renamedList.get(0);
-
-                        if (controlFlowGraph.getUseTable().containsKey(inputKey))
-                        {
-                            int lastElement = controlFlowGraph.getUseTable().get(inputKey).size() - 1;
-                            if (lastElement >= 0)
-                                basicBlock.AddEdge(controlFlowGraph.getUseTable().get(inputKey).get(lastElement), node.ID());
-                        } else if (controlFlowGraph.getDefintionTable().containsKey(inputKey)) {
-
-                            int definitionLocation = controlFlowGraph.getDefintionTable().get(inputKey).size() - 1;
-                            if (definitionLocation >= 0)
-                                basicBlock.AddEdge(controlFlowGraph.getDefintionTable().get(inputKey).get(definitionLocation), node.ID());
-                        }
-
-                        //TODO::Check to see if Input is a partial reference, if so do not update tracking
-                        //TODO::If Ansestor has a branch add to list of possible uses, not concrete.
-                        //Add/Update the usage of the variable.
-                        controlFlowGraph.addUse(inputKey, node.ID());
-                    }
-
+                else {
+                    basicBlock.addEdge(lastUsedIn, node.ID());
+                    basicBlock.updateUsage(inputKey, node);
                 }
+            }
+            else if(basicBlock.getSymbolTable().getDefinitionTable().containsKey(inputKey)){
+                //fresh definition without usage
+                Integer definedIn = basicBlock.getSymbolTable().getDefinitionID(inputKey);
+
+                basicBlock.addEdge(definedIn,node.ID());
+                basicBlock.updateUsage(inputKey,node);
 
             }
+            else if(basicBlock.getBasicBlockEntryTable().containsKey(inputKey)) {
+                //could have multiple areas it is coming from.
+                Set<Integer> entrySet = basicBlock.getBasicBlockEntryUsage(inputKey);
+                if(entrySet.size() > 2){
+                    logger.warn("PHI NODE");
+                }
+                for(Integer entry : entrySet){
+                    basicBlock.addEdge(entry,node.ID());
+                    basicBlock.updateUsage(inputKey,node);
+                }
+            }
+            else {
+                logger.warn("Found:" + inputKey +": It was not mapped anywhere!");
+            }
         }
-        return instructionInputs;
     }
 
 
-    private void ProcessOperationOutput(CFG controlFlowGraph, BasicBlock basicBlock, InstructionNode node, List<Variable> instructionInputs){
+    private void ProcessOperationOutput(CFG controlFlowGraph, BasicBlock basicBlock, InstructionNode node, Collection<Variable> instructionInputs){
         //check for outputs
         for (String outputKey: node.Instruction().getOutputs().keySet()) {
             Variable output = node.Instruction().getOutputs().get(outputKey);
-            controlFlowGraph.addDefinition(outputKey,node.ID());
+            basicBlock.getSymbolTable().addDefinition(outputKey,node.ID());
 
 
             //create Chemical Resolution
-            ChemicalResolution resolution = new ChemicalResolution(output.getName());
+            ChemicalResolution resolution = new ChemicalResolution(outputKey);
 
+            //this may need to point to the basic block symbol table not the cfg one
             for(Variable variable : instructionInputs){
-                resolution.addReference(ResolveVariable(variable,controlFlowGraph));
+                resolution.addReference(controlFlowGraph.ResolveVariable(variable));
             }
 
-            controlFlowGraph.getSymbolTable().put(outputKey,resolution);
+            basicBlock.getSymbolTable().put(outputKey,resolution);
+            //controlFlowGraph.getSymbolTable().put(outputKey,resolution);
 
         }
+
     }
 
 
@@ -227,44 +196,7 @@ public class Compiler {
 
 
     //TODO::Once substance refrence is resolved this can be fixed.
-    private ChemicalResolution ResolveVariable(Variable variable, CFG controlFlowGraph) {
-        if(controlFlowGraph.getSymbolTable().contains(variable.getID()))
-            return controlFlowGraph.getSymbolTable().get(variable.getID());
 
-        ChemicalResolution resolution = new ChemicalResolution(variable.getName());
-        if(variable instanceof Instance) {
-            logger.info("Found Instance Literal");
-            resolution.setIsLiteral(false);
-        }
-
-        for(Substance v : variable.getSubstance().values()) {
-            resolution.addReference(ResolveSubstance(v,controlFlowGraph));
-        }
-        return resolution;
-    }
-
-    private ChemicalResolution ResolveSubstance(Substance substance, CFG controlFlowGraph){
-        if(controlFlowGraph.getSymbolTable().contains(substance.getName()))
-            return controlFlowGraph.getSymbolTable().get(substance.getName());
-
-        ChemicalResolution resolution = new ChemicalResolution(substance.getName());
-        resolution.setIsLiteral(true);
-        for(Chemical c: substance.getChemicals().values())
-            resolution.addLiteral(c);
-
-        controlFlowGraph.getSymbolTable().put(substance.getName(),resolution);
-        return resolution;
-    }
-
-    private void addResolution(String key, Variable variable, CFG controlFlowGraph){
-       this.addResolution(key,variable,controlFlowGraph, false);
-    }
-
-    private void addResolution(String key, Variable variable, CFG controlFlowGraph, Boolean isGlobal){
-        ChemicalResolution resolution = ResolveVariable(variable, controlFlowGraph);
-        resolution.setisGlobal(isGlobal);
-        controlFlowGraph.getSymbolTable().put(key, resolution);
-    }
 
 
     public void generateMFSimFile() throws Exception
@@ -345,4 +277,53 @@ public class Compiler {
 
         node.addChemicalInteraction(interaction);
 }
-*/
+       /*
+            if(basicBlock.getSymbolTable().contains(inputKey)){
+                ChemicalResolution inputChemical = basicBlock.getSymbolTable().get(inputKey);
+                if(inputChemical.IsGlobal()){
+                    // logger.warn("Creating implicit Dispense for: " + inputKey);
+                //    Dispense disp = new Dispense(controlFlowGraph.getNewID(), "dispense: " + inputKey);
+                //    disp.addOutput(node.Instruction().getInputs().get(inputKey));
+                //    InstructionNode dispenseNode = new InstructionNode(controlFlowGraph.getNewID(), disp);
+
+                //    basicBlock.addInstruction(0,dispenseNode);
+                    if(! (node.Instruction() instanceof Combine)) {
+                        ChemicalResolution res = new ChemicalResolution(inputChemical.getName());
+                        for (Chemical c : inputChemical.getLiterals()) {
+                            res.addLiteral(c);
+                        }
+                        for (ChemicalResolution c : inputChemical.getReferences()) {
+                            res.addReference(c);
+                        }
+
+                        basicBlock.getSymbolTable().put(inputKey, res);
+
+                        basicBlock.getSymbolTable().updateLastUsedIn(inputKey, node.ID());
+                    }
+
+                //    basicBlock.addEdge(dispenseNode.ID(),node.ID());
+                }
+                else {
+                    Integer lastUsedIn = basicBlock.getSymbolTable().lastUsedIn(inputKey);
+                    //TODO:: this may cause side effect if two of the same sample are passed into the instruction.
+                    basicBlock.getSymbolTable().updateLastUsedIn(inputKey,node.ID());
+                    basicBlock.addEdge(lastUsedIn,node.ID());
+                }
+            }
+            else if(basicBlock.getSymbolTable().getUsagedTable().containsKey(inputKey)) {
+                Integer lastUsed = basicBlock.getSymbolTable().lastUsedIn(inputKey);
+                basicBlock.addEdge(lastUsed,node.ID());
+                basicBlock.getSymbolTable().updateLastUsedIn(inputKey,node.ID());
+            }
+            else if(basicBlock.hasIncomingSymbol(inputKey)){
+                //this is transferIN and possibly PHI node.
+                for(Integer predecessor: basicBlock.getBasicBlockEntryUsage(inputKey)){
+                    basicBlock.addEdge(predecessor,node.ID());
+                }
+                basicBlock.getSymbolTable().updateLastUsedIn(inputKey,node.ID());
+            }
+            else{
+                logger.warn("caught input that is not being processed yet");
+                /*Could be chemical literal declared inside instruction*
+            }
+            */

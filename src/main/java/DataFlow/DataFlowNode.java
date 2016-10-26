@@ -1,9 +1,7 @@
 package DataFlow;
 
-import CFGBuilder.BasicBlock;
-import CFGBuilder.InstructionNode;
-import executable.Executable;
-import executable.instructions.Instruction;
+import ControlFlowGraph.BasicBlock;
+import ControlFlowGraph.InstructionNode;
 
 import java.util.ArrayList;
 import java.util.HashSet;

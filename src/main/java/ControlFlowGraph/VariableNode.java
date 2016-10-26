@@ -1,4 +1,4 @@
-package CFGBuilder;
+package ControlFlowGraph;
 
 import variable.Reference;
 import variable.Variable;

@@ -1,5 +1,6 @@
-package CFGBuilder;
+package ControlFlowGraph;
 
+import DataFlow.ReachingDefinitions;
 import DominatorTree.DominatorTree;
 import SymbolTable.NestedSymbolTable;
 import executable.Executable;
@@ -15,20 +16,26 @@ import java.util.List;
  */
 public class CFGBuilder {
 
-    private static CFG BuildControlFlowGraph(Integer id, List<Instruction> instructions, NestedSymbolTable table) throws Exception{
-        CFG controlFlowGraph = new CFG(id, table);
+    private static CFG BuildControlFlowGraph(Integer id, List<Instruction> instructions) throws Exception{
+        CFG controlFlowGraph = new CFG(id);
 
         ProcessNestedInstructions(controlFlowGraph, controlFlowGraph.newBasicBlock(), instructions);
 
         controlFlowGraph.addDominatorTree(new DominatorTree(controlFlowGraph));
-        controlFlowGraph.renameVariables();
+
+        //ReachingDefinitions rdef = new ReachingDefinitions(controlFlowGraph);
+
+        //System.out.println(rdef);
+        //System.exit(-1);
+
+        //controlFlowGraph.renameVariables();
         return controlFlowGraph;
     }
 
     /*public static CFG BuildControlFlowGraph(List<Instruction> instructions)throws Exception{
         return BuildControlFlowGraph(0,instructions);
     }*/
-    public static CFG BuildControlFlowGraph(List<Executable> executables,NestedSymbolTable table)throws Exception{
+    public static CFG BuildControlFlowGraph(List<Executable> executables)throws Exception{
 
         List<Instruction> instructions = new ArrayList<Instruction>();
         for(Executable e :executables){
@@ -37,7 +44,7 @@ public class CFGBuilder {
         }
 
 
-        return BuildControlFlowGraph(0,instructions,table);
+        return BuildControlFlowGraph(0,instructions);
     }
 
 

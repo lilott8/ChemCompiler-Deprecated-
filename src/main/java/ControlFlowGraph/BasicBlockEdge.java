@@ -1,4 +1,4 @@
-package CFGBuilder;
+package ControlFlowGraph;
 
 /**
  * Created by chriscurtis on 9/28/16.

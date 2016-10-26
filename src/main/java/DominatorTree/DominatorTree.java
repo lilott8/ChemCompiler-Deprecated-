@@ -1,9 +1,8 @@
 package DominatorTree;
 
-import CFGBuilder.BasicBlock;
-import CFGBuilder.BasicBlockEdge;
-import CFGBuilder.CFG;
-import CFGBuilder.InstructionNode;
+import ControlFlowGraph.BasicBlock;
+import ControlFlowGraph.BasicBlockEdge;
+import ControlFlowGraph.CFG;
 
 import java.util.*;
 

@@ -1,7 +1,7 @@
 package DataFlow;
 
-import CFGBuilder.BasicBlock;
-import CFGBuilder.CFG;
+import ControlFlowGraph.BasicBlock;
+import ControlFlowGraph.CFG;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,23 +28,32 @@ public class ReachingDefinitions extends DataFlowAnalysis {
         Boolean changed = true;
         while(changed) {
             changed = false;
-            Map<Integer, ReachingDefinitionNode> nextIteration = new HashMap<Integer, ReachingDefinitionNode>();
+           // Map<Integer, ReachingDefinitionNode> nextIteration = new HashMap<Integer, ReachingDefinitionNode>();
             for(ReachingDefinitionNode node : initialization.values()){
                 List<ReachingDefinitionNode> predecessors = new ArrayList<ReachingDefinitionNode>();
-                for (Integer predecesorID : this.__predecesors.get(node.__ID))
-                    predecessors.add(initialization.get(predecesorID));
+
+                HashMap<Integer,List<Integer>> p = this.__predecesors;
+                if(p.containsKey(node.__ID))
+                    for (Integer predecesorID : p.get(node.__ID))
+                        predecessors.add(initialization.get(predecesorID));
 
                 ReachingDefinitionNode n = new ReachingDefinitionNode(node);
-                if(node.addIN(predecessors,this.__controlFlowGraph.getSymbolTable()))
+                if(n.addIN(predecessors,this.__controlFlowGraph.getSymbolTable(), initialization))
                     changed = true;
-                nextIteration.put(n.__ID,n);
+                initialization.put(n.__ID,n);
             }
 
-            initialization.clear();
-            initialization.putAll(nextIteration);
-            nextIteration.clear();
+//            initialization.clear();
+            //initialization.putAll(nextIteration);
+            //nextIteration.clear();
 
         }
+
+        //final update on out
+        for(ReachingDefinitionNode n: initialization.values()) {
+            n.getOut();
+        }
+
 
         __finalAnswer = initialization;
 
@@ -53,7 +62,8 @@ public class ReachingDefinitions extends DataFlowAnalysis {
     public String toString(){
         String ret = "";
         for(Integer i : __finalAnswer.keySet()){
-            ret += i + __finalAnswer.get(i).toString() +'\n';
+            ret += i + "\n";
+            ret += __finalAnswer.get(i).toString() +'\n';
         }
         return ret;
     }
