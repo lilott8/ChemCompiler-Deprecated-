@@ -6,12 +6,13 @@ import executable.instructions.Instruction;
 import executable.instructions.Output;
 import executable.instructions.Split;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Created by chriscurtis on 9/29/16.
  */
-public class BasicBlock {
+public class BasicBlock implements Serializable {
     private HashMap<String, Set<Integer>> __basicBlockEntry;
     private HashMap<String, Set<Integer>> __basicBlockExit;
     private NestedSymbolTable __symbolTable;

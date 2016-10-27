@@ -1,9 +1,11 @@
 package ControlFlowGraph;
 
+import java.io.Serializable;
+
 /**
  * Created by chriscurtis on 9/28/16.
  */
-public class BasicBlockEdge {
+public class BasicBlockEdge implements Serializable {
     private Integer __source;
     private Integer __destination;
 

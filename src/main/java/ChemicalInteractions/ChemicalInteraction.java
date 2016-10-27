@@ -5,13 +5,14 @@ import executable.instructions.Heat;
 import substance.Chemical;
 import substance.Property;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by chriscurtis on 10/4/16.
  */
-public class ChemicalInteraction {
+public class ChemicalInteraction implements Serializable {
 
 
     public enum Operation {DISPENSE, DETECT, HEAT, MIX, SPLIT, STORE, OUTPUT}

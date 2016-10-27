@@ -12,12 +12,13 @@ import substance.Substance;
 import variable.Instance;
 import variable.Variable;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Created by chriscurtis on 9/29/16.
  */
-public class CFG {
+public class CFG implements Serializable {
     public static final Logger logger = LogManager.getLogger(CFG.class);
 
 

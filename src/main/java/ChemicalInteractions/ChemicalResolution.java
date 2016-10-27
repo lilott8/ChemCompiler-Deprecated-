@@ -2,13 +2,14 @@ package ChemicalInteractions;
 
 import substance.Chemical;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by chriscurtis on 10/12/16.
  */
-public class ChemicalResolution {
+public class ChemicalResolution implements Serializable {
     //AKA the Chemical nesting doll
 
     private String __name;

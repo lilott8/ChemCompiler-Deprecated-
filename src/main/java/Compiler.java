@@ -3,11 +3,8 @@ import ControlFlowGraph.BasicBlock;
 import ControlFlowGraph.CFG;
 import ControlFlowGraph.CFGBuilder;
 import ControlFlowGraph.InstructionNode;
-import Translators.TypeSystemTanslator;
+import Translators.TypeSystemTranslator;
 import executable.Experiment;
-import executable.instructions.Combine;
-import executable.instructions.Output;
-import executable.instructions.Split;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,9 +22,6 @@ public class Compiler {
     public static final Logger logger = LogManager.getLogger(Compiler.class);
 
     private Integer __IDGen;
-    //private NestedSymbolTable __symbolTable;
-  //  private HashMap<String, ChemicalResolution > __chemicalResolutions;
-   // private HashMap<String,Substance> __substanceResolution;
 
     private List<CFG> __experimentControlFlowGraphs;
     private CFG __benchtopControlFlowGraph;
@@ -35,9 +29,6 @@ public class Compiler {
 
     private void initializeData(){
         __IDGen =0;
-
-        //__chemicalResolutions = new HashMap<String, ChemicalResolution> ();
-       // __substanceResolution = new HashMap<String, Substance>();
 
         __experimentControlFlowGraphs = new ArrayList<CFG>();
         __benchtopControlFlowGraph = new CFG();
@@ -60,9 +51,13 @@ public class Compiler {
                     ProcessExperimentCFG(controlFlow,experiment);
                     __experimentControlFlowGraphs.add(controlFlow);
                     logger.info(controlFlow);
-                    TypeSystemTanslator trans = new TypeSystemTanslator(controlFlow);
+                    TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
 
-                    logger.debug(trans);
+                    trans.toFile("TestTransfer.txt");
+
+                    TypeSystemTranslator input = TypeSystemTranslator.readFromFile("TestTransfer.txt");
+
+                    logger.fatal(input);
                 }
             }
           //  logger.info(__variableTable);

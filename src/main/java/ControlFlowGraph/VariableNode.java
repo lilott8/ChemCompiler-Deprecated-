@@ -3,10 +3,12 @@ package ControlFlowGraph;
 import variable.Reference;
 import variable.Variable;
 
+import java.io.Serializable;
+
 /**
  * Created by chriscurtis on 10/12/16.
  */
-public class VariableNode {
+public class VariableNode implements Serializable {
     public enum VariableType {ROOT_DECLARATION,INSTRUCTION_DECLARATION}
 
     private VariableType __declarationType;

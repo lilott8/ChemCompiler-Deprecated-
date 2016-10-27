@@ -3,10 +3,13 @@ package ControlFlowGraph;
 import ChemicalInteractions.ChemicalInteraction;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import executable.instructions.Instruction;
+
+import java.io.Serializable;
+
 /**
  * Created by chriscurtis on 9/28/16.
  */
-public class InstructionNode {
+public class InstructionNode implements Serializable {
     private Integer __ID;
     private Instruction __instruction;
     private ChemicalInteraction __interaction;
