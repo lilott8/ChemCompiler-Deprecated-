@@ -3,7 +3,7 @@ import ControlFlowGraph.BasicBlock;
 import ControlFlowGraph.CFG;
 import ControlFlowGraph.CFGBuilder;
 import ControlFlowGraph.InstructionNode;
-import Translators.TypeSystemTranslator;
+import Translators.TypeSystem.TypeSystemTranslator;
 import executable.Experiment;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
@@ -52,11 +52,11 @@ public class Compiler {
                     logger.info(controlFlow);
                     TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
 
-                    trans.toFile("TestTransfer.txt");
+                    trans.toFile("Experiment3.txt");
 
-                    TypeSystemTranslator input = TypeSystemTranslator.readFromFile("TestTransfer.txt");
+                    //TypeSystemTranslator input = TypeSystemTranslator.readFromFile("TestTransfer.txt");
 
-                    logger.fatal(input);
+                    logger.fatal(trans);
                 }
             }
             //  logger.info(__variableTable);
@@ -146,6 +146,8 @@ public class Compiler {
                     logger.warn("PHI NODE");
                 }
                 for (Integer entry : entrySet) {
+                    if (entry == -2)
+                        node.addImplicitDispense(inputKey);
                     basicBlock.addEdge(entry, node.ID());
                     basicBlock.updateUsage(inputKey, node);
                 }

@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         //SimpleMixTest();
         try {
-            BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/SimpleLoop.json").getPath());
+            BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/Experiment3.json").getPath());
             //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {

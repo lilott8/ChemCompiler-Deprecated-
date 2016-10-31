@@ -145,6 +145,7 @@ public class BasicBlock implements Serializable {
     public Boolean hasIncomingSymbol(String symbol) {return this.__basicBlockEntry.containsKey(symbol); }
     public Set<Integer> getBasicBlockEntryUsage(String symbol) { return this.__basicBlockEntry.get(symbol); }
     public Map<String, Set<Integer>> getBasicBlockEntryTable() { return this.__basicBlockEntry; }
+    public Map<String, Set<Integer>> getBasicBlockExitTable() { return this.__basicBlockExit; }
     public Integer ID(){
         return __ID;
     }
