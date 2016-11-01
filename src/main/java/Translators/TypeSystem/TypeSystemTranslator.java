@@ -178,9 +178,10 @@ public class TypeSystemTranslator implements Serializable{
     }
 
     public void toFile(String filename) {
+        ObjectOutputStream oos = null;
         try {
             FileOutputStream fos = new FileOutputStream(filename);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos = new ObjectOutputStream(fos);
 
             oos.writeObject(this);
         }
@@ -189,22 +190,32 @@ public class TypeSystemTranslator implements Serializable{
         }
         catch (IOException object){
             logger.fatal("Object output stream.");
+        } finally {
+            if(oos != null) {
+                try{oos.close();} catch(Exception e){}
+            }
         }
 
     }
 
     public static TypeSystemTranslator readFromFile(String filename) {
+        ObjectInputStream ois = null;
         try {
             FileInputStream fis = new FileInputStream(filename);
-            ObjectInputStream ois = new ObjectInputStream(fis);
+            ois = new ObjectInputStream(fis);
+            TypeSystemTranslator t = (TypeSystemTranslator) ois.readObject();
 
-            return (TypeSystemTranslator) ois.readObject();
+            return t;
         } catch (FileNotFoundException fileNotFound) {
             logger.fatal("File: " + filename + "not found");
         } catch (IOException object) {
             logger.fatal("Object output stream.");
         } catch (ClassNotFoundException classNotFound) {
             logger.fatal("Class not found.");
+        } finally {
+            if(ois != null) {
+               try{ ois.close();}catch(Exception e) {}
+            }
         }
         return null;
     }
