@@ -60,5 +60,6 @@ public abstract class MFSimSSANode {
 
     }
     public Integer getID() { return __nodeID; }
+    public String getName() { return __nodeName; }
 }
 

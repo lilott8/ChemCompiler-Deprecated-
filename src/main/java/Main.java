@@ -1,7 +1,10 @@
 import ControlFlowGraph.BasicBlock;
 import ControlFlowGraph.CFG;
 import DominatorTree.DominatorTree;
+import Translators.MFSimSSA.MFSimSSATranslator;
+import Translators.TypeSystem.TypeSystemTranslator;
 import manager.Benchtop;
+import manager.TypeSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import parsing.BenchtopParser;
@@ -12,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         //SimpleMixTest();
         try {
-            BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/Experiment3.json").getPath());
+            BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/SimpleIf.json").getPath());
             //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {
@@ -22,9 +25,17 @@ public class Main {
 
         try {
             Compiler benchtopCompiler = new Compiler(Benchtop.INSTANCE);
+
+            for(CFG experiment : benchtopCompiler.getExperiments()){
+                TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
+                MFSimSSATranslator mfsimt = new MFSimSSATranslator(experiment);
+
+            }
+
         }
         catch (Exception e ){
-
+            logger.fatal("Exception occured");
+            logger.fatal(e.getStackTrace());
         }
 
         //DominatorTreeTest();

@@ -10,10 +10,11 @@ import org.apache.logging.log4j.Logger;
  */
 public class MFSimSSATransferIn extends MFSimSSANode{
     private static final Logger logger = LogManager.getLogger(MFSimSSATransferIn.class);
+    String __transferedSymbol;
 
-    public MFSimSSATransferIn(Integer id, String name) {
+    public MFSimSSATransferIn(Integer id, String name, String symbol) {
         super(id, OperationClassifier.TRANSFER_IN, name);
-
+        this.__transferedSymbol = symbol;
     }
 
     public String toString() {
@@ -24,4 +25,6 @@ public class MFSimSSATransferIn extends MFSimSSANode{
         }
         return ret;
     }
+
+    public String getTransferedSymbol() { return __transferedSymbol; }
 }

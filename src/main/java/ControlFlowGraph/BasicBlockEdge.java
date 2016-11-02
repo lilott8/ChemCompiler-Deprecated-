@@ -33,5 +33,5 @@ public class BasicBlockEdge implements Serializable {
 
     public Integer getSource() { return __source; }
     public Integer getDestination() {return __destination; }
-
+    public String getCondition()  { return __condition; }
 }

@@ -18,7 +18,7 @@ public class MFSimSSAHeat extends MFSimSSANode {
         __time = 2;
     }
     public String toString() {
-        String ret = "NODE (" + this.__nodeID + ", " + this.__opType + ", " +  ", " + __time + ", " + this.__nodeName + ")\n";
+        String ret = "NODE (" + this.__nodeID + ", " + this.__opType +  ", " + __time + ", " + this.__nodeName + ")\n";
 
         for (Integer successor : this.__successorIDs) {
             ret += "EDGE (" + this.__nodeID + ", " + successor + ")\n";

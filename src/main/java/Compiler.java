@@ -50,13 +50,14 @@ public class Compiler {
                     ProcessExperimentCFG(controlFlow, experiment);
                     __experimentControlFlowGraphs.add(controlFlow);
                     logger.info(controlFlow);
-                    TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
 
-                    trans.toFile("Experiment3.txt");
+                    //TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
+
+                    //trans.toFile("Experiment3.txt");
 
                     //TypeSystemTranslator input = TypeSystemTranslator.readFromFile("TestTransfer.txt");
 
-                    logger.fatal(trans);
+                    //logger.fatal(trans);
                 }
             }
             //  logger.info(__variableTable);
@@ -68,6 +69,7 @@ public class Compiler {
 
     }
 
+    public List<CFG> getExperiments() { return __experimentControlFlowGraphs; }
 
     private void ProcessExperimentCFG(CFG controlFlowGraph, Experiment experiment) {
         //Global Input Chemicals
