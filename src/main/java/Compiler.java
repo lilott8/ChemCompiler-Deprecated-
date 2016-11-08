@@ -8,6 +8,7 @@ import executable.Experiment;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import variable.Instance;
 import variable.Variable;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class Compiler {
                     CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment.getInstructions());
                     ProcessExperimentCFG(controlFlow, experiment);
                     __experimentControlFlowGraphs.add(controlFlow);
-                    logger.info(controlFlow);
+                    //logger.info(controlFlow);
 
                     //TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
 
@@ -86,7 +87,7 @@ public class Compiler {
                 bb.getSymbolTable().clear();
                 if (ProcessBasicBlockInstructions(controlFlowGraph, bb))
                     changed = true;
-                //logger.info(bb.metaToString());
+                logger.info(bb.metaToString());
             }
         }
     }
@@ -151,10 +152,15 @@ public class Compiler {
                     if (entry == -2)
                         node.addImplicitDispense(inputKey);
                     basicBlock.addEdge(entry, node.ID());
-                    basicBlock.updateUsage(inputKey, node);
+                    if(node.Instruction().getInputs().get(inputKey) instanceof Instance && ((Instance)node.Instruction().getInputs().get(inputKey)).getIsStationary() )
+                        basicBlock.updateUsage(inputKey, node);
                 }
             } else {
-                logger.warn("Found:" + inputKey + ": It was not mapped anywhere!");
+
+                logger.warn(inputKey + ", was not mapped anywhere, treating as an implicit dispense");
+                node.addImplicitDispense(inputKey);
+                basicBlock.addEdge(-2, node.ID());
+                //basicBlock.updateUsage(inputKey, node);
             }
         }
     }

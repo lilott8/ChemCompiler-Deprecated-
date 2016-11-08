@@ -15,6 +15,7 @@ public class ChemicalResolution implements Serializable {
     private String __name;
     private Boolean __isLiteral;
     private Boolean __isGlobal;
+    private Boolean __isStationary;
     private List<Chemical> __chemicalLiterals;
     private List<ChemicalResolution> __chemicalReferences;
 
@@ -24,10 +25,12 @@ public class ChemicalResolution implements Serializable {
         this.__chemicalLiterals = new ArrayList<Chemical>();
         __isLiteral = false;
         __isGlobal = false;
+        __isStationary = false;
     }
 
     public void setIsLiteral(Boolean isLiteral) { __isLiteral = isLiteral; }
     public void setisGlobal(Boolean isGlobal) { __isGlobal = isGlobal; }
+    public void setIsStationary(Boolean isStationary) { __isStationary = isStationary; }
 
     public void addLiteral(Chemical chemical) { __chemicalLiterals.add(chemical); }
     public void addReference(ChemicalResolution chemicalResolution) {
@@ -36,6 +39,7 @@ public class ChemicalResolution implements Serializable {
 
     public Boolean IsLiteral() {return __isLiteral; }
     public Boolean IsGlobal() { return __isGlobal; }
+    public Boolean IsStationary() { return __isStationary; }
     public String getName() { return __name; }
     public List<ChemicalResolution> getReferences() {return __chemicalReferences; }
     public List<Chemical> getLiterals() { return __chemicalLiterals; }

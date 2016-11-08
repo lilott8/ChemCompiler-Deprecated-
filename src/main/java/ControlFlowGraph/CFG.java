@@ -152,6 +152,9 @@ public class CFG implements Serializable {
     public void addResolution(String key, Variable variable, Boolean isGlobal){
         ChemicalResolution resolution = ResolveVariable(variable);
         resolution.setisGlobal(isGlobal);
+        if (variable instanceof Instance) {
+            resolution.setIsStationary(((Instance)variable).getIsStationary());
+        }
         __symbolTable.put(key,resolution);
     }
 
@@ -161,7 +164,7 @@ public class CFG implements Serializable {
 
         ChemicalResolution resolution = new ChemicalResolution(variable.getName());
         if(variable instanceof Instance) {
-            logger.info("Found Instance Literal");
+            //logger.info("Found Instance Literal");
             resolution.setIsLiteral(false);
         }
 

@@ -29,9 +29,10 @@ public class MFSimSSATranslator {
     public MFSimSSATranslator(CFG controlFlowGraph){
         __uniqueIDGen = new IDGen();
         __controlFLow = new MFSimSSACFG(controlFlowGraph,__uniqueIDGen );
+    }
 
-        logger.info(__controlFLow.toString("TemplateName"));
-
+    public void toFile(String name){
+        __controlFLow.toFile(name);
     }
 
 

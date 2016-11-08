@@ -102,7 +102,7 @@ public class BasicBlock implements Serializable {
         }
         for (String entrySymbol : this.__basicBlockEntry.keySet()) {
             if (!this.__symbolTable.getUsagedTable().containsKey(entrySymbol)) { // if I havent used the declaration in basic block
-                if (!this.__basicBlockEntry.get(entrySymbol).contains(-2)) { // if symbol isnt a global declaration
+                if ((!this.__basicBlockEntry.get(entrySymbol).contains(-2))) { // if symbol isnt a global declaration
                     if ((!this.__basicBlockExit.containsKey(entrySymbol)) || this.__basicBlockExit.get(entrySymbol).size() != this.__basicBlockEntry.get(entrySymbol).size()) {
                         changed = true;
                         this.__basicBlockExit.put(entrySymbol, this.__basicBlockEntry.get(entrySymbol));
@@ -117,7 +117,10 @@ public class BasicBlock implements Serializable {
         if (node.Instruction() instanceof Combine ||
                 node.Instruction() instanceof Output ||
                 node.Instruction() instanceof Split) {
-            this.__symbolTable.updateLastUsedIn(symbol, -1);
+            if(this.__symbolTable.get(symbol).IsStationary())
+                this.__symbolTable.updateLastUsedIn(symbol, node.ID());
+            else
+                this.__symbolTable.updateLastUsedIn(symbol, -1);
         }
         else {
             this.__symbolTable.updateLastUsedIn(symbol, node.ID());

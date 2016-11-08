@@ -15,11 +15,16 @@ public class Main {
     public static void main(String[] args) {
         //SimpleMixTest();
         try {
-            BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/SimpleIf.json").getPath());
+
+            //logger.info(Main.class.getClassLoader().getResource("Benchmarks/PCRDropletReplacement.json").getPath());
+
+
+            BenchtopParser.parse(Main.class.getClassLoader().getResource("Benchmarks/MorphineELISA.json").getPath());
             //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {
-            logger.fatal("File not found.");
+            logger.fatal(e.getMessage());
+            logger.fatal(e.getStackTrace());
         }
 
 
@@ -27,9 +32,11 @@ public class Main {
             Compiler benchtopCompiler = new Compiler(Benchtop.INSTANCE);
 
             for(CFG experiment : benchtopCompiler.getExperiments()){
-                TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
-                MFSimSSATranslator mfsimt = new MFSimSSATranslator(experiment);
+                logger.debug(experiment.toString());
 
+                //TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
+                //MFSimSSATranslator mfsimt = new MFSimSSATranslator(experiment);
+                //mfsimt.toFile("testMfSim");
             }
 
         }
