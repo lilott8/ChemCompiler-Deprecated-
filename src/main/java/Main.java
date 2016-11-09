@@ -35,8 +35,8 @@ public class Main {
                 logger.debug(experiment.toString());
 
                 //TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
-                //MFSimSSATranslator mfsimt = new MFSimSSATranslator(experiment);
-                //mfsimt.toFile("testMfSim");
+                MFSimSSATranslator mfsimt = new MFSimSSATranslator(experiment);
+                mfsimt.toFile("MorphineELISA");
             }
 
         }

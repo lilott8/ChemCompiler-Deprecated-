@@ -151,8 +151,9 @@ public class Compiler {
                 for (Integer entry : entrySet) {
                     if (entry == -2)
                         node.addImplicitDispense(inputKey);
-                    basicBlock.addEdge(entry, node.ID());
-                    if(node.Instruction().getInputs().get(inputKey) instanceof Instance && ((Instance)node.Instruction().getInputs().get(inputKey)).getIsStationary() )
+                    if(!basicBlock.getSymbolTable().contains(inputKey) || !basicBlock.getSymbolTable().get(inputKey).IsStationary())
+                        basicBlock.addEdge(entry, node.ID());
+                    //if(node.Instruction().getInputs().get(inputKey) instanceof Instance && ((Instance)node.Instruction().getInputs().get(inputKey)).getIsStationary() )
                         basicBlock.updateUsage(inputKey, node);
                 }
             } else {

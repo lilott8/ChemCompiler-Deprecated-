@@ -8,6 +8,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import executable.instructions.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import variable.Instance;
 
 import java.util.*;
 
@@ -32,6 +33,8 @@ public class MFSimSSADAG {
         __dispense = new ArrayList<MFSimSSADispense>();
 
         for(String transferInDroplet: bb.getBasicBlockEntryTable().keySet()){
+            if(bb.getSymbolTable().contains(transferInDroplet) && bb.getSymbolTable().get(transferInDroplet).IsStationary())
+                continue;
             Set<Integer> predecessorSet = bb.getBasicBlockEntryTable().get(transferInDroplet);
             for( Integer predecessorID : predecessorSet) {
                 if ( predecessorID != -2 ) {
@@ -58,11 +61,19 @@ public class MFSimSSADAG {
                 n = new MFSimSSAStorage(__uniqueIDGen.getNextID(),(Store)instruction);
             else if (instruction instanceof Output)
                 n = new MFSimSSAOutput(__uniqueIDGen.getNextID(),(Output)instruction);
-            else
+            else if(instruction instanceof React)
+                n = new MFSimSSACool(__uniqueIDGen.getNextID(),(React)instruction );
+            else {
+                logger.fatal("Unknown Conversion for: " + instruction.toString());
                 n = null;
-
+            }
 
             for(String dispense : instructionNode.getDispenseSymbols()){
+                if(instructionNode.Instruction().getInputs().get(dispense) instanceof Instance
+                        && ((Instance) instructionNode.Instruction().getInputs().get(dispense)).getIsStationary())
+                    continue;
+
+
                 logger.warn("Setting template volume amount");
                 MFSimSSADispense dis = new MFSimSSADispense(this.__uniqueIDGen.getNextID(), dispense, dispense, 10);
                 if (n != null)
@@ -75,6 +86,8 @@ public class MFSimSSADAG {
 
         }
         for(String transferOutDroplet: bb.getBasicBlockExitTable().keySet()) {
+            if(bb.getSymbolTable().contains(transferOutDroplet) && bb.getSymbolTable().get(transferOutDroplet).IsStationary())
+                continue;
             for( Integer out : bb.getBasicBlockExitTable().get(transferOutDroplet)) {
                 MFSimSSATransferOut transOut = new MFSimSSATransferOut(__uniqueIDGen.getNextID(), transferOutDroplet, transferOutDroplet);
                 //__nodes.put(out, transOut);
@@ -83,6 +96,7 @@ public class MFSimSSADAG {
         }
 
 
+        Set<Integer> keystoRemove = new HashSet<Integer>();
         //add successor edges
         for(Integer toutPredKey : this.__transOut.keySet()){
             if(__nodes.containsKey(toutPredKey)) {
@@ -93,9 +107,15 @@ public class MFSimSSADAG {
             }
             else{
                 //remove edge
-                this.__transOut.remove(toutPredKey);
+                keystoRemove.add(toutPredKey);
+//                this.__transOut.remove(toutPredKey);
             }
         }
+
+        for(Integer key: keystoRemove)
+            this.__transOut.remove(key);
+
+
         for(InstructionEdge edge: bb.getEdges()){
             if(__nodes.containsKey(edge.getDestination())){//I am a child of
                 Integer destination =__nodes.get(edge.getDestination()).getID();

@@ -33,7 +33,7 @@ public class MFSimSSACFG{
         for(BasicBlock bb : controlFlowGraph.getBasicBlocks()){
             MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID);
             __dags.put(bb.ID(),dag);
-            //logger.info(dag);
+            logger.info(dag);
         }
         for(BasicBlockEdge edge: controlFlowGraph.getBasicBlockEdges()){
             List<BasicBlockEdge> conditionalGroup;

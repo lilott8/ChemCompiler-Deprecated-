@@ -84,6 +84,8 @@ public class BasicBlock implements Serializable {
     public Boolean processOutput() {
         Boolean changed = false;
         for (String symbol : this.__symbolTable.getUsagedTable().keySet()) {
+            if(this.getSymbolTable().contains(symbol) && this.getSymbolTable().get(symbol).IsStationary())
+                continue;
             Integer lastUsed = this.__symbolTable.lastUsedIn(symbol);
             if (lastUsed != -1 && (!this.__basicBlockExit.containsKey(symbol))) {
                 changed = true;
@@ -93,6 +95,10 @@ public class BasicBlock implements Serializable {
             }
         }
         for (String definedSymbol : this.__symbolTable.getDefinitionTable().keySet()) {
+            if(this.getSymbolTable().contains(definedSymbol) && this.getSymbolTable().get(definedSymbol).IsStationary())
+                continue;
+            if(this.__symbolTable.getUsagedTable().containsKey(definedSymbol))
+                continue;
             if (!this.__basicBlockExit.containsKey(definedSymbol)) {
                 changed = true;
                 Set<Integer> usageSet = new HashSet<Integer>();
@@ -117,7 +123,7 @@ public class BasicBlock implements Serializable {
         if (node.Instruction() instanceof Combine ||
                 node.Instruction() instanceof Output ||
                 node.Instruction() instanceof Split) {
-            if(this.__symbolTable.get(symbol).IsStationary())
+            if(this.__symbolTable.contains(symbol) && this.__symbolTable.get(symbol).IsStationary())
                 this.__symbolTable.updateLastUsedIn(symbol, node.ID());
             else
                 this.__symbolTable.updateLastUsedIn(symbol, -1);
