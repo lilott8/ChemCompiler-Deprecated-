@@ -10,9 +10,11 @@ import java.util.*;
  * Created by chriscurtis on 10/18/16.
  */
 public class DominatorTree {
+    private HashMap<Integer, List<Integer>> __iterativeDominatorTree;
     private HashMap<Integer, List<Integer>> __dominencefrontier;
     private HashMap<Integer, List<Integer>> __dominatorTable;
     private HashMap<Integer, List<Integer>> __predecesors;
+
     private HashMap<Integer, Integer> __idoms;
     private List<Integer> __nodes;
 
@@ -149,21 +151,68 @@ public class DominatorTree {
         }
     }
 
+
+    private void GenerateIterativeFrontier(){
+        /*
+            Randy Allen Ken Kennedy-Optimizing Compilers- Figure 4.8
+            procedure iterateDom(G)
+                //G = (N,E) is the input control flow graph, where
+                // N is the set of basic blocks and
+                // E is the set of control flow edges
+                // dominators(b) is the set of dominators for block b
+                foreach b ε N do dominators(b) = N;
+
+
+                changed := true;
+                while changed do begin
+                    changed := false;
+                    foreach b ε N do begin
+                        newDoms := dominators(b);
+                        foreach p ε predecessors(b) do
+                            newDoms := newDoms ∩ dominators(p);
+                            newDoms := newDoms ∪ {b};
+                            if newDoms != dominators(b) then begin
+                                dominators(b) := newDoms;
+                                changed := true;
+                            end
+                        end
+                    end
+                end iterateDom
+         */
+        for(Integer b : this.__dominatorTable.keySet()){
+
+        }
+
+
+    }
+
     public String toString() {
         String ret="";
+
+        ret += "ID \t\t IDOM \t\t DOM FRONTIER \t\t DOM PATH \n";
+
         for(Integer i : __dominatorTable.keySet()){
-            ret += (i+1) + " [";
-            for( Integer id : __dominatorTable.get(i))
-                ret += id+1 + " ";
-            ret+="] IDOM: " + (__idoms.get(i)+1);
+            ret += (i) ;
+            ret+=" \t\t " + (__idoms.get(i)) + "\t";
 
             if (__idoms!= null) {
                 if (__dominencefrontier.containsKey(i)) {
-                    ret += " DomFrontier: ";
+                    ret += " \t\t ";
                     for (Integer id : __dominencefrontier.get(i))
-                        ret += (id + 1) + " ";
+                        ret += (id) + " ";
+                }
+                else {
+
+                    ret += "\t\t\t";
+
                 }
             }
+            ret+= " \t\t\t\t";
+            ret += " [";
+            for( Integer id : __dominatorTable.get(i))
+                ret += id + " ";
+            ret += "]";
+
 
             ret+='\n';
 

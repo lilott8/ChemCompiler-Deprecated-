@@ -15,6 +15,8 @@ import java.util.*;
 public class BasicBlock implements Serializable {
     private HashMap<String, Set<Integer>> __basicBlockEntry;
     private HashMap<String, Set<Integer>> __basicBlockExit;
+    private HashSet<String> __definitions;
+
     private NestedSymbolTable __symbolTable;
 
 
@@ -26,6 +28,7 @@ public class BasicBlock implements Serializable {
         __basicBlockEntry = new HashMap<String, Set<Integer>>();
         __basicBlockExit = new HashMap<String, Set<Integer>>();
         __symbolTable = table;
+        __definitions = new HashSet<String>();
 
         __instructions = new ArrayList<InstructionNode>();
         __edges = new ArrayList<InstructionEdge>();
@@ -33,9 +36,21 @@ public class BasicBlock implements Serializable {
     }
 
     public BasicBlock(BasicBlock bb) {
+        __definitions = new HashSet<String>();
+
         __instructions = bb.getInstructions();
         __edges = bb.getEdges();
         __ID = bb.ID();
+    }
+
+
+    public void AddVariableDefinition(Instruction i){
+//       if(i instanceof Combine){
+       if (! i.getOutputs().isEmpty()){
+           for(String definition : i.getOutputs().keySet())
+               this.__definitions.add(definition);
+//           }
+       }
     }
 
     public Boolean processPredecessors(List<BasicBlock> predecessors) {
@@ -97,7 +112,7 @@ public class BasicBlock implements Serializable {
         for (String definedSymbol : this.__symbolTable.getDefinitionTable().keySet()) {
             if(this.getSymbolTable().contains(definedSymbol) && this.getSymbolTable().get(definedSymbol).IsStationary())
                 continue;
-            if(this.__symbolTable.getUsagedTable().containsKey(definedSymbol))
+            if(this.__symbolTable.getUsagedTable().containsKey(definedSymbol) && this.getSymbolTable().getUsagedTable().get(definedSymbol)==-1)
                 continue;
             if (!this.__basicBlockExit.containsKey(definedSymbol)) {
                 changed = true;
@@ -202,9 +217,12 @@ public class BasicBlock implements Serializable {
             ret += edge.toString(indentBuffer+'\t'+'\t') + '\n';
 
         ret += indentBuffer + '\t' + "Definitions: "+'\n';
-        for(String definition: __symbolTable.getDefinitionTable().keySet()){
-            ret +=indentBuffer + "\t\t" + __symbolTable.get(definition) + '\n';
+        for(String definition: this.__definitions){
+            ret +=indentBuffer + "\t\t" + definition + '\n';
         }
+        /*for(String definition: __symbolTable.getDefinitionTable().keySet()){
+            ret +=indentBuffer + "\t\t" + __symbolTable.get(definition) + '\n';
+        }*/
         return ret;
     }
 }

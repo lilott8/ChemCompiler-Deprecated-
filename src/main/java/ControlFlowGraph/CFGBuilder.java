@@ -16,13 +16,39 @@ import java.util.List;
  */
 public class CFGBuilder {
 
+
+
+    private static BasicBlock InsertExitNode(List<BasicBlock> exitNodes, CFG cfg){
+        BasicBlock EXIT = cfg.newBasicBlock();
+        for(BasicBlock bb : exitNodes)
+            cfg.addEdge(bb, EXIT);
+        return EXIT;
+    }
+
+    /*
+        The insertion of ENTRY and EXIT nodes follow the data structure for the algorithms that are presented in Cytron et. al.
+        "An efficient Method of Computing Static Single Assignment Form".
+     */
     private static CFG BuildControlFlowGraph(Integer id, List<Instruction> instructions) throws Exception{
         CFG controlFlowGraph = new CFG(id);
 
-        ProcessNestedInstructions(controlFlowGraph, controlFlowGraph.newBasicBlock(), instructions);
+
+        BasicBlock entryNode = controlFlowGraph.newBasicBlock();
+        BasicBlock startOfInstructions = controlFlowGraph.newBasicBlock();
+        controlFlowGraph.addEdge(entryNode, startOfInstructions);
+
+        List <BasicBlock> danglingExitNodes = ProcessNestedInstructions(controlFlowGraph, startOfInstructions, instructions);
+
+        BasicBlock exitNode = InsertExitNode(danglingExitNodes, controlFlowGraph);
+        controlFlowGraph.addEdge(entryNode, exitNode);
 
         controlFlowGraph.addDominatorTree(new DominatorTree(controlFlowGraph));
 
+
+      //  for (BasicBlock b : danglingLeaves) {
+      //      System.out.println(b.ID());
+      //  }
+        
         //ReachingDefinitions rdef = new ReachingDefinitions(controlFlowGraph);
 
         //System.out.println(rdef);
@@ -65,13 +91,30 @@ public class CFGBuilder {
             for(BasicBlock processedBasicBlock: ProcessNestedInstructions(controlFlowGraph, trueBranchEntryBasicBlock, branch.getTrueBranch())) {
                 leaves.add(processedBasicBlock);
             }
-            for(Instruction elseIfBranch : branch.getElseIfBranch()) {
+
+
+            for(int instructionsIndex = 0; instructionsIndex < branch.getElseIfBranch().size(); ++instructionsIndex){
+                Instruction elseIfBranch = branch.getElseIfBranch().get(instructionsIndex);
+//            for(Instruction elseIfBranch : branch.getElseIfBranch()) {
                 BasicBlock elseIfBranchEntryBasicBlock = controlFlowGraph.newBasicBlock();
                 controlFlowGraph.addEdge(bb,elseIfBranchEntryBasicBlock);
 
-                for(BasicBlock processedBasicBlock: ProcessBranch(controlFlowGraph, elseIfBranchEntryBasicBlock, (Branch)elseIfBranch)) {
-                    leaves.add(processedBasicBlock);
+                List<BasicBlock> dangledLeaves = ProcessBranch(controlFlowGraph, elseIfBranchEntryBasicBlock, (Branch)elseIfBranch);
+
+
+                if( !branch.getElseBranch().isEmpty() || instructionsIndex < branch.getElseIfBranch().size()-1) {
+                    for (int i = 0; i < dangledLeaves.size()-1; ++i) {
+                        leaves.add(dangledLeaves.get(i));
+                    }
                 }
+                else {
+                    for (int i = 0; i < dangledLeaves.size(); ++i) {
+                        leaves.add(dangledLeaves.get(i));
+                    }
+                }
+//                for(BasicBlock processedBasicBlock: dangledLeaves) {
+
+ //               }
 
                 bb = elseIfBranchEntryBasicBlock;
             }
@@ -83,7 +126,8 @@ public class CFGBuilder {
                     leaves.add(processedBasicBlock);
                 }
             }
-            leaves.add(bb);
+            if(branch.getElseBranch().isEmpty())
+                leaves.add(bb);
         }
         return leaves;
     }
@@ -128,6 +172,8 @@ public class CFGBuilder {
 
         for (int instructionIndex = 0; instructionIndex < instructionList.size(); ++instructionIndex) {
             Instruction instruction = instructionList.get(instructionIndex);
+            bb.AddVariableDefinition(instruction);
+
             if (instruction instanceof Branch) {
                 List<BasicBlock> branchLeaves = ProcessBranch(controlFlowGraph, bb, (Branch) instruction);
 

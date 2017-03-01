@@ -3,6 +3,7 @@ package ControlFlowGraph;
 //import ChemicalInteractions.ChemicalInteraction;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import executable.instructions.Instruction;
+import substance.Property;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -64,8 +65,10 @@ public class InstructionNode implements Serializable {
         ret +=  __instruction.getName() + " ";
 
         for(String input : __instruction.getInputs().keySet())
-            ret+=  "\"" + input + "\" ";
+            ret+=  " \"" + input + "\"";
 
+        for(Property property : __instruction.getProperties())
+            ret += ", " + property.toString();
 
         return  ret;
     }

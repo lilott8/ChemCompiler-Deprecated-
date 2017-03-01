@@ -100,6 +100,7 @@ public class CFG implements Serializable {
     public void addDominatorTree(DominatorTree t) {
         this.__dominatorTree = t;
     }
+    public DominatorTree getDominatorTree() { return this.__dominatorTree; }
     public void addEdge(BasicBlock source, BasicBlock destination) {
         this.addEdge(source,destination,"UNCONDITIONAL");
     }
@@ -168,9 +169,9 @@ public class CFG implements Serializable {
             resolution.setIsLiteral(false);
         }
 
-        for(Substance v : variable.getSubstance().values()) {
-            resolution.addReference(ResolveSubstance(v));
-        }
+       // for(Substance v : variable.getSubstance().values()) {
+       //     resolution.addReference(ResolveSubstance(v));
+       // }
         return resolution;
     }
 
