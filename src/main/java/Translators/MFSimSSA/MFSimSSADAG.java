@@ -1,10 +1,9 @@
 package Translators.MFSimSSA;
 
-import ControlFlowGraph.BasicBlock;
-import ControlFlowGraph.InstructionEdge;
-import ControlFlowGraph.InstructionNode;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
+import StaticSingleInstruction.InstructionEdge;
+import StaticSingleInstruction.InstructionNode;
 import Translators.MFSimSSA.OperationNode.*;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import executable.instructions.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

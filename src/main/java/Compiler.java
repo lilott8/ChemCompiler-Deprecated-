@@ -1,14 +1,12 @@
 import ChemicalInteractions.ChemicalResolution;
-import ControlFlowGraph.BasicBlock;
-import ControlFlowGraph.CFG;
-import ControlFlowGraph.CFGBuilder;
-import ControlFlowGraph.InstructionNode;
-import Translators.TypeSystem.TypeSystemTranslator;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
+import StaticSingleInstruction.ControlFlowGraph.CFG;
+import StaticSingleInstruction.CFGBuilder;
+import StaticSingleInstruction.InstructionNode;
 import executable.Experiment;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import variable.Instance;
 import variable.Variable;
 
 import java.util.ArrayList;
@@ -40,17 +38,20 @@ public class Compiler {
     public Compiler(Benchtop benchtop) {
         try {
             this.initializeData();
-
-            for (String inputKey : benchtop.getInputs().keySet()) {
-                __benchtopControlFlowGraph.addResolution(inputKey, benchtop.getInputs().get(inputKey), true);
-                __benchtopControlFlowGraph.addDefinition(inputKey, __benchtopControlFlowGraph.ID());
-            }
+            //TODO:: When Incorporating BenchtopCFGs, It is necessary to handle inputs given at Global scope.
+            //for (String inputKey : benchtop.getInputs().keySet()) {
+             //   __benchtopControlFlowGraph.addResolution(inputKey, benchtop.getInputs().get(inputKey), true);
+                //__benchtopControlFlowGraph.addDefinition(inputKey, __benchtopControlFlowGraph.getID());
+            //}
             for (String experimentKey : benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : benchtop.getExperiments().get(experimentKey)) {
                     CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment.getInstructions());
-                    ProcessExperimentCFG(controlFlow, experiment);
-                    __experimentControlFlowGraphs.add(controlFlow);
-                    //logger.info(controlFlow);
+                    System.out.print(controlFlow);
+                    //System.out.print(controlFlow.getDominatorTree().toString());
+
+                    //ProcessExperimentCFG(controlFlow, experiment);
+                     //__experimentControlFlowGraphs.add(controlFlow);
+                     //logger.debug(controlFlow);
 
                     //TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
 
@@ -76,7 +77,7 @@ public class Compiler {
         //Global Input Chemicals
         for (String inputKey : experiment.getInputs().keySet()) {
             controlFlowGraph.addResolution(inputKey, experiment.getInputs().get(inputKey), true);
-            controlFlowGraph.getSymbolTable().addDefinition(inputKey, controlFlowGraph.ID());
+            controlFlowGraph.getSymbolTable().addDefinition(inputKey, controlFlowGraph.getID());
         }
 
         Boolean changed = true;
@@ -87,7 +88,7 @@ public class Compiler {
                 bb.getSymbolTable().clear();
                 if (ProcessBasicBlockInstructions(controlFlowGraph, bb))
                     changed = true;
-                logger.info(bb.metaToString());
+                //logger.info(bb.metaToString());
             }
         }
     }
@@ -130,7 +131,7 @@ public class Compiler {
                 if (lastUsedIn < 0) {
                     // A negative usage indicates that the Chemical was killed. so check at global
 
-                    logger.fatal("Found ODD ID in Usage table:" + lastUsedIn + "For: " + inputKey);
+                    logger.fatal("Found ODD getID in Usage table:" + lastUsedIn + "For: " + inputKey);
                 } else {
                     basicBlock.addEdge(lastUsedIn, node.ID());
                     basicBlock.updateUsage(inputKey, node);
@@ -172,7 +173,8 @@ public class Compiler {
         for (String outputKey : node.Instruction().getOutputs().keySet()) {
             Variable output = node.Instruction().getOutputs().get(outputKey);
             basicBlock.getSymbolTable().addDefinition(outputKey, node.ID());
-
+            if(basicBlock.getSymbolTable().getUsagedTable().containsKey(outputKey))
+                basicBlock.getSymbolTable().getUsagedTable().put(outputKey,node.ID());
 
             //create Chemical Resolution
             ChemicalResolution resolution = new ChemicalResolution(outputKey);

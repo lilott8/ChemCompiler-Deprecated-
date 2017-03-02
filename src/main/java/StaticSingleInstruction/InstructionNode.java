@@ -1,13 +1,11 @@
-package ControlFlowGraph;
+package StaticSingleInstruction;
 
 //import ChemicalInteractions.ChemicalInteraction;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import executable.instructions.Instruction;
 import substance.Property;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -43,9 +41,9 @@ public class InstructionNode implements Serializable {
     public Instruction Instruction() {
         return __instruction;
     }
-   // public ChemicalInteraction getChemicalInteraction() {return __interaction; }
+    //public ChemicalInteraction getChemicalInteraction() {return __interaction; }
 
- //   public void addChemicalInteraction(ChemicalInteraction ci) { __interaction = ci; }
+    //public void addChemicalInteraction(ChemicalInteraction ci) { __interaction = ci; }
     public void setLeader(Boolean isleader) { __leader = isleader; }
 
     public Boolean isLeader() { return __leader; }

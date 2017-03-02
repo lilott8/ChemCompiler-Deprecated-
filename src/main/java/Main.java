@@ -1,10 +1,8 @@
-import ControlFlowGraph.BasicBlock;
-import ControlFlowGraph.CFG;
-import DominatorTree.DominatorTree;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
+import StaticSingleInstruction.ControlFlowGraph.CFG;
+import StaticSingleInstruction.DominatorTree.DominatorTree;
 import Translators.MFSimSSA.MFSimSSATranslator;
-import Translators.TypeSystem.TypeSystemTranslator;
 import manager.Benchtop;
-import manager.TypeSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import parsing.BioScript.BenchtopParser;

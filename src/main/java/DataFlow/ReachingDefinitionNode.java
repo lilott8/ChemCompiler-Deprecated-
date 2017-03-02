@@ -1,6 +1,6 @@
 package DataFlow;
 
-import ControlFlowGraph.BasicBlock;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
 import SymbolTable.NestedSymbolTable;
 
 import java.util.ArrayList;

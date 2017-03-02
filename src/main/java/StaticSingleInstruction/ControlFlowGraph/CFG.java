@@ -1,8 +1,10 @@
-package ControlFlowGraph;
+package StaticSingleInstruction.ControlFlowGraph;
 
-
+import StaticSingleInstruction.CFGBuilder;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
 import ChemicalInteractions.ChemicalResolution;
-import DominatorTree.DominatorTree;
+import StaticSingleInstruction.BasicBlock.BasicBlockEdge;
+import StaticSingleInstruction.InstructionNode;
 import SymbolTable.NestedSymbolTable;
 import executable.instructions.Instruction;
 import org.apache.logging.log4j.LogManager;
@@ -23,39 +25,46 @@ public class CFG implements Serializable {
 
 
 
-    private ArrayList<BasicBlock> __basicBlocks;
-    private ArrayList<BasicBlockEdge> __edges;
-    private HashMap< Integer, Set<Integer>> __basicBlockPredecessors;
-    private HashMap< Integer, Set<Integer>> __basicBlockSuccessors;
+    protected ArrayList<BasicBlock> __basicBlocks;
+    protected ArrayList<BasicBlockEdge> __edges;
+    protected HashMap< Integer, Set<Integer>> __basicBlockPredecessorSet;
+    protected HashMap< Integer, Set<Integer>> __basicBlockSuccessorSet;
 
+    protected NestedSymbolTable __symbolTable;
 
-    private NestedSymbolTable __symbolTable;
-    private HashMap<String, List<Integer> > __instructionDefinintionTable;
-   // private HashMap<String, List<Integer> > __useTable;
-    private List<InstructionNode> __instructions;
-    private Integer __UniqueIDs;
-    private Integer __ID;
-    private DominatorTree __dominatorTree;
+    protected Integer __UniqueIDs;
+    protected Integer __ID;
 
 
     private void initializeData(){
         __basicBlocks = new ArrayList<BasicBlock>();
         __edges = new ArrayList<BasicBlockEdge>();
         __symbolTable = new NestedSymbolTable();
-        //__instructionDefinintionTable = new HashMap<String, List<Integer>>();
-        //__useTable = new HashMap<String, List<Integer>>();
-        __instructions = new ArrayList<InstructionNode>();
+
         __ID = 0;
         __UniqueIDs = __ID++;
 
-        __dominatorTree = null;
-        __basicBlockPredecessors = new HashMap<Integer, Set<Integer>>();
-        __basicBlockSuccessors = new HashMap<Integer, Set<Integer>>();
+
+        __basicBlockPredecessorSet = new HashMap<Integer, Set<Integer>>();
+        __basicBlockSuccessorSet = new HashMap<Integer, Set<Integer>>();
+
     }
 
 
     public CFG(){
         initializeData();
+
+    }
+    public CFG(CFG controlFlowGraph){
+//        initializeData();
+        this.__basicBlocks = controlFlowGraph.__basicBlocks;
+        this.__edges = controlFlowGraph.__edges;
+        this.__basicBlockPredecessorSet = controlFlowGraph.__basicBlockPredecessorSet;
+        this.__basicBlockSuccessorSet = controlFlowGraph.__basicBlockSuccessorSet;
+        this.__symbolTable = controlFlowGraph.__symbolTable;
+        this.__UniqueIDs = controlFlowGraph.__UniqueIDs;
+        this.__ID = controlFlowGraph.__ID;
+
 
     }
     public CFG(Integer id){
@@ -72,8 +81,11 @@ public class CFG implements Serializable {
 
 
 
-    public Integer ID() { return __ID; }
+    public Integer getID() { return __ID; }
+
     public Integer getNewID() { return __UniqueIDs++;}
+
+
     private void AddBasicBlock(BasicBlock block) {
         __basicBlocks.add(block);
     }
@@ -92,15 +104,9 @@ public class CFG implements Serializable {
         InstructionNode node = new InstructionNode(this.getNewID(),instruction,isLeader);
         bb.addInstruction(node);
     }
-    public void insertInstructionNode(BasicBlock bb, Instruction instruction) {
-
-    }
 
 
-    public void addDominatorTree(DominatorTree t) {
-        this.__dominatorTree = t;
-    }
-    public DominatorTree getDominatorTree() { return this.__dominatorTree; }
+
     public void addEdge(BasicBlock source, BasicBlock destination) {
         this.addEdge(source,destination,"UNCONDITIONAL");
     }
@@ -112,43 +118,28 @@ public class CFG implements Serializable {
 
     private void addPredecessor(BasicBlock source, BasicBlock destination){
         Set predecessorSet;
-        if (__basicBlockPredecessors.containsKey(destination.ID())){
-            predecessorSet = __basicBlockPredecessors.get(destination.ID());
+        if (__basicBlockPredecessorSet.containsKey(destination.ID())){
+            predecessorSet = __basicBlockPredecessorSet.get(destination.ID());
         }
         else
             predecessorSet = new HashSet();
         predecessorSet.add(source.ID());
-        __basicBlockPredecessors.put(destination.ID(),predecessorSet);
+        __basicBlockPredecessorSet.put(destination.ID(),predecessorSet);
     }
     private void addSuccessor(BasicBlock source, BasicBlock destination) {
         Set successorSet;
-        if (__basicBlockSuccessors.containsKey(source.ID())){
-            successorSet = __basicBlockSuccessors.get(source.ID());
+        if (__basicBlockSuccessorSet.containsKey(source.ID())){
+            successorSet = __basicBlockSuccessorSet.get(source.ID());
         }
         else
             successorSet = new HashSet();
         successorSet.add(destination.ID());
-        __basicBlockSuccessors.put(destination.ID(),successorSet);
+        __basicBlockSuccessorSet.put(destination.ID(),successorSet);
     }
 
-    public void addInstruction(InstructionNode node) {
-        __instructions.add(node);
-    }
-    public void addDefinition(String key, Integer opID) {
-        List<Integer> opIDs;
-        if (__instructionDefinintionTable.containsKey(key)) {
-            opIDs = __instructionDefinintionTable.get(key);
-        }
-        else {
-            opIDs = new ArrayList<Integer>();
-        }
-        opIDs.add(opID);
 
-        __instructionDefinintionTable.put(key,opIDs);
-    }
-    //public void addDefinition(String key) {
-    //    this.addDefinition(key,0);
-    //}
+
+
 
     public void addResolution(String key, Variable variable, Boolean isGlobal){
         ChemicalResolution resolution = ResolveVariable(variable);
@@ -188,25 +179,10 @@ public class CFG implements Serializable {
         return resolution;
     }
 
-    /*public void addUse(String key, Integer opID) {
-        List<Integer> opIDs;
-        if (__useTable.containsKey(key)) {
-            opIDs = __useTable.get(key);
-        }
-        else {
-            opIDs = new ArrayList<Integer>();
-        }
-        opIDs.add(opID);
-
-        __useTable.put(key,opIDs);
-    }*/
 
     public NestedSymbolTable getSymbolTable() { return __symbolTable; }
     public void setSymbolTable(NestedSymbolTable table) { __symbolTable = table; }
 
-    public HashMap<String, List<Integer> > getDefintionTable() { return __instructionDefinintionTable; }
-    /*public HashMap<String, List<Integer> > getUseTable() { return  __useTable; }*/
-    public List<InstructionNode> getInstructions() { return __instructions; }
     public List<BasicBlock> getBasicBlocks() { return __basicBlocks; }
     public BasicBlock getBasicBlock(Integer id) {
         for(BasicBlock bb :this.__basicBlocks) {
@@ -216,40 +192,18 @@ public class CFG implements Serializable {
         }
         return null;
     }
+
+
     public List<BasicBlockEdge> getBasicBlockEdges() { return __edges; }
     public Set<Integer> getPredecessors(Integer basicBlockID) {
-        return __basicBlockPredecessors.get(basicBlockID);
+        return __basicBlockPredecessorSet.get(basicBlockID);
     }
     public Boolean hasPredecessors(Integer basicBlockID) {
-        return __basicBlockPredecessors.containsKey(basicBlockID);
+        return __basicBlockPredecessorSet.containsKey(basicBlockID);
     }
 
     public Set<Integer> getSuccessors(Integer basicBlockID) {
-        return __basicBlockSuccessors.get(basicBlockID);
-    }
-
-
-    public void renameVariables() {
-        for(BasicBlock bb : __basicBlocks){
-            for(InstructionNode node: bb.getInstructions()) {
-
-                List<String> keySet = new ArrayList<String>();
-                for(String key : node.Instruction().getOutputs().keySet())
-                    keySet.add(key);
-
-                for (String key : keySet ) {
-                    String newName = this.__symbolTable.getUniqueVariableName();
-                    Variable original =  node.Instruction().getOutputs().get(key);
-
-                    node.Instruction().removeOutput(original);
-                    original.setID(newName);
-                    original.setName(newName);
-
-                    node.Instruction().addOutput(original);
-                    this.__symbolTable.addRenamedVariable(key,newName);
-                }
-            }
-        }
+        return __basicBlockSuccessorSet.get(basicBlockID);
     }
 
     public String toString(){
@@ -269,13 +223,6 @@ public class CFG implements Serializable {
         ret+="\n SYMBOL TABLE\n";
         ret+=__symbolTable.toString();
         return ret;
-    }
-
-
-    public void ConvertToSSA(){
-        this.__dominatorTree = new DominatorTree(this);
-
-
     }
 
     public String toJSONString(){

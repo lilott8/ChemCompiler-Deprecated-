@@ -1,10 +1,10 @@
 package Translators.TypeSystem;
 
 import ChemicalInteractions.ChemicalResolution;
-import ControlFlowGraph.BasicBlock;
-import ControlFlowGraph.CFG;
-import ControlFlowGraph.InstructionEdge;
-import ControlFlowGraph.InstructionNode;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
+import StaticSingleInstruction.ControlFlowGraph.CFG;
+import StaticSingleInstruction.InstructionEdge;
+import StaticSingleInstruction.InstructionNode;
 import executable.instructions.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

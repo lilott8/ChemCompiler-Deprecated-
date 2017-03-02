@@ -1,8 +1,10 @@
-package ControlFlowGraph;
+package StaticSingleInstruction;
 
-import DataFlow.ReachingDefinitions;
-import DominatorTree.DominatorTree;
-import SymbolTable.NestedSymbolTable;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
+import StaticSingleInstruction.ControlFlowGraph.CFG;
+import StaticSingleInstruction.StaticSingleAssignment.StaticSingleAssignment;
+
+import StaticSingleInstruction.DominatorTree.DominatorTree;
 import executable.Executable;
 import executable.conditionals.Branch;
 import executable.conditionals.Loop;
@@ -25,13 +27,13 @@ public class CFGBuilder {
         return EXIT;
     }
 
+
     /*
         The insertion of ENTRY and EXIT nodes follow the data structure for the algorithms that are presented in Cytron et. al.
         "An efficient Method of Computing Static Single Assignment Form".
      */
     private static CFG BuildControlFlowGraph(Integer id, List<Instruction> instructions) throws Exception{
-        CFG controlFlowGraph = new CFG(id);
-
+        CFG controlFlowGraph = new CFG();
 
         BasicBlock entryNode = controlFlowGraph.newBasicBlock();
         BasicBlock startOfInstructions = controlFlowGraph.newBasicBlock();
@@ -42,11 +44,11 @@ public class CFGBuilder {
         BasicBlock exitNode = InsertExitNode(danglingExitNodes, controlFlowGraph);
         controlFlowGraph.addEdge(entryNode, exitNode);
 
-        controlFlowGraph.addDominatorTree(new DominatorTree(controlFlowGraph));
+       // controlFlowGraph.addDominatorTree(new DominatorTree(controlFlowGraph));
 
 
-      //  for (BasicBlock b : danglingLeaves) {
-      //      System.out.println(b.ID());
+      //  for (SSI.SSA.BasicBlock b : danglingLeaves) {
+      //      System.out.println(b.getID());
       //  }
         
         //ReachingDefinitions rdef = new ReachingDefinitions(controlFlowGraph);
@@ -77,7 +79,7 @@ public class CFGBuilder {
     /*
      * Method; Process Branch
      *
-     * Input: CFG , BasicBlock, Branch
+     * Input: CFG , SSI.SSA.BasicBlock, Branch
      *      The basic block(BB) passed in represents the BB that was being processed when the Branch is triggered.
      *
      */
@@ -112,7 +114,7 @@ public class CFGBuilder {
                         leaves.add(dangledLeaves.get(i));
                     }
                 }
-//                for(BasicBlock processedBasicBlock: dangledLeaves) {
+//                for(SSI.SSA.BasicBlock processedBasicBlock: dangledLeaves) {
 
  //               }
 
@@ -134,7 +136,7 @@ public class CFGBuilder {
     /*
       * Method; Process Branch
       *
-      * Input: CFG , BasicBlock, Loop
+      * Input: CFG , SSI.SSA.BasicBlock, Loop
       *      The basic block(BB) passed in represents the BB that was being processed when the Branch is triggered.
       *
       */

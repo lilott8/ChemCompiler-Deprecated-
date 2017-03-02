@@ -1,5 +1,7 @@
-package ControlFlowGraph;
+package StaticSingleInstruction.BasicBlock;
 
+import StaticSingleInstruction.InstructionEdge;
+import StaticSingleInstruction.InstructionNode;
 import SymbolTable.NestedSymbolTable;
 import executable.instructions.Combine;
 import executable.instructions.Instruction;

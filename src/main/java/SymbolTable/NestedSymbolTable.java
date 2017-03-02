@@ -13,7 +13,7 @@ import java.util.Map;
 public class NestedSymbolTable{
     // <renamed variable, full resolution>
     protected HashMap<String, ChemicalResolution> __symbols;
-    //renamed variable, bb.ID
+    //renamed variable, bb.getID
     protected HashMap<String,Integer> __symbolDefinedIn;
     protected HashMap<String,Integer> __lastUsedIn;
 

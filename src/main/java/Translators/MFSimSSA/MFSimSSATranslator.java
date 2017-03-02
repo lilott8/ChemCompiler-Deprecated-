@@ -1,10 +1,8 @@
 package Translators.MFSimSSA;
 
-import ControlFlowGraph.CFG;
+import StaticSingleInstruction.ControlFlowGraph.CFG;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.List;
 
 /**
  * Created by chriscurtis on 10/28/16.

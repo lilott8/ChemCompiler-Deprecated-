@@ -1,8 +1,8 @@
-package DominatorTree;
+package StaticSingleInstruction.DominatorTree;
 
-import ControlFlowGraph.BasicBlock;
-import ControlFlowGraph.BasicBlockEdge;
-import ControlFlowGraph.CFG;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
+import StaticSingleInstruction.BasicBlock.BasicBlockEdge;
+import StaticSingleInstruction.ControlFlowGraph.CFG;
 
 import java.util.*;
 
@@ -189,7 +189,7 @@ public class DominatorTree {
     public String toString() {
         String ret="";
 
-        ret += "ID \t\t IDOM \t\t DOM FRONTIER \t\t DOM PATH \n";
+        ret += "getID \t\t IDOM \t\t DOM FRONTIER \t\t DOM PATH \n";
 
         for(Integer i : __dominatorTable.keySet()){
             ret += (i) ;
