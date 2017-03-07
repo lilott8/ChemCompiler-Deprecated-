@@ -11,5 +11,24 @@ public class PHIInstruction extends  InstructionNode{
 
     public PHIInstruction(){
         super(-1,null);
+        this.__outputSymbol = "";
+        this.__joinedSymbols = new ArrayList<String>();
+
+    }
+    public PHIInstruction(String symbol){
+        super(-1,null);
+        this.__outputSymbol = symbol;
+        this.__joinedSymbols = new ArrayList<String>();
+    }
+    public String toString(){
+        return this.toString("");
+    }
+
+    public String toString(String indentBuffer) {
+        String ret =  indentBuffer + "PHI(" + this.__outputSymbol+ "):";
+        for(String joined : __joinedSymbols){
+            ret+= joined;
+        }
+        return ret;
     }
 }

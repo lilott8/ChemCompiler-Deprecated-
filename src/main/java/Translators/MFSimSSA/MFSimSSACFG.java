@@ -29,7 +29,7 @@ public class MFSimSSACFG{
         __dags = new HashMap<Integer, MFSimSSADAG>();
         __conditionalGroups = new HashMap<Integer, List<BasicBlockEdge>>();
 
-        for(BasicBlock bb : controlFlowGraph.getBasicBlocks()){
+        for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()){
             MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID);
             __dags.put(bb.ID(),dag);
             logger.info(dag);

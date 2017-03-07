@@ -23,7 +23,7 @@ public class TypeSystemTranslator implements Serializable{
 
         public TypeSystemSymbolTable(CFG controlFlowGraph) {
             __symbols = new HashMap<String, ChemicalResolution>();
-            for(BasicBlock bb : controlFlowGraph.getBasicBlocks()) {
+            for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()) {
                 for(String symbolName : bb.getSymbolTable().getDefinitionTable().keySet()) {
                     ChemicalResolution symbol = bb.getSymbolTable().get(symbolName);
                     if(! __symbols.containsKey(symbolName))
@@ -60,7 +60,7 @@ public class TypeSystemTranslator implements Serializable{
         __table = new TypeSystemSymbolTable(controlFlowGraph);
        // __controlFlowGraph = controlFlowGraph;
 
-        for(BasicBlock bb : controlFlowGraph.getBasicBlocks()) {
+        for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()) {
             for (InstructionNode node : bb.getInstructions()) {
                 __instructions.add(node);
             }

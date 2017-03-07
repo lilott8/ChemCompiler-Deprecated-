@@ -3,6 +3,7 @@ import StaticSingleInstruction.BasicBlock.BasicBlock;
 import StaticSingleInstruction.ControlFlowGraph.CFG;
 import StaticSingleInstruction.CFGBuilder;
 import StaticSingleInstruction.InstructionNode;
+import StaticSingleInstruction.StaticSingleAssignment.StaticSingleAssignment;
 import executable.Experiment;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +47,10 @@ public class Compiler {
             for (String experimentKey : benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : benchtop.getExperiments().get(experimentKey)) {
                     CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment.getInstructions());
-                    System.out.print(controlFlow);
+                    StaticSingleAssignment SSA = new StaticSingleAssignment(controlFlow);
+
+                    //System.out.println(controlFlow);
+                    logger.debug("\n" + SSA);
                     //System.out.print(controlFlow.getDominatorTree().toString());
 
                     //ProcessExperimentCFG(controlFlow, experiment);
@@ -66,7 +70,7 @@ public class Compiler {
         } catch (Exception e) {
             System.out.println(e);
             logger.fatal(e);
-            logger.fatal(e.getStackTrace().toString());
+            e.printStackTrace();
         }
 
     }
@@ -83,7 +87,7 @@ public class Compiler {
         Boolean changed = true;
         while (changed) {
             changed = false;
-            for (BasicBlock bb : controlFlowGraph.getBasicBlocks()) {
+            for (BasicBlock bb : controlFlowGraph.getBasicBlocks().values()) {
                 //clear old usage information on consecutive passes.
                 bb.getSymbolTable().clear();
                 if (ProcessBasicBlockInstructions(controlFlowGraph, bb))

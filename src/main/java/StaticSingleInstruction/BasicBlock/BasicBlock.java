@@ -2,6 +2,7 @@ package StaticSingleInstruction.BasicBlock;
 
 import StaticSingleInstruction.InstructionEdge;
 import StaticSingleInstruction.InstructionNode;
+import StaticSingleInstruction.StaticSingleAssignment.PHIInstruction;
 import SymbolTable.NestedSymbolTable;
 import executable.instructions.Combine;
 import executable.instructions.Instruction;
@@ -47,13 +48,13 @@ public class BasicBlock implements Serializable {
 
 
     public void AddVariableDefinition(Instruction i){
-//       if(i instanceof Combine){
        if (! i.getOutputs().isEmpty()){
            for(String definition : i.getOutputs().keySet())
                this.__definitions.add(definition);
-//           }
        }
     }
+
+    public HashSet<String> getDefinitions() { return this.__definitions; }
 
     public Boolean processPredecessors(List<BasicBlock> predecessors) {
         Boolean changed = false;
@@ -152,7 +153,10 @@ public class BasicBlock implements Serializable {
 
 
     public void addInstruction(InstructionNode instruction) {
-        __instructions.add(instruction);
+        if(instruction instanceof PHIInstruction)
+            __instructions.add(0, instruction);
+        else
+            __instructions.add(instruction);
     }
     public void addInstruction(int index, InstructionNode instruction) {
         __instructions.add(index, instruction);

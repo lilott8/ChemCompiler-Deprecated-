@@ -10,35 +10,37 @@ import java.util.*;
  * Created by chriscurtis on 10/18/16.
  */
 public class DominatorTree {
-    private HashMap<Integer, List<Integer>> __iterativeDominatorTree;
     private HashMap<Integer, List<Integer>> __dominencefrontier;
     private HashMap<Integer, List<Integer>> __dominatorTable;
-    private HashMap<Integer, List<Integer>> __predecesors;
+   // private CFG __controlFlowGraph;
+    private HashMap<Integer, Set<Integer>> __predecesors;
 
     private HashMap<Integer, Integer> __idoms;
     private List<Integer> __nodes;
 
 
     public DominatorTree(CFG controlFlowGraph) {
+        //__controlFlowGraph = controlFlowGraph;
         __dominatorTable = new HashMap<Integer, List<Integer>>();
-        __predecesors = new HashMap<Integer, List<Integer>>();
+        __predecesors = controlFlowGraph.getPredecessorTable();
         __nodes = new ArrayList<Integer>();
 
-        for (BasicBlock bb : controlFlowGraph.getBasicBlocks()) {
-            __nodes.add(bb.ID());
+        for (Integer bbID : controlFlowGraph.getBasicBlocks().keySet()) {
+            __nodes.add(bbID);
         }
-        for(BasicBlockEdge edge: controlFlowGraph.getBasicBlockEdges()) {
-            List<Integer> preds;
-            if (__predecesors.containsKey(edge.getDestination())) {
-                preds = __predecesors.get(edge.getDestination());
-            }
-            else
-                preds = new ArrayList<Integer>();
-            preds.add(edge.getSource());
-            __predecesors.put(edge.getDestination(),preds);
-        }
+
         BuildTree();
     }
+
+    public List<Integer> getFrontier(Integer basicBlockID) {
+        if(this.__dominencefrontier.containsKey(basicBlockID))
+            return this.__dominencefrontier.get(basicBlockID);
+        return new ArrayList<Integer>();
+    }
+
+
+
+
     private void BuildTree() {
         List<Integer> n_0 = new ArrayList<Integer>();
         n_0.add(__nodes.get(0));
@@ -67,14 +69,14 @@ public class DominatorTree {
         HashSet<Integer> newSet = new HashSet<Integer>();
         HashSet<Integer> workSet = new HashSet<Integer>();
 
-        for(Integer ID : __dominatorTable.get(__predecesors.get(node).get(0)))
+        for(Integer ID : __dominatorTable.get(__predecesors.get(node).toArray()[0]))
             workSet.add(ID);
 
         for(int i =1 ; i < __predecesors.get(node).size(); ++i )
         {
 
             //Integer predecesor = __predecesors.get(node).get(i);
-            for(Integer ID : __dominatorTable.get(__predecesors.get(node).get(i))){
+            for(Integer ID : __dominatorTable.get(__predecesors.get(node).toArray()[i])){
                 if(workSet.contains(ID))
                     newSet.add(ID);
             }
@@ -152,7 +154,7 @@ public class DominatorTree {
     }
 
 
-    private void GenerateIterativeFrontier(){
+   /* private void GenerateIterativeFrontier(){
         /*
             Randy Allen Ken Kennedy-Optimizing Compilers- Figure 4.8
             procedure iterateDom(G)
@@ -178,13 +180,13 @@ public class DominatorTree {
                         end
                     end
                 end iterateDom
-         */
+
         for(Integer b : this.__dominatorTable.keySet()){
 
         }
 
 
-    }
+    }*/
 
     public String toString() {
         String ret="";

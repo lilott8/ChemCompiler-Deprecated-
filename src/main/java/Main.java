@@ -10,6 +10,7 @@ import parsing.BioScript.BenchtopParser;
 public class Main {
     public static final Logger logger = LogManager.getLogger(Main.class);
 
+
     public static void main(String[] args) {
         //SimpleMixTest();
         try {
@@ -46,7 +47,7 @@ public class Main {
             logger.fatal(e.getStackTrace());
         }
 
-     //   DominatorTreeTest2();
+       // DominatorTreeTest2();
 
     }
 

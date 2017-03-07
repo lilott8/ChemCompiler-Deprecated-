@@ -25,7 +25,7 @@ public class CFG implements Serializable {
 
 
 
-    protected ArrayList<BasicBlock> __basicBlocks;
+    protected HashMap<Integer, BasicBlock> __basicBlocks;
     protected ArrayList<BasicBlockEdge> __edges;
     protected HashMap< Integer, Set<Integer>> __basicBlockPredecessorSet;
     protected HashMap< Integer, Set<Integer>> __basicBlockSuccessorSet;
@@ -37,7 +37,7 @@ public class CFG implements Serializable {
 
 
     private void initializeData(){
-        __basicBlocks = new ArrayList<BasicBlock>();
+        __basicBlocks = new HashMap<Integer, BasicBlock>();
         __edges = new ArrayList<BasicBlockEdge>();
         __symbolTable = new NestedSymbolTable();
 
@@ -87,7 +87,7 @@ public class CFG implements Serializable {
 
 
     private void AddBasicBlock(BasicBlock block) {
-        __basicBlocks.add(block);
+        __basicBlocks.put(block.ID(), block);
     }
 
     public BasicBlock newBasicBlock() {
@@ -183,18 +183,14 @@ public class CFG implements Serializable {
     public NestedSymbolTable getSymbolTable() { return __symbolTable; }
     public void setSymbolTable(NestedSymbolTable table) { __symbolTable = table; }
 
-    public List<BasicBlock> getBasicBlocks() { return __basicBlocks; }
+    public HashMap<Integer, BasicBlock> getBasicBlocks() { return __basicBlocks; }
     public BasicBlock getBasicBlock(Integer id) {
-        for(BasicBlock bb :this.__basicBlocks) {
-            if(bb.ID() == id){
-                return bb;
-            }
-        }
-        return null;
+        return this.__basicBlocks.get(id);
     }
 
 
     public List<BasicBlockEdge> getBasicBlockEdges() { return __edges; }
+    public HashMap< Integer, Set<Integer>> getPredecessorTable() { return this.__basicBlockPredecessorSet; }
     public Set<Integer> getPredecessors(Integer basicBlockID) {
         return __basicBlockPredecessorSet.get(basicBlockID);
     }
@@ -212,7 +208,7 @@ public class CFG implements Serializable {
 
     public String toString(String indentBuffer){
         String ret = indentBuffer + "CFG: \n";
-        for(BasicBlock bb: this.__basicBlocks) {
+        for(BasicBlock bb: this.__basicBlocks.values()) {
             ret += bb.toString(indentBuffer+'\t') + '\n';
         }
         ret +=indentBuffer + "CFG Edges: \n";
@@ -229,7 +225,7 @@ public class CFG implements Serializable {
         List<InstructionNode> instructions = new ArrayList<InstructionNode>();
         Map<Integer, Set<Integer>> childern = new HashMap<Integer, Set<Integer>>();
 
-        for(BasicBlock bb : this.__basicBlocks){
+        for(BasicBlock bb : this.__basicBlocks.values()){
             for(InstructionNode node : bb.getInstructions()){
                 instructions.add(node);
             }
