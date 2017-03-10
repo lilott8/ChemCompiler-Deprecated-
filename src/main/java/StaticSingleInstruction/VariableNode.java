@@ -1,4 +1,4 @@
-package ControlFlowGraph;
+package StaticSingleInstruction;
 
 import variable.Reference;
 import variable.Variable;

@@ -1,10 +1,10 @@
 package Translators.TypeSystem;
 
 import ChemicalInteractions.ChemicalResolution;
-import ControlFlowGraph.BasicBlock;
-import ControlFlowGraph.CFG;
-import ControlFlowGraph.InstructionEdge;
-import ControlFlowGraph.InstructionNode;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
+import StaticSingleInstruction.ControlFlowGraph.CFG;
+import StaticSingleInstruction.InstructionEdge;
+import StaticSingleInstruction.InstructionNode;
 import executable.instructions.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +23,7 @@ public class TypeSystemTranslator implements Serializable{
 
         public TypeSystemSymbolTable(CFG controlFlowGraph) {
             __symbols = new HashMap<String, ChemicalResolution>();
-            for(BasicBlock bb : controlFlowGraph.getBasicBlocks()) {
+            for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()) {
                 for(String symbolName : bb.getSymbolTable().getDefinitionTable().keySet()) {
                     ChemicalResolution symbol = bb.getSymbolTable().get(symbolName);
                     if(! __symbols.containsKey(symbolName))
@@ -60,7 +60,7 @@ public class TypeSystemTranslator implements Serializable{
         __table = new TypeSystemSymbolTable(controlFlowGraph);
        // __controlFlowGraph = controlFlowGraph;
 
-        for(BasicBlock bb : controlFlowGraph.getBasicBlocks()) {
+        for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()) {
             for (InstructionNode node : bb.getInstructions()) {
                 __instructions.add(node);
             }

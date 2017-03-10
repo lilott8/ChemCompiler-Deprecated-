@@ -1,4 +1,4 @@
-package ControlFlowGraph;
+package StaticSingleInstruction;
 
 import java.io.Serializable;
 

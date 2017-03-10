@@ -1,8 +1,8 @@
 package Translators.MFSimSSA;
 
-import ControlFlowGraph.BasicBlock;
-import ControlFlowGraph.BasicBlockEdge;
-import ControlFlowGraph.CFG;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
+import StaticSingleInstruction.BasicBlock.BasicBlockEdge;
+import StaticSingleInstruction.ControlFlowGraph.CFG;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferIn;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferOut;
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -30,7 +29,7 @@ public class MFSimSSACFG{
         __dags = new HashMap<Integer, MFSimSSADAG>();
         __conditionalGroups = new HashMap<Integer, List<BasicBlockEdge>>();
 
-        for(BasicBlock bb : controlFlowGraph.getBasicBlocks()){
+        for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()){
             MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID);
             __dags.put(bb.ID(),dag);
             logger.info(dag);
@@ -65,7 +64,7 @@ public class MFSimSSACFG{
             for(BasicBlockEdge edge : __conditionalGroups.get(sourceBasicBlockID)){
                 MFSimSSADAG destinationBasicBlock = __dags.get(edge.getDestination());
                 if(edge.getCondition() == "UNCONDITIONAL")
-                    ret+="COND("+ controlGroup + ", 1, " + sourceBasicBlock.getName() + ", 1 ," + destinationBasicBlock.getName()+ ", " + getUnconditionalJump(destinationBasicBlock.getName());
+                    ret+="COND("+ controlGroup + ", 1, " + sourceBasicBlock.getName() + ", 1 ," + destinationBasicBlock.getName()+ ", " + getUnconditionalJump(sourceBasicBlock.getName());
                 else {
                     String conditionalExpression = resolveExpression(edge.getCondition());
                     ret += "COND("+ controlGroup + ", 1, " + sourceBasicBlock.getName() + ", 1 ," + destinationBasicBlock.getName() + ", " + conditionalExpression;
@@ -151,9 +150,9 @@ public class MFSimSSACFG{
         return ret;
 
     }
-    private String getUnconditionalJump(String destination) {
+    private String getUnconditionalJump(String Source) {
         Integer expressionID = this.__uniqueIDGen.getNextID();
-        String ret =  expressionID + ")\nEXP("+ expressionID +", TRUE, UNCOND, " + destination +")\n";
+        String ret =  expressionID + ")\nEXP("+ expressionID +", TRUE, UNCOND, " + Source +")\n";
 
         return ret;
     }

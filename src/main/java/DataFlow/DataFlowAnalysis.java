@@ -1,7 +1,7 @@
 package DataFlow;
 
-import ControlFlowGraph.BasicBlockEdge;
-import ControlFlowGraph.CFG;
+import StaticSingleInstruction.BasicBlock.BasicBlockEdge;
+import StaticSingleInstruction.ControlFlowGraph.CFG;
 
 import java.util.ArrayList;
 import java.util.HashMap;

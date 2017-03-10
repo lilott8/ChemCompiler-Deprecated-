@@ -1,9 +1,13 @@
-package ControlFlowGraph;
+package StaticSingleInstruction;
 
-import DataFlow.ReachingDefinitions;
-import DominatorTree.DominatorTree;
-import SymbolTable.NestedSymbolTable;
+import StaticSingleInstruction.BasicBlock.BasicBlock;
+import StaticSingleInstruction.ControlFlowGraph.CFG;
+import StaticSingleInstruction.StaticSingleAssignment.StaticAssignment;
+import StaticSingleInstruction.StaticSingleAssignment.StaticSingleAssignment;
+
+import StaticSingleInstruction.DominatorTree.DominatorTree;
 import executable.Executable;
+import executable.Experiment;
 import executable.conditionals.Branch;
 import executable.conditionals.Loop;
 import executable.instructions.Instruction;
@@ -25,15 +29,17 @@ public class CFGBuilder {
         return EXIT;
     }
 
+
     /*
         The insertion of ENTRY and EXIT nodes follow the data structure for the algorithms that are presented in Cytron et. al.
         "An efficient Method of Computing Static Single Assignment Form".
      */
     private static CFG BuildControlFlowGraph(Integer id, List<Instruction> instructions) throws Exception{
-        CFG controlFlowGraph = new CFG(id);
-
+        CFG controlFlowGraph = new CFG();
 
         BasicBlock entryNode = controlFlowGraph.newBasicBlock();
+        controlFlowGraph.SetEntry(entryNode);
+
         BasicBlock startOfInstructions = controlFlowGraph.newBasicBlock();
         controlFlowGraph.addEdge(entryNode, startOfInstructions);
 
@@ -42,11 +48,11 @@ public class CFGBuilder {
         BasicBlock exitNode = InsertExitNode(danglingExitNodes, controlFlowGraph);
         controlFlowGraph.addEdge(entryNode, exitNode);
 
-        controlFlowGraph.addDominatorTree(new DominatorTree(controlFlowGraph));
+       // controlFlowGraph.addDominatorTree(new DominatorTree(controlFlowGraph));
 
 
-      //  for (BasicBlock b : danglingLeaves) {
-      //      System.out.println(b.ID());
+      //  for (SSI.SSA.BasicBlock b : danglingLeaves) {
+      //      System.out.println(b.getID());
       //  }
         
         //ReachingDefinitions rdef = new ReachingDefinitions(controlFlowGraph);
@@ -61,23 +67,27 @@ public class CFGBuilder {
     /*public static CFG BuildControlFlowGraph(List<Instruction> instructions)throws Exception{
         return BuildControlFlowGraph(0,instructions);
     }*/
-    public static CFG BuildControlFlowGraph(List<Executable> executables)throws Exception{
+    public static CFG BuildControlFlowGraph(Experiment experiment)throws Exception{
 
         List<Instruction> instructions = new ArrayList<Instruction>();
-        for(Executable e :executables){
+        for(Executable e :experiment.getInstructions()){
             if (e instanceof Instruction)
                 instructions.add((Instruction)e);
         }
+        CFG controlFlowGraph = BuildControlFlowGraph(0,instructions);
 
-
-        return BuildControlFlowGraph(0,instructions);
+        //Add definition of Global Input at Entry Node.
+        for(String globalInput : experiment.getInputs().keySet()) {
+            controlFlowGraph.GetEntry().getDefinitions().add(globalInput);
+        }
+        return controlFlowGraph;
     }
 
 
     /*
      * Method; Process Branch
      *
-     * Input: CFG , BasicBlock, Branch
+     * Input: CFG , SSI.SSA.BasicBlock, Branch
      *      The basic block(BB) passed in represents the BB that was being processed when the Branch is triggered.
      *
      */
@@ -112,7 +122,7 @@ public class CFGBuilder {
                         leaves.add(dangledLeaves.get(i));
                     }
                 }
-//                for(BasicBlock processedBasicBlock: dangledLeaves) {
+//                for(SSI.SSA.BasicBlock processedBasicBlock: dangledLeaves) {
 
  //               }
 
@@ -134,7 +144,7 @@ public class CFGBuilder {
     /*
       * Method; Process Branch
       *
-      * Input: CFG , BasicBlock, Loop
+      * Input: CFG , SSI.SSA.BasicBlock, Loop
       *      The basic block(BB) passed in represents the BB that was being processed when the Branch is triggered.
       *
       */
