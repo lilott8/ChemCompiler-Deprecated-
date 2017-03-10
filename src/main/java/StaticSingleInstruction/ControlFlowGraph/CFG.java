@@ -26,6 +26,7 @@ public class CFG implements Serializable {
 
 
     protected HashMap<Integer, BasicBlock> __basicBlocks;
+    protected BasicBlock __entry;
     protected ArrayList<BasicBlockEdge> __edges;
     protected HashMap< Integer, Set<Integer>> __basicBlockPredecessorSet;
     protected HashMap< Integer, Set<Integer>> __basicBlockSuccessorSet;
@@ -64,6 +65,7 @@ public class CFG implements Serializable {
         this.__symbolTable = controlFlowGraph.__symbolTable;
         this.__UniqueIDs = controlFlowGraph.__UniqueIDs;
         this.__ID = controlFlowGraph.__ID;
+        this.__entry = controlFlowGraph.__entry;
 
 
     }
@@ -89,6 +91,8 @@ public class CFG implements Serializable {
     private void AddBasicBlock(BasicBlock block) {
         __basicBlocks.put(block.ID(), block);
     }
+    public void SetEntry(BasicBlock entry) { this.__entry = entry; }
+    public BasicBlock GetEntry() { return __entry; }
 
     public BasicBlock newBasicBlock() {
         NestedSymbolTable newTable = new NestedSymbolTable();
@@ -110,6 +114,7 @@ public class CFG implements Serializable {
     public void addEdge(BasicBlock source, BasicBlock destination) {
         this.addEdge(source,destination,"UNCONDITIONAL");
     }
+
     public void addEdge(BasicBlock source, BasicBlock destination, String condition) {
         __edges.add(new BasicBlockEdge(source.ID(),destination.ID(), condition));
         this.addPredecessor(source,destination);
@@ -128,13 +133,14 @@ public class CFG implements Serializable {
     }
     private void addSuccessor(BasicBlock source, BasicBlock destination) {
         Set successorSet;
+
         if (__basicBlockSuccessorSet.containsKey(source.ID())){
             successorSet = __basicBlockSuccessorSet.get(source.ID());
         }
         else
             successorSet = new HashSet();
         successorSet.add(destination.ID());
-        __basicBlockSuccessorSet.put(destination.ID(),successorSet);
+        __basicBlockSuccessorSet.put(source.ID(),successorSet);
     }
 
 

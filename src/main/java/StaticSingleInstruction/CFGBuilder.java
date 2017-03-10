@@ -2,10 +2,12 @@ package StaticSingleInstruction;
 
 import StaticSingleInstruction.BasicBlock.BasicBlock;
 import StaticSingleInstruction.ControlFlowGraph.CFG;
+import StaticSingleInstruction.StaticSingleAssignment.StaticAssignment;
 import StaticSingleInstruction.StaticSingleAssignment.StaticSingleAssignment;
 
 import StaticSingleInstruction.DominatorTree.DominatorTree;
 import executable.Executable;
+import executable.Experiment;
 import executable.conditionals.Branch;
 import executable.conditionals.Loop;
 import executable.instructions.Instruction;
@@ -36,6 +38,8 @@ public class CFGBuilder {
         CFG controlFlowGraph = new CFG();
 
         BasicBlock entryNode = controlFlowGraph.newBasicBlock();
+        controlFlowGraph.SetEntry(entryNode);
+
         BasicBlock startOfInstructions = controlFlowGraph.newBasicBlock();
         controlFlowGraph.addEdge(entryNode, startOfInstructions);
 
@@ -63,16 +67,20 @@ public class CFGBuilder {
     /*public static CFG BuildControlFlowGraph(List<Instruction> instructions)throws Exception{
         return BuildControlFlowGraph(0,instructions);
     }*/
-    public static CFG BuildControlFlowGraph(List<Executable> executables)throws Exception{
+    public static CFG BuildControlFlowGraph(Experiment experiment)throws Exception{
 
         List<Instruction> instructions = new ArrayList<Instruction>();
-        for(Executable e :executables){
+        for(Executable e :experiment.getInstructions()){
             if (e instanceof Instruction)
                 instructions.add((Instruction)e);
         }
+        CFG controlFlowGraph = BuildControlFlowGraph(0,instructions);
 
-
-        return BuildControlFlowGraph(0,instructions);
+        //Add definition of Global Input at Entry Node.
+        for(String globalInput : experiment.getInputs().keySet()) {
+            controlFlowGraph.GetEntry().getDefinitions().add(globalInput);
+        }
+        return controlFlowGraph;
     }
 
 

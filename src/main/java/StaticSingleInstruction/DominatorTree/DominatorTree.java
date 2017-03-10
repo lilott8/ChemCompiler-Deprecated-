@@ -38,8 +38,17 @@ public class DominatorTree {
         return new ArrayList<Integer>();
     }
 
+    public Integer getImmediateDominator(Integer bbID) { return __idoms.get(bbID); }
+    public ArrayList<Integer> getChildren(Integer bbID) {
+        ArrayList<Integer> ret = new ArrayList<Integer>();
 
+        for(Integer child: this.__idoms.keySet()){
+            if(this.__idoms.get(child) == bbID)
+                ret.add(child);
+        }
 
+        return ret;
+    }
 
     private void BuildTree() {
         List<Integer> n_0 = new ArrayList<Integer>();

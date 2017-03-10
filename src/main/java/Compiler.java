@@ -46,7 +46,7 @@ public class Compiler {
             //}
             for (String experimentKey : benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : benchtop.getExperiments().get(experimentKey)) {
-                    CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment.getInstructions());
+                    CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment);
                     StaticSingleAssignment SSA = new StaticSingleAssignment(controlFlow);
 
                     //System.out.println(controlFlow);

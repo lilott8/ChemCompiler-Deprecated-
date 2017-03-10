@@ -3,6 +3,7 @@ package StaticSingleInstruction.BasicBlock;
 import StaticSingleInstruction.InstructionEdge;
 import StaticSingleInstruction.InstructionNode;
 import StaticSingleInstruction.StaticSingleAssignment.PHIInstruction;
+import StaticSingleInstruction.StaticSingleAssignment.StaticAssignment;
 import SymbolTable.NestedSymbolTable;
 import executable.instructions.Combine;
 import executable.instructions.Instruction;
@@ -155,6 +156,11 @@ public class BasicBlock implements Serializable {
     public void addInstruction(InstructionNode instruction) {
         if(instruction instanceof PHIInstruction)
             __instructions.add(0, instruction);
+        else if (instruction instanceof StaticAssignment) {
+            __instructions.add(instruction);
+            for(String symbol :instruction.getInputSymbols())
+                this.__definitions.add(symbol);
+        }
         else
             __instructions.add(instruction);
     }
