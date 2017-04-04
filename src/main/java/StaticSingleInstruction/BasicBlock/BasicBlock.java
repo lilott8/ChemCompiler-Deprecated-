@@ -3,7 +3,7 @@ package StaticSingleInstruction.BasicBlock;
 import StaticSingleInstruction.InstructionEdge;
 import StaticSingleInstruction.InstructionNode;
 import StaticSingleInstruction.StaticSingleAssignment.PHIInstruction;
-import StaticSingleInstruction.StaticSingleAssignment.StaticAssignment;
+import StaticSingleInstruction.StaticSingleAssignment.GlobalAssignment;
 import SymbolTable.NestedSymbolTable;
 import executable.instructions.Combine;
 import executable.instructions.Instruction;
@@ -20,6 +20,7 @@ public class BasicBlock implements Serializable {
     private HashMap<String, Set<Integer>> __basicBlockEntry;
     private HashMap<String, Set<Integer>> __basicBlockExit;
     private HashSet<String> __definitions;
+    private HashSet<String> __killedSet;
 
     private NestedSymbolTable __symbolTable;
 
@@ -33,6 +34,7 @@ public class BasicBlock implements Serializable {
         __basicBlockExit = new HashMap<String, Set<Integer>>();
         __symbolTable = table;
         __definitions = new HashSet<String>();
+        __killedSet = new HashSet<String>();
 
         __instructions = new ArrayList<InstructionNode>();
         __edges = new ArrayList<InstructionEdge>();
@@ -40,6 +42,7 @@ public class BasicBlock implements Serializable {
     }
 
     public BasicBlock(BasicBlock bb) {
+        __killedSet = new HashSet<String>();
         __definitions = new HashSet<String>();
 
         __instructions = bb.getInstructions();
@@ -56,6 +59,10 @@ public class BasicBlock implements Serializable {
     }
 
     public HashSet<String> getDefinitions() { return this.__definitions; }
+    public HashSet<String> getKilledSet() { return this.__killedSet; }
+
+
+
 
     public Boolean processPredecessors(List<BasicBlock> predecessors) {
         Boolean changed = false;
@@ -156,7 +163,7 @@ public class BasicBlock implements Serializable {
     public void addInstruction(InstructionNode instruction) {
         if(instruction instanceof PHIInstruction)
             __instructions.add(0, instruction);
-        else if (instruction instanceof StaticAssignment) {
+        else if (instruction instanceof GlobalAssignment) {
             __instructions.add(instruction);
             for(String symbol :instruction.getInputSymbols())
                 this.__definitions.add(symbol);

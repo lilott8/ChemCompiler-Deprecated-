@@ -163,39 +163,7 @@ public class DominatorTree {
     }
 
 
-   /* private void GenerateIterativeFrontier(){
-        /*
-            Randy Allen Ken Kennedy-Optimizing Compilers- Figure 4.8
-            procedure iterateDom(G)
-                //G = (N,E) is the input control flow graph, where
-                // N is the set of basic blocks and
-                // E is the set of control flow edges
-                // dominators(b) is the set of dominators for block b
-                foreach b ε N do dominators(b) = N;
-
-
-                changed := true;
-                while changed do begin
-                    changed := false;
-                    foreach b ε N do begin
-                        newDoms := dominators(b);
-                        foreach p ε predecessors(b) do
-                            newDoms := newDoms ∩ dominators(p);
-                            newDoms := newDoms ∪ {b};
-                            if newDoms != dominators(b) then begin
-                                dominators(b) := newDoms;
-                                changed := true;
-                            end
-                        end
-                    end
-                end iterateDom
-
-        for(Integer b : this.__dominatorTable.keySet()){
-
-        }
-
-
-    }*/
+  
 
     public String toString() {
         String ret="";

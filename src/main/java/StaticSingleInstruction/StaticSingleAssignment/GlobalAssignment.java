@@ -5,10 +5,10 @@ import StaticSingleInstruction.InstructionNode;
 /**
  * Created by chriscurtis on 3/7/17.
  */
-public class StaticAssignment extends InstructionNode {
+public class GlobalAssignment extends InstructionNode {
     //String __symbol;
 
-    public StaticAssignment (String symbol){
+    public GlobalAssignment(String symbol){
         super(-1,null);
         this.__outputSymbols.add(symbol);
         //this.__symbol = symbol;
