@@ -3,7 +3,8 @@ import StaticSingleInstruction.BasicBlock.BasicBlock;
 import StaticSingleInstruction.ControlFlowGraph.CFG;
 import StaticSingleInstruction.CFGBuilder;
 import StaticSingleInstruction.InstructionNode;
-import StaticSingleInstruction.StaticSingleAssignment.StaticSingleAssignment;
+import StaticSingleInstruction.StaticSingleAssignment.MinimalStaticSingleAssignment.MinimalStaticSingleAssignment;
+import StaticSingleInstruction.StaticSingleAssignment.SemiPrunedStaticSingleAssignment.SemiPrunedStaticSingleAssignment;
 import executable.Experiment;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
@@ -47,10 +48,14 @@ public class Compiler {
             for (String experimentKey : benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : benchtop.getExperiments().get(experimentKey)) {
                     CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment);
-                    StaticSingleAssignment SSA = new StaticSingleAssignment(controlFlow);
+                    //MinimalStaticSingleAssignment SSA = new MinimalStaticSingleAssignment(controlFlow);
+                    // logger.debug("\n" + SSA);
+
+                    SemiPrunedStaticSingleAssignment SPSSA = new SemiPrunedStaticSingleAssignment(controlFlow);
 
                     //System.out.println(controlFlow);
-                    logger.debug("\n" + SSA);
+                    //logger.debug("\n" + SSA);
+                    logger.debug("\n" + SPSSA);
                     //System.out.print(controlFlow.getDominatorTree().toString());
 
                     //ProcessExperimentCFG(controlFlow, experiment);

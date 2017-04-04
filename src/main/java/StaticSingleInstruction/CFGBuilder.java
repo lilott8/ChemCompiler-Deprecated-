@@ -2,10 +2,7 @@ package StaticSingleInstruction;
 
 import StaticSingleInstruction.BasicBlock.BasicBlock;
 import StaticSingleInstruction.ControlFlowGraph.CFG;
-import StaticSingleInstruction.StaticSingleAssignment.StaticAssignment;
-import StaticSingleInstruction.StaticSingleAssignment.StaticSingleAssignment;
 
-import StaticSingleInstruction.DominatorTree.DominatorTree;
 import executable.Executable;
 import executable.Experiment;
 import executable.conditionals.Branch;
