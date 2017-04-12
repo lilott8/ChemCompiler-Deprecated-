@@ -1,37 +1,46 @@
-package StaticSingleInstruction.StaticSingleAssignment;
+package CompilerDataStructures.StaticSingleAssignment;
 
-import StaticSingleInstruction.BasicBlock.BasicBlock;
-import StaticSingleInstruction.ControlFlowGraph.CFG;
-import StaticSingleInstruction.DominatorTree.DominatorTree;
-import StaticSingleInstruction.InstructionNode;
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.ControlFlowGraph.CFG;
+import CompilerDataStructures.DominatorTree.DominatorTree;
+import CompilerDataStructures.InstructionNode;
+import executable.instructions.Instruction;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
  * Created by chriscurtis on 3/13/17.
  */
-public abstract class SingleStaticAssignment extends CFG {
-    public static Boolean DEBUGPHI = false;
+public abstract class StaticSingleAssignment extends CFG {
+    public static Boolean DEBUGPHI = true;
 
-    public static Boolean DEBUGLHS = true;
-    public static Boolean DEBUGRHS = true;
-    public static Boolean DEBUGPHIINSERT = true;
+    public static Boolean DEBUGLHS = false;
+    public static Boolean DEBUGRHS = false;
+    public static Boolean DEBUGPHIINSERT = false;
 
     public static Boolean DEBUG = false;
 
 
     protected DominatorTree __dominatorTree;
-    protected HashMap<String, ArrayList<Integer>> __basicBlockDefinintionTable;
+    protected HashMap<String, HashSet<Integer>> __basicBlockSymbolDefinitionTable;
+    protected HashMap<String, HashSet<Integer>> __basicBlockSymbolUseTable;
+    protected HashMap<String, HashSet<Integer>> __phiPlacedAt;
+
+
 
     protected HashMap<String, Stack<String> > __variableStack;
     protected HashMap<String, Integer> __variableCount;
 
 
-    public SingleStaticAssignment(CFG controlFlowGraph){
+    public StaticSingleAssignment(CFG controlFlowGraph){
         super(controlFlowGraph);
 
         this.__dominatorTree = new DominatorTree(this);
-        __basicBlockDefinintionTable = new HashMap<String, ArrayList<Integer>>();
+        __basicBlockSymbolDefinitionTable = new HashMap<String, HashSet<Integer>>();
+        __basicBlockSymbolUseTable = new HashMap<String, HashSet<Integer>>();
+        __phiPlacedAt = new HashMap<String, HashSet<Integer>>();
+
         __variableStack = new HashMap<String, Stack<String>>();
         __variableCount = new HashMap<String, Integer>();
     }
@@ -39,40 +48,58 @@ public abstract class SingleStaticAssignment extends CFG {
 
 
 
-    protected void CreateBasicBlockDefinitionList(){
+    protected void CreateBasicBlockSymbolDefinitionAndUseTables(){
         //check for Global Variables
         for(InstructionNode instructionNode : this.__entry.getInstructions()){
             if(instructionNode instanceof GlobalAssignment){
+
                 for(String symbol : instructionNode.getOutputSymbols()) {
-                    if(this.__basicBlockDefinintionTable.containsKey(symbol)){
-                        this.__basicBlockDefinintionTable.get(symbol).add(this.__entry.ID());
+                    System.out.println( symbol);
+                    if(this.__basicBlockSymbolDefinitionTable.containsKey(symbol)){
+                        this.__basicBlockSymbolDefinitionTable.get(symbol).add(this.__entry.ID());
                     }
                     else {
-                        ArrayList<Integer> basicBlockList = new ArrayList<Integer>();
+                        HashSet<Integer> basicBlockList = new HashSet<Integer>();
                         basicBlockList.add(this.__entry.ID());
-                        this.__basicBlockDefinintionTable.put(symbol,basicBlockList);
+                        this.__basicBlockSymbolDefinitionTable.put(symbol,basicBlockList);
                     }
                 }
             }
         }
 
+        for(BasicBlock bb : this.__basicBlocks.values()) {
+
+            for (InstructionNode node : bb.getInstructions())
+                for (String symbol : node.getInputSymbols()) {
+                    if (this.__basicBlockSymbolUseTable.containsKey(symbol)) {
+                        this.__basicBlockSymbolUseTable.get(symbol).add(bb.ID());
+                    }
+                    else {
+                        HashSet<Integer> basicBlockList = new HashSet<Integer>();
+                        basicBlockList.add(bb.ID());
+                        this.__basicBlockSymbolUseTable.put(symbol, basicBlockList);
+                    }
+                }
+        }
         for(BasicBlock bb : this.__basicBlocks.values()){
-            for(String symbol: bb.getDefinitions() )
-                if(this.__basicBlockDefinintionTable.containsKey(symbol)){
-                    this.__basicBlockDefinintionTable.get(symbol).add(bb.ID());
+            for(String symbol: bb.getDefinitions() ) {
+                //System.out.println( symbol);
+                if (this.__basicBlockSymbolDefinitionTable.containsKey(symbol)) {
+                    this.__basicBlockSymbolDefinitionTable.get(symbol).add(bb.ID());
                 }
                 else {
-                    ArrayList<Integer> basicBlockList = new ArrayList<Integer>();
+                    HashSet<Integer> basicBlockList = new HashSet<Integer>();
                     basicBlockList.add(bb.ID());
-                    this.__basicBlockDefinintionTable.put(symbol,basicBlockList);
+                    this.__basicBlockSymbolDefinitionTable.put(symbol, basicBlockList);
                 }
+            }
         }
 
         //Establish the initial assignment in the Entry node.
 
-        for(String symbol : this.__basicBlockDefinintionTable.keySet()){
+        for(String symbol : this.__basicBlockSymbolDefinitionTable.keySet()){
             this.__entry.addInstruction(new GlobalAssignment(symbol));
-            this.__basicBlockDefinintionTable.get(symbol).add(this.__entry.ID());
+            this.__basicBlockSymbolDefinitionTable.get(symbol).add(this.__entry.ID());
         }
     }
 
@@ -80,7 +107,7 @@ public abstract class SingleStaticAssignment extends CFG {
         if(DEBUG)
             logger.debug("Inital Symbols:");
 
-        for(String symbol : __basicBlockDefinintionTable.keySet()){
+        for(String symbol : __basicBlockSymbolDefinitionTable.keySet()){
             __variableCount.put(symbol,0);
             Stack<String> symbols = new Stack<String>();
             symbols.push(symbol+"_0");
@@ -151,11 +178,11 @@ public abstract class SingleStaticAssignment extends CFG {
 
 
 
-    protected void PlacePhiNodes(){
-        this.PlacePhiNodes(null);
+    protected Boolean PlacePhiNodes(){
+        return this.PlacePhiNodes(null);
     }
 
-    protected void PlacePhiNodes(HashSet<String> symbols){
+    /*protected void PlacePhiNodes(HashSet<String> symbols){
         Integer iterationCount = 0;
 
         HashMap<Integer, Integer> work = new HashMap<Integer, Integer>();
@@ -168,11 +195,12 @@ public abstract class SingleStaticAssignment extends CFG {
 
         ArrayList<Integer> WorkList = new ArrayList<Integer>();
 
-        for(String symbol: __basicBlockDefinintionTable.keySet()){
+        for(String symbol: __basicBlockSymbolDefinitionTable.keySet()){
             iterationCount ++; // used to distinguish between which variable we are using for work/has already
-            for(Integer bbID : this.__basicBlockDefinintionTable.get(symbol)){
+            for(Integer bbID : this.__basicBlockSymbolDefinitionTable.get(symbol)){
                 work.put(bbID, iterationCount);
                 WorkList.add(bbID);
+                System.out.println("Adding: " + bbID + " to worklist for Symbol: " + symbol);
             }
 
             while(WorkList.size() > 0){
@@ -180,26 +208,109 @@ public abstract class SingleStaticAssignment extends CFG {
                 WorkList.remove(0);
                 for(Integer domFrontierBBID: this.__dominatorTree.getFrontier(basicBlockID)){
                     if( (hasAlready.get(domFrontierBBID) < iterationCount && symbols == null) || (hasAlready.get(domFrontierBBID) < iterationCount && symbol.contains(symbol))) {
-                        //AddPhiNode
+                        //AddSigmaNode
                         if(DEBUGPHI)
                             logger.debug("Adding Phi node for:" + symbol + " at Basic Block:" + domFrontierBBID);
                         this.__basicBlocks.get(domFrontierBBID).addInstruction(new PHIInstruction(symbol));
                         hasAlready.put(domFrontierBBID,iterationCount);
                         if(work.get(domFrontierBBID) < iterationCount){
                             work.put(domFrontierBBID, iterationCount);
+                            System.out.println("Adding: " + domFrontierBBID + " to worklist");
                             WorkList.add(domFrontierBBID);
                         }
                     }
                 }
             }
         }
+    }*/
+
+
+    protected Boolean PlacePhiNodes(HashSet<String>symbols){
+        Boolean changed = false;
+
+
+        ArrayList<Integer> WorkList = new ArrayList<Integer>();
+
+        for(String symbol: __basicBlockSymbolDefinitionTable.keySet()) {
+            if (symbols != null && !symbols.contains(symbol))
+                continue;
+
+            for (Integer BBID : this.__basicBlockSymbolDefinitionTable.get(symbol)) {
+                WorkList.add(BBID);
+            }
+
+            while (!WorkList.isEmpty()) {
+                Integer basicBlockID = WorkList.get(0);
+                WorkList.remove(0);
+                for (Integer domFrontierBBID : this.__dominatorTree.getFrontier(basicBlockID)) {
+
+
+                    if (!this.__phiPlacedAt.containsKey(symbol) || !this.__phiPlacedAt.get(symbol).contains(domFrontierBBID)) {
+                        changed = true;
+                        if (DEBUGPHI)
+                            logger.debug("Adding Phi node for:" + symbol + " at Basic Block:" + domFrontierBBID);
+
+                        this.__basicBlocks.get(domFrontierBBID).addInstruction(new PHIInstruction(symbol));
+
+                        //A_PHI[v] <- A_PHI[v] U {y}
+                        if (this.__phiPlacedAt.containsKey(symbol))
+                            this.__phiPlacedAt.get(symbol).add(domFrontierBBID);
+                        else {
+                            HashSet<Integer> IDS = new HashSet<Integer>();
+                            IDS.add(domFrontierBBID);
+                            this.__phiPlacedAt.put(symbol, IDS);
+                        }
+
+
+                        for (Integer pred : this.__basicBlockPredecessorSet.get(domFrontierBBID)) {
+                            if (this.__basicBlockSymbolUseTable.containsKey(symbol))
+                                this.__basicBlockSymbolUseTable.get(symbol).add(pred);
+                            else {
+                                HashSet<Integer> IDS = new HashSet<Integer>();
+                                IDS.add(pred);
+                                this.__basicBlockSymbolUseTable.put(symbol, IDS);
+                            }
+                        }
+
+
+                        if (!this.__basicBlockSymbolDefinitionTable.containsKey(symbol) || !this.__basicBlockSymbolDefinitionTable.get(symbol).contains(domFrontierBBID)) {
+                            if (this.__basicBlockSymbolDefinitionTable.containsKey(symbol))
+                                this.__basicBlockSymbolDefinitionTable.get(symbol).add(domFrontierBBID);
+                            else {
+                                HashSet<Integer> IDS = new HashSet<Integer>();
+                                IDS.add(domFrontierBBID);
+                                this.__basicBlockSymbolDefinitionTable.put(symbol, IDS);
+                            }
+
+                            WorkList.add(domFrontierBBID);
+                        }
+                    }
+                }
+
+            }
+        }
+        return changed;
     }
+
+
+
 
     private Integer WhichPred(Integer successor, Integer predecessor){
         Integer count = 0;
         //get the parent of the success
         for(Integer pred : this.__basicBlockPredecessorSet.get(successor)){
             if(pred == predecessor)
+                return count;
+            ++count;
+        }
+
+        return -1;
+    }
+    private Integer WhichSucc(Integer successor, Integer predecessor){
+        Integer count = 0;
+        //get the parent of the success
+        for(Integer succ : this.__basicBlockSuccessorSet.get(predecessor)){
+            if(succ == successor)
                 return count;
             ++count;
         }

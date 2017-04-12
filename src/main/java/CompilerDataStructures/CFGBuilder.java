@@ -1,7 +1,7 @@
-package StaticSingleInstruction;
+package CompilerDataStructures;
 
-import StaticSingleInstruction.BasicBlock.BasicBlock;
-import StaticSingleInstruction.ControlFlowGraph.CFG;
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.ControlFlowGraph.CFG;
 
 import executable.Executable;
 import executable.Experiment;

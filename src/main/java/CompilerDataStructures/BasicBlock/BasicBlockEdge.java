@@ -1,4 +1,4 @@
-package StaticSingleInstruction.BasicBlock;
+package CompilerDataStructures.BasicBlock;
 
 import java.io.Serializable;
 

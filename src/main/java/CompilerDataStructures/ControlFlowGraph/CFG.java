@@ -1,10 +1,9 @@
-package StaticSingleInstruction.ControlFlowGraph;
+package CompilerDataStructures.ControlFlowGraph;
 
-import StaticSingleInstruction.CFGBuilder;
-import StaticSingleInstruction.BasicBlock.BasicBlock;
+import CompilerDataStructures.BasicBlock.BasicBlock;
 import ChemicalInteractions.ChemicalResolution;
-import StaticSingleInstruction.BasicBlock.BasicBlockEdge;
-import StaticSingleInstruction.InstructionNode;
+import CompilerDataStructures.BasicBlock.BasicBlockEdge;
+import CompilerDataStructures.InstructionNode;
 import SymbolTable.NestedSymbolTable;
 import executable.instructions.Instruction;
 import org.apache.logging.log4j.LogManager;
@@ -207,6 +206,8 @@ public class CFG implements Serializable {
     public Set<Integer> getSuccessors(Integer basicBlockID) {
         return __basicBlockSuccessorSet.get(basicBlockID);
     }
+
+    public HashMap< Integer, Set<Integer>>  getSuccessorTable() { return __basicBlockSuccessorSet; }
 
     public String toString(){
         return this.toString("");

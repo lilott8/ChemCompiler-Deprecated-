@@ -1,16 +1,16 @@
-package StaticSingleInstruction.StaticSingleAssignment.SemiPrunedStaticSingleAssignment;
+package CompilerDataStructures.StaticSingleAssignment.SemiPrunedStaticSingleAssignment;
 
-import StaticSingleInstruction.BasicBlock.BasicBlock;
-import StaticSingleInstruction.ControlFlowGraph.CFG;
-import StaticSingleInstruction.InstructionNode;
-import StaticSingleInstruction.StaticSingleAssignment.SingleStaticAssignment;
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.ControlFlowGraph.CFG;
+import CompilerDataStructures.InstructionNode;
+import CompilerDataStructures.StaticSingleAssignment.StaticSingleAssignment;
 
 import java.util.HashSet;
 
 /**
  * Created by chriscurtis on 3/24/17.
  */
-public class SemiPrunedStaticSingleAssignment extends SingleStaticAssignment {
+public class SemiPrunedStaticSingleAssignment extends StaticSingleAssignment {
     private HashSet<String> __nonLocals;
 
 
@@ -19,7 +19,7 @@ public class SemiPrunedStaticSingleAssignment extends SingleStaticAssignment {
 
         __nonLocals = new HashSet<String>();
 
-        this.CreateBasicBlockDefinitionList();
+        this.CreateBasicBlockSymbolDefinitionAndUseTables();
         this.CalculateNonLocalVariables();
         this.PlacePhiNodes(this.__nonLocals);
         this.RenameVariables();

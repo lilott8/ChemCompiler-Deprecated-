@@ -1,10 +1,11 @@
 import ChemicalInteractions.ChemicalResolution;
-import StaticSingleInstruction.BasicBlock.BasicBlock;
-import StaticSingleInstruction.ControlFlowGraph.CFG;
-import StaticSingleInstruction.CFGBuilder;
-import StaticSingleInstruction.InstructionNode;
-import StaticSingleInstruction.StaticSingleAssignment.MinimalStaticSingleAssignment.MinimalStaticSingleAssignment;
-import StaticSingleInstruction.StaticSingleAssignment.SemiPrunedStaticSingleAssignment.SemiPrunedStaticSingleAssignment;
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.ControlFlowGraph.CFG;
+import CompilerDataStructures.CFGBuilder;
+import CompilerDataStructures.InstructionNode;
+import CompilerDataStructures.StaticSingleAssignment.MinimalStaticSingleAssignment.MinimalStaticSingleAssignment;
+import CompilerDataStructures.StaticSingleAssignment.SemiPrunedStaticSingleAssignment.SemiPrunedStaticSingleAssignment;
+import CompilerDataStructures.StaticSingleInstruction.StaticSingleInstruction;
 import executable.Experiment;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
@@ -49,14 +50,13 @@ public class Compiler {
                 for (Experiment experiment : benchtop.getExperiments().get(experimentKey)) {
                     CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment);
                     //MinimalStaticSingleAssignment SSA = new MinimalStaticSingleAssignment(controlFlow);
-                    // logger.debug("\n" + SSA);
-
                     SemiPrunedStaticSingleAssignment SPSSA = new SemiPrunedStaticSingleAssignment(controlFlow);
-
+                    //StaticSingleInstruction SSI = new StaticSingleInstruction(controlFlow);
                     //System.out.println(controlFlow);
                     //logger.debug("\n" + SSA);
                     logger.debug("\n" + SPSSA);
-                    //System.out.print(controlFlow.getDominatorTree().toString());
+                    //logger.debug("\n" + SSI);
+
 
                     //ProcessExperimentCFG(controlFlow, experiment);
                      //__experimentControlFlowGraphs.add(controlFlow);

@@ -1,6 +1,6 @@
 package DataFlow;
 
-import StaticSingleInstruction.BasicBlock.BasicBlock;
+import CompilerDataStructures.BasicBlock.BasicBlock;
 import SymbolTable.NestedSymbolTable;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package DataFlow;
 
-import StaticSingleInstruction.BasicBlock.BasicBlock;
-import StaticSingleInstruction.InstructionNode;
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.InstructionNode;
 
 import java.util.ArrayList;
 import java.util.HashSet;

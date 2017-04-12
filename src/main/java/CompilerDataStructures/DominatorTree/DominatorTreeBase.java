@@ -1,36 +1,24 @@
-package StaticSingleInstruction.DominatorTree;
-
-import StaticSingleInstruction.BasicBlock.BasicBlock;
-import StaticSingleInstruction.BasicBlock.BasicBlockEdge;
-import StaticSingleInstruction.ControlFlowGraph.CFG;
+package CompilerDataStructures.DominatorTree;
 
 import java.util.*;
 
 /**
- * Created by chriscurtis on 10/18/16.
+ * Created by chriscurtis on 4/4/17.
  */
-public class DominatorTree {
-    private HashMap<Integer, List<Integer>> __dominencefrontier;
-    private HashMap<Integer, List<Integer>> __dominatorTable;
-   // private CFG __controlFlowGraph;
-    private HashMap<Integer, Set<Integer>> __predecesors;
-
-    private HashMap<Integer, Integer> __idoms;
-    private List<Integer> __nodes;
+abstract class DominatorTreeBase {
+    protected HashMap<Integer, List<Integer>> __dominencefrontier;
+    protected HashMap<Integer, List<Integer>> __dominatorTable;
 
 
-    public DominatorTree(CFG controlFlowGraph) {
-        //__controlFlowGraph = controlFlowGraph;
-        __dominatorTable = new HashMap<Integer, List<Integer>>();
-        __predecesors = controlFlowGraph.getPredecessorTable();
-        __nodes = new ArrayList<Integer>();
+    //this directional set holds the predecessors or the successors for the dominator Trees:
+    // Predecessors for Dominator
+    // Successors for  PostDominator
+    protected HashMap<Integer, Set<Integer>> __directionalSet;
 
-        for (Integer bbID : controlFlowGraph.getBasicBlocks().keySet()) {
-            __nodes.add(bbID);
-        }
+    protected HashMap<Integer, Integer> __idoms;
+    protected List<Integer> __nodes;
 
-        BuildTree();
-    }
+
 
     public List<Integer> getFrontier(Integer basicBlockID) {
         if(this.__dominencefrontier.containsKey(basicBlockID))
@@ -39,6 +27,7 @@ public class DominatorTree {
     }
 
     public Integer getImmediateDominator(Integer bbID) { return __idoms.get(bbID); }
+
     public ArrayList<Integer> getChildren(Integer bbID) {
         ArrayList<Integer> ret = new ArrayList<Integer>();
 
@@ -50,42 +39,19 @@ public class DominatorTree {
         return ret;
     }
 
-    private void BuildTree() {
-        List<Integer> n_0 = new ArrayList<Integer>();
-        n_0.add(__nodes.get(0));
-        __dominatorTable.put(__nodes.get(0), n_0);
-        for(int i =1 ; i<__nodes.size(); ++i) {
-            __dominatorTable.put(__nodes.get(i),__nodes);
-        }
-        boolean changed;
-        do {
-            changed = false;
-            for(int i = 1; i< __nodes.size();++i){
-                List<Integer> currentSet = __dominatorTable.get(__nodes.get(i));
-                List<Integer> newSet = DominatorFormula(__nodes.get(i));
-                if( !checkEq(newSet, currentSet)) {
-                    changed = true;
-                    __dominatorTable.put(__nodes.get(i),newSet);
-                }
-            }
 
-        }while(changed);
-
-        generateImmediateDominators();
-        generateDominenceFrontier();
-    }
-    private List<Integer> DominatorFormula(Integer node){
+    protected List<Integer> DenominatorFormula(Integer node){
         HashSet<Integer> newSet = new HashSet<Integer>();
         HashSet<Integer> workSet = new HashSet<Integer>();
 
-        for(Integer ID : __dominatorTable.get(__predecesors.get(node).toArray()[0]))
+        for(Integer ID : __dominatorTable.get(__directionalSet.get(node).toArray()[0]))
             workSet.add(ID);
 
-        for(int i =1 ; i < __predecesors.get(node).size(); ++i )
+        for(int i = 1; i < __directionalSet.get(node).size(); ++i )
         {
 
-            //Integer predecesor = __predecesors.get(node).get(i);
-            for(Integer ID : __dominatorTable.get(__predecesors.get(node).toArray()[i])){
+            //Integer predecesor = __directionalSet.get(node).get(i);
+            for(Integer ID : __dominatorTable.get(__directionalSet.get(node).toArray()[i])){
                 if(workSet.contains(ID))
                     newSet.add(ID);
             }
@@ -102,17 +68,9 @@ public class DominatorTree {
         Collections.sort(ret);
         return ret;
     }
-    private Boolean checkEq(List a, List b){
-        if(a.size() != b.size() )
-            return false;
-        for(int i = 0; i< a.size(); ++i) {
-            if(a.get(i)!=b.get(i))
-                return false;
-        }
-        return true;
-    }
 
-    private void generateImmediateDominators(){
+
+    protected void generateImmediateDominators(){
         __idoms = new HashMap<Integer, Integer>();
         for(Integer dominatedKey: __dominatorTable.keySet()) {
             List<Integer> dominators = new ArrayList<Integer>();
@@ -131,7 +89,17 @@ public class DominatorTree {
         }
     }
 
-    private void generateDominenceFrontier(){
+    protected static Boolean checkEq(List a, List b){
+        if(a.size() != b.size() )
+            return false;
+        for(int i = 0; i< a.size(); ++i) {
+            if(a.get(i)!=b.get(i))
+                return false;
+        }
+        return true;
+    }
+
+    protected void generateDominenceFrontier(){
     /*   for each B in all basic blocks
             if size of Predecessors(B) >= 2
                 for each P in Predecessors(B)
@@ -142,10 +110,10 @@ public class DominatorTree {
                         */
         __dominencefrontier = new HashMap<Integer, List<Integer>>();
         for(Integer bb : __nodes) {
-            if (__predecesors.containsKey(bb)) {
-                if (__predecesors.get(bb).size() >= 2) {
-                    for (Integer predececor : __predecesors.get(bb)) {
-                        Integer runner = predececor;
+            if (__directionalSet.containsKey(bb)) {
+                if (__directionalSet.get(bb).size() >= 2) {
+                    for (Integer pred_or_Succ : __directionalSet.get(bb)) {
+                        Integer runner = pred_or_Succ;
                         while (runner != null && runner != __idoms.get(bb) && runner != -1) {
                             List<Integer> frontier;
                             if (__dominencefrontier.containsKey(runner))
@@ -161,9 +129,6 @@ public class DominatorTree {
             }
         }
     }
-
-
-  
 
     public String toString() {
         String ret="";
@@ -202,6 +167,4 @@ public class DominatorTree {
 
         return ret;
     }
-
-
 }

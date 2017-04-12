@@ -1,4 +1,4 @@
-package StaticSingleInstruction;
+package CompilerDataStructures;
 
 import variable.Reference;
 import variable.Variable;

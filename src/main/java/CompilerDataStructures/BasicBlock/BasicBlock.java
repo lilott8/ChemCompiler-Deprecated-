@@ -1,9 +1,9 @@
-package StaticSingleInstruction.BasicBlock;
+package CompilerDataStructures.BasicBlock;
 
-import StaticSingleInstruction.InstructionEdge;
-import StaticSingleInstruction.InstructionNode;
-import StaticSingleInstruction.StaticSingleAssignment.PHIInstruction;
-import StaticSingleInstruction.StaticSingleAssignment.GlobalAssignment;
+import CompilerDataStructures.InstructionEdge;
+import CompilerDataStructures.InstructionNode;
+import CompilerDataStructures.StaticSingleAssignment.PHIInstruction;
+import CompilerDataStructures.StaticSingleAssignment.GlobalAssignment;
 import SymbolTable.NestedSymbolTable;
 import executable.instructions.Combine;
 import executable.instructions.Instruction;

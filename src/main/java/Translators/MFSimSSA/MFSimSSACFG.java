@@ -1,8 +1,8 @@
 package Translators.MFSimSSA;
 
-import StaticSingleInstruction.BasicBlock.BasicBlock;
-import StaticSingleInstruction.BasicBlock.BasicBlockEdge;
-import StaticSingleInstruction.ControlFlowGraph.CFG;
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.BasicBlock.BasicBlockEdge;
+import CompilerDataStructures.ControlFlowGraph.CFG;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferIn;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferOut;
 import org.apache.logging.log4j.LogManager;

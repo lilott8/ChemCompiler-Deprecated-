@@ -1,6 +1,6 @@
-package StaticSingleInstruction.StaticSingleAssignment;
+package CompilerDataStructures.StaticSingleAssignment;
 
-import StaticSingleInstruction.InstructionNode;
+import CompilerDataStructures.InstructionNode;
 
 import java.util.ArrayList;
 

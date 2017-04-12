@@ -1,6 +1,7 @@
-import StaticSingleInstruction.BasicBlock.BasicBlock;
-import StaticSingleInstruction.ControlFlowGraph.CFG;
-import StaticSingleInstruction.DominatorTree.DominatorTree;
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.ControlFlowGraph.CFG;
+import CompilerDataStructures.DominatorTree.DominatorTree;
+import CompilerDataStructures.DominatorTree.PostDominatorTree;
 import Translators.MFSimSSA.MFSimSSATranslator;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +20,7 @@ public class Main {
 
 
             BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/test.json").getPath());
-            logger.info(Benchtop.INSTANCE.toString());
+            //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {
             logger.fatal(e.getMessage());
@@ -38,7 +39,7 @@ public class Main {
                 //tst.toFile("NeurotransmitterSensing.txt");
                 //logger.info(tst.toString());
                 MFSimSSATranslator mfsimt = new MFSimSSATranslator(experiment);
-                mfsimt.toFile("test");
+                //mfsimt.toFile("test");
             }
 
         }
@@ -48,6 +49,7 @@ public class Main {
         }
 
        // DominatorTreeTest2();
+      //  PostDominatorTreeTest();
 
     }
 
@@ -134,5 +136,35 @@ public class Main {
         System.out.println(t);
     }
 
+    public static void PostDominatorTreeTest(){
+        CFG cfg = new CFG();
+
+        BasicBlock bEntry = cfg.newBasicBlock();
+        BasicBlock b1 = cfg.newBasicBlock();
+        BasicBlock b2 = cfg.newBasicBlock();
+        BasicBlock b3 = cfg.newBasicBlock();
+        BasicBlock b4 = cfg.newBasicBlock();
+
+
+        BasicBlock bExit = cfg.newBasicBlock();
+
+        cfg.addEdge(bEntry,b1);
+        cfg.addEdge(bEntry,bExit);
+
+        cfg.addEdge(b1,b2);
+        cfg.addEdge(b1,b3);
+
+        cfg.addEdge(b2,b4);
+
+        cfg.addEdge(b3,b4);
+
+        cfg.addEdge(b4,bExit);
+
+        DominatorTree t = new DominatorTree(cfg);
+        PostDominatorTree pt = new PostDominatorTree(cfg);
+        System.out.println(t);
+
+        System.out.println(pt);
+    }
 
 }

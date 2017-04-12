@@ -1,8 +1,8 @@
 package Translators.MFSimSSA;
 
-import StaticSingleInstruction.BasicBlock.BasicBlock;
-import StaticSingleInstruction.InstructionEdge;
-import StaticSingleInstruction.InstructionNode;
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.InstructionEdge;
+import CompilerDataStructures.InstructionNode;
 import Translators.MFSimSSA.OperationNode.*;
 import executable.instructions.*;
 import org.apache.logging.log4j.LogManager;

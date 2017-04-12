@@ -1,4 +1,4 @@
-package StaticSingleInstruction;
+package CompilerDataStructures;
 
 //import ChemicalInteractions.ChemicalInteraction;
 import executable.instructions.Instruction;
