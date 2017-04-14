@@ -44,28 +44,39 @@ public class MFSimSSADAG {
                 }
             }
         }
+        ArrayList<InstructionNode> nodes = new ArrayList<InstructionNode>();
+//        for (InstructionNode node : bb.getInstructions()) {
+//            if (node.Instruction() != null) {
+//                nodes.add(node);
+//            }
+//        }
+
         for(InstructionNode instructionNode : bb.getInstructions()){
-            MFSimSSANode n;
+            MFSimSSANode n = null;
+
             Instruction instruction = instructionNode.Instruction();
 
-            if(instruction instanceof Combine)
-                n = new MFSimSSAMix(__uniqueIDGen.getNextID(),(Combine)instruction);
-            else if (instruction instanceof Detect)
-                n = new MFSimSSADetect(__uniqueIDGen.getNextID(),(Detect)instruction);
-            else if (instruction instanceof Heat)
-                n = new MFSimSSAHeat(__uniqueIDGen.getNextID(),(Heat)instruction);
-            else if (instruction instanceof Split)
-                n = new MFSimSSASplit(__uniqueIDGen.getNextID(),(Split)instruction);
-            else if (instruction instanceof Store)
-                n = new MFSimSSAStorage(__uniqueIDGen.getNextID(),(Store)instruction);
-            else if (instruction instanceof Output)
-                n = new MFSimSSAOutput(__uniqueIDGen.getNextID(),(Output)instruction);
-            else if(instruction instanceof React)
-                n = new MFSimSSACool(__uniqueIDGen.getNextID(),(React)instruction );
-            else {
-                logger.fatal("Unknown Conversion for: " + instruction.toString());
-                n = null;
+            if (instruction != null) {
+                if (instruction instanceof Combine)
+                    n = new MFSimSSAMix(__uniqueIDGen.getNextID(), (Combine) instruction);
+                else if (instruction instanceof Detect)
+                    n = new MFSimSSADetect(__uniqueIDGen.getNextID(), (Detect) instruction);
+                else if (instruction instanceof Heat)
+                    n = new MFSimSSAHeat(__uniqueIDGen.getNextID(), (Heat) instruction);
+                else if (instruction instanceof Split)
+                    n = new MFSimSSASplit(__uniqueIDGen.getNextID(), (Split) instruction);
+                else if (instruction instanceof Store)
+                    n = new MFSimSSAStorage(__uniqueIDGen.getNextID(), (Store) instruction);
+                else if (instruction instanceof Output)
+                    n = new MFSimSSAOutput(__uniqueIDGen.getNextID(), (Output) instruction);
+                else if (instruction instanceof React)
+                    n = new MFSimSSACool(__uniqueIDGen.getNextID(), (React) instruction);
+                else {
+                    logger.fatal("Unknown Conversion for: " + instruction.toString());
+                    n = null;
+                }
             }
+
 
             for(String dispense : instructionNode.getDispenseSymbols()){
                 if(instructionNode.Instruction().getInputs().get(dispense) instanceof Instance
@@ -74,13 +85,15 @@ public class MFSimSSADAG {
 
 
                 logger.warn("Setting template volume amount");
+                // get ammount:
                 MFSimSSADispense dis = new MFSimSSADispense(this.__uniqueIDGen.getNextID(), dispense, dispense, 10);
                 if (n != null)
                     dis.addSuccessor(n.getID());
 //                __nodes.put((dis.getID()*-1), dis);
                 __dispense.add(dis);
             }
-            __nodes.put(instructionNode.ID(),n);
+            if (n != null)
+                __nodes.put(instructionNode.ID(),n);
 
 
         }

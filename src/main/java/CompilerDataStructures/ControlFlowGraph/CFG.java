@@ -102,6 +102,10 @@ public class CFG implements Serializable {
         return ret;
     }
 
+    public void newBasicBlock(BasicBlock bb) {
+        this.AddBasicBlock(bb);
+    }
+
 
     public void insertInstructionNode(BasicBlock bb, Instruction instruction, Boolean isLeader) {
         InstructionNode node = new InstructionNode(this.getNewID(),instruction,isLeader);

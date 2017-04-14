@@ -1,4 +1,5 @@
 import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.BasicBlock.DependencySlicedBasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.DominatorTree.DominatorTree;
 import CompilerDataStructures.DominatorTree.PostDominatorTree;
@@ -19,7 +20,7 @@ public class Main {
             //logger.info(Main.class.getClassLoader().getResource("Benchmarks/PCRDropletReplacement.json").getPath());
 
 
-            BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/test.json").getPath());
+            BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/test2.json").getPath());
             //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {
@@ -35,11 +36,12 @@ public class Main {
             for(CFG experiment : benchtopCompiler.getExperiments()){
                 //logger.debug(experiment.toString());
 
+
                //TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
                 //tst.toFile("NeurotransmitterSensing.txt");
                 //logger.info(tst.toString());
                 MFSimSSATranslator mfsimt = new MFSimSSATranslator(experiment);
-                //mfsimt.toFile("test");
+                mfsimt.toFile("test");
             }
 
         }

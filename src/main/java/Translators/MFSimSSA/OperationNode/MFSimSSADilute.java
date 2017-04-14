@@ -10,16 +10,12 @@ import org.apache.logging.log4j.Logger;
 public class MFSimSSADilute extends MFSimSSANode{
     public static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
     private Integer __numMix;
-    private Integer __time;
+    private Long __time;
 
-    public MFSimSSADilute(Integer id, Combine mixNode) {
-        super(id, OperationClassifier.DILUTE, mixNode.getName());
-        __numMix = mixNode.getInputs().size();
-
-        //TODO:: extract time from Operation.
-        logger.warn("Using template time for mix.");
-        __time = 2;
-
+    public MFSimSSADilute(Integer id, Combine diluteNode) {
+        super(id, OperationClassifier.DILUTE, diluteNode.getName());
+        __numMix = diluteNode.getInputs().size();
+        __time = getTime(diluteNode, logger);
     }
 
     public String toString() {
