@@ -1,8 +1,7 @@
 package CompilerDataStructures.BasicBlock;
-
 import CompilerDataStructures.InstructionEdge;
 import CompilerDataStructures.InstructionNode;
-import CompilerDataStructures.StaticSingleAssignment.GlobalAssignment;
+import CompilerDataStructures.StaticSingleAssignment.SemiPrunedStaticSingleAssignment.SemiPrunedStaticSingleAssignment;
 
 import java.util.*;
 
@@ -13,26 +12,37 @@ import java.util.*;
 public class DependencySlicedBasicBlock extends BasicBlock{
 
 
-    public DependencySlicedBasicBlock(BasicBlock bb) {
+    public DependencySlicedBasicBlock(BasicBlock bb, SemiPrunedStaticSingleAssignment SPSSA) {
         //copy bb object
         super(bb);
 
         //process updates for data dependency edges
-        ArrayList<InstructionEdge> edges = new ArrayList<InstructionEdge>();
+        ArrayList<InstructionEdge> instructionEdges = new ArrayList<InstructionEdge>();
         for (Integer index = 0; index < bb.getInstructions().size(); ++index) {
             InstructionNode instruction = bb.getInstructions().get(index);
-            ProcessInstructionInput(instruction, edges, bb, index);
-            ProcessInstructionOutput(instruction, edges, bb, index);
+            ProcessInstructionInput(instruction, instructionEdges, bb, index, SPSSA);
+            ProcessInstructionOutput(instruction, instructionEdges, bb, index);
         }
 
         // if A->B, A->C and B->C then A->C is redundant
-        RemoveRedundancies(edges, bb);
+        RemoveRedundancies(instructionEdges, bb);
     }
 
-    private void ProcessInstructionInput(InstructionNode instruction, ArrayList<InstructionEdge> update, BasicBlock bb, Integer index) {
+    private void ProcessInstructionInput(InstructionNode instruction, ArrayList<InstructionEdge> update, BasicBlock bb, Integer index, SemiPrunedStaticSingleAssignment SPSSA) {
 
         // loop through all inputs (reads)
         for (String inputKey : instruction.getInputSymbols()) {
+
+            //get dispense instructions
+            ArrayList<Integer> predecessors = new ArrayList<Integer>(SPSSA.getPredecessors(bb.ID()));
+            for (Integer i = predecessors.size(); i > 0; --i) {
+                for (InstructionNode instr : SPSSA.getBasicBlock(predecessors.get(i-1)).getInstructions()) {
+                    if (instr.getOutputSymbols().contains(inputKey)) {
+                        instruction.addImplicitDispense(inputKey);
+                    }
+                }
+            }
+
             for (Integer successorIndex=index+1; successorIndex < bb.getInstructions().size(); ++successorIndex) {
                 InstructionNode successor = bb.getInstructions().get(successorIndex);
                 //check if input is used by successor

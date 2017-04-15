@@ -57,7 +57,7 @@ public class Compiler {
                     //System.out.println(controlFlow);
                     for (BasicBlock bb : SPSSA.getBasicBlocks().values()) {
                         //replaces bb with a dependency sliced version
-                        SPSSA.newBasicBlock(new DependencySlicedBasicBlock(bb));
+                        SPSSA.newBasicBlock(new DependencySlicedBasicBlock(bb, SPSSA));
                     }
 
                     //logger.debug("\n" + SSA);

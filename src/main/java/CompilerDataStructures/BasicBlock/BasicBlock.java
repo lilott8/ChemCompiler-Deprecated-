@@ -185,7 +185,6 @@ public class BasicBlock implements Serializable {
     }
 
     public NestedSymbolTable getSymbolTable() { return __symbolTable; }
-    public void copySymbleTable(NestedSymbolTable table) { table = __symbolTable; }
     public ArrayList<InstructionNode> getInstructions() { return __instructions; }
     public ArrayList<InstructionEdge> getEdges() {return __edges; }
     public Boolean hasIncomingSymbol(String symbol) {return this.__basicBlockEntry.containsKey(symbol); }

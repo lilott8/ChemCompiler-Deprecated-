@@ -26,7 +26,7 @@ public class MFSimSSADAG {
     public MFSimSSADAG(BasicBlock bb, MFSimSSATranslator.IDGen parentsIDGen){
         __uniqueIDGen = parentsIDGen;
         __name = "DAG" + bb.ID().toString();
-        __nodes = new HashMap <Integer, MFSimSSANode>();
+        __nodes = new LinkedHashMap <Integer, MFSimSSANode>();
         __transOut = new HashMap <Integer,MFSimSSATransferOut>();
         __transIn = new HashMap <Integer,MFSimSSATransferIn>();
         __dispense = new ArrayList<MFSimSSADispense>();
@@ -44,12 +44,7 @@ public class MFSimSSADAG {
                 }
             }
         }
-        ArrayList<InstructionNode> nodes = new ArrayList<InstructionNode>();
-//        for (InstructionNode node : bb.getInstructions()) {
-//            if (node.Instruction() != null) {
-//                nodes.add(node);
-//            }
-//        }
+
 
         for(InstructionNode instructionNode : bb.getInstructions()){
             MFSimSSANode n = null;
@@ -76,7 +71,6 @@ public class MFSimSSADAG {
                     n = null;
                 }
             }
-
 
             for(String dispense : instructionNode.getDispenseSymbols()){
                 if(instructionNode.Instruction().getInputs().get(dispense) instanceof Instance
