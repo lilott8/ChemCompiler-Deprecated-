@@ -1,8 +1,6 @@
-package CompilerDataStructures.StaticSingleInstruction;
+package CompilerDataStructures.StaticSingleInformation;
 
 import CompilerDataStructures.InstructionNode;
-
-import java.util.ArrayList;
 
 /**
  * Created by chriscurtis on 4/12/17.
@@ -31,7 +29,7 @@ public class SigmaInstruction extends InstructionNode {
             ret += s + " ";
         }
 
-        ret+= "= SIGMA( " + this.getInputSymbols().get(0) + ")";
+        ret+= "= SIGMA( " + this.getInputSymbols().get(0) + ")" + __oringinalSymbol;
         return ret;
     }
 }

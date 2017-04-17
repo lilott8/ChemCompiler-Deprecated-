@@ -4,9 +4,8 @@ import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.DominatorTree.DominatorTree;
 import CompilerDataStructures.InstructionNode;
-import executable.instructions.Instruction;
+import CompilerDataStructures.StaticSingleInformation.SigmaInstruction;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -97,7 +96,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
         //Establish the initial assignment in the Entry node.
 
-        for(String symbol : this.__basicBlockSymbolDefinitionTable.keySet()){
+        for(String symbol : this.__entry.getDefinitions()){
             this.__entry.addInstruction(new GlobalAssignment(symbol));
             this.__basicBlockSymbolDefinitionTable.get(symbol).add(this.__entry.ID());
         }
@@ -124,7 +123,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
         ArrayList<String> oldLHS = new ArrayList<String>();
         for(InstructionNode instruction : bb.getInstructions()){
-            if(! (instruction instanceof PHIInstruction || instruction instanceof GlobalAssignment)){
+            if(! (instruction instanceof PHIInstruction || instruction instanceof GlobalAssignment || instruction instanceof SigmaInstruction)){
                 ArrayList<String> symbols= new ArrayList<String>();
                 //needed deep copy to allow the removal of old symbols
                 for(String symbol: instruction.Instruction().getInputs().keySet())
@@ -250,7 +249,7 @@ public abstract class StaticSingleAssignment extends CFG {
                         if (DEBUGPHI)
                             logger.debug("Adding Phi node for:" + symbol + " at Basic Block:" + domFrontierBBID);
 
-                        this.__basicBlocks.get(domFrontierBBID).addInstruction(new PHIInstruction(symbol));
+                        this.__basicBlocks.get(domFrontierBBID).addInstruction(new PHIInstruction(symbol, this.getPredecessors(domFrontierBBID).size()));
 
                         //A_PHI[v] <- A_PHI[v] U {y}
                         if (this.__phiPlacedAt.containsKey(symbol))

@@ -1,8 +1,8 @@
-package CompilerDataStructures.StaticSingleInstruction;
+package CompilerDataStructures.StaticSingleInformation;
 
+import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.DominatorTree.PostDominatorTree;
-import CompilerDataStructures.StaticSingleAssignment.PHIInstruction;
 import CompilerDataStructures.StaticSingleAssignment.StaticSingleAssignment;
 
 import java.util.ArrayList;
@@ -12,8 +12,8 @@ import java.util.HashSet;
 /**
  * Created by chriscurtis on 4/10/17.
  */
-public class StaticSingleInstruction extends StaticSingleAssignment{
-    private Boolean DEBUGSIGMA  = true;
+public class StaticSingleInformation extends StaticSingleAssignment{
+    private Boolean DEBUGSIGMA  = false;
 
 
     private PostDominatorTree __postDominatorTree;
@@ -22,9 +22,9 @@ public class StaticSingleInstruction extends StaticSingleAssignment{
 
    // HashMap<Integer, Integer> hasAlready = new HashMap<Integer, Integer>();
 
-    public StaticSingleInstruction(CFG controlFlowGraph){
+    public StaticSingleInformation(CFG controlFlowGraph){
         super(controlFlowGraph);
-        __postDominatorTree = new PostDominatorTree(this);
+        __postDominatorTree = new PostDominatorTree(controlFlowGraph);
         __sigmaPlacedAt = new HashMap<String, HashSet<Integer>>();
 
         CreateBasicBlockSymbolDefinitionAndUseTables();
@@ -34,8 +34,10 @@ public class StaticSingleInstruction extends StaticSingleAssignment{
             changesMade = false;
             if(this.PlacePhiNodes())
                 changesMade = true;
+           // logger.debug(this);
             if(this.PlaceSigmaNodes())
                 changesMade = true;
+            //logger.debug(this);
         }
 
         this.RenameVariables();
@@ -59,7 +61,8 @@ public class StaticSingleInstruction extends StaticSingleAssignment{
                 continue;
 
             for (Integer BBID : this.__basicBlockSymbolUseTable.get(symbol)) {
-                WorkList.add(BBID);
+                if(!WorkList.contains(BBID))
+                    WorkList.add(BBID);
             }
 
             while (!WorkList.isEmpty()) {
@@ -113,5 +116,79 @@ public class StaticSingleInstruction extends StaticSingleAssignment{
             }
         }
         return changed;
+    }
+    protected void RenameVariables(){
+        /*
+        if(DEBUG)
+            logger.debug("Inital Symbols:");
+
+        for(String symbol : __basicBlockSymbolDefinitionTable.keySet()){
+            __variableCount.put(symbol,0);
+            Stack<String> symbols = new Stack<String>();
+            symbols.push(symbol+"_0");
+            if(DEBUG)
+                logger.debug( "\t" + symbols.peek() );
+            __variableStack.put(symbol, symbols);
+        }
+        this.RenameSearch(this.__entry);
+        */
+    }
+
+    protected void RenameSearch(BasicBlock bb){
+      /*  if (DEBUG)
+            logger.debug("Processing Rename on: " + bb.ID());
+
+        ArrayList<String> oldLHS = new ArrayList<String>();
+        for(InstructionNode instruction : bb.getInstructions()){
+            if(! (instruction instanceof PHIInstruction || instruction instanceof GlobalAssignment || instruction instanceof SigmaInstruction)){
+                ArrayList<String> symbols= new ArrayList<String>();
+                //needed deep copy to allow the removal of old symbols
+                for(String symbol: instruction.Instruction().getInputs().keySet())
+                    symbols.add(symbol);
+                for(String symbol: symbols){
+                    if(DEBUGRHS)
+                        logger.debug("Changing RHS: " + symbol + " to " + __variableStack.get(symbol).peek());
+                    int index  = instruction.getInputSymbols().indexOf(symbol);
+                    instruction.getInputSymbols().set(index, __variableStack.get(symbol).peek());
+//                    instruction.Instruction().getInputs().put(__variableStack.get(symbol).peek(),instruction.Instruction().getInputs().get(symbol));
+//                    instruction.Instruction().getInputs().remove(symbol);
+                }
+            }
+            for(Integer i =0 ; i < instruction.getOutputSymbols().size(); ++i){
+                String oldSymbol = instruction.getOutputSymbols().get(i);
+                oldLHS.add(oldSymbol);
+                Integer count = __variableCount.get(oldSymbol);
+                String newSymbol = GetNewSymbol(__variableStack.get(oldSymbol).peek(), count);
+                if(DEBUGLHS)
+                    logger.debug("Changing LHS: " +oldSymbol + " to " + newSymbol);
+                instruction.getOutputSymbols().set(i,newSymbol);
+                __variableStack.get(oldSymbol).push(newSymbol);
+                __variableCount.put(oldSymbol,count+1);
+            }
+        }
+        if(this.getSuccessors(bb.ID()) != null ) {
+            for (Integer successorID : this.getSuccessors(bb.ID())) {
+                BasicBlock successor = this.getBasicBlock(successorID);
+                Integer j = WhichPred(successorID, bb.ID());
+
+                for (InstructionNode instructionNode : successor.getInstructions()) {
+                    if (instructionNode instanceof PHIInstruction) {
+                        String name = ((PHIInstruction) instructionNode).getOriginalName();
+                        if(DEBUGPHIINSERT)
+                            logger.debug("Inserting PHI: " +  __variableStack.get(name).peek() + " at index: " + j);
+                        ((PHIInstruction) instructionNode).InsertNodeAtIndex(j, __variableStack.get(name).peek());
+                    }
+                }
+            }
+        }
+
+
+        for(Integer child : this.__dominatorTree.getChildren(bb.ID())){
+            RenameSearch(this.getBasicBlock(child));
+        }
+
+        for(String symbol : oldLHS){
+            __variableStack.get(symbol).pop();
+        }*/
     }
 }

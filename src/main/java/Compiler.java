@@ -3,9 +3,7 @@ import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.CFGBuilder;
 import CompilerDataStructures.InstructionNode;
-import CompilerDataStructures.StaticSingleAssignment.MinimalStaticSingleAssignment.MinimalStaticSingleAssignment;
-import CompilerDataStructures.StaticSingleAssignment.SemiPrunedStaticSingleAssignment.SemiPrunedStaticSingleAssignment;
-import CompilerDataStructures.StaticSingleInstruction.StaticSingleInstruction;
+import CompilerDataStructures.StaticSingleInformation.StaticSingleInformation;
 import executable.Experiment;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
@@ -50,12 +48,12 @@ public class Compiler {
                 for (Experiment experiment : benchtop.getExperiments().get(experimentKey)) {
                     CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment);
                     //MinimalStaticSingleAssignment SSA = new MinimalStaticSingleAssignment(controlFlow);
-                    SemiPrunedStaticSingleAssignment SPSSA = new SemiPrunedStaticSingleAssignment(controlFlow);
-                    //StaticSingleInstruction SSI = new StaticSingleInstruction(controlFlow);
+                    //SemiPrunedStaticSingleAssignment SPSSA = new SemiPrunedStaticSingleAssignment(controlFlow);
+                    StaticSingleInformation SSI = new StaticSingleInformation(controlFlow);
                     //System.out.println(controlFlow);
                     //logger.debug("\n" + SSA);
-                    logger.debug("\n" + SPSSA);
-                    //logger.debug("\n" + SSI);
+                    //logger.debug("\n" + SPSSA);
+                    logger.debug("\n" + SSI);
 
 
                     //ProcessExperimentCFG(controlFlow, experiment);
