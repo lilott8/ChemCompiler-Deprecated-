@@ -117,8 +117,7 @@ public class StaticSingleInformation extends StaticSingleAssignment{
         }
         return changed;
     }
-    protected void RenameVariables(){
-        /*
+   /* protected void RenameVariables(){
         if(DEBUG)
             logger.debug("Inital Symbols:");
 
@@ -131,11 +130,11 @@ public class StaticSingleInformation extends StaticSingleAssignment{
             __variableStack.put(symbol, symbols);
         }
         this.RenameSearch(this.__entry);
-        */
+
     }
 
     protected void RenameSearch(BasicBlock bb){
-      /*  if (DEBUG)
+        if (DEBUG)
             logger.debug("Processing Rename on: " + bb.ID());
 
         ArrayList<String> oldLHS = new ArrayList<String>();
@@ -189,6 +188,6 @@ public class StaticSingleInformation extends StaticSingleAssignment{
 
         for(String symbol : oldLHS){
             __variableStack.get(symbol).pop();
-        }*/
-    }
+        }
+    }*/
 }
