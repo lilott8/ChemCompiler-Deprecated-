@@ -19,15 +19,28 @@ public class PostDominatorTree extends DominatorTreeBase {
 
         __nodes = new ArrayList<Integer>();
 
+        //this needs to the Exit Node to be the LAST Node.
+        //The Exit node will have the largest ID
+
+        Integer maxID=-1;
         for (Integer bbID : controlFlowGraph.getBasicBlocks().keySet()) {
+            if(maxID < bbID){
+                maxID = bbID;
+            }
             __nodes.add(bbID);
         }
+        //move max to end of list.
+        __nodes.remove(__nodes.indexOf(maxID));
+        __nodes.add(maxID);
 
         BuildTree();
     }
 
     protected void BuildTree() {
         List<Integer> n_n = new ArrayList<Integer>();
+
+
+
         n_n.add(__nodes.get(__nodes.size()-1));
         __dominatorTable.put(__nodes.get(__nodes.size()-1), n_n);
 

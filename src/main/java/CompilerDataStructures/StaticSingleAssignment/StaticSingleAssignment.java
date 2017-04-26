@@ -4,9 +4,8 @@ import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.DominatorTree.DominatorTree;
 import CompilerDataStructures.InstructionNode;
-import executable.instructions.Instruction;
+import CompilerDataStructures.StaticSingleInformation.SigmaInstruction;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -29,7 +28,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
 
 
-    protected HashMap<String, Stack<String> > __variableStack;
+    protected HashMap<String, Stack<RenamedVariableNode> > __variableStack;
     protected HashMap<String, Integer> __variableCount;
 
 
@@ -41,7 +40,7 @@ public abstract class StaticSingleAssignment extends CFG {
         __basicBlockSymbolUseTable = new HashMap<String, HashSet<Integer>>();
         __phiPlacedAt = new HashMap<String, HashSet<Integer>>();
 
-        __variableStack = new HashMap<String, Stack<String>>();
+        __variableStack = new HashMap<String, Stack<RenamedVariableNode>>();
         __variableCount = new HashMap<String, Integer>();
     }
 
@@ -100,7 +99,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
         //Establish the initial assignment in the Entry node.
 
-        for(String symbol : this.__basicBlockSymbolDefinitionTable.keySet()){
+        for(String symbol : this.__entry.getDefinitions()){
             this.__entry.addInstruction(new GlobalAssignment(symbol));
             this.__basicBlockSymbolDefinitionTable.get(symbol).add(this.__entry.ID());
         }
@@ -112,8 +111,10 @@ public abstract class StaticSingleAssignment extends CFG {
 
         for(String symbol : __basicBlockSymbolDefinitionTable.keySet()){
             __variableCount.put(symbol,0);
-            Stack<String> symbols = new Stack<String>();
-            symbols.push(symbol+"_0");
+            Stack<RenamedVariableNode> symbols = new Stack<RenamedVariableNode>();
+
+
+            symbols.push(new RenamedVariableNode(symbol+"_0", 0) );
             if(DEBUG)
                 logger.debug( "\t" + symbols.peek() );
             __variableStack.put(symbol, symbols);
@@ -127,7 +128,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
         ArrayList<String> oldLHS = new ArrayList<String>();
         for(InstructionNode instruction : bb.getInstructions()){
-            if(! (instruction instanceof PHIInstruction || instruction instanceof GlobalAssignment)){
+            if(! (instruction instanceof PHIInstruction || instruction instanceof GlobalAssignment || instruction instanceof SigmaInstruction)){
                 ArrayList<String> symbols= new ArrayList<String>();
                 //needed deep copy to allow the removal of old symbols
                 for(String symbol: instruction.Instruction().getInputs().keySet())
@@ -136,22 +137,30 @@ public abstract class StaticSingleAssignment extends CFG {
                     if(DEBUGRHS)
                         logger.debug("Changing RHS: " + symbol + " to " + __variableStack.get(symbol).peek());
                     int index  = instruction.getInputSymbols().indexOf(symbol);
-                    instruction.getInputSymbols().set(index, __variableStack.get(symbol).peek());
+                    instruction.getInputSymbols().set(index, __variableStack.get(symbol).peek().GetVariable(WhichSucc(bb.ID(),__variableStack.get(symbol).peek().getOrginID())));
 //                    instruction.Instruction().getInputs().put(__variableStack.get(symbol).peek(),instruction.Instruction().getInputs().get(symbol));
 //                    instruction.Instruction().getInputs().remove(symbol);
                 }
             }
+            ArrayList<String> newOutputSymbols = new ArrayList<String>();
+            String oldSymbol = "";
             for(Integer i =0 ; i < instruction.getOutputSymbols().size(); ++i){
-                String oldSymbol = instruction.getOutputSymbols().get(i);
+                oldSymbol = instruction.getOutputSymbols().get(i);
                 oldLHS.add(oldSymbol);
                 Integer count = __variableCount.get(oldSymbol);
-                String newSymbol = GetNewSymbol(__variableStack.get(oldSymbol).peek(), count);
+                Integer predecessorID = __variableStack.get(oldSymbol).peek().getOrginID();
+                String newSymbol = GetNewSymbol(__variableStack.get(oldSymbol).peek().GetVariable(WhichSucc(bb.ID(), predecessorID)),count);
                 if(DEBUGLHS)
                     logger.debug("Changing LHS: " +oldSymbol + " to " + newSymbol);
                 instruction.getOutputSymbols().set(i,newSymbol);
-                __variableStack.get(oldSymbol).push(newSymbol);
+                if(instruction instanceof SigmaInstruction)
+                    newOutputSymbols.add(newSymbol);
+                else
+                    __variableStack.get(oldSymbol).push(new RenamedVariableNode(newSymbol,bb.ID()));
                 __variableCount.put(oldSymbol,count+1);
             }
+            if(instruction instanceof SigmaInstruction)
+                __variableStack.get(oldSymbol).push(new RenamedVariableNode(newOutputSymbols,bb.ID()));
         }
         if(this.getSuccessors(bb.ID()) != null ) {
             for (Integer successorID : this.getSuccessors(bb.ID())) {
@@ -163,7 +172,8 @@ public abstract class StaticSingleAssignment extends CFG {
                         String name = ((PHIInstruction) instructionNode).getOriginalName();
                         if(DEBUGPHIINSERT)
                             logger.debug("Inserting PHI: " +  __variableStack.get(name).peek() + " at index: " + j);
-                        ((PHIInstruction) instructionNode).InsertNodeAtIndex(j, __variableStack.get(name).peek());
+                        String PHIInputSymbol = __variableStack.get(name).peek().GetVariable(WhichSucc(successorID, bb.ID()));
+                        ((PHIInstruction) instructionNode).InsertNodeAtIndex(j, PHIInputSymbol);
                     }
                 }
             }
@@ -175,7 +185,8 @@ public abstract class StaticSingleAssignment extends CFG {
         }
 
         for(String symbol : oldLHS){
-            __variableStack.get(symbol).pop();
+            if(__variableStack.get(symbol).peek().CanPop())
+                __variableStack.get(symbol).pop();
         }
     }
 
@@ -185,7 +196,7 @@ public abstract class StaticSingleAssignment extends CFG {
         return this.PlacePhiNodes(null);
     }
 
-    /*protected void PlacePhiNodes(HashSet<String> symbols){
+    /*protected Boolean PlacePhiNodes(HashSet<String> symbols){
         Integer iterationCount = 0;
 
         HashMap<Integer, Integer> work = new HashMap<Integer, Integer>();
@@ -214,7 +225,7 @@ public abstract class StaticSingleAssignment extends CFG {
                         //AddSigmaNode
                         if(DEBUGPHI)
                             logger.debug("Adding Phi node for:" + symbol + " at Basic Block:" + domFrontierBBID);
-                        this.__basicBlocks.get(domFrontierBBID).addInstruction(new PHIInstruction(symbol));
+                        this.__basicBlocks.get(domFrontierBBID).addInstruction(new PHIInstruction(symbol,this.getPredecessors(domFrontierBBID).size()));
                         hasAlready.put(domFrontierBBID,iterationCount);
                         if(work.get(domFrontierBBID) < iterationCount){
                             work.put(domFrontierBBID, iterationCount);
@@ -225,6 +236,7 @@ public abstract class StaticSingleAssignment extends CFG {
                 }
             }
         }
+        return false;
     }*/
 
 
@@ -253,7 +265,7 @@ public abstract class StaticSingleAssignment extends CFG {
                         if (DEBUGPHI)
                             logger.debug("Adding Phi node for:" + symbol + " at Basic Block:" + domFrontierBBID);
 
-                        this.__basicBlocks.get(domFrontierBBID).addInstruction(new PHIInstruction(symbol));
+                        this.__basicBlocks.get(domFrontierBBID).addInstruction(new PHIInstruction(symbol, this.getPredecessors(domFrontierBBID).size()));
 
                         //A_PHI[v] <- A_PHI[v] U {y}
                         if (this.__phiPlacedAt.containsKey(symbol))
@@ -310,6 +322,8 @@ public abstract class StaticSingleAssignment extends CFG {
         return -1;
     }
     private Integer WhichSucc(Integer successor, Integer predecessor){
+        if(successor == predecessor)
+            return -1;
         Integer count = 0;
         //get the parent of the success
         for(Integer succ : this.__basicBlockSuccessorSet.get(predecessor)){
@@ -332,5 +346,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
     public HashMap<String, HashSet<Integer>> getBasicBlockSymbolDefinitionTable() { return __basicBlockSymbolDefinitionTable; }
     public HashMap<String, HashSet<Integer>> getBasicBlockSymbolUseTable() { return __basicBlockSymbolUseTable; }
+
+
 
 }

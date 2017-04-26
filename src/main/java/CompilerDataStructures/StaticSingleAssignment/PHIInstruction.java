@@ -11,12 +11,16 @@ public class PHIInstruction extends  InstructionNode{
     protected ArrayList<String> __joinedSymbols;
 
 
-    public PHIInstruction(String symbol){
+    public PHIInstruction(String symbol, Integer numJoined){
         super(-1,null);
         __oringinalSymbol = symbol;
         this.__outputSymbols.add(symbol);
        // this.__outputSymbol = symbol;
         this.__joinedSymbols = new ArrayList<String>();
+        while(numJoined-- >0) {
+            this.__joinedSymbols.add(symbol);
+            this.__inputSymbols.add(symbol);
+        }
     }
 
     public void InsertNodeAtIndex(Integer index, String symbol){
