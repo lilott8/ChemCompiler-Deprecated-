@@ -11,15 +11,12 @@ import org.apache.logging.log4j.Logger;
 public class MFSimSSASplit extends MFSimSSANode{
     public static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
     private Integer __numOutput;
-    private Integer __time;
+    private Long __time;
 
     public MFSimSSASplit(Integer id, Split splitNode) {
         super(id, OperationClassifier.SPLIT, splitNode.getName());
         __numOutput = splitNode.getInputs().size();
-
-        //TODO:: extract time from Operation.
-        logger.warn("Using template time for mix.");
-        __time = 2;
+        __time = getTime(splitNode, logger);
 
     }
 

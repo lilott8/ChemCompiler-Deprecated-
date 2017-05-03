@@ -49,6 +49,9 @@ public abstract class StaticSingleAssignment extends CFG {
 
     protected void CreateBasicBlockSymbolDefinitionAndUseTables(){
         //check for Global Variables
+
+
+
         for(InstructionNode instructionNode : this.__entry.getInstructions()){
             if(instructionNode instanceof GlobalAssignment){
 
@@ -340,6 +343,9 @@ public abstract class StaticSingleAssignment extends CFG {
 
         return symbol.substring(0,IndexOfLastUndescore+1) + subscript.toString();
     }
+
+    public HashMap<String, HashSet<Integer>> getBasicBlockSymbolDefinitionTable() { return __basicBlockSymbolDefinitionTable; }
+    public HashMap<String, HashSet<Integer>> getBasicBlockSymbolUseTable() { return __basicBlockSymbolUseTable; }
 
 
 

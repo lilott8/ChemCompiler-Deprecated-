@@ -10,22 +10,16 @@ import org.apache.logging.log4j.Logger;
  */
 public class MFSimSSACool extends MFSimSSANode {
     private static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
-    private Integer __time;
+    private Long __time;
 
     public MFSimSSACool(Integer id, React reactNode) {
         super(id, OperationClassifier.COOL, reactNode.getName());
-
-        //TODO:: extract time from Operation.
-        logger.warn("Using template time for React.");
-        __time = 2;
+        __time = getTime(reactNode, logger);
     }
 
     public MFSimSSACool(Integer id, Heat heatNode){
         super(id, OperationClassifier.COOL, heatNode.getName());
-
-        //TODO:: extract time from Operation.
-        logger.warn("Using template time for Cool.");
-        __time = 2;
+        __time = getTime(heatNode, logger);
     }
     public String toString() {
         String ret = "NODE (" + this.__nodeID + ", " + this.__opType + ", " + __time + ", " + this.__nodeName + ")\n";

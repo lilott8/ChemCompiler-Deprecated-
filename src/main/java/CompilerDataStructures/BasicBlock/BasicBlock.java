@@ -41,15 +41,17 @@ public class BasicBlock implements Serializable {
         __ID = id;
     }
 
+    //copy constructor
     public BasicBlock(BasicBlock bb) {
-        __killedSet = new HashSet<String>();
-        __definitions = new HashSet<String>();
-
-        __instructions = bb.getInstructions();
-        __edges = bb.getEdges();
-        __ID = bb.ID();
+        __basicBlockEntry = bb.__basicBlockEntry;
+        __basicBlockExit = bb.__basicBlockExit;
+        __symbolTable = bb.__symbolTable;
+        __killedSet = bb.__killedSet;
+        __definitions = bb.__definitions;
+        __instructions = bb.__instructions;
+        __edges = bb.__edges;
+        __ID = bb.__ID;
     }
-
 
     public void AddVariableDefinition(Instruction i){
        if (! i.getOutputs().isEmpty()){

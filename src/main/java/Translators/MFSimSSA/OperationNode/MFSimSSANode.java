@@ -1,9 +1,13 @@
 package Translators.MFSimSSA.OperationNode;
 
 import Translators.MFSimSSA.MFSimSSATranslator;
+import executable.instructions.Instruction;
+import substance.Property;
+import substance.Units;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by chriscurtis on 10/28/16.
@@ -61,5 +65,30 @@ public abstract class MFSimSSANode {
     }
     public Integer getID() { return __nodeID; }
     public String getName() { return __nodeName; }
+
+    long getTime(Instruction node, Logger logger) {
+        for (Property p : node.getProperties()) {
+            if (p.getUnit() instanceof Units.Time) {
+                switch ((Units.Time) p.getUnit()) {
+                    case DAY:
+                        return (long) p.getQuantity() * 24 * 60 * 60 * 1000000;  //day to microsecond
+                    case HOUR:
+                        return (long) p.getQuantity() * 60 * 60 * 1000000; //hour to microsecond
+                    case MINUTE:
+                        return (long) p.getQuantity() * 60 * 1000000; //minute to microsecond
+                    case SECOND:
+                        return (long) p.getQuantity() * 1000000; //second to microsecond
+                    case MILLISECOND:
+                        return (long) p.getQuantity() * 1000;
+                    case MICROSECOND:
+                        return (long) p.getQuantity();
+                    default:
+                        logger.warn("Using template time.");
+                }
+            }
+        }
+        return 2;  //template time
+    }
+
 }
 

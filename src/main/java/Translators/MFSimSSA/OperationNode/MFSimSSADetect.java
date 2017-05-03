@@ -12,15 +12,13 @@ import org.apache.logging.log4j.Logger;
 public class MFSimSSADetect extends MFSimSSANode{
     private static final Logger logger = LogManager.getLogger(MFSimSSADetect.class);
     private Integer __numDetect;
-    private Integer __time;
+    private Long __time;
 
-    public MFSimSSADetect(Integer id, Detect mixNode) {
-        super(id, OperationClassifier.DETECT, mixNode.getName());
-        __numDetect = mixNode.getInputs().size();
+    public MFSimSSADetect(Integer id, Detect detectNode) {
+        super(id, OperationClassifier.DETECT, detectNode.getName());
+        __numDetect = detectNode.getInputs().size();
 
-        //TODO:: extract time from Operation.
-        logger.warn("Using template time for mix.");
-        __time = 2;
+        __time = getTime(detectNode, logger);
 
     }
 

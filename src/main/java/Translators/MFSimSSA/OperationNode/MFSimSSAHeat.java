@@ -9,13 +9,10 @@ import org.apache.logging.log4j.Logger;
  */
 public class MFSimSSAHeat extends MFSimSSANode {
     private static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
-    private Integer __time;
+    private Long __time;
     public MFSimSSAHeat(Integer id, Heat heatNode){
         super(id, OperationClassifier.HEAT, heatNode.getName());
-
-        //TODO:: extract time from Operation.
-        logger.warn("Using template time for mix.");
-        __time = 2;
+        __time = getTime(heatNode, logger);
     }
     public String toString() {
         String ret = "NODE (" + this.__nodeID + ", " + this.__opType +  ", " + __time + ", " + this.__nodeName + ")\n";

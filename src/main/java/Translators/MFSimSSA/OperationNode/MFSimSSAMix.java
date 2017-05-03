@@ -2,24 +2,24 @@ package Translators.MFSimSSA.OperationNode;
 
 
 import executable.instructions.Combine;
+import executable.instructions.Instruction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import substance.Property;
+import substance.Units;
 
 /**
  * Created by chriscurtis on 10/28/16.
  */
-public class MFSimSSAMix extends MFSimSSANode{
+public class MFSimSSAMix extends MFSimSSANode {
     private static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
     private Integer __numMix;
-    private Integer __time;
+    private Long __time;
 
     public MFSimSSAMix(Integer id, Combine mixNode) {
         super(id, OperationClassifier.MIX, mixNode.getName());
         __numMix = mixNode.getInputs().size();
-
-        //TODO:: extract time from Operation.
-        logger.warn("Using template time for mix.");
-        __time = 2;
+        __time = getTime(mixNode, logger);
 
     }
 
