@@ -1,4 +1,4 @@
-package BooleanParser;
+package BooleanExpressionParser;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -153,7 +153,7 @@ class NotExpr extends BooleanExpr {
         return this.expr;
     }
     BooleanExpr right(){
-        return this.expr;
+        return null;
     }
     BooleanExpr conn(){
         return new TokenExpr(new Token("!"));

@@ -1,6 +1,4 @@
-package BooleanParser;
-
-import org.bool_parser.BooleanParser;
+package BooleanExpressionParser;
 
 import java.util.LinkedList;
 
