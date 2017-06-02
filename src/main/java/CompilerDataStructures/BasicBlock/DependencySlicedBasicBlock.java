@@ -33,6 +33,7 @@ public class DependencySlicedBasicBlock extends BasicBlock{
         // loop through all inputs (reads)
         for (String inputKey : instruction.getInputSymbols()) {
 
+
             //get dispense instructions
             ArrayList<Integer> predecessors = new ArrayList<Integer>(SPSSA.getPredecessors(bb.ID()));
             for (Integer i = predecessors.size(); i > 0; --i) {
@@ -56,7 +57,10 @@ public class DependencySlicedBasicBlock extends BasicBlock{
 
     private void ProcessInstructionOutput(InstructionNode instruction, ArrayList<InstructionEdge> update, BasicBlock bb, Integer index) {
         // loop through all outputs (writes)
+        Set<Integer> exitTable = new HashSet<Integer>();
         for (String outputKey : instruction.getOutputSymbols()) {
+            exitTable.add(instruction.ID());
+            bb.getBasicBlockExitTable().put(outputKey, exitTable);
             for (Integer successorIndex=index+1; successorIndex < bb.getInstructions().size(); ++successorIndex) {
                 InstructionNode successor = bb.getInstructions().get(successorIndex);
                 //check if output is used by successor (read)

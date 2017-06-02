@@ -3,10 +3,13 @@ package Translators.MFSimSSA;
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.InstructionEdge;
 import CompilerDataStructures.InstructionNode;
+import CompilerDataStructures.StaticSingleAssignment.RenamedVariableNode;
 import Translators.MFSimSSA.OperationNode.*;
 import executable.instructions.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import substance.Chemical;
+import substance.Substance;
 import variable.Instance;
 
 import java.util.*;
@@ -23,7 +26,7 @@ public class MFSimSSADAG {
     private Map<Integer, MFSimSSATransferIn> __transIn;
     private List<MFSimSSADispense> __dispense;
 
-    public MFSimSSADAG(BasicBlock bb, MFSimSSATranslator.IDGen parentsIDGen){
+    public MFSimSSADAG(BasicBlock bb, MFSimSSATranslator.IDGen parentsIDGen, HashMap<String, Stack<RenamedVariableNode>> variableStack){
         __uniqueIDGen = parentsIDGen;
         __name = "DAG" + bb.ID().toString();
         __nodes = new LinkedHashMap <Integer, MFSimSSANode>();
@@ -77,10 +80,27 @@ public class MFSimSSADAG {
                         && ((Instance) instructionNode.Instruction().getInputs().get(dispense)).getIsStationary())
                     continue;
 
-
-                logger.warn("Setting template volume amount");
-                // get ammount:
-                MFSimSSADispense dis = new MFSimSSADispense(this.__uniqueIDGen.getNextID(), dispense, dispense, 10);
+                // get dispense amount
+                Integer amount = 0;  //template amount
+                Boolean changed = false;
+                for (String input : instruction.getInputs().keySet()) {
+                    if (variableStack.containsKey(input)) {
+                        if (variableStack.get(input).peek().GetVariable(0).equals(dispense)) {
+                            if (instruction.getInputs().get(input) instanceof Instance) {
+                                if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
+                                    amount = (int)((Instance) instruction.getInputs().get(input)).getSubstance().getVolume().getQuantity();
+                                    changed = true;
+                                }
+                            }
+                           // amount = instruction.getInputs().get(input);
+                        }
+                    }
+                }
+                if (!changed) {
+                    logger.warn("Setting template volume amount");
+                    amount = 999;
+                }
+                MFSimSSADispense dis = new MFSimSSADispense(this.__uniqueIDGen.getNextID(), dispense, dispense, amount);
                 if (n != null)
                     dis.addSuccessor(n.getID());
 //                __nodes.put((dis.getID()*-1), dis);

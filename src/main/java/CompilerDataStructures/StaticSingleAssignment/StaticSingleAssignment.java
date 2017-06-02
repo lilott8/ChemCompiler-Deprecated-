@@ -31,6 +31,8 @@ public abstract class StaticSingleAssignment extends CFG {
     protected HashMap<String, Stack<RenamedVariableNode> > __variableStack;
     protected HashMap<String, Integer> __variableCount;
 
+    public HashMap<String, Stack<RenamedVariableNode>> get__variableStack() { return __variableStack; }
+
 
     public StaticSingleAssignment(CFG controlFlowGraph){
         super(controlFlowGraph);

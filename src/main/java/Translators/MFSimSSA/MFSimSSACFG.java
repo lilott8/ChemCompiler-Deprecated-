@@ -3,6 +3,7 @@ package Translators.MFSimSSA;
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.BasicBlock.BasicBlockEdge;
 import CompilerDataStructures.ControlFlowGraph.CFG;
+import CompilerDataStructures.StaticSingleAssignment.SemiPrunedStaticSingleAssignment.SemiPrunedStaticSingleAssignment;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferIn;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferOut;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +31,7 @@ public class MFSimSSACFG{
         __conditionalGroups = new HashMap<Integer, List<BasicBlockEdge>>();
 
         for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()){
-            MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID);
+            MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID, ((SemiPrunedStaticSingleAssignment) controlFlowGraph).get__variableStack());
             __dags.put(bb.ID(),dag);
             logger.info(dag);
         }
