@@ -106,9 +106,9 @@ public class MFSimSSADAG {
                 Boolean changed = false;
                 for (String input : instruction.getInputs().keySet()) {
                     if (variableStack.containsKey(input)) {
-                        for (RenamedVariableNode renamedVariableNode : variableStack.get(input)) {
-                            for (Integer i = 0; i < variableStack.get(input).size(); i++) {
-                                if (renamedVariableNode.GetVariable(i).equals(dispense)) {
+//                        for (RenamedVariableNode renamedVariableNode : variableStack.get(input)) {
+//                            for (Integer i = 0; i < variableStack.get(input).size(); i++) {
+//                                if (renamedVariableNode.GetVariable(i).equals(dispense)) {
 
                                     if (instruction.getInputs().get(input) instanceof Instance) {
                                         if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
@@ -116,9 +116,9 @@ public class MFSimSSADAG {
                                             changed = true;
                                         }
                                     }
-                                }
-                            }
-                        }
+//                                }
+//                            }
+//                        }
                     }
 
                 }
