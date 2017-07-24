@@ -31,6 +31,8 @@ public class RenamedVariableNode {
     }
     public Integer getOrginID() {return __originID; }
 
+    public Integer size() { return __renamedNodes.size(); }
+
     public String GetVariable(Integer NumSuccessor){
         if(NumSuccessor == -1 )
             return this.__renamedNodes.get(0);

@@ -1,23 +1,16 @@
 import ChemicalInteractions.ChemicalResolution;
 import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.BasicBlock.BasicBlockEdge;
 import CompilerDataStructures.BasicBlock.DependencySlicedBasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
-import CompilerDataStructures.CFGBuilder;
-import CompilerDataStructures.InstructionNode;
-import CompilerDataStructures.StaticSingleAssignment.MinimalStaticSingleAssignment.MinimalStaticSingleAssignment;
-import CompilerDataStructures.StaticSingleAssignment.SemiPrunedStaticSingleAssignment.SemiPrunedStaticSingleAssignment;
-import CompilerDataStructures.StaticSingleInformation.StaticSingleInformation;
+import CompilerDataStructures.CFGBuilder;import CompilerDataStructures.StaticSingleInformation.StaticSingleInformation;
 import Translators.TypeSystem.TypeSystemTranslator;
 import executable.Experiment;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import variable.Variable;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by chriscurtis on 9/29/16.
@@ -52,26 +45,27 @@ public class Compiler {
                 for (Experiment experiment : benchtop.getExperiments().get(experimentKey)) {
                     CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment);
                     //MinimalStaticSingleAssignment SSA = new MinimalStaticSingleAssignment(controlFlow);
-                    SemiPrunedStaticSingleAssignment SPSSA = new SemiPrunedStaticSingleAssignment(controlFlow);
-                    //StaticSingleInformation SSI = new StaticSingleInformation(controlFlow);
+                    //SemiPrunedStaticSingleAssignment SPSSA = new SemiPrunedStaticSingleAssignment(controlFlow);
+                    StaticSingleInformation SSI = new StaticSingleInformation(controlFlow);
                     //System.out.println(controlFlow);
-                    for (BasicBlock bb : SPSSA.getBasicBlocks().values()) {
-                        //replaces bb with a dependency sliced version
-                        SPSSA.newBasicBlock(new DependencySlicedBasicBlock(bb, SPSSA));
+
+                    //replaces basic blocks with dependancy sliced versions
+                    for (BasicBlock bb : SSI.getBasicBlocks().values()) {
+                        SSI.newBasicBlock(new DependencySlicedBasicBlock(bb, SSI));
                     }
 
                     //logger.debug("\n" + SSA);
-                    logger.debug("\n" + SPSSA);
+                    logger.debug("\n" + SSI);
                     //logger.debug("\n" + SSI);
 
 
                     //ProcessExperimentCFG(SPSSA);
                      //__experimentControlFlowGraphs.add(controlFlow);
-                    __experimentControlFlowGraphs.add(SPSSA);
+                    __experimentControlFlowGraphs.add(SSI);
                      //logger.debug(controlFlow);
 
                     //TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
-                    TypeSystemTranslator trans = new TypeSystemTranslator(SPSSA);
+                    TypeSystemTranslator trans = new TypeSystemTranslator(SSI);
                     trans.toFile("Experiment.txt");
 
                     //trans.toFile("Experiment3.txt");

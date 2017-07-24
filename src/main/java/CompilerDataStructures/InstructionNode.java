@@ -5,10 +5,7 @@ import executable.instructions.Instruction;
 import substance.Property;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by chriscurtis on 9/28/16.
@@ -20,10 +17,30 @@ public class InstructionNode implements Serializable {
     protected ArrayList<String> __inputSymbols;
     protected ArrayList<String> __outputSymbols;
 
+    private LinkedHashSet<String> inSet;
+    private LinkedHashSet<String> outSet;
+    private LinkedHashSet<String> _def;
+    private LinkedHashSet<String> _use;
+    private LinkedHashSet<InstructionNode> predecessors;
+    private LinkedHashSet<InstructionNode> successors;
+
+    public LinkedHashSet<String> getInSet() { return inSet; }
+    public LinkedHashSet<String> getOutSet() { return outSet; }
+    public LinkedHashSet<String> get_def() { return _def; }
+    public LinkedHashSet<String> get_use() { return _use; }
+    public void set_def(LinkedHashSet<String> def) { _def = new LinkedHashSet<String>(def); }
+    public void set_use(LinkedHashSet<String> use) { _use = new LinkedHashSet<String>(use); }
+    public LinkedHashSet<InstructionNode> get_pred() { return predecessors; }
+    public LinkedHashSet<InstructionNode> get_succ() { return successors; }
+
 
     private Boolean __leader;
 
     public InstructionNode(Integer id, Instruction instruction) {
+        predecessors = new LinkedHashSet<InstructionNode>();
+        successors = new LinkedHashSet<InstructionNode>();
+        inSet = new LinkedHashSet<String>();
+        outSet = new LinkedHashSet<String>();
         __dispenseSymbols = new HashSet<String>();
         __inputSymbols = new ArrayList<String>();
         __outputSymbols = new ArrayList<String>();
@@ -36,6 +53,10 @@ public class InstructionNode implements Serializable {
         StripInputsAndOutputs(instruction);
     }
     public InstructionNode(Integer id, Instruction instruction, Boolean isLeader ) {
+        predecessors = new LinkedHashSet<InstructionNode>();
+        successors = new LinkedHashSet<InstructionNode>();
+        inSet = new LinkedHashSet<String>();
+        outSet = new LinkedHashSet<String>();
         __dispenseSymbols = new HashSet<String>();
         __inputSymbols = new ArrayList<String>();
         __outputSymbols = new ArrayList<String>();
@@ -64,6 +85,10 @@ public class InstructionNode implements Serializable {
         this.__dispenseSymbols.add(symbol);
     }
 
+    public void addTransferIn(String symbol) {
+        this.__inputSymbols.add(symbol);
+    }
+
     public ArrayList<String> getInputSymbols() { return __inputSymbols; }
     public ArrayList<String> getOutputSymbols() { return __outputSymbols; }
     public Set<String> getDispenseSymbols(){ return __dispenseSymbols; }
@@ -71,7 +96,7 @@ public class InstructionNode implements Serializable {
         return this.toString("");
     }
     public String toString(String indentBuffer) {
-        String ret = indentBuffer ;// + __ID.toString() + ":\t";
+        String ret = indentBuffer + __ID.toString() + ":\t";
         for(String out: __outputSymbols)
             ret += out + " = ";
 

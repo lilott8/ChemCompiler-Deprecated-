@@ -3,7 +3,9 @@ package Translators.MFSimSSA;
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.InstructionEdge;
 import CompilerDataStructures.InstructionNode;
+import CompilerDataStructures.StaticSingleAssignment.PHIInstruction;
 import CompilerDataStructures.StaticSingleAssignment.RenamedVariableNode;
+import CompilerDataStructures.StaticSingleInformation.SigmaInstruction;
 import Translators.MFSimSSA.OperationNode.*;
 import executable.instructions.*;
 import org.apache.logging.log4j.LogManager;
@@ -22,34 +24,53 @@ public class MFSimSSADAG {
     private MFSimSSATranslator.IDGen __uniqueIDGen;
     private String __name;
     private Map<Integer, MFSimSSANode> __nodes;
-    private Map<Integer, MFSimSSATransferOut> __transOut;
-    private Map<Integer, MFSimSSATransferIn> __transIn;
+    private Map<Integer, ArrayList<MFSimSSATransferOut> > __transOut;
+    private Map<Integer, ArrayList<MFSimSSATransferIn>> __transIn;
     private List<MFSimSSADispense> __dispense;
 
     public MFSimSSADAG(BasicBlock bb, MFSimSSATranslator.IDGen parentsIDGen, HashMap<String, Stack<RenamedVariableNode>> variableStack){
         __uniqueIDGen = parentsIDGen;
         __name = "DAG" + bb.ID().toString();
         __nodes = new LinkedHashMap <Integer, MFSimSSANode>();
-        __transOut = new HashMap <Integer,MFSimSSATransferOut>();
-        __transIn = new HashMap <Integer,MFSimSSATransferIn>();
+        __transOut = new HashMap <Integer, ArrayList<MFSimSSATransferOut>>();
+        __transIn = new HashMap <Integer, ArrayList<MFSimSSATransferIn>>();
         __dispense = new ArrayList<MFSimSSADispense>();
 
         for(String transferInDroplet: bb.getBasicBlockEntryTable().keySet()){
             if(bb.getSymbolTable().contains(transferInDroplet) && bb.getSymbolTable().get(transferInDroplet).IsStationary())
                 continue;
+
+            // set of
             Set<Integer> predecessorSet = bb.getBasicBlockEntryTable().get(transferInDroplet);
             for( Integer predecessorID : predecessorSet) {
                 if ( predecessorID != -2 ) {
                     MFSimSSATransferIn transIn = new MFSimSSATransferIn(__uniqueIDGen.getNextID(), transferInDroplet,transferInDroplet);
                     //__nodes.put(predecessorID,transIn);
-                    __transIn.put(predecessorID,transIn);
+                    if (__transIn.get(predecessorID) == null) {
+                        __transIn.put(predecessorID, new ArrayList<MFSimSSATransferIn>());
+                    }
+                    __transIn.get(predecessorID).add(transIn);
                     break;
                 }
             }
         }
 
 
-        for(InstructionNode instructionNode : bb.getInstructions()){
+        for (Integer numInstructions = 0; numInstructions < bb.getInstructions().size(); numInstructions++) {
+            InstructionNode instructionNode = bb.getInstructions().get(numInstructions);
+
+            if (instructionNode instanceof SigmaInstruction || instructionNode instanceof PHIInstruction) {
+                continue;
+            }
+
+            if (numInstructions == 0) {
+                logger.info("LEADER");
+            }
+            else {
+                //
+            }
+
+
             MFSimSSANode n = null;
 
             Instruction instruction = instructionNode.Instruction();
@@ -85,16 +106,21 @@ public class MFSimSSADAG {
                 Boolean changed = false;
                 for (String input : instruction.getInputs().keySet()) {
                     if (variableStack.containsKey(input)) {
-                        if (variableStack.get(input).peek().GetVariable(0).equals(dispense)) {
-                            if (instruction.getInputs().get(input) instanceof Instance) {
-                                if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
-                                    amount = (int)((Instance) instruction.getInputs().get(input)).getSubstance().getVolume().getQuantity();
-                                    changed = true;
+                        for (RenamedVariableNode renamedVariableNode : variableStack.get(input)) {
+                            for (Integer i = 0; i < variableStack.get(input).size(); i++) {
+                                if (renamedVariableNode.GetVariable(i).equals(dispense)) {
+
+                                    if (instruction.getInputs().get(input) instanceof Instance) {
+                                        if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
+                                            amount = (int) ((Instance) instruction.getInputs().get(input)).getSubstance().getVolume().getQuantity();
+                                            changed = true;
+                                        }
+                                    }
                                 }
                             }
-                           // amount = instruction.getInputs().get(input);
                         }
                     }
+
                 }
                 if (!changed) {
                     logger.warn("Setting template volume amount");
@@ -103,7 +129,6 @@ public class MFSimSSADAG {
                 MFSimSSADispense dis = new MFSimSSADispense(this.__uniqueIDGen.getNextID(), dispense, dispense, amount);
                 if (n != null)
                     dis.addSuccessor(n.getID());
-//                __nodes.put((dis.getID()*-1), dis);
                 __dispense.add(dis);
             }
             if (n != null)
@@ -111,35 +136,45 @@ public class MFSimSSADAG {
 
 
         }
-        for(String transferOutDroplet: bb.getBasicBlockExitTable().keySet()) {
-            if(bb.getSymbolTable().contains(transferOutDroplet) && bb.getSymbolTable().get(transferOutDroplet).IsStationary())
+
+        for (String transferOutDroplet: bb.getBasicBlockExitTable().keySet()) {
+            InstructionNode instr = bb.getInstructions().get(bb.getInstructions().size()-1);
+            if (instr instanceof SigmaInstruction || instr instanceof PHIInstruction) {
+                //continue;
+            }
+            else if (instr.Instruction().getInputs().containsKey(transferOutDroplet) && instr.Instruction().getInputs().get(transferOutDroplet) instanceof Instance &&
+                    ((Instance) instr.Instruction().getInputs().get(transferOutDroplet)).getIsStationary()) {
                 continue;
-            for( Integer out : bb.getBasicBlockExitTable().get(transferOutDroplet)) {
-                MFSimSSATransferOut transOut = new MFSimSSATransferOut(__uniqueIDGen.getNextID(), transferOutDroplet, transferOutDroplet);
-                //__nodes.put(out, transOut);
-                __transOut.put(out,transOut);
             }
+            else if (instr.Instruction() instanceof Output) {
+                continue;
+            }
+            MFSimSSATransferOut transOut = new MFSimSSATransferOut(__uniqueIDGen.getNextID(), transferOutDroplet, transferOutDroplet);
+            if (__transOut.get(instr.ID()) == null) {
+                    __transOut.put(transOut.getID(), new ArrayList<MFSimSSATransferOut>());
+            }
+            __transOut.get(transOut.getID()).add(transOut);
         }
 
 
-        Set<Integer> keystoRemove = new HashSet<Integer>();
-        //add successor edges
-        for(Integer toutPredKey : this.__transOut.keySet()){
-            if(__nodes.containsKey(toutPredKey)) {
-                __nodes.get(toutPredKey).addSuccessor(this.__transOut.get(toutPredKey).getID());
-            }
-            else if(__transIn.containsKey(toutPredKey)){
-                __transIn.get(toutPredKey).addSuccessor(this.__transOut.get(toutPredKey).getID());
-            }
-            else{
-                //remove edge
-                keystoRemove.add(toutPredKey);
-//                this.__transOut.remove(toutPredKey);
-            }
-        }
-
-        for(Integer key: keystoRemove)
-            this.__transOut.remove(key);
+//        Set<Integer> keystoRemove = new HashSet<Integer>();
+//        //add successor edges
+//        for(Integer toutPredKey : this.__transOut.keySet()){
+//            if(__nodes.containsKey(toutPredKey)) {
+//                __nodes.get(toutPredKey).addSuccessor(toutPredKey);
+//            }
+//            else if(__transIn.containsKey(toutPredKey)){
+//                //__transIn.get(toutPredKey).get(toutPredKey);
+//            }
+//            else{
+//                //remove edge
+//                keystoRemove.add(toutPredKey);
+////                this.__transOut.remove(toutPredKey);
+//            }
+//        }
+//
+//        for(Integer key: keystoRemove)
+//            this.__transOut.remove(key);
 
 
         for(InstructionEdge edge: bb.getEdges()){
@@ -151,23 +186,63 @@ public class MFSimSSADAG {
                         node.addSuccessor(destination);
                 }
                 else if(__transIn.containsKey(edge.getSource())){
-                    MFSimSSATransferIn node = __transIn.get(edge.getSource());
+                    MFSimSSATransferIn node = __transIn.get(edge.getSource()).get(destination);
                     if(node.getID() < destination )
                         node.addSuccessor(destination);
                 }
             }
         }
+
+
+
+        for (ArrayList<MFSimSSATransferIn> transIn : __transIn.values()) {
+            for (MFSimSSATransferIn in : transIn) {
+                if (__nodes.size() > 0) {
+                    in.addSuccessor(__nodes.get(bb.getInstructions().get(0).ID()).getID());
+                }
+                else {
+                    Integer succ = 0;
+                    for (Integer transOut : __transOut.keySet()) {
+                        succ = transOut;
+                        break;
+                    }
+                    in.addSuccessor(succ);
+                }
+            }
+        }
+
+        for (ArrayList<MFSimSSATransferOut> transOut : __transOut.values()) {
+            for (MFSimSSATransferOut out : transOut) {
+                if (__nodes.size() > 0) {
+                    for (Integer instrIndex = bb.getInstructions().size()-1; ; --instrIndex) {
+                        InstructionNode instruction = bb.getInstructions().get(instrIndex);
+                        if (instruction.ID() > 0) {
+                            __nodes.get(instruction.ID()).addSuccessor(out.getID());
+                            break;
+                        }
+                    }
+                }
+                else {
+                   // do nothing, transIn should take care of the edge between the two
+                }
+            }
+        }
+
     }
 
-    public Map<Integer, MFSimSSATransferOut> getTransferOutNode() { return __transOut; }
+    public Map<Integer, MFSimSSANode> getNodes() { return __nodes; }
 
-    public Map<Integer, MFSimSSATransferIn> getTransferInNode() { return __transIn; }
+    public Map<Integer, ArrayList<MFSimSSATransferOut>> getTransferOutNode() { return __transOut; }
+
+    public Map<Integer, ArrayList<MFSimSSATransferIn>> getTransferInNode() { return __transIn; }
     public String getName() { return this.__name; }
 
     public String toString(){
         String ret = "DagName (" + this.__name + ")\n";
-        for(MFSimSSATransferIn tin : this.__transIn.values()){
-            ret += tin.toString() + "\n";
+        for(ArrayList<MFSimSSATransferIn> tin : this.__transIn.values()){
+            for (MFSimSSATransferIn ttin : tin) {
+                ret += ttin.toString() + "\n";
+            }
         }
         for(MFSimSSADispense disp : this.__dispense){
             ret += disp.toString() + "\n";
@@ -177,8 +252,10 @@ public class MFSimSSADAG {
             ret += n.toString() + "\n";
         }
 
-        for(MFSimSSATransferOut tout : this.__transOut.values()){
-            ret += tout.toString() + "\n";
+        for(ArrayList<MFSimSSATransferOut> tout : this.__transOut.values()){
+            for (MFSimSSATransferOut ttout : tout) {
+                ret += ttout.toString() + "\n";
+            }
         }
         return ret;
     }
