@@ -95,7 +95,7 @@ public class CFGBuilder {
         if (branch != null) {
 //            controlFlowGraph.setSymbolTable(controlFlowGraph.getSymbolTable().nestTable());
             BasicBlock trueBranchEntryBasicBlock = controlFlowGraph.newBasicBlock();
-            controlFlowGraph.addEdge(bb,trueBranchEntryBasicBlock, branch.getCondition());
+            controlFlowGraph.addEdge(bb,trueBranchEntryBasicBlock, branch.getCondition(), branch.getName());
 
             for(BasicBlock processedBasicBlock: ProcessNestedInstructions(controlFlowGraph, trueBranchEntryBasicBlock, branch.getTrueBranch())) {
                 leaves.add(processedBasicBlock);
