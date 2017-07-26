@@ -3,6 +3,7 @@ package CompilerDataStructures;
 //import ChemicalInteractions.ChemicalInteraction;
 import executable.instructions.Instruction;
 import substance.Property;
+import substance.Substance;
 
 import java.io.Serializable;
 import java.util.*;
@@ -11,6 +12,7 @@ import java.util.*;
  * Created by chriscurtis on 9/28/16.
  */
 public class InstructionNode implements Serializable {
+
     private Integer __ID;
     private Instruction __instruction;
     private Set<String> __dispenseSymbols;

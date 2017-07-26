@@ -5,9 +5,11 @@ import CompilerDataStructures.DominatorTree.DominatorTree;
 import CompilerDataStructures.DominatorTree.PostDominatorTree;
 import Translators.MFSimSSA.MFSimSSATranslator;
 import manager.Benchtop;
+import parsing.BioScript.BenchtopParser;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import parsing.BioScript.BenchtopParser;
+
 
 public class Main {
     public static final Logger logger = LogManager.getLogger(Main.class);
@@ -18,7 +20,6 @@ public class Main {
         try {
 
             //logger.info(Main.class.getClassLoader().getResource("Benchmarks/PCRDropletReplacement.json").getPath());
-
 
             BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/test2.json").getPath());
             //logger.info(Benchtop.INSTANCE.toString());

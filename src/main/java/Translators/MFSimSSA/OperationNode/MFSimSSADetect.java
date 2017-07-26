@@ -18,7 +18,7 @@ public class MFSimSSADetect extends MFSimSSANode{
         super(id, OperationClassifier.DETECT, detectNode.getName());
         __numDetect = detectNode.getInputs().size();
 
-        __time = getTime(detectNode, logger);
+        __time = getTime(detectNode);
 
     }
 

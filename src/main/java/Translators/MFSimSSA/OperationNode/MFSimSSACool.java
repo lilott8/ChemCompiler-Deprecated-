@@ -14,12 +14,12 @@ public class MFSimSSACool extends MFSimSSANode {
 
     public MFSimSSACool(Integer id, React reactNode) {
         super(id, OperationClassifier.COOL, reactNode.getName());
-        __time = getTime(reactNode, logger);
+        __time = getTime(reactNode);
     }
 
     public MFSimSSACool(Integer id, Heat heatNode){
         super(id, OperationClassifier.COOL, heatNode.getName());
-        __time = getTime(heatNode, logger);
+        __time = getTime(heatNode);
     }
     public String toString() {
         String ret = "NODE (" + this.__nodeID + ", " + this.__opType + ", " + __time + ", " + this.__nodeName + ")\n";
