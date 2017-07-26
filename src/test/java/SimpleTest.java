@@ -1,5 +1,6 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -8,10 +9,16 @@ import org.junit.Test;
  * @project: ChemicalCompiler
  */
 public class SimpleTest {
-    protected static final Logger logger = LogManager.getLogger(SimpleTest.class);
+    private static final Logger logger = LogManager.getLogger(SimpleTest.class);
+    private Compiler compiler;
+
+    @Before
+    public void init() {
+        this.compiler = CompilationSequence.compile("tests/simple.json");
+    }
 
     @Test
-    public void initTest() {
-        logger.info("Just testing stuff");
+    public void runSimple() {
+        //logger.info(this.compiler.toString());
     }
 }

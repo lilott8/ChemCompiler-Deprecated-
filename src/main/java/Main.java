@@ -3,25 +3,48 @@ import CompilerDataStructures.BasicBlock.DependencySlicedBasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.DominatorTree.DominatorTree;
 import CompilerDataStructures.DominatorTree.PostDominatorTree;
+import Config.Config;
 import Translators.MFSimSSA.MFSimSSATranslator;
 import manager.Benchtop;
 import parsing.BioScript.BenchtopParser;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Main {
     public static final Logger logger = LogManager.getLogger(Main.class);
 
+    private static List<String> filesToCompile = new ArrayList<String>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        // Build the command line parser
+        CommandLine cmd;
+        CommandLineParser parser = new DefaultParser();
+
+        // parse the command line relative to the options
+        cmd = parser.parse(buildOptions(), args);
+        initializeEnvironment(cmd);
+
+
+        // We know that if we reach here, the file exists and is valid.
+
         //SimpleMixTest();
         try {
 
             //logger.info(Main.class.getClassLoader().getResource("Benchmarks/PCRDropletReplacement.json").getPath());
 
-            BenchtopParser.parse(Main.class.getClassLoader().getResource("json_tests/test2.json").getPath());
+            BenchtopParser.parse((String) Config.INSTANCE.get("compile").setting);
             //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {
@@ -42,7 +65,11 @@ public class Main {
                 //tst.toFile("NeurotransmitterSensing.txt");
                 //logger.info(tst.toString());
                 MFSimSSATranslator mfsimt = new MFSimSSATranslator(experiment);
-                mfsimt.toFile("test");
+                if(!((Boolean) Config.INSTANCE.get("tests").setting).booleanValue()) {
+                    mfsimt.toFile("test");
+                } else {
+                    logger.info("We are only compiling we are not generating output");
+                }
             }
 
         }
@@ -55,6 +82,63 @@ public class Main {
       //  PostDominatorTreeTest();
 
     }
+
+    private static void initializeEnvironment(final CommandLine cmd) throws Exception{
+        // see if we asked for help...
+        if(cmd.hasOption("help")) {
+            HelpFormatter hf = new HelpFormatter();
+            hf.printHelp("ChemicalCompiler", buildOptions(), true);
+            System.exit(0);
+        }
+
+
+        // See if we have the argument we need.
+        if(!cmd.hasOption("compile")) {
+            throw new Exception("No input file to compile given.");
+        }
+
+
+        // At this point we know the option 'files' has been
+        // provided to the program, so we can safely execute this.
+        for (String file : cmd.getOptionValues("compile")) {
+            File f = new File(file);
+            if (f.exists() && !f.isDirectory()) {
+                filesToCompile.add(file);
+            }
+        }
+
+        // We have to have files to compile...
+        if (filesToCompile.isEmpty()) {
+            throw new Exception("File(s) not found.");
+        }
+
+        Config.INSTANCE.buildConfig(cmd);
+        logger.info(Config.INSTANCE.toString());
+        // add any initializing statements derived from the command line here.
+    }
+
+    /**
+     * Builds the command line options needed to run the program
+     */
+    private static Options buildOptions() {
+        Options options = new Options();
+
+        // File to compile
+        String desc = "Compile the source file(s)" +
+                "\nUsage: -c /path/to/file_to_compile.json";
+        options.addOption(Option.builder("c").longOpt("compile")
+                .desc(desc).hasArg().required().type(ArrayList.class).argName("compile").build());
+
+        desc = "Test compilation but don't generate output" +
+                "\nUsage -t";
+        options.addOption(Option.builder("t").longOpt("test").desc(desc).type(Boolean.class).hasArg(false).required(false).argName("tests").build());
+
+        desc = "Place output in file file.  Since only one output file can be specified, it does not make sense to use `-o' when compiling more than one input file" +
+                "\n -o /path/to/output/";
+        options.addOption(Option.builder("o").longOpt("output").desc(desc).type(String.class).hasArg().required(false).argName("output").build());
+        return options;
+    }
+
 
     public static void DominatorTreeTest() {
         CFG cfg = new CFG();
