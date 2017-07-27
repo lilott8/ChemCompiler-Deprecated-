@@ -17,8 +17,6 @@ public class CompilationSequence {
 
     public static Compiler compile(String file) {
         try {
-            logger.info(file);
-            logger.info(CompilationSequence.class.getClassLoader().getResource(file).getPath());
             BenchtopParser.parse(CompilationSequence.class.getClassLoader().getResource(file).getPath());
             return new Compiler(Benchtop.INSTANCE);
         }

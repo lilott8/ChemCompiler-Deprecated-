@@ -15,6 +15,7 @@ public class SimpleTest {
     @Before
     public void init() {
         this.compiler = CompilationSequence.compile("tests/simple.json");
+        this.compiler.compile();
     }
 
     @Test

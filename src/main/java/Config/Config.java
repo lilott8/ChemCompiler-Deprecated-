@@ -85,9 +85,8 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
                     this.output += "/";
                 }
             }
-            logger.info(this.output);
 
-            // Are we in testing mode
+            // Are we in debug mode
             this.debug = Boolean.parseBoolean(cmd.getOptionValue("debug", "false"));
 
             if (cmd.hasOption("translate")) {

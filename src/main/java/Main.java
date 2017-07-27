@@ -50,6 +50,7 @@ public class Main {
 
         try {
             Compiler benchtopCompiler = new Compiler(Benchtop.INSTANCE);
+            benchtopCompiler.compile();
 
             for(CFG experiment : benchtopCompiler.getExperiments()){
                 //logger.debug(experiment.toString());
