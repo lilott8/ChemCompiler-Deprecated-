@@ -1,10 +1,8 @@
 import CompilerDataStructures.BasicBlock.BasicBlock;
-import CompilerDataStructures.BasicBlock.DependencySlicedBasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.DominatorTree.DominatorTree;
 import CompilerDataStructures.DominatorTree.PostDominatorTree;
 import Config.Config;
-import Translators.MFSimSSA.MFSimSSATranslator;
 import manager.Benchtop;
 import parsing.BioScript.BenchtopParser;
 
@@ -17,15 +15,11 @@ import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class Main {
     public static final Logger logger = LogManager.getLogger(Main.class);
-
-    private static List<String> filesToCompile = new ArrayList<String>();
 
     public static void main(String[] args) throws Exception {
         // Build the command line parser
@@ -36,15 +30,16 @@ public class Main {
         cmd = parser.parse(buildOptions(), args);
         initializeEnvironment(cmd);
 
-
-        // We know that if we reach here, the file exists and is valid.
+        if (Config.INSTANCE.isDebug()) {
+            logger.info("You are in test mode");
+        }
 
         //SimpleMixTest();
         try {
 
-            //logger.info(Main.class.getClassLoader().getResource("Benchmarks/PCRDropletReplacement.json").getPath());
-
-            BenchtopParser.parse((String) Config.INSTANCE.get("compile").setting);
+            for(String file : Config.INSTANCE.getFilesForCompilation()) {
+                BenchtopParser.parse(file);
+            }
             //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {
@@ -56,19 +51,15 @@ public class Main {
         try {
             Compiler benchtopCompiler = new Compiler(Benchtop.INSTANCE);
 
-
             for(CFG experiment : benchtopCompiler.getExperiments()){
                 //logger.debug(experiment.toString());
-
-
-               //TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
+                //TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
                 //tst.toFile("NeurotransmitterSensing.txt");
                 //logger.info(tst.toString());
-                MFSimSSATranslator mfsimt = new MFSimSSATranslator(experiment);
-                if(!((Boolean) Config.INSTANCE.get("tests").setting).booleanValue()) {
-                    mfsimt.toFile("test");
-                } else {
-                    logger.info("We are only compiling we are not generating output");
+                if (Config.INSTANCE.translationsEnabled() && Config.INSTANCE.translationEnabled("mfsim")) {
+                    Config.INSTANCE.getTranslationByName("mfsim").runTranslation(experiment).toFile(Config.INSTANCE.getOuptutDir() + "test");
+                    //Translator mfsimt = new MFSimSSATranslator().runTranslation(experiment);
+                    //mfsimt.toFile(Config.INSTANCE.getOuptutDir());
                 }
             }
 
@@ -78,9 +69,11 @@ public class Main {
             logger.fatal(e.getStackTrace());
         }
 
-       // DominatorTreeTest2();
-      //  PostDominatorTreeTest();
-
+        if (Config.INSTANCE.isDebug()) {
+            DominatorTreeTest();
+            DominatorTreeTest2();
+            PostDominatorTreeTest();
+        }
     }
 
     private static void initializeEnvironment(final CommandLine cmd) throws Exception{
@@ -91,30 +84,23 @@ public class Main {
             System.exit(0);
         }
 
-
         // See if we have the argument we need.
         if(!cmd.hasOption("compile")) {
             throw new Exception("No input file to compile given.");
         }
 
-
-        // At this point we know the option 'files' has been
-        // provided to the program, so we can safely execute this.
-        for (String file : cmd.getOptionValues("compile")) {
-            File f = new File(file);
-            if (f.exists() && !f.isDirectory()) {
-                filesToCompile.add(file);
-            }
+        // If we have a translator we must also have output.
+        if ((cmd.hasOption("translate") && !cmd.hasOption("output")) || cmd.hasOption("output") && !cmd.hasOption("translate")) {
+            throw new Exception("If you provide a translation or an output, the other must accompany.");
         }
 
-        // We have to have files to compile...
-        if (filesToCompile.isEmpty()) {
-            throw new Exception("File(s) not found.");
-        }
-
+        // initialize our config object.
         Config.INSTANCE.buildConfig(cmd);
-        logger.info(Config.INSTANCE.toString());
+
         // add any initializing statements derived from the command line here.
+        if(Config.INSTANCE.getFilesForCompilation().size() == 0) {
+            throw new Exception("We have no valid files for input");
+        }
     }
 
     /**
@@ -123,19 +109,40 @@ public class Main {
     private static Options buildOptions() {
         Options options = new Options();
 
-        // File to compile
+        // File(s) to compile
         String desc = "Compile the source file(s)" +
                 "\nUsage: -c /path/to/file_to_compile.json";
         options.addOption(Option.builder("c").longOpt("compile")
-                .desc(desc).hasArg().required().type(ArrayList.class).argName("compile").build());
+                .desc(desc).hasArgs().required().type(ArrayList.class)
+                .argName("compile").build());
 
-        desc = "Test compilation but don't generate output" +
-                "\nUsage -t";
-        options.addOption(Option.builder("t").longOpt("test").desc(desc).type(Boolean.class).hasArg(false).required(false).argName("tests").build());
+        // Testing mode
+        desc = "Debug mode" +
+                "\nUsage: -d";
+        options.addOption(Option.builder("d").longOpt("debug")
+                .desc(desc).type(Boolean.class).hasArg(false).required(false)
+                .argName("debug").build());
 
-        desc = "Place output in file file.  Since only one output file can be specified, it does not make sense to use `-o' when compiling more than one input file" +
-                "\n -o /path/to/output/";
-        options.addOption(Option.builder("o").longOpt("output").desc(desc).type(String.class).hasArg().required(false).argName("output").build());
+        // Run SSI Algorithm
+        desc = "Run the SSI Algorithm.\nUsage: -ssi";
+        options.addOption(Option.builder("ssi").longOpt("ssi")
+                .desc(desc).type(Boolean.class).hasArg().required(false)
+                .argName("ssi").build());
+
+        // Output file option
+        desc = "Place output in which directory.  If -t is set, this must be set." +
+                "\n Usage: -o /path/to/output/";
+        options.addOption(Option.builder("o").longOpt("output")
+                .desc(desc).type(String.class).hasArg().required(false)
+                .argName("output").build());
+
+        // What translators to use
+        desc = "What translator to use.  If -o is set, this must be set." +
+                "\n Usage: -translate {list of translators}";
+        options.addOption(Option.builder("t").longOpt("translate")
+                .desc(desc).type(ArrayList.class).hasArgs().required(false)
+                .argName("translate").build());
+
         return options;
     }
 

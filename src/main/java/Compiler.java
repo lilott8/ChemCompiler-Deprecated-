@@ -1,10 +1,8 @@
-import ChemicalInteractions.ChemicalResolution;
 import CompilerDataStructures.BasicBlock.BasicBlock;
-import CompilerDataStructures.BasicBlock.BasicBlockEdge;
 import CompilerDataStructures.BasicBlock.DependencySlicedBasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.CFGBuilder;import CompilerDataStructures.StaticSingleInformation.StaticSingleInformation;
-import Translators.TypeSystem.TypeSystemTranslator;
+import Config.Config;
 import executable.Experiment;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
@@ -65,8 +63,11 @@ public class Compiler {
                      //logger.debug(controlFlow);
 
                     //TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
-                    TypeSystemTranslator trans = new TypeSystemTranslator(SSI);
-                    trans.toFile("Experiment.txt");
+                    if (Config.INSTANCE.translationsEnabled() && Config.INSTANCE.translationEnabled("typesystem")) {
+                        Config.INSTANCE.getTranslationByName("typesystem").runTranslation(SSI).toFile(Config.INSTANCE.getOuptutDir() + "experiment.txt");
+                        //Translator trans = new TypeSystemTranslator().runTranslation(SSI);
+                        //trans.toFile("Experiment.txt");
+                    }
 
                     //trans.toFile("Experiment3.txt");
 
