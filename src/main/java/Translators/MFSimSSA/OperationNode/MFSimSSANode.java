@@ -7,12 +7,17 @@ import substance.Units;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * Created by chriscurtis on 10/28/16.
  */
 public abstract class MFSimSSANode {
+
+    protected static final Logger logger = LogManager.getLogger(MFSimSSANode.class);
+
     protected enum OperationClassifier { COOL, DETECT, DILUTE, DISPENSE, HEAT, GENERAL, MIX, SPLIT, STORE, OUTPUT, TRANSFER_IN, TRANSFER_OUT;
 
         public String toString(){
@@ -66,7 +71,7 @@ public abstract class MFSimSSANode {
     public Integer getID() { return __nodeID; }
     public String getName() { return __nodeName; }
 
-    long getTime(Instruction node, Logger logger) {
+    long getTime(Instruction node) {
         for (Property p : node.getProperties()) {
             if (p.getUnit() instanceof Units.Time) {
                 switch ((Units.Time) p.getUnit()) {
