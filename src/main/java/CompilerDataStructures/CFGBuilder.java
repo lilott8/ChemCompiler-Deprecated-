@@ -1,17 +1,15 @@
 package CompilerDataStructures;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
-
 import executable.Executable;
 import executable.Experiment;
 import executable.conditionals.Branch;
 import executable.conditionals.Loop;
 import executable.instructions.Instruction;
-import executable.instructions.Output;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by chriscurtis on 10/13/16.
@@ -53,7 +51,7 @@ public class CFGBuilder {
       //  for (SSI.SSA.BasicBlock b : danglingLeaves) {
       //      System.out.println(b.getID());
       //  }
-        
+
         //ReachingDefinitions rdef = new ReachingDefinitions(controlFlowGraph);
 
         //System.out.println(rdef);

@@ -1,12 +1,15 @@
 package CompilerDataStructures;
 
 //import ChemicalInteractions.ChemicalInteraction;
-import executable.instructions.Instruction;
-import substance.Property;
-import substance.Substance;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import executable.instructions.Instruction;
+import substance.Property;
 
 /**
  * Created by chriscurtis on 9/28/16.

@@ -1,9 +1,9 @@
 package CompilerDataStructures;
 
+import java.io.Serializable;
+
 import variable.Reference;
 import variable.Variable;
-
-import java.io.Serializable;
 
 /**
  * Created by chriscurtis on 10/12/16.

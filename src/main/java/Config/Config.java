@@ -10,9 +10,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import Phases.Inference.Inference;
+import Phases.Phase;
 import Translators.MFSimSSA.MFSimSSATranslator;
 import Translators.Translator;
 import Translators.TypeSystem.TypeSystemTranslator;
@@ -22,9 +26,15 @@ import org.apache.commons.io.FileUtils;
  * @created: 7/26/17
  * @since: 0.1
  * @project: ChemicalCompiler
+ *
+ * TODO: Move the Translators and Phases to a command design pattern and
+ *   run them through that.  I need to get research done... (2017-07-28)
+ *   And the config will then expose a hashset that holds the enabled configs.
+ *   Then the commander will instantiate them locally instead of bloating the config.
  */
-public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmConfig, TranslateConfig, CleanConfig {
+public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmConfig, TranslateConfig, CleanConfig, PhaseConfig {
     INSTANCE;
+
 
     public static final Logger logger = LogManager.getLogger(Config.class);
 
@@ -66,7 +76,12 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
     /**
      * List of translations that need to occur
      */
-    private Map<String, Translator> translators = new HashMap<String, Translator>();
+    private Set<String> translators = new HashSet<String>();
+
+    /**
+     * List of phases that are enabled for compilation
+     */
+    private Set<String> phases = new HashSet<String>();
 
     /**
      * Build the config object from our command line
@@ -108,7 +123,11 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
             this.debug = Boolean.parseBoolean(cmd.getOptionValue("debug", "false"));
 
             if (cmd.hasOption("translate")) {
-                this.buildTranslators(Arrays.asList(cmd.getOptionValues("translate")));
+                this.translators.addAll(Arrays.asList(cmd.getOptionValues("translate")));
+            }
+
+            if (cmd.hasOption("phases")) {
+                this.phases.addAll(Arrays.asList(cmd.getOptionValues("phases")));
             }
 
             this.built = true;
@@ -133,7 +152,7 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
      * @return      String
      * String location for output
      */
-    public String getOuptutDir() {
+    public String getOutputDir() {
         return this.output;
     }
 
@@ -196,30 +215,34 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
         }
     }
 
-    public Translator getTranslationByName(String name) {
-        if (this.translators.containsKey(name)) {
-            return this.translators.get(name);
-        }
-        return null;
-    }
-
     /**
      * Part of the TranslateConfig interface,
      * gets all the translations we need to run.
      * @return  Map of translations that can occur
      *     Map of all translations
      */
-    public Map<String, Translator> getAllTranslations() {
+    public Set<String> getAllTranslations() {
         return this.translators;
     }
 
     public boolean translationEnabled(String name) {
-        return this.translators.containsKey(name);
+        return this.translators.contains(name);
     }
 
     public boolean translationsEnabled() {
         return !this.translators.isEmpty();
     }
 
+    public Set<String> getAllPhases() {
+        return this.phases;
+    }
+
+    public boolean phasesEnabled() {
+        return !this.phases.isEmpty();
+    }
+
+    public boolean phaseEnabled(String name) {
+        return this.phases.contains(name);
+    }
 
 }

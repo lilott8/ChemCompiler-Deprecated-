@@ -1,11 +1,11 @@
 package DataFlow;
 
-import CompilerDataStructures.BasicBlock.BasicBlock;
-import SymbolTable.NestedSymbolTable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import SymbolTable.NestedSymbolTable;
 
 /**
  * Created by chriscurtis on 10/19/16.

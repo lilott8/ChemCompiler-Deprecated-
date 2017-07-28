@@ -1,11 +1,15 @@
 package CompilerDataStructures.BasicBlock;
 
-import com.sun.tools.classfile.Code_attribute;
-import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
-
 import java.io.Serializable;
 
-import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.*;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.eq;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.gt;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.gte;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.lt;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.lte;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.neq;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.repeat;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.un;
 
 /**
  * Created by chriscurtis on 9/28/16.

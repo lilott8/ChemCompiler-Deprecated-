@@ -1,18 +1,21 @@
 package CompilerDataStructures.StaticSingleAssignment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Stack;
+
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.DominatorTree.DominatorTree;
 import CompilerDataStructures.InstructionNode;
 import CompilerDataStructures.StaticSingleInformation.SigmaInstruction;
 
-import java.util.*;
-
 /**
  * Created by chriscurtis on 3/13/17.
  */
 public abstract class StaticSingleAssignment extends CFG {
-    public static Boolean DEBUGPHI = true;
+    public static Boolean DEBUGPHI = false;
 
     public static Boolean DEBUGLHS = false;
     public static Boolean DEBUGRHS = false;

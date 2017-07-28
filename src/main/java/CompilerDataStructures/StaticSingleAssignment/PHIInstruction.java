@@ -1,8 +1,8 @@
 package CompilerDataStructures.StaticSingleAssignment;
 
-import CompilerDataStructures.InstructionNode;
-
 import java.util.ArrayList;
+
+import CompilerDataStructures.InstructionNode;
 
 public class PHIInstruction extends  InstructionNode{
 
