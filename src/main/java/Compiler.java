@@ -1,14 +1,17 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.BasicBlock.DependencySlicedBasicBlock;
+import CompilerDataStructures.CFGBuilder;
 import CompilerDataStructures.ControlFlowGraph.CFG;
-import CompilerDataStructures.CFGBuilder;import CompilerDataStructures.StaticSingleInformation.StaticSingleInformation;
+import CompilerDataStructures.StaticSingleInformation.StaticSingleInformation;
 import Config.Config;
 import executable.Experiment;
 import manager.Benchtop;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by chriscurtis on 9/29/16.
@@ -43,6 +46,7 @@ public class Compiler {
             for (String experimentKey : this.benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
                     this.controlFlow = CFGBuilder.BuildControlFlowGraph(experiment);
+                    //logger.info(this.controlFlow.toString());
                     //MinimalStaticSingleAssignment SSA = new MinimalStaticSingleAssignment(controlFlow);
                     //SemiPrunedStaticSingleAssignment SPSSA = new SemiPrunedStaticSingleAssignment(controlFlow);
                     this.SSI = new StaticSingleInformation(this.controlFlow);
@@ -54,7 +58,7 @@ public class Compiler {
                     }
 
                     //logger.debug("\n" + SSA);
-                    logger.debug("\n" + this.SSI);
+                    //logger.debug("\n" + this.SSI);
                     //logger.debug("\n" + SSI);
 
                     //ProcessExperimentCFG(SPSSA);
@@ -63,11 +67,11 @@ public class Compiler {
                     //logger.debug(controlFlow);
 
                     //TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
-                    if (Config.INSTANCE.translationsEnabled() && Config.INSTANCE.translationEnabled("typesystem")) {
-                        Config.INSTANCE.getTranslationByName("typesystem").runTranslation(this.SSI).toFile(Config.INSTANCE.getOuptutDir() + "experiment.txt");
+                    /*if (Config.INSTANCE.translationsEnabled() && Config.INSTANCE.translationEnabled(Config.TRANSLATORS.TYPSYSTEM)) {
+                        Config.INSTANCE.getTranslationByName(Config.TRANSLATORS.TYPSYSTEM).runTranslation(this.SSI).toFile(Config.INSTANCE.getOuptutDir() + "experiment.txt");
                         //Translator trans = new TypeSystemTranslator().runTranslation(SSI);
                         //trans.toFile("Experiment.txt");
-                    }
+                    }*/
 
                     //trans.toFile("Experiment3.txt");
 
@@ -80,7 +84,6 @@ public class Compiler {
         } catch (Exception e) {
             System.out.println(e);
             logger.fatal(e);
-            e.printStackTrace();
         }
     }
 

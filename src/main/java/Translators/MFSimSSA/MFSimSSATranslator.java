@@ -1,11 +1,11 @@
 package Translators.MFSimSSA;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import Config.TranslateConfig;
 import Translators.Translator;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Created by chriscurtis on 10/28/16.

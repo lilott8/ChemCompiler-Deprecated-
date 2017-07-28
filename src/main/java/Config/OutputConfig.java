@@ -7,5 +7,5 @@ package Config;
  */
 interface OutputConfig {
 
-    public String getOuptutDir();
+    public String getOutputDir();
 }

@@ -1,10 +1,10 @@
 package Translators.MFSimSSA.OperationNode;
 
 
-import executable.instructions.Combine;
-import executable.instructions.Output;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import executable.instructions.Output;
 
 /**
  * Created by chriscurtis on 10/28/16.

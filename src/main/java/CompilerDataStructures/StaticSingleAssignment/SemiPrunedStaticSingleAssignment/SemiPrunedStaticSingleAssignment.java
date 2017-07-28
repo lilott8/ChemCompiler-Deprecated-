@@ -1,11 +1,11 @@
 package CompilerDataStructures.StaticSingleAssignment.SemiPrunedStaticSingleAssignment;
 
+import java.util.HashSet;
+
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.InstructionNode;
 import CompilerDataStructures.StaticSingleAssignment.StaticSingleAssignment;
-
-import java.util.HashSet;
 
 /**
  * Created by chriscurtis on 3/24/17.

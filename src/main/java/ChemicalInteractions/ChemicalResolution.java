@@ -1,10 +1,10 @@
 package ChemicalInteractions;
 
-import substance.Chemical;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import substance.Chemical;
 
 /**
  * Created by chriscurtis on 10/12/16.

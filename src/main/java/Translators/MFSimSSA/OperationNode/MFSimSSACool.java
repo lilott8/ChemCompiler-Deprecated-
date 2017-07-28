@@ -1,9 +1,10 @@
 package Translators.MFSimSSA.OperationNode;
 
-import executable.instructions.Heat;
-import executable.instructions.React;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import executable.instructions.Heat;
+import executable.instructions.React;
 
 /**
  * Created by chriscurtis on 10/28/16.

@@ -1,11 +1,3 @@
-import CompilerDataStructures.BasicBlock.BasicBlock;
-import CompilerDataStructures.ControlFlowGraph.CFG;
-import CompilerDataStructures.DominatorTree.DominatorTree;
-import CompilerDataStructures.DominatorTree.PostDominatorTree;
-import Config.Config;
-import manager.Benchtop;
-import parsing.BioScript.BenchtopParser;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -16,6 +8,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.ControlFlowGraph.CFG;
+import CompilerDataStructures.DominatorTree.DominatorTree;
+import CompilerDataStructures.DominatorTree.PostDominatorTree;
+import Config.Config;
+import Phases.Inference.Inference;
+import Phases.PhaseFacade;
+import Shared.Facade;
+import Translators.TranslatorFacade;
+import manager.Benchtop;
+import parsing.BioScript.BenchtopParser;
 
 
 public class Main {
@@ -57,17 +61,31 @@ public class Main {
                 //TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
                 //tst.toFile("NeurotransmitterSensing.txt");
                 //logger.info(tst.toString());
-                if (Config.INSTANCE.translationsEnabled() && Config.INSTANCE.translationEnabled("mfsim")) {
-                    Config.INSTANCE.getTranslationByName("mfsim").runTranslation(experiment).toFile(Config.INSTANCE.getOuptutDir() + "test");
+                if (Config.INSTANCE.translationsEnabled()) {
+                    Facade translator = new TranslatorFacade(Config.INSTANCE, experiment);
+                    translator.start();
+                }
+                //if (Config.INSTANCE.translationsEnabled() && Config.INSTANCE.translationEnabled(Config.TRANSLATORS.MFSIM)) {
+                //    Config.INSTANCE.getTranslationByName(Config.TRANSLATORS.MFSIM).runTranslation(experiment).toFile(Config.INSTANCE.getOuptutDir() + "test");
                     //Translator mfsimt = new MFSimSSATranslator().runTranslation(experiment);
                     //mfsimt.toFile(Config.INSTANCE.getOuptutDir());
+                //}
+
+                //if (Config.INSTANCE.phasesEnabled() &&Config.INSTANCE.phaseEnabled(Config.PHASES.INFERENCE)) {
+                //   Config.INSTANCE.getPhaseByName(Config.PHASES.INFERENCE).runPhase();
+                //}
+
+                if(Config.INSTANCE.phasesEnabled()) {
+                 Facade phase = new PhaseFacade(Config.INSTANCE, experiment);
+                 phase.start();
                 }
             }
 
         }
         catch (Exception e ){
-            logger.fatal("Exception occured");
-            logger.fatal(e.getStackTrace());
+            logger.fatal("Exception occurred");
+            e.getStackTrace();
+            logger.fatal("Stack Trace:", e);
         }
 
         if (Config.INSTANCE.isDebug()) {
@@ -139,11 +157,21 @@ public class Main {
 
         // What translators to use
         desc = "What translator to use.  If -o is set, this must be set." +
-                "\n Usage: -translate {list of translators}";
+                "\n Usage: -translate {list of translators}" +
+                "\n Available translators: " +
+                "\n\t mfsim: translates cfg to mfsim machine code" +
+                "\n\t typesystem: translates cfg for further typing analysis";
         options.addOption(Option.builder("t").longOpt("translate")
                 .desc(desc).type(ArrayList.class).hasArgs().required(false)
                 .argName("translate").build());
 
+        desc = "What phases to enable." +
+                "\n Usage: -p {list of phases}" +
+                "\n Available phases: " +
+                "\n\t inference: run type inference";
+        options.addOption(Option.builder("p").longOpt("phases")
+            .desc(desc).hasArgs().required(false)
+            .argName("phases").build());
         return options;
     }
 

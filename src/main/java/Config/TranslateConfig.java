@@ -1,6 +1,7 @@
 package Config;
 
 import java.util.Map;
+import java.util.Set;
 
 import Translators.Translator;
 
@@ -11,8 +12,8 @@ import Translators.Translator;
  */
 public interface TranslateConfig {
 
-    Translator getTranslationByName(String name);
-    Map<String, Translator> getAllTranslations();
-    boolean translationEnabled(String name);
+    Set<String> getAllTranslations();
+    boolean translationEnabled(String translator);
     boolean translationsEnabled();
+    String getOutputDir();
 }

@@ -1,13 +1,12 @@
 package CompilerDataStructures.StaticSingleInformation;
 
-import CompilerDataStructures.BasicBlock.BasicBlock;
-import CompilerDataStructures.ControlFlowGraph.CFG;
-import CompilerDataStructures.DominatorTree.PostDominatorTree;
-import CompilerDataStructures.StaticSingleAssignment.StaticSingleAssignment;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+
+import CompilerDataStructures.ControlFlowGraph.CFG;
+import CompilerDataStructures.DominatorTree.PostDominatorTree;
+import CompilerDataStructures.StaticSingleAssignment.StaticSingleAssignment;
 
 /**
  * Created by chriscurtis on 4/10/17.

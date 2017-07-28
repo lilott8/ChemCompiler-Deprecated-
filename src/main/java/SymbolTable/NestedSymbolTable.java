@@ -1,11 +1,11 @@
 package SymbolTable;
 
-import ChemicalInteractions.ChemicalResolution;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import ChemicalInteractions.ChemicalResolution;
 
 /**
  * Created by chriscurtis on 10/17/16.

@@ -1,23 +1,26 @@
 package Translators.MFSimSSA;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.BasicBlock.BasicBlockEdge;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.InstructionNode;
-import CompilerDataStructures.StaticSingleAssignment.SemiPrunedStaticSingleAssignment.SemiPrunedStaticSingleAssignment;
 import CompilerDataStructures.StaticSingleAssignment.StaticSingleAssignment;
 import Translators.MFSimSSA.OperationNode.MFSimSSANode;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferIn;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferOut;
 import executable.instructions.Output;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * Created by chriscurtis on 10/28/16.
