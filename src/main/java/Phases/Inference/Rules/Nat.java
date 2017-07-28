@@ -1,9 +1,9 @@
-package Phases.Inference.Rules.Instructions;
+package Phases.Inference.Rules;
 
 /**
  * @created: 7/27/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class While {
+public class Nat {
 }

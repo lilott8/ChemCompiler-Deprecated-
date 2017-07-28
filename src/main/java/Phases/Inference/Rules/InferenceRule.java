@@ -1,19 +1,17 @@
 package Phases.Inference.Rules;
 
-import java.util.List;
-
-import CompilerDataStructures.BasicBlock.BasicBlock;
-import Phases.Inference.Constraint;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * @created: 7/27/17
+ * @created: 7/28/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public interface InferenceRule {
-
-    List<Constraint<InferenceTerm>> getConstraints();
-    boolean isApplicable(BasicBlock block);
-    void parseInstruction(BasicBlock block);
-
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface InferenceRule {
+    String ruleName() default "unknown" ;
 }
