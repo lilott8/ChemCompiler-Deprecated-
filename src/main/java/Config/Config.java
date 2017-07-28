@@ -26,11 +26,6 @@ import org.apache.commons.io.FileUtils;
  * @created: 7/26/17
  * @since: 0.1
  * @project: ChemicalCompiler
- *
- * TODO: Move the Translators and Phases to a command design pattern and
- *   run them through that.  I need to get research done... (2017-07-28)
- *   And the config will then expose a hashset that holds the enabled configs.
- *   Then the commander will instantiate them locally instead of bloating the config.
  */
 public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmConfig, TranslateConfig, CleanConfig, PhaseConfig {
     INSTANCE;
