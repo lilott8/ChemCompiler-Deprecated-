@@ -1,5 +1,6 @@
 package Phases.Inference.Rules;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import CompilerDataStructures.InstructionNode;
@@ -14,7 +15,9 @@ import Phases.Inference.Callback;
 public class Store implements Callback {
 
     public Set<String> callback(InstructionNode node) {
-        return null;
+        Set<String> results = new HashSet<String>();
+
+        return results;
     }
 
 }
