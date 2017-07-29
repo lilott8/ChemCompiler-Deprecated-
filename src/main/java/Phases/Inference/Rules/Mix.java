@@ -2,6 +2,7 @@ package Phases.Inference.Rules;
 
 import org.apache.logging.log4j.LogManager;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import CompilerDataStructures.InstructionNode;
@@ -16,7 +17,10 @@ import Phases.Inference.Callback;
 public class Mix implements Callback {
 
     public Set<String> callback(InstructionNode node) {
-        LogManager.getLogger(Mix.class).warn("Here");
-        return null;
+        Set<String> results = new HashSet<String>();
+        LogManager.getLogger(Mix.class).warn(node.getInputSymbols());
+        LogManager.getLogger(Mix.class).warn(node.get_use());
+
+        return results;
     }
 }

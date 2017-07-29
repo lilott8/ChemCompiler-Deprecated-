@@ -88,6 +88,7 @@ public class Inference implements Phase {
         if (!this.constraints.containsKey(tuple)) {
             this.constraints.put(tuple, new HashSet<String>());
         }
+        // Just to be safe.
         if(inferred != null) {
             this.constraints.get(tuple).addAll(inferred);
         }
