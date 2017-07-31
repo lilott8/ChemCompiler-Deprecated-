@@ -1,22 +1,28 @@
 package Phases.Inference.Rules;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import CompilerDataStructures.InstructionNode;
 import Phases.Inference.Callback;
+import Phases.Inference.Inference.InferenceType;
 
 /**
  * @created: 7/27/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-@InferenceRule(ruleName = "if")
-public class IfBranch implements Callback {
+@InferenceRule(ruleName = "if", ruleType = "instruction")
+public class IfBranch extends Rule {
 
-    public Set<String> callback(InstructionNode node) {
-        Set<String> results = new HashSet<String>();
+    public IfBranch(InferenceType type) {
+        super(type);
+    }
 
-        return results;
+    @Override
+    public Rule gatherConstraints(InstructionNode node) {
+        return null;
     }
 }
