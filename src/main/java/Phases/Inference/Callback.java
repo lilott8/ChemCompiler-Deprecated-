@@ -1,8 +1,10 @@
 package Phases.Inference;
 
+import java.util.Map;
 import java.util.Set;
 
 import CompilerDataStructures.InstructionNode;
+import Phases.Inference.Inference.InferenceType;
 
 /**
  * @created: 7/28/17
@@ -11,5 +13,11 @@ import CompilerDataStructures.InstructionNode;
  */
 public interface Callback {
 
-    Set<String> callback(InstructionNode node);
+    Map<String, Set<String>> callback(InstructionNode node);
+    Callback setType(InferenceType type);
+    InferenceType getType();
+
+    default void addConstraint() {
+
+    }
 }
