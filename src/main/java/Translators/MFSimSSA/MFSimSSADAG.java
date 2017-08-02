@@ -150,7 +150,7 @@ public class MFSimSSADAG {
                 continue;
             }
             MFSimSSATransferOut transOut = new MFSimSSATransferOut(__uniqueIDGen.getNextID(), transferOutDroplet, transferOutDroplet);
-            if (__transOut.get(instr.ID()) == null) {
+            if (__transOut.get(transOut.getID()) == null) {
                     __transOut.put(transOut.getID(), new ArrayList<MFSimSSATransferOut>());
             }
             __transOut.get(transOut.getID()).add(transOut);
@@ -198,7 +198,13 @@ public class MFSimSSADAG {
         for (ArrayList<MFSimSSATransferIn> transIn : __transIn.values()) {
             for (MFSimSSATransferIn in : transIn) {
                 if (__nodes.size() > 0) {
-                    in.addSuccessor(__nodes.get(bb.getInstructions().get(0).ID()).getID());
+                    for (InstructionNode instruction : bb.getInstructions()) {
+                        if (instruction.ID() < 0)
+                            continue;
+                        in.addSuccessor(__nodes.get(instruction.ID()).getID());
+                        break;
+                    }
+                    //in.addSuccessor(__nodes.get(bb.getInstructions().get(0).ID()).getID());
                 }
                 else {
                     Integer succ = 0;

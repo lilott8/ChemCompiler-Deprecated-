@@ -95,6 +95,10 @@ public class Main {
             throw new Exception("If you provide a translation or an output, the other must accompany.");
         }
 
+        if ((cmd.hasOption("clean") && !cmd.hasOption("output"))) {
+            throw new Exception("Attempting to clean output directory, but no directory supplied.");
+        }
+
         // initialize our config object.
         Config.INSTANCE.buildConfig(cmd);
 
@@ -143,6 +147,13 @@ public class Main {
         options.addOption(Option.builder("t").longOpt("translate")
                 .desc(desc).type(ArrayList.class).hasArgs().required(false)
                 .argName("translate").build());
+
+        // Clean output option
+        desc = "Clean the output directory. If -clean is set, -o (output) must be set." +
+                "\nUsage: -clean";
+        options.addOption(Option.builder("clean").longOpt("clean")
+                .desc(desc).type(Boolean.class).hasArg(false).required(false)
+                .argName("clean").build());
 
         return options;
     }
