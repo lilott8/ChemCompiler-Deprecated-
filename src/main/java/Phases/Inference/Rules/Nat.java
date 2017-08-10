@@ -1,13 +1,8 @@
 package Phases.Inference.Rules;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import CompilerDataStructures.InstructionNode;
-import Phases.Inference.Callback;
 import Phases.Inference.Inference.InferenceType;
+import substance.Property;
 
 /**
  * @created: 7/27/17
@@ -23,6 +18,21 @@ public class Nat extends Rule {
 
     @Override
     public Rule gatherConstraints(InstructionNode node) {
+        return null;
+    }
+
+    @Override
+    public Rule gatherUseConstraints(String input) {
+        return null;
+    }
+
+    @Override
+    public Rule gatherDefConstraints(String input) {
+        return null;
+    }
+
+    @Override
+    public Rule gatherConstraints(Property property) {
         return null;
     }
 }

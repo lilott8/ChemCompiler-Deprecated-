@@ -1,13 +1,12 @@
 package Phases.Inference.Rules;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import CompilerDataStructures.InstructionNode;
-import Phases.Inference.Callback;
 import Phases.Inference.Inference.InferenceType;
+import substance.Property;
 
 /**
  * @created: 7/27/17
@@ -36,5 +35,26 @@ public class Assign extends Rule {
         Map<String, Set<String>> results = new HashMap<String, Set<String>>();
 
         return results;
+    }
+
+    @Override
+    public Rule gatherUseConstraints(String input) {
+        if (this.isNumeric(input)) {
+            this.addConstraint(input, NAT);
+            this.addConstraint(input, REAL);
+        } else {
+            this.addConstraint(input, MAT);
+        }
+        return this;
+    }
+
+    @Override
+    public Rule gatherDefConstraints(String input) {
+        return null;
+    }
+
+    @Override
+    public Rule gatherConstraints(Property property) {
+        return this;
     }
 }
