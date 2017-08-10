@@ -6,12 +6,16 @@ import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.BasicBlock.BasicBlockEdge;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.InstructionNode;
 import Phases.Inference.Rules.InferenceRule;
@@ -70,6 +74,7 @@ public class Inference implements Phase {
      */
     public void runPhase(CFG controlFlowGraph) {
         this.controlFlowGraph = controlFlowGraph;
+
         // Iterate the CFG.
         for(Map.Entry<Integer, BasicBlock> block : this.controlFlowGraph.getBasicBlocks().entrySet()) {
             // Iterate the instructions.
@@ -77,10 +82,15 @@ public class Inference implements Phase {
                 // If we have an instruction, see what we can infer.
                 if(node.Instruction() != null) {
                     // This will give us the typing of all the constraints in the instruction.
-                    this.addConstraints(this.inferConstraint(StringUtils.upperCase(node.Instruction().getClassification()), node));
+                    this.addConstraints(this.inferConstraints(StringUtils.upperCase(node.Instruction().getClassification()), node));
                 }
                 // logger.info(node.Instruction());
             }
+        }
+
+        // Iterate the edges, we need the branch conditions to infer...
+        for(BasicBlockEdge edge : this.controlFlowGraph.getBasicBlockEdges()) {
+            this.addConstraints(this.inferConstraints("edge", edge));
         }
 
         logger.info(this.constraints.toString());
@@ -95,7 +105,7 @@ public class Inference implements Phase {
      * @return
      *   A mapping of id to what was inferred.
      */
-    public Map<String, Set<String>> inferConstraint(String name, InstructionNode instruction) {
+    public Map<String, Set<String>> inferConstraints(String name, InstructionNode instruction) {
         if(this.inferenceRules.containsKey(name)) {
             Rule rule = this.inferenceRules.get(name);
 
@@ -139,6 +149,50 @@ public class Inference implements Phase {
         logger.warn("We don't have a rule for: " + name);
         // return an empty array list for ease.
         return new HashMap<String, Set<String>>();
+    }
+
+    /**
+     * Infer constraints from edges.
+     *
+     * @param name
+     *   Name of the instruction.
+     * @param edge
+     *   Edge between basic blocks.
+     * @return
+     *   A mapping of id to what was inferred.
+     */
+    public Map<String, Set<String>> inferConstraints(String name, BasicBlockEdge edge) {
+        Map<String, Set<String>> results = new HashMap<>();
+
+        // Split the condition into a string, get the operands and attempt to infer.
+        for(String s : StringUtils.split(edge.getCondition())) {
+            // we don't have the
+            if (!Rule.operands.contains(s)) {
+
+                // We cannot define a variable here, so we can safely look
+                // into the global constraints table.
+                if (this.constraints.containsKey(s)) {
+                    // create the set if we don't have it yet.
+                    if (!results.containsKey(s)) {
+                        results.put(s, new HashSet<>());
+                    }
+                    results.get(s).add(Rule.NAT);
+                }
+
+                if (Rule.isNumeric(s)) {
+                    if (!results.containsKey(s)) {
+                        results.put(s, new HashSet<>());
+                    }
+                    results.get(s).add(Rule.REAL);
+                    results.get(s).add(Rule.NAT);
+                }
+            } else {
+                results.put("if", new HashSet<>());
+                results.get("if").add(Rule.NAT);
+            }
+            logger.info(s);
+        }
+        return results;
     }
 
     /**
