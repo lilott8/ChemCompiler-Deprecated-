@@ -7,6 +7,7 @@ import java.util.Set;
 
 import CompilerDataStructures.InstructionNode;
 import Phases.Inference.Inference.InferenceType;
+import substance.Property;
 
 /**
  * @created: 7/31/17
@@ -17,13 +18,23 @@ public abstract class Rule {
 
     protected InferenceType type;
 
+    public final String MAT = "mat";
+    public final String REAL = "real";
+    public final String NAT = "nat";
+    public final String CONST = "const";
+
+    // This implicitly allows us to do union sets with MATs
     protected Map<String, Set<String>> constraints = new HashMap<>();
 
     protected Rule(InferenceType type) {
         this.type = type;
     }
 
+    @Deprecated
     public abstract Rule gatherConstraints(InstructionNode node);
+    public abstract Rule gatherUseConstraints(String input);
+    public abstract Rule gatherDefConstraints(String input);
+    public abstract Rule gatherConstraints(Property property);
 
     public Map<String, Set<String>> getConstraints() {
         return constraints;
@@ -67,5 +78,9 @@ public abstract class Rule {
         } catch(NumberFormatException e) {
             return false;
         }
+    }
+
+    public boolean isMaterial(String value) {
+        return true;
     }
 }

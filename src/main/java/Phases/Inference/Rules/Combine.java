@@ -3,25 +3,21 @@ package Phases.Inference.Rules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashSet;
-
 import CompilerDataStructures.InstructionNode;
-import Phases.Inference.Inference.InferenceType;
+import Phases.Inference.Inference;
 import substance.Property;
 
 /**
- * @created: 7/27/17
+ * @created: 8/10/17
  * @since: 0.1
  * @project: ChemicalCompiler
- *
- * Mat = mix Mat with Mat ... for Real
  */
-@InferenceRule(ruleName = "mix", ruleType = "instruction")
-public class Mix extends Rule {
+@InferenceRule(ruleName = "combine", ruleType = "instruction")
+public class Combine extends Rule {
 
     public static final Logger logger = LogManager.getLogger(Mix.class);
 
-    public Mix(InferenceType type) {
+    public Combine(Inference.InferenceType type) {
         super(type);
     }
 
