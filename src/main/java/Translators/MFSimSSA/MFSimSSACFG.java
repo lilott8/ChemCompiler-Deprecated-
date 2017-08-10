@@ -132,7 +132,7 @@ public class MFSimSSACFG{
                 if(bw!=null)
                     bw.close();
             }catch(Exception ex){
-                System.out.println("Error in closing the BufferedWriter"+ex);
+                logger.error("Error in closing the BufferedWriter"+ex);
             }
         }
 
@@ -161,7 +161,7 @@ public class MFSimSSACFG{
                     if(bw!=null)
                         bw.close();
                 }catch(Exception ex){
-                    System.out.println("Error in closing the BufferedWriter"+ex);
+                    logger.error("Error in closing the BufferedWriter"+ex);
                 }
             }
         }
