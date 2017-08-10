@@ -18,10 +18,27 @@ public abstract class Rule {
 
     protected InferenceType type;
 
-    public final String MAT = "mat";
-    public final String REAL = "real";
-    public final String NAT = "nat";
-    public final String CONST = "const";
+    public static final String MAT = "mat";
+    public static final String REAL = "real";
+    public static final String NAT = "nat";
+    public static final String CONST = "const";
+    public static final String UNKNOWN = "unknown";
+
+    public static final Set<String> operands = new HashSet<String>(){{
+        add("==");
+        add(">=");
+        add("<=");
+        add("!=");
+        add("&&");
+        add("||");
+        add("!");
+        add("and");
+        add("AND");
+        add("or");
+        add("OR");
+        add("not");
+        add("NOT");
+    }};
 
     // This implicitly allows us to do union sets with MATs
     protected Map<String, Set<String>> constraints = new HashMap<>();
@@ -58,11 +75,11 @@ public abstract class Rule {
         this.constraints.get(key).add(value);
     }
 
-    public boolean isNumeric(String value) {
-        return this.isNaturalNumber(value) || this.isRealNumber(value);
+    public static boolean isNumeric(String value) {
+        return Rule.isNaturalNumber(value) || Rule.isRealNumber(value);
     }
 
-    public boolean isNaturalNumber(String value) {
+    public static boolean isNaturalNumber(String value) {
         try {
             Integer.parseInt(value);
             return true;
@@ -71,7 +88,7 @@ public abstract class Rule {
         }
     }
 
-    public boolean isRealNumber(String value) {
+    public static boolean isRealNumber(String value) {
         try {
             Float.parseFloat(value);
             return true;
@@ -80,7 +97,7 @@ public abstract class Rule {
         }
     }
 
-    public boolean isMaterial(String value) {
+    public static boolean isMaterial(String value) {
         return true;
     }
 }
