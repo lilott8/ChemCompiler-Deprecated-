@@ -61,7 +61,7 @@ public abstract class StaticSingleAssignment extends CFG {
             if(instructionNode instanceof GlobalAssignment){
 
                 for(String symbol : instructionNode.getOutputSymbols()) {
-                    System.out.println( symbol);
+                    logger.info( symbol);
                     if(this.__basicBlockSymbolDefinitionTable.containsKey(symbol)){
                         this.__basicBlockSymbolDefinitionTable.get(symbol).add(this.__entry.ID());
                     }

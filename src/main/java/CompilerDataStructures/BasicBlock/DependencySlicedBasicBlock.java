@@ -1,5 +1,8 @@
 package CompilerDataStructures.BasicBlock;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -22,6 +25,7 @@ import java.util.*;
  */
 public class DependencySlicedBasicBlock extends BasicBlock{
 
+    public static final Logger logger = LogManager.getLogger(DependencySlicedBasicBlock.class);
 
     public DependencySlicedBasicBlock(BasicBlock bb, StaticSingleAssignment CFG) {
         //copy bb object
@@ -154,7 +158,7 @@ public class DependencySlicedBasicBlock extends BasicBlock{
                         _defs.add(instr.getInputSymbols().get(0));
                     }
                     else {
-                        System.out.print("error");
+                        logger.error("error");
                     }
                 }
 

@@ -267,7 +267,7 @@ public class Main {
         cfg.addEdge(b12,bExit);
 
         DominatorTree t = new DominatorTree(cfg);
-        System.out.println(t);
+        logger.info(t);
     }
 
     public static void PostDominatorTreeTest(){
@@ -296,9 +296,9 @@ public class Main {
 
         DominatorTree t = new DominatorTree(cfg);
         PostDominatorTree pt = new PostDominatorTree(cfg);
-        System.out.println(t);
+        logger.info(t);
 
-        System.out.println(pt);
+        logger.info(pt);
     }
 
 }

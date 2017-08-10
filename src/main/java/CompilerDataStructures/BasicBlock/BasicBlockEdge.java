@@ -1,5 +1,8 @@
 package CompilerDataStructures.BasicBlock;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.Serializable;
 
 import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.eq;
@@ -23,6 +26,8 @@ public class BasicBlockEdge implements Serializable {
     protected enum __type {un, repeat, lt, lte, gt, gte, eq, neq };
     private __type type;
 
+    public static Logger logger = LogManager.getLogger(BasicBlockEdge.class);
+
     public BasicBlockEdge(Integer source, Integer destination, String condition) {
         __source = source;
         __destination = destination;
@@ -45,7 +50,7 @@ public class BasicBlockEdge implements Serializable {
             this.type = evaluateBoolean(expression);
         }
         else {
-            System.out.println("error evaluating loop");
+            logger.fatal("error evaluating loop");
         }
         switch (this.type) {
             case repeat:

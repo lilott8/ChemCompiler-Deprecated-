@@ -84,7 +84,6 @@ public class Compiler {
             }
             //  logger.info(__variableTable);
         } catch (Exception e) {
-            System.out.println(e);
             logger.fatal(e);
         }
     }
