@@ -22,7 +22,7 @@ import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.InstructionEdge;
 import CompilerDataStructures.InstructionNode;
-import Config.TranslateConfig;
+import config.TranslateConfig;
 import Translators.Translator;
 import executable.instructions.Combine;
 import executable.instructions.Detect;

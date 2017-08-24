@@ -9,7 +9,6 @@ import CompilerDataStructures.BasicBlock.DependencySlicedBasicBlock;
 import CompilerDataStructures.CFGBuilder;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.StaticSingleInformation.StaticSingleInformation;
-import Config.Config;
 import executable.Experiment;
 import manager.Benchtop;
 
@@ -69,8 +68,8 @@ public class Compiler {
                     //logger.debug(controlFlow);
 
                     //TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
-                    /*if (Config.INSTANCE.translationsEnabled() && Config.INSTANCE.translationEnabled(Config.TRANSLATORS.TYPSYSTEM)) {
-                        Config.INSTANCE.getTranslationByName(Config.TRANSLATORS.TYPSYSTEM).runTranslation(this.SSI).toFile(Config.INSTANCE.getOuptutDir() + "experiment.txt");
+                    /*if (config.INSTANCE.translationsEnabled() && config.INSTANCE.translationEnabled(config.TRANSLATORS.TYPSYSTEM)) {
+                        config.INSTANCE.getTranslationByName(config.TRANSLATORS.TYPSYSTEM).runTranslation(this.SSI).toFile(config.INSTANCE.getOuptutDir() + "experiment.txt");
                         //Translator trans = new TypeSystemTranslator().runTranslation(SSI);
                         //trans.toFile("Experiment.txt");
                     }*/
