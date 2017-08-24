@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import CompilerDataStructures.ControlFlowGraph.CFG;
-import Config.TranslateConfig;
+import config.TranslateConfig;
 import Translators.Translator;
 
 /**

@@ -1,7 +1,7 @@
 package Translators;
 
 import CompilerDataStructures.ControlFlowGraph.CFG;
-import Config.TranslateConfig;
+import config.TranslateConfig;
 
 /**
  * @created: 7/26/17

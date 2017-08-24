@@ -13,10 +13,9 @@ import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.DominatorTree.DominatorTree;
 import CompilerDataStructures.DominatorTree.PostDominatorTree;
-import Config.Config;
-import Phases.Inference.Inference;
-import Phases.PhaseFacade;
-import Shared.Facade;
+import config.Config;
+import phases.PhaseFacade;
+import shared.Facade;
 import Translators.TranslatorFacade;
 import manager.Benchtop;
 import parsing.BioScript.BenchtopParser;
@@ -65,16 +64,15 @@ public class Main {
                     Facade translator = new TranslatorFacade(Config.INSTANCE, experiment);
                     translator.start();
                 }
-                //if (Config.INSTANCE.translationsEnabled() && Config.INSTANCE.translationEnabled(Config.TRANSLATORS.MFSIM)) {
-                //    Config.INSTANCE.getTranslationByName(Config.TRANSLATORS.MFSIM).runTranslation(experiment).toFile(Config.INSTANCE.getOuptutDir() + "test");
+                //if (config.INSTANCE.translationsEnabled() && config.INSTANCE.translationEnabled(config.TRANSLATORS.MFSIM)) {
+                //    config.INSTANCE.getTranslationByName(config.TRANSLATORS.MFSIM).runTranslation(experiment).toFile(config.INSTANCE.getOuptutDir() + "test");
                     //Translator mfsimt = new MFSimSSATranslator().runTranslation(experiment);
-                    //mfsimt.toFile(Config.INSTANCE.getOuptutDir());
+                    //mfsimt.toFile(config.INSTANCE.getOuptutDir());
                 //}
 
-                //if (Config.INSTANCE.phasesEnabled() &&Config.INSTANCE.phaseEnabled(Config.PHASES.INFERENCE)) {
-                //   Config.INSTANCE.getPhaseByName(Config.PHASES.INFERENCE).runPhase();
+                //if (config.INSTANCE.phasesEnabled() &&config.INSTANCE.phaseEnabled(config.PHASES.INFERENCE)) {
+                //   config.INSTANCE.getPhaseByName(config.PHASES.INFERENCE).runPhase();
                 //}
-
                 if(Config.INSTANCE.phasesEnabled()) {
                  Facade phase = new PhaseFacade(Config.INSTANCE, experiment);
                  phase.start();

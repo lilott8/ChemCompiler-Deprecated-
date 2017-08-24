@@ -4,11 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import CompilerDataStructures.ControlFlowGraph.CFG;
-import Config.TranslateConfig;
-import Shared.Facade;
+import config.TranslateConfig;
+import shared.Facade;
 import Translators.MFSimSSA.MFSimSSATranslator;
 import Translators.TypeSystem.TypeSystemTranslator;
 
