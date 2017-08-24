@@ -77,33 +77,32 @@ public class Inference implements Phase {
     private void test() {
         logger.trace("We are debugging things, remove the inference.test method.");
 
-        Context context = new Context();
+        Solver<Context> context = new Z3Solver();
 
-        Symbol fname = context.mkSymbol("f");
-        Symbol x = context.mkSymbol("x");
-        Symbol y = context.mkSymbol("y");
+        Symbol fname = context.getSolver().mkSymbol("f");
+        Symbol x = context.getSolver().mkSymbol("x");
+        Symbol y = context.getSolver().mkSymbol("y");
 
-        Sort bs = context.mkBoolSort();
+        Sort bs = context.getSolver().mkBoolSort();
 
         Sort[] domain = {bs, bs};
         // Take in two booleans, return a boolean
-        FuncDecl f = context.mkFuncDecl(fname, domain, bs);
+        FuncDecl f = context.getSolver().mkFuncDecl(fname, domain, bs);
         // This is an application of a function.
-        Expr fapp = context.mkApp(f, context.mkConst(x, bs), context.mkConst(y, bs));
+        Expr fapp = context.getSolver().mkApp(f, context.getSolver().mkConst(x, bs), context.getSolver().mkConst(y, bs));
 
-        Expr[] fargs2 = {context.mkFreshConst("cp", bs)};
+        Expr[] fargs2 = {context.getSolver().mkFreshConst("cp", bs)};
         Sort[] domain2 = {bs};
         // Create a new function and apply it
-        Expr fapp2 = context.mkApp(context.mkFreshFuncDecl("fp", domain2, bs), fargs2);
+        Expr fapp2 = context.getSolver().mkApp(context.getSolver().mkFreshFuncDecl("fp", domain2, bs), fargs2);
 
-        BoolExpr trivial_eq = context.mkEq(fapp, fapp);
-        BoolExpr nontrivial_eq = context.mkEq(fapp, fapp2);
+        BoolExpr trivial_eq = context.getSolver().mkEq(fapp, fapp);
+        BoolExpr nontrivial_eq = context.getSolver().mkEq(fapp, fapp2);
 
-        Goal g = context.mkGoal(true, false, false);
+        Goal g = context.getSolver().mkGoal(true, false, false);
         g.add(trivial_eq);
         g.add(nontrivial_eq);
         logger.warn("Goal: " + g);
-
     }
 
     private void solveConstraints() {
@@ -123,6 +122,7 @@ public class Inference implements Phase {
             }
             logger.debug(sb.toString());
         }
+
         //logger.debug(this.constraints);
     }
 

@@ -11,4 +11,5 @@ public interface PhaseConfig {
     Set<String> getAllPhases();
     boolean phaseEnabled(String phase);
     boolean phasesEnabled();
+
 }
