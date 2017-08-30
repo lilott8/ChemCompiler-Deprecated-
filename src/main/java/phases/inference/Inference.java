@@ -23,13 +23,12 @@ import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.BasicBlock.BasicBlockEdge;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.InstructionNode;
+import phases.Phase;
 import phases.inference.rules.InferenceRule;
 import phases.inference.rules.Rule;
-import phases.Phase;
-import phases.inference.satsolver.Solver;
-import phases.inference.satsolver.Z3Solver;
+import phases.inference.satsolver.SatSolver;
+import phases.inference.satsolver.strategies.Z3Strategy;
 import shared.Tuple;
-import substance.Property;
 
 /**
  * @created: 7/27/17
@@ -48,9 +47,7 @@ public class Inference implements Phase {
     public enum InferenceType {
         TERM, INSTRUCTION
     }
-
-    private Solver<Context> context = new Z3Solver();
-
+    
     // Logging mechanism.
     public static final Logger logger = LogManager.getLogger(Inference.class);
 
@@ -67,6 +64,7 @@ public class Inference implements Phase {
     // This is for human readability and testing only.  This will be removed for production.
     private Map<Tuple<String, String>, Set<String>> testingConstraints = new HashMap<Tuple<String, String>, Set<String>>();
 
+    private SatSolver solver = new SatSolver();
     // Control flow graph needed to infer types from.
     private CFG controlFlowGraph;
 
@@ -78,52 +76,32 @@ public class Inference implements Phase {
     private void test() {
         logger.trace("We are debugging things, remove the inference.test method.");
 
-        Solver<Context> context = new Z3Solver();
+        Context context = new Context();
 
-        Symbol fname = context.getSolver().mkSymbol("f");
-        Symbol x = context.getSolver().mkSymbol("x");
-        Symbol y = context.getSolver().mkSymbol("y");
+        Symbol fname = context.mkSymbol("f");
+        Symbol x = context.mkSymbol("x");
+        Symbol y = context.mkSymbol("y");
 
-        Sort bs = context.getSolver().mkBoolSort();
+        Sort bs = context.mkBoolSort();
 
         Sort[] domain = {bs, bs};
         // Take in two booleans, return a boolean
-        FuncDecl f = context.getSolver().mkFuncDecl(fname, domain, bs);
+        FuncDecl f = context.mkFuncDecl(fname, domain, bs);
         // This is an application of a function.
-        Expr fapp = context.getSolver().mkApp(f, context.getSolver().mkConst(x, bs), context.getSolver().mkConst(y, bs));
+        Expr fapp = context.mkApp(f, context.mkConst(x, bs), context.mkConst(y, bs));
 
-        Expr[] fargs2 = {context.getSolver().mkFreshConst("cp", bs)};
+        Expr[] fargs2 = {context.mkFreshConst("cp", bs)};
         Sort[] domain2 = {bs};
         // Create a new function and apply it
-        Expr fapp2 = context.getSolver().mkApp(context.getSolver().mkFreshFuncDecl("fp", domain2, bs), fargs2);
+        Expr fapp2 = context.mkApp(context.mkFreshFuncDecl("fp", domain2, bs), fargs2);
 
-        BoolExpr trivial_eq = context.getSolver().mkEq(fapp, fapp);
-        BoolExpr nontrivial_eq = context.getSolver().mkEq(fapp, fapp2);
+        BoolExpr trivial_eq = context.mkEq(fapp, fapp);
+        BoolExpr nontrivial_eq = context.mkEq(fapp, fapp2);
 
-        Goal g = context.getSolver().mkGoal(true, false, false);
+        Goal g = context.mkGoal(true, false, false);
         g.add(trivial_eq);
         g.add(nontrivial_eq);
         logger.warn("Goal: " + g);
-    }
-
-    private void solveConstraints() {
-        Solver<Context> context = new Z3Solver();
-        Sort realSort = context.getSolver().getRealSort();
-        Sort intSort = context.getSolver().getIntSort();
-        // Placeholder for mat types.
-        Sort stringSort = context.getSolver().getStringSort();
-
-        for(Map.Entry<String, Set<String>> entry : this.constraints.entrySet()) {
-            StringBuilder sb = new StringBuilder(entry.getKey()).append(":\t");
-            for (String belief : entry.getValue()) {
-                if (StringUtils.equalsIgnoreCase(belief, "mat")) {
-                    Symbol symbol = context.getSolver().mkSymbol(entry.getKey());
-                }
-                sb.append(belief).append(", ");
-            }
-            logger.debug(sb.toString());
-        }
-        logger.debug(this.constraints);
     }
 
     /**
@@ -150,7 +128,7 @@ public class Inference implements Phase {
             this.addConstraints(this.inferConstraints("edge", edge));
         }
 
-        solveConstraints();
+        this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
     }
 
     /**

@@ -1,7 +1,5 @@
 package phases.inference.rules;
 
-import phases.inference.satsolver.Solver;
-
 import CompilerDataStructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
