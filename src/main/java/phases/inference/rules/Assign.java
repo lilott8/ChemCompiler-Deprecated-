@@ -2,10 +2,6 @@ package phases.inference.rules;
 
 import phases.inference.satsolver.Solver;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import CompilerDataStructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
@@ -25,38 +21,27 @@ public class Assign extends Rule {
     }
 
     @Override
-    public Solver gatherConstraints(InstructionNode node, Solver solver) {
-        return null;
-    }
-
-    public InferenceType getType() {
-        return this.type;
-    }
-
-    public Map<String, Set<String>> callback(InstructionNode node) {
-        Map<String, Set<String>> results = new HashMap<String, Set<String>>();
-
-        return results;
+    public Rule gatherAllConstraints(InstructionNode node) {
+        return super.gatherConstraints(node);
     }
 
     @Override
-    public Solver gatherUseConstraints(String input, Solver solver) {
-        if (this.isNumeric(input)) {
-            this.addConstraint(input, NAT);
-            this.addConstraint(input, REAL);
+    public Rule gatherUseConstraints(String input) {
+        if (isNumeric(input)) {
+            this.addConstraint(input, isRealNumber(input) ? REAL : NAT);
         } else {
             this.addConstraint(input, MAT);
         }
-        return solver;
+        return this;
     }
 
     @Override
-    public Solver gatherDefConstraints(String input, Solver solver) {
-        return solver;
+    public Rule gatherDefConstraints(String input) {
+        return this;
     }
 
     @Override
-    public Solver gatherConstraints(Property property, Solver solver) {
-        return solver;
+    public Rule gatherConstraints(Property property) {
+        return this;
     }
 }

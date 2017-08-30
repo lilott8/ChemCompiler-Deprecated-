@@ -59,6 +59,7 @@ public class Inference implements Phase {
 
     // This maps the rule name the corresponding rule.
     private final Map<String, Rule> inferenceRules = new HashMap<>();
+    //private final Map<String, Class<? extends Rule>> inferenceRules = new HashMap<>();
 
     // This maps each instruction/term to the constraints that it has.
     private Map<String, Set<String>> constraints = new HashMap<String, Set<String>>();
@@ -122,8 +123,7 @@ public class Inference implements Phase {
             }
             logger.debug(sb.toString());
         }
-
-        //logger.debug(this.constraints);
+        logger.debug(this.constraints);
     }
 
     /**
@@ -132,9 +132,6 @@ public class Inference implements Phase {
      */
     public void runPhase(CFG controlFlowGraph) {
         this.controlFlowGraph = controlFlowGraph;
-
-        test();
-
         // Iterate the CFG.
         for(Map.Entry<Integer, BasicBlock> block : this.controlFlowGraph.getBasicBlocks().entrySet()) {
             // Iterate the instructions.
@@ -168,44 +165,9 @@ public class Inference implements Phase {
     public Map<String, Set<String>> inferConstraints(String name, InstructionNode instruction) {
         if(this.inferenceRules.containsKey(name)) {
             Rule rule = this.inferenceRules.get(name);
-
-            /*
-             * Temp = Mix x with y for n
-             *  ^def_use  |      |     |
-             *         get_use   |     |
-             *                get_use  |
-             *                      property
-             */
-            // These are the defs on instruction
-            for(String out : instruction.get_def()) {
-                rule.gatherDefConstraints(out, this.context);
-            }
-
-            // This is the input to the instruction
-            for(String in: instruction.get_use()) {
-                rule.gatherUseConstraints(in, this.context);
-            }
-
-            // Get the properties of the instruction if they exist
-            for (Property prop : instruction.Instruction().getProperties()) {
-                rule.gatherConstraints(prop, this.context);
-            }
-
-            /*
-            logger.debug("Id: " + instruction.ID());
-            logger.debug("Classification: " + instruction.Instruction().getClassification());
-            logger.debug("Input Symbols: " + instruction.getInputSymbols());
-            logger.debug("Properties: " + instruction.Instruction().getProperties());
-            logger.debug("Use: " + instruction.get_use());
-            logger.debug("Def: " + instruction.get_def());
-            logger.debug("Output Symbols: " + instruction.getOutputSymbols());
-            logger.debug("toString(): " + instruction.toString());
-            logger.warn("=================================");
-            */
-
-
+            return rule.gatherAllConstraints(instruction).getConstraints();
             // return the constraints from the rule
-            return rule.getConstraints();
+            //return rule.getConstraints();
             //return this.inferenceRules.get(name).gatherConstraints(instruction).getConstraints();
         }
         logger.warn("We don't have a rule for: " + name);

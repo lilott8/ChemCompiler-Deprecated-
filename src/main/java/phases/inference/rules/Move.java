@@ -1,7 +1,5 @@
 package phases.inference.rules;
 
-import phases.inference.satsolver.Solver;
-
 import CompilerDataStructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
@@ -10,31 +8,35 @@ import substance.Property;
  * @created: 7/28/17
  * @since: 0.1
  * @project: ChemicalCompiler
+ *
+ * move is a synonym of mix.
  */
 @InferenceRule(ruleName = "move", ruleType = "instruction")
 public class Move extends Rule {
+
+    private Rule mix = new Mix(InferenceType.INSTRUCTION);
 
     public Move(InferenceType type) {
         super(type);
     }
 
     @Override
-    public Solver gatherConstraints(InstructionNode node, Solver solver) {
-        return null;
+    public Rule gatherAllConstraints(InstructionNode node) {
+        return this.mix.gatherAllConstraints(node);
     }
 
     @Override
-    public Solver gatherUseConstraints(String input, Solver solver) {
-        return null;
+    public Rule gatherUseConstraints(String input) {
+        return this.mix.gatherUseConstraints(input);
     }
 
     @Override
-    public Solver gatherDefConstraints(String input, Solver solver) {
-        return null;
+    public Rule gatherDefConstraints(String input) {
+        return this.mix.gatherDefConstraints(input);
     }
 
     @Override
-    public Solver gatherConstraints(Property property, Solver solver) {
-        return null;
+    public Rule gatherConstraints(Property property) {
+        return this.mix.gatherConstraints(property);
     }
 }

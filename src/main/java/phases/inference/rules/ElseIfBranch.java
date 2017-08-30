@@ -20,22 +20,22 @@ public class ElseIfBranch extends Rule{
     }
 
     @Override
-    public Solver gatherConstraints(InstructionNode node, Solver solver) {
+    public Rule gatherAllConstraints(InstructionNode node) {
+        return super.gatherConstraints(node);
+    }
+
+    @Override
+    public Rule gatherUseConstraints(String input) {
         return null;
     }
 
     @Override
-    public Solver gatherUseConstraints(String input, Solver solver) {
+    public Rule gatherDefConstraints(String input) {
         return null;
     }
 
     @Override
-    public Solver gatherDefConstraints(String input, Solver solver) {
-        return null;
-    }
-
-    @Override
-    public Solver gatherConstraints(Property property, Solver solver) {
+    public Rule gatherConstraints(Property property) {
         return null;
     }
 }

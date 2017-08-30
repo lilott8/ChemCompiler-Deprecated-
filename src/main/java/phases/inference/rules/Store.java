@@ -19,23 +19,23 @@ public class Store extends Rule {
     }
 
     @Override
-    public Solver gatherConstraints(InstructionNode node, Solver solver) {
-        return null;
+    public Rule gatherAllConstraints(InstructionNode node) {
+        return super.gatherConstraints(node);
     }
 
     @Override
-    public Solver gatherUseConstraints(String input, Solver solver) {
-        return solver;
+    public Rule gatherUseConstraints(String input) {
+        return this;
     }
 
     @Override
-    public Solver gatherDefConstraints(String input, Solver solver) {
+    public Rule gatherDefConstraints(String input) {
         this.addConstraint(input, MAT);
-        return solver;
+        return this;
     }
 
     @Override
-    public Solver gatherConstraints(Property property, Solver solver) {
-        return solver;
+    public Rule gatherConstraints(Property property) {
+        return this;
     }
 }
