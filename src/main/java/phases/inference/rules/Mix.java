@@ -1,11 +1,7 @@
 package phases.inference.rules;
 
-import phases.inference.satsolver.Solver;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import CompilerDataStructures.InstructionNode;
 import phases.inference.Inference.InferenceType;

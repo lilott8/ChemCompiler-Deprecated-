@@ -2,10 +2,9 @@ package phases.inference.rules;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import phases.inference.satsolver.Solver;
-
 import CompilerDataStructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
+import phases.inference.satsolver.strategies.SolverStrategy;
 import substance.Property;
 
 /**
@@ -26,7 +25,7 @@ public class Math extends Rule {
         // return this;
     }
 
-    public Rule gatherConstraints(InstructionNode node, Solver solver) {
+    public Rule gatherConstraints(InstructionNode node, SolverStrategy solver) {
         for (String out : node.get_def()) {
             String type = isRealNumber(out) ? REAL : NAT;
             this.addConstraint(out, type);
