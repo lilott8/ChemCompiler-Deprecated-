@@ -19,23 +19,23 @@ public class IfBranch extends Rule {
     }
 
     @Override
-    public Solver gatherConstraints(InstructionNode node, Solver solver) {
-        return null;
+    public Rule gatherAllConstraints(InstructionNode node) {
+        return super.gatherConstraints(node);
     }
 
     @Override
-    public Solver gatherUseConstraints(String input, Solver solver) {
+    public Rule gatherUseConstraints(String input) {
         this.addConstraint(input, NAT);
-        return solver;
+        return this;
     }
 
     @Override
-    public Solver gatherDefConstraints(String input, Solver solver) {
-        return solver;
+    public Rule gatherDefConstraints(String input) {
+        return this;
     }
 
     @Override
-    public Solver gatherConstraints(Property property, Solver solver) {
+    public Rule gatherConstraints(Property property) {
         return null;
     }
 }

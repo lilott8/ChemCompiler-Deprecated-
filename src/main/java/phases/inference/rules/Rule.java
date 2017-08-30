@@ -1,14 +1,16 @@
 package phases.inference.rules;
 
 
+import org.apache.logging.log4j.LogManager;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import CompilerDataStructures.InstructionNode;
+import executable.instructions.Instruction;
 import phases.inference.Inference.InferenceType;
-import phases.inference.satsolver.Solver;
 import substance.Property;
 
 /**
@@ -49,11 +51,10 @@ public abstract class Rule {
         this.type = type;
     }
 
-    @Deprecated
-    public abstract Solver gatherConstraints(InstructionNode node, Solver solver);
-    public abstract Solver gatherUseConstraints(String input, Solver solver);
-    public abstract Solver gatherDefConstraints(String input, Solver solver);
-    public abstract Solver gatherConstraints(Property property, Solver solver);
+    public abstract Rule gatherAllConstraints(InstructionNode node);
+    public abstract Rule gatherUseConstraints(String input);
+    public abstract Rule gatherDefConstraints(String input);
+    public abstract Rule gatherConstraints(Property property);
 
     public Map<String, Set<String>> getConstraints() {
         return constraints;
@@ -75,6 +76,44 @@ public abstract class Rule {
             this.constraints.put(key, new HashSet<>());
         }
         this.constraints.get(key).add(value);
+    }
+
+    protected Rule gatherConstraints(InstructionNode node) {
+        LogManager.getLogger(Rule.class).debug("rule.gatherconstraints");
+        /*
+         * Temp = Mix x with y for n
+         *  ^def_use  |      |     |
+         *         get_use   |     |
+         *                get_use  |
+         *                      property
+         */
+        // These are the defs on instruction
+        for(String out : node.get_def()) {
+            this.gatherDefConstraints(out);
+        }
+
+        // This is the input to the instruction
+        for(String in: node.get_use()) {
+            this.gatherUseConstraints(in);
+        }
+
+        // Get the properties of the instruction if they exist
+        for (Property prop : node.Instruction().getProperties()) {
+            this.gatherConstraints(prop);
+        }
+
+        /*
+        logger.debug("Id: " + instruction.ID());
+        logger.debug("Classification: " + instruction.Instruction().getClassification());
+        logger.debug("Input Symbols: " + instruction.getInputSymbols());
+        logger.debug("Properties: " + instruction.Instruction().getProperties());
+        logger.debug("Use: " + instruction.get_use());
+        logger.debug("Def: " + instruction.get_def());
+        logger.debug("Output Symbols: " + instruction.getOutputSymbols());
+        logger.debug("toString(): " + instruction.toString());
+        logger.warn("=================================");
+        */
+        return this;
     }
 
     public static boolean isNumeric(String value) {

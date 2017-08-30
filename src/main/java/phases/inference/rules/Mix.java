@@ -5,6 +5,8 @@ import phases.inference.satsolver.Solver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import CompilerDataStructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
@@ -25,37 +27,40 @@ public class Mix extends Rule {
         super(type);
     }
 
-    public Solver gatherConstraints(InstructionNode node, Solver solver) {
-
-        for (String out : node.get_def()) {
-            this.addConstraint(out, "Mat");
+    @Override
+    public Rule gatherAllConstraints(InstructionNode node) {
+        logger.info("Hey, I'm here, so yeah!");
+        for(String out : node.get_def()) {
+            this.gatherDefConstraints(out);
         }
 
-        for (String in : node.get_use()) {
-            this.addConstraint(in, "Mat");
+        // This is the input to the instruction
+        for(String in: node.get_use()) {
+            this.gatherUseConstraints(in);
         }
 
+        // Get the properties of the instruction if they exist
         for (Property prop : node.Instruction().getProperties()) {
-            this.addConstraint("constant", "Real");
+            this.gatherConstraints(prop);
         }
-        return solver;
+        return this;
     }
 
     @Override
-    public Solver gatherUseConstraints(String input, Solver solver) {
+    public Rule gatherUseConstraints(String input) {
         this.addConstraint(input, MAT);
-        return solver;
+        return this;
     }
 
     @Override
-    public Solver gatherDefConstraints(String input, Solver solver) {
+    public Rule gatherDefConstraints(String input) {
         this.addConstraint(input, MAT);
-        return solver;
+        return this;
     }
 
     @Override
-    public Solver gatherConstraints(Property property, Solver solver) {
+    public Rule gatherConstraints(Property property) {
         this.addConstraint(CONST, REAL);
-        return solver;
+        return this;
     }
 }

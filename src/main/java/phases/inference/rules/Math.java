@@ -1,5 +1,7 @@
 package phases.inference.rules;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import phases.inference.satsolver.Solver;
 
 import CompilerDataStructures.InstructionNode;
@@ -19,22 +21,40 @@ public class Math extends Rule {
     }
 
     @Override
-    public Solver gatherConstraints(InstructionNode node, Solver solver) {
+    public Rule gatherAllConstraints(InstructionNode node) {
+        throw new NotImplementedException();
+        // return this;
+    }
+
+    public Rule gatherConstraints(InstructionNode node, Solver solver) {
+        for (String out : node.get_def()) {
+            String type = isRealNumber(out) ? REAL : NAT;
+            this.addConstraint(out, type);
+        }
+
+        for (String in : node.get_use()) {
+            String type = isRealNumber(in) ? REAL : NAT;
+            this.addConstraint(in, type);
+        }
+
+        for (Property prop : node.Instruction().getProperties()) {
+            this.addConstraint(CONST, REAL);
+        }
+        return this;
+    }
+
+    @Override
+    public Rule gatherUseConstraints(String input) {
         return null;
     }
 
     @Override
-    public Solver gatherUseConstraints(String input, Solver solver) {
+    public Rule gatherDefConstraints(String input) {
         return null;
     }
 
     @Override
-    public Solver gatherDefConstraints(String input, Solver solver) {
-        return null;
-    }
-
-    @Override
-    public Solver gatherConstraints(Property property, Solver solver) {
+    public Rule gatherConstraints(Property property) {
         return null;
     }
 }
