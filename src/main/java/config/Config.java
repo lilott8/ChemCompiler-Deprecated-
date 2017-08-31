@@ -1,11 +1,13 @@
 package config;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,6 +62,11 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
     private boolean ssi = false;
 
     /**
+     * Clean the output directory
+     */
+    private boolean clean = false;
+
+    /**
      * List of translations that need to occur
      */
     private Map<String, Translator> translators = new HashMap<>();
@@ -91,6 +98,16 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
                 // Make sure we have the trailing slash.
                 if (!StringUtils.equals(this.output.substring(this.output.length()-1), "/")) {
                     this.output += "/";
+                }
+
+                // should we clean the output directory
+                if (cmd.hasOption("clean")) {
+                    this.clean = true;
+                    try {
+                        FileUtils.cleanDirectory(new File(this.output));
+                    } catch (IOException e) {
+                        logger.fatal(e.getMessage());
+                    }
                 }
             }
 
@@ -169,6 +186,14 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
             }
         }
     }
+
+    /**
+     * Part of the CleanConfig interface,
+     * tells us if we should run the clean method
+     * @return boolean
+     * true if we should clean the output directory
+     */
+    public boolean clean() { return this.clean; }
 
     private void buildTranslators(List<String> strings) {
         for (String name : strings) {

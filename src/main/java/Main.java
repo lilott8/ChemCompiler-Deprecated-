@@ -174,7 +174,7 @@ public class Main {
         options.addOption(Option.builder("clean").longOpt("clean")
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
                 .argName("clean").build());
-
+        
         desc = "What phases to enable." +
                 "\n Usage: -p {list of phases}" +
                 "\n Available phases: " +
