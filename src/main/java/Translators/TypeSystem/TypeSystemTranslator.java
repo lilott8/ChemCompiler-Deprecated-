@@ -1,19 +1,36 @@
 package Translators.TypeSystem;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import ChemicalInteractions.ChemicalResolution;
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.InstructionEdge;
 import CompilerDataStructures.InstructionNode;
-import Config.TranslateConfig;
+import config.TranslateConfig;
 import Translators.Translator;
-import executable.instructions.*;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.*;
-import java.util.*;
+import executable.instructions.Combine;
+import executable.instructions.Detect;
+import executable.instructions.Heat;
+import executable.instructions.Instruction;
+import executable.instructions.Output;
+import executable.instructions.Split;
+import executable.instructions.Store;
 
 /**
  * Created by chriscurtis on 10/26/16.

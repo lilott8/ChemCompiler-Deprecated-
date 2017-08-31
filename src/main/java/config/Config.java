@@ -1,4 +1,4 @@
-package Config;
+package config;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.lang3.StringUtils;
@@ -6,25 +6,26 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import Translators.MFSimSSA.MFSimSSATranslator;
 import Translators.Translator;
 import Translators.TypeSystem.TypeSystemTranslator;
-import org.apache.commons.io.FileUtils;
 
 /**
  * @created: 7/26/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmConfig, TranslateConfig, CleanConfig {
+public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmConfig, TranslateConfig, PhaseConfig {
     INSTANCE;
+
 
     public static final Logger logger = LogManager.getLogger(Config.class);
 
@@ -59,14 +60,14 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
     private boolean ssi = false;
 
     /**
-     * Clean the output directory
-     */
-    private boolean clean = false;
-
-    /**
      * List of translations that need to occur
      */
-    private Map<String, Translator> translators = new HashMap<String, Translator>();
+    private Map<String, Translator> translators = new HashMap<>();
+
+    /**
+     * List of phases that are enabled for compilation
+     */
+    private Set<String> phases = new HashSet<String>();
 
     /**
      * Build the config object from our command line
@@ -91,17 +92,6 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
                 if (!StringUtils.equals(this.output.substring(this.output.length()-1), "/")) {
                     this.output += "/";
                 }
-
-                // should we clean the output directory
-                if (cmd.hasOption("clean")) {
-                    this.clean = true;
-                    try {
-                        FileUtils.cleanDirectory(new File(this.output));
-                    } catch (IOException e) {
-                        logger.fatal(e.getMessage());
-                    }
-                }
-
             }
 
             // Are we in debug mode
@@ -109,6 +99,10 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
 
             if (cmd.hasOption("translate")) {
                 this.buildTranslators(Arrays.asList(cmd.getOptionValues("translate")));
+            }
+
+            if (cmd.hasOption("phases")) {
+                this.phases.addAll(Arrays.asList(cmd.getOptionValues("phases")));
             }
 
             this.built = true;
@@ -133,7 +127,7 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
      * @return      String
      * String location for output
      */
-    public String getOuptutDir() {
+    public String getOutputDir() {
         return this.output;
     }
 
@@ -167,26 +161,6 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
         return this.ssi;
     }
 
-    /**
-     * Part of the CleanConfig interface,
-     * tells us if we should run the clean method
-     * @return boolean
-     * true if we should clean the output directory
-     */
-    public boolean clean() { return this.clean; }
-
-
-    private void buildTranslators(List<String> strings) {
-        for (String name : strings) {
-            if (StringUtils.equalsIgnoreCase("mfsim", name)) {
-                this.translators.put("mfsim", new MFSimSSATranslator());
-            }
-            else if (StringUtils.equalsIgnoreCase("typesystem", name)) {
-                this.translators.put("typesystem", new TypeSystemTranslator());
-            }
-        }
-    }
-
     private void buildFiles(List<String> strings) {
         for (String file : strings) {
             File f = new File(file);
@@ -196,11 +170,14 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
         }
     }
 
-    public Translator getTranslationByName(String name) {
-        if (this.translators.containsKey(name)) {
-            return this.translators.get(name);
+    private void buildTranslators(List<String> strings) {
+        for (String name : strings) {
+            if (StringUtils.equalsIgnoreCase("mfsim", name)) {
+                this.translators.put(TranslateConfig.MFSIM, new MFSimSSATranslator());
+            } else if (StringUtils.equalsIgnoreCase("typesystem", name)) {
+                this.translators.put(TranslateConfig.TYPESYSTEM, new TypeSystemTranslator());
+            }
         }
-        return null;
     }
 
     /**
@@ -221,5 +198,16 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
         return !this.translators.isEmpty();
     }
 
+    public Set<String> getAllPhases() {
+        return this.phases;
+    }
+
+    public boolean phasesEnabled() {
+        return !this.phases.isEmpty();
+    }
+
+    public boolean phaseEnabled(String name) {
+        return this.phases.contains(name);
+    }
 
 }

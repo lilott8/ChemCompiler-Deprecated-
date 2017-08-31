@@ -1,11 +1,3 @@
-import CompilerDataStructures.BasicBlock.BasicBlock;
-import CompilerDataStructures.ControlFlowGraph.CFG;
-import CompilerDataStructures.DominatorTree.DominatorTree;
-import CompilerDataStructures.DominatorTree.PostDominatorTree;
-import Config.Config;
-import manager.Benchtop;
-import parsing.BioScript.BenchtopParser;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -16,6 +8,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+
+import CompilerDataStructures.BasicBlock.BasicBlock;
+import CompilerDataStructures.ControlFlowGraph.CFG;
+import CompilerDataStructures.DominatorTree.DominatorTree;
+import CompilerDataStructures.DominatorTree.PostDominatorTree;
+import config.Config;
+import phases.PhaseFacade;
+import shared.Facade;
+import Translators.TranslatorFacade;
+import manager.Benchtop;
+import parsing.BioScript.BenchtopParser;
 
 
 public class Main {
@@ -36,15 +39,16 @@ public class Main {
 
         //SimpleMixTest();
         try {
-
             for(String file : Config.INSTANCE.getFilesForCompilation()) {
+                logger.trace(file);
                 BenchtopParser.parse(file);
             }
             //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {
             logger.fatal(e.getMessage());
-            logger.fatal(e.getStackTrace());
+            //e.printStackTrace();
+            logger.fatal("Exception: ", e);
         }
 
 
@@ -57,17 +61,30 @@ public class Main {
                 //TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
                 //tst.toFile("NeurotransmitterSensing.txt");
                 //logger.info(tst.toString());
-                if (Config.INSTANCE.translationsEnabled() && Config.INSTANCE.translationEnabled("mfsim")) {
-                    Config.INSTANCE.getTranslationByName("mfsim").runTranslation(experiment).toFile(Config.INSTANCE.getOuptutDir() + "test");
+                if (Config.INSTANCE.translationsEnabled()) {
+                    Facade translator = new TranslatorFacade(Config.INSTANCE, experiment);
+                    translator.start();
+                }
+                //if (config.INSTANCE.translationsEnabled() && config.INSTANCE.translationEnabled(config.TRANSLATORS.MFSIM)) {
+                //    config.INSTANCE.getTranslationByName(config.TRANSLATORS.MFSIM).runTranslation(experiment).toFile(config.INSTANCE.getOuptutDir() + "test");
                     //Translator mfsimt = new MFSimSSATranslator().runTranslation(experiment);
-                    //mfsimt.toFile(Config.INSTANCE.getOuptutDir());
+                    //mfsimt.toFile(config.INSTANCE.getOuptutDir());
+                //}
+
+                //if (config.INSTANCE.phasesEnabled() &&config.INSTANCE.phaseEnabled(config.PHASES.INFERENCE)) {
+                //   config.INSTANCE.getPhaseByName(config.PHASES.INFERENCE).runPhase();
+                //}
+                if(Config.INSTANCE.phasesEnabled()) {
+                 Facade phase = new PhaseFacade(Config.INSTANCE, experiment);
+                 phase.start();
                 }
             }
 
         }
         catch (Exception e ){
             logger.fatal("Exception occurred");
-            logger.fatal(e.getStackTrace());
+            e.getStackTrace();
+            logger.fatal("Stack Trace:", e.getStackTrace());
         }
 
         if (Config.INSTANCE.isDebug()) {
@@ -143,7 +160,10 @@ public class Main {
 
         // What translators to use
         desc = "What translator to use.  If -o is set, this must be set." +
-                "\n Usage: -translate {list of translators}";
+                "\n Usage: -translate {list of translators}" +
+                "\n Available translators: " +
+                "\n\t mfsim: translates cfg to mfsim machine code" +
+                "\n\t typesystem: translates cfg for further typing analysis";
         options.addOption(Option.builder("t").longOpt("translate")
                 .desc(desc).type(ArrayList.class).hasArgs().required(false)
                 .argName("translate").build());
@@ -155,6 +175,13 @@ public class Main {
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
                 .argName("clean").build());
 
+        desc = "What phases to enable." +
+                "\n Usage: -p {list of phases}" +
+                "\n Available phases: " +
+                "\n\t inference: run type inference";
+        options.addOption(Option.builder("p").longOpt("phases")
+            .desc(desc).hasArgs().required(false)
+            .argName("phases").build());
         return options;
     }
 
@@ -239,7 +266,7 @@ public class Main {
         cfg.addEdge(b12,bExit);
 
         DominatorTree t = new DominatorTree(cfg);
-        System.out.println(t);
+        logger.info(t);
     }
 
     public static void PostDominatorTreeTest(){
@@ -268,9 +295,9 @@ public class Main {
 
         DominatorTree t = new DominatorTree(cfg);
         PostDominatorTree pt = new PostDominatorTree(cfg);
-        System.out.println(t);
+        logger.info(t);
 
-        System.out.println(pt);
+        logger.info(pt);
     }
 
 }

@@ -1,20 +1,44 @@
 package Translators.MFSimSSA;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.InstructionEdge;
 import CompilerDataStructures.InstructionNode;
 import CompilerDataStructures.StaticSingleAssignment.PHIInstruction;
 import CompilerDataStructures.StaticSingleAssignment.RenamedVariableNode;
 import CompilerDataStructures.StaticSingleInformation.SigmaInstruction;
-import Translators.MFSimSSA.OperationNode.*;
-import executable.instructions.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import Translators.MFSimSSA.OperationNode.MFSimSSACool;
+import Translators.MFSimSSA.OperationNode.MFSimSSADetect;
+import Translators.MFSimSSA.OperationNode.MFSimSSADispense;
+import Translators.MFSimSSA.OperationNode.MFSimSSAHeat;
+import Translators.MFSimSSA.OperationNode.MFSimSSAMix;
+import Translators.MFSimSSA.OperationNode.MFSimSSANode;
+import Translators.MFSimSSA.OperationNode.MFSimSSAOutput;
+import Translators.MFSimSSA.OperationNode.MFSimSSASplit;
+import Translators.MFSimSSA.OperationNode.MFSimSSAStorage;
+import Translators.MFSimSSA.OperationNode.MFSimSSATransferIn;
+import Translators.MFSimSSA.OperationNode.MFSimSSATransferOut;
+import executable.instructions.Combine;
+import executable.instructions.Detect;
+import executable.instructions.Dispense;
+import executable.instructions.Heat;
+import executable.instructions.Instruction;
+import executable.instructions.Output;
+import executable.instructions.React;
+import executable.instructions.Split;
+import executable.instructions.Store;
 import substance.Chemical;
-import substance.Substance;
 import variable.Instance;
-
-import java.util.*;
 
 /**
  * Created by chriscurtis on 10/28/16.

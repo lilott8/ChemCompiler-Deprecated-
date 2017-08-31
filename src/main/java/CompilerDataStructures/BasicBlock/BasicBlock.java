@@ -1,17 +1,22 @@
 package CompilerDataStructures.BasicBlock;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import CompilerDataStructures.InstructionEdge;
 import CompilerDataStructures.InstructionNode;
-import CompilerDataStructures.StaticSingleAssignment.PHIInstruction;
 import CompilerDataStructures.StaticSingleAssignment.GlobalAssignment;
+import CompilerDataStructures.StaticSingleAssignment.PHIInstruction;
 import SymbolTable.NestedSymbolTable;
 import executable.instructions.Combine;
 import executable.instructions.Instruction;
 import executable.instructions.Output;
 import executable.instructions.Split;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * Created by chriscurtis on 9/29/16.

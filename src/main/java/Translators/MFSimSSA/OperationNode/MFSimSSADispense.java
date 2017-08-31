@@ -1,9 +1,7 @@
 package Translators.MFSimSSA.OperationNode;
 
-import executable.instructions.Dispense;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import variable.Variable;
 
 /**
  * Created by chriscurtis on 10/28/16.

@@ -1,8 +1,10 @@
 package CompilerDataStructures.DominatorTree;
 
-import CompilerDataStructures.ControlFlowGraph.CFG;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import java.util.*;
+import CompilerDataStructures.ControlFlowGraph.CFG;
 
 /**
  * Created by chriscurtis on 10/18/16.

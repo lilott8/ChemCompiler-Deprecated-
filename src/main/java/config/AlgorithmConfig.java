@@ -1,4 +1,4 @@
-package Config;
+package config;
 
 /**
  * @created: 7/26/17

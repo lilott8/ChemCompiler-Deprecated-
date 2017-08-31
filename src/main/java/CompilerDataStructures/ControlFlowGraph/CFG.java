@@ -1,20 +1,27 @@
 package CompilerDataStructures.ControlFlowGraph;
 
-import CompilerDataStructures.BasicBlock.BasicBlock;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import ChemicalInteractions.ChemicalResolution;
+import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.BasicBlock.BasicBlockEdge;
 import CompilerDataStructures.InstructionNode;
 import SymbolTable.NestedSymbolTable;
 import executable.instructions.Instruction;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import substance.Chemical;
 import substance.Substance;
 import variable.Instance;
 import variable.Variable;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * Created by chriscurtis on 9/29/16.

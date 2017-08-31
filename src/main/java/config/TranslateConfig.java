@@ -1,6 +1,7 @@
-package Config;
+package config;
 
 import java.util.Map;
+import java.util.Set;
 
 import Translators.Translator;
 
@@ -11,8 +12,11 @@ import Translators.Translator;
  */
 public interface TranslateConfig {
 
-    Translator getTranslationByName(String name);
+    String MFSIM = "mfsim";
+    String TYPESYSTEM = "typesystem";
+
     Map<String, Translator> getAllTranslations();
-    boolean translationEnabled(String name);
+    boolean translationEnabled(String translator);
     boolean translationsEnabled();
+    String getOutputDir();
 }

@@ -1,11 +1,18 @@
 package CompilerDataStructures.BasicBlock;
 
-import com.sun.tools.classfile.Code_attribute;
-import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
 
-import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.*;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.eq;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.gt;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.gte;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.lt;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.lte;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.neq;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.repeat;
+import static CompilerDataStructures.BasicBlock.BasicBlockEdge.__type.un;
 
 /**
  * Created by chriscurtis on 9/28/16.
@@ -18,6 +25,8 @@ public class BasicBlockEdge implements Serializable {
     private String __condition;
     protected enum __type {un, repeat, lt, lte, gt, gte, eq, neq };
     private __type type;
+
+    public static Logger logger = LogManager.getLogger(BasicBlockEdge.class);
 
     public BasicBlockEdge(Integer source, Integer destination, String condition) {
         __source = source;
@@ -41,7 +50,7 @@ public class BasicBlockEdge implements Serializable {
             this.type = evaluateBoolean(expression);
         }
         else {
-            System.out.println("error evaluating loop");
+            logger.fatal("error evaluating loop");
         }
         switch (this.type) {
             case repeat:

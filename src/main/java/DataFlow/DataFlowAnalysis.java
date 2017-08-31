@@ -1,11 +1,11 @@
 package DataFlow;
 
-import CompilerDataStructures.BasicBlock.BasicBlockEdge;
-import CompilerDataStructures.ControlFlowGraph.CFG;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import CompilerDataStructures.BasicBlock.BasicBlockEdge;
+import CompilerDataStructures.ControlFlowGraph.CFG;
 
 /**
  * Created by chriscurtis on 10/19/16.

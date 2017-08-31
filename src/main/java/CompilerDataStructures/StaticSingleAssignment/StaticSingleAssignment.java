@@ -1,18 +1,21 @@
 package CompilerDataStructures.StaticSingleAssignment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Stack;
+
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
 import CompilerDataStructures.DominatorTree.DominatorTree;
 import CompilerDataStructures.InstructionNode;
 import CompilerDataStructures.StaticSingleInformation.SigmaInstruction;
 
-import java.util.*;
-
 /**
  * Created by chriscurtis on 3/13/17.
  */
 public abstract class StaticSingleAssignment extends CFG {
-    public static Boolean DEBUGPHI = true;
+    public static Boolean DEBUGPHI = false;
 
     public static Boolean DEBUGLHS = false;
     public static Boolean DEBUGRHS = false;
@@ -58,7 +61,7 @@ public abstract class StaticSingleAssignment extends CFG {
             if(instructionNode instanceof GlobalAssignment){
 
                 for(String symbol : instructionNode.getOutputSymbols()) {
-                    System.out.println( symbol);
+                    logger.info( symbol);
                     if(this.__basicBlockSymbolDefinitionTable.containsKey(symbol)){
                         this.__basicBlockSymbolDefinitionTable.get(symbol).add(this.__entry.ID());
                     }
