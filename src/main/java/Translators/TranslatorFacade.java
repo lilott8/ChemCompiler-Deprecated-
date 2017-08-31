@@ -40,8 +40,8 @@ public class TranslatorFacade implements Facade {
         this.controlFlowGraph = cfg;
         this.config = config;
 
-        for(String s : this.config.getAllTranslations()) {
-            TRANSLATORS t = TRANSLATORS.valueOf(StringUtils.upperCase(s));
+        for(Map.Entry<String, Translator> entry: this.config.getAllTranslations().entrySet()) {
+            TRANSLATORS t = TRANSLATORS.valueOf(StringUtils.upperCase(entry.getKey()));
             this.translators.put(t, TRANSLATORS.getTranslator(t));
         }
     }
