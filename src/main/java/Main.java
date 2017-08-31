@@ -39,15 +39,16 @@ public class Main {
 
         //SimpleMixTest();
         try {
-
             for(String file : Config.INSTANCE.getFilesForCompilation()) {
+                logger.trace(file);
                 BenchtopParser.parse(file);
             }
             //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {
             logger.fatal(e.getMessage());
-            logger.fatal(e.getStackTrace());
+            //e.printStackTrace();
+            logger.fatal("Exception: ", e);
         }
 
 
@@ -83,7 +84,7 @@ public class Main {
         catch (Exception e ){
             logger.fatal("Exception occurred");
             e.getStackTrace();
-            logger.fatal("Stack Trace:", e);
+            logger.fatal("Stack Trace:", e.getStackTrace());
         }
 
         if (Config.INSTANCE.isDebug()) {

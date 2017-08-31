@@ -25,10 +25,10 @@ public class Z3Strategy implements SolverStrategy {
     public void solveConstraints(Map<String, Set<String>> constraints) {
         logger.error("Mutating constraints for testing!");
         //constraints.get("Water").add("Int");
-        this.solveWithSMT2(constraints);
+        this.solveWithSMT2(this.generateSMT2(constraints));
     }
 
-    private void solveWithSMT2(Map<String, Set<String>> constraints) {
+    private String generateSMT2(Map<String, Set<String>> constraints) {
         StringBuilder sb = new StringBuilder();
         sb.append("(declare-datatypes () ((Type Int Real Mat)))").append(System.lineSeparator());
         boolean printAssert = true;
@@ -60,8 +60,12 @@ public class Z3Strategy implements SolverStrategy {
         //sb.append("(check-sat)").append(System.lineSeparator());
         //sb.append("(get-model)").append(System.lineSeparator());
         logger.info(sb.toString());
+        return sb.toString();
+    }
+
+    private void solveWithSMT2(String smt2) {
         Context context = new Context();
-        BoolExpr expr = context.parseSMTLIB2String(sb.toString(), null, null, null, null);
+        BoolExpr expr = context.parseSMTLIB2String(smt2, null, null, null, null);
         Solver solver = context.mkSolver();
         solver.add(expr);
         Status status = solver.check();
