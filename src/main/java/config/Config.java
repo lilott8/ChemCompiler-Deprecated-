@@ -8,9 +8,15 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import Translators.MFSimSSA.MFSimSSATranslator;
+import Translators.Translator;
+import Translators.TypeSystem.TypeSystemTranslator;
 
 /**
  * @created: 7/26/17
@@ -56,7 +62,7 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
     /**
      * List of translations that need to occur
      */
-    private Set<String> translators = new HashSet<String>();
+    private Map<String, Translator> translators = new HashMap<>();
 
     /**
      * List of phases that are enabled for compilation
@@ -92,7 +98,7 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
             this.debug = Boolean.parseBoolean(cmd.getOptionValue("debug", "false"));
 
             if (cmd.hasOption("translate")) {
-                this.translators.addAll(Arrays.asList(cmd.getOptionValues("translate")));
+                this.buildTranslators(Arrays.asList(cmd.getOptionValues("translate")));
             }
 
             if (cmd.hasOption("phases")) {
@@ -164,18 +170,28 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
         }
     }
 
+    private void buildTranslators(List<String> strings) {
+        for (String name : strings) {
+            if (StringUtils.equalsIgnoreCase("mfsim", name)) {
+                this.translators.put(TranslateConfig.MFSIM, new MFSimSSATranslator());
+            } else if (StringUtils.equalsIgnoreCase("typesystem", name)) {
+                this.translators.put(TranslateConfig.TYPESYSTEM, new TypeSystemTranslator());
+            }
+        }
+    }
+
     /**
      * Part of the TranslateConfig interface,
      * gets all the translations we need to run.
      * @return  Map of translations that can occur
      *     Map of all translations
      */
-    public Set<String> getAllTranslations() {
+    public Map<String, Translator> getAllTranslations() {
         return this.translators;
     }
 
     public boolean translationEnabled(String name) {
-        return this.translators.contains(name);
+        return this.translators.containsKey(name);
     }
 
     public boolean translationsEnabled() {

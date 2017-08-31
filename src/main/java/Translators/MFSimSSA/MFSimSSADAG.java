@@ -30,6 +30,7 @@ import Translators.MFSimSSA.OperationNode.MFSimSSATransferIn;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferOut;
 import executable.instructions.Combine;
 import executable.instructions.Detect;
+import executable.instructions.Dispense;
 import executable.instructions.Heat;
 import executable.instructions.Instruction;
 import executable.instructions.Output;
