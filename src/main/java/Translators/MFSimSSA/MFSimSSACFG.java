@@ -3,14 +3,20 @@ package Translators.MFSimSSA;
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.BasicBlock.BasicBlockEdge;
 import CompilerDataStructures.ControlFlowGraph.CFG;
+import CompilerDataStructures.InstructionNode;
+import CompilerDataStructures.StaticSingleAssignment.SemiPrunedStaticSingleAssignment.SemiPrunedStaticSingleAssignment;
+import CompilerDataStructures.StaticSingleAssignment.StaticSingleAssignment;
+import Translators.MFSimSSA.OperationNode.MFSimSSANode;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferIn;
 import Translators.MFSimSSA.OperationNode.MFSimSSATransferOut;
+import executable.instructions.Output;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -26,33 +32,43 @@ public class MFSimSSACFG{
 
     public MFSimSSACFG(CFG controlFlowGraph, MFSimSSATranslator.IDGen uniqueID){
         __uniqueIDGen = uniqueID;
-        __dags = new HashMap<Integer, MFSimSSADAG>();
-        __conditionalGroups = new HashMap<Integer, List<BasicBlockEdge>>();
+        __dags = new LinkedHashMap<Integer, MFSimSSADAG>();
+        __conditionalGroups = new LinkedHashMap<Integer, List<BasicBlockEdge>>();
 
         for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()){
-            MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID);
-            __dags.put(bb.ID(),dag);
+            MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID, ((StaticSingleAssignment) controlFlowGraph).get__variableStack());
+            __dags.put(bb.ID(), dag);
             logger.info(dag);
         }
         for(BasicBlockEdge edge: controlFlowGraph.getBasicBlockEdges()){
             List<BasicBlockEdge> conditionalGroup;
-            if(__conditionalGroups.containsKey(edge.getSource())){
-                conditionalGroup= __conditionalGroups.get(edge.getSource());
 
-            }
-            else {
+            if (__conditionalGroups.containsKey(edge.getSource())) {
+                conditionalGroup = __conditionalGroups.get(edge.getSource());
+            } else {
                 conditionalGroup = new ArrayList<BasicBlockEdge>();
             }
             conditionalGroup.add(edge);
-            __conditionalGroups.put(edge.getSource(),conditionalGroup);
+            ArrayList<InstructionNode> instructions = controlFlowGraph.getBasicBlock(edge.getSource()).getInstructions();
+            if (instructions.get(instructions.size()-1).Instruction() instanceof Output) {
+                // do not add group
+            }
+            else
+                __conditionalGroups.put(edge.getSource(), conditionalGroup);
         }
+
     }
 
     public String toString(String filename){
         String ret=  "NAME(" + filename + ")\n\n";
 
         for(MFSimSSADAG dag: __dags.values()){
-            ret += "DAG("+ dag.getName() + ")\n";
+            if (!(dag.getNodes().size() == 0 && dag.getTransferInNode().size() == 0 && dag.getTransferOutNode().size() == 0))
+                ret += "DAG("+ dag.getName() + ")\n";
+            else {
+                String index = dag.getName().substring(dag.getName().lastIndexOf('G')+1);
+                __conditionalGroups.remove(Integer.parseInt(index));
+            }
         }
         ret += "\n";
 
@@ -66,14 +82,19 @@ public class MFSimSSACFG{
                 if(edge.getCondition() == "UNCONDITIONAL")
                     ret+="COND("+ controlGroup + ", 1, " + sourceBasicBlock.getName() + ", 1 ," + destinationBasicBlock.getName()+ ", " + getUnconditionalJump(sourceBasicBlock.getName());
                 else {
-                    String conditionalExpression = resolveExpression(edge.getCondition());
+                    String conditionalExpression = resolveExpression(destinationBasicBlock.getName(), edge, sourceBasicBlockID);
                     ret += "COND("+ controlGroup + ", 1, " + sourceBasicBlock.getName() + ", 1 ," + destinationBasicBlock.getName() + ", " + conditionalExpression;
+
                 }
                 ret+="\n";
-                for(MFSimSSATransferOut transferOut: sourceBasicBlock.getTransferOutNode().values()){
-                    for(MFSimSSATransferIn transferIn: destinationBasicBlock.getTransferInNode().values()){
-                        if(transferOut.getTransferedSymbol().equals(transferIn.getTransferedSymbol())){
-                            ret +="TD("+ sourceBasicBlock.getName() + ", " + transferOut.getID() + ", " + destinationBasicBlock.getName()+", " + transferIn.getID() +")\n";
+                for(ArrayList<MFSimSSATransferOut> ttransferOut: sourceBasicBlock.getTransferOutNode().values()){
+                    for (MFSimSSATransferOut transferOut : ttransferOut) {
+                        for (ArrayList<MFSimSSATransferIn> ttransferIn : destinationBasicBlock.getTransferInNode().values()) {
+                            for (MFSimSSATransferIn transferIn : ttransferIn) {
+                                if (transferOut.getTransferedSymbol().equals(transferIn.getTransferedSymbol())) {
+                                    ret += "TD(" + sourceBasicBlock.getName() + ", " + transferOut.getID() + ", " + destinationBasicBlock.getName() + ", " + transferIn.getID() + ")\n";
+                                }
+                            }
                         }
                     }
                 }
@@ -143,10 +164,28 @@ public class MFSimSSACFG{
         }
     }
 
-    private String resolveExpression(String s){
+    private String resolveExpression(String destName, BasicBlockEdge edge, Integer bbID){
         Integer expressionID = this.__uniqueIDGen.getNextID();
-        String ret =  expressionID + ")\nEXP("+ expressionID +"<INSERT CONDITION HERE>)\n";
+        String ret = expressionID + ")\nEXP(" + expressionID ;
+        if (edge.getType().toString().equals("repeat")) {
+            ret += ", RUN_COUNT, LT, " + destName + ", " + edge.getCondition() + ")\n";
+        }
+        else if (false/*edge is while*/) {
 
+        }
+        else if (edge.getType().toString().equals("lte")){
+            MFSimSSADAG dag = __dags.get(bbID);
+            Integer nodeID = 0;
+            for (MFSimSSANode node : dag.getNodes().values()) {
+                nodeID = node.getID();
+            }
+            ret += ", ONE_SENSOR, LoE, " + nodeID.toString() + "," +
+                    edge.getCondition().substring((edge.getCondition().lastIndexOf("=")+1)) +")\n";
+            logger.warn("Hard-coding ONE_SENSOR");
+        }
+        else {
+            ret += ", <INSERT CONDITION HERE>)\n";
+        }
         return ret;
 
     }

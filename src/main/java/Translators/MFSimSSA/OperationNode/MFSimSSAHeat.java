@@ -12,7 +12,7 @@ public class MFSimSSAHeat extends MFSimSSANode {
     private Long __time;
     public MFSimSSAHeat(Integer id, Heat heatNode){
         super(id, OperationClassifier.HEAT, heatNode.getName());
-        __time = getTime(heatNode, logger);
+        __time = getTime(heatNode);
     }
     public String toString() {
         String ret = "NODE (" + this.__nodeID + ", " + this.__opType +  ", " + __time + ", " + this.__nodeName + ")\n";

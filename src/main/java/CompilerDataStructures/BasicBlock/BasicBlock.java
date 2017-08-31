@@ -64,6 +64,15 @@ public class BasicBlock implements Serializable {
     public HashSet<String> getKilledSet() { return this.__killedSet; }
 
 
+    public Boolean containsInstruction(Integer index) {
+        Boolean retVal = false;
+        for (InstructionNode instr : __instructions) {
+            if (instr.ID() == index) {
+                retVal = true;
+            }
+        }
+        return retVal;
+    }
 
 
     public Boolean processPredecessors(List<BasicBlock> predecessors) {

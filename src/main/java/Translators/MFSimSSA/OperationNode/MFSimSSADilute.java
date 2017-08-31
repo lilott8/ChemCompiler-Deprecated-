@@ -15,7 +15,7 @@ public class MFSimSSADilute extends MFSimSSANode{
     public MFSimSSADilute(Integer id, Combine diluteNode) {
         super(id, OperationClassifier.DILUTE, diluteNode.getName());
         __numMix = diluteNode.getInputs().size();
-        __time = getTime(diluteNode, logger);
+        __time = getTime(diluteNode);
     }
 
     public String toString() {

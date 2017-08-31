@@ -19,7 +19,7 @@ public class MFSimSSAMix extends MFSimSSANode {
     public MFSimSSAMix(Integer id, Combine mixNode) {
         super(id, OperationClassifier.MIX, mixNode.getName());
         __numMix = mixNode.getInputs().size();
-        __time = getTime(mixNode, logger);
+        __time = getTime(mixNode);
 
     }
 
