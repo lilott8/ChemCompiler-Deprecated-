@@ -53,6 +53,8 @@ public class Compiler {
                         this.SSI.newBasicBlock(new DependencySlicedBasicBlock(bb, this.SSI));
                     }
 
+                    DependencySlicedBasicBlock.GetInOutSets(this.SSI);
+
                     //logger.debug("\n" + SSA);
                     logger.debug("\n" + this.SSI);
                     //logger.debug("\n" + SSI);

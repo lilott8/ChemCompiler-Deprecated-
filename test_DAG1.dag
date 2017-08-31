@@ -1,0 +1,24 @@
+DagName (DAG1)
+NODE (1, DISPENSE, PCRMasterMix, 50, PCRMasterMix)
+EDGE (1, 0)
+
+NODE (2, DISPENSE, Template, 50, Template)
+EDGE (2, 0)
+
+NODE (0, MIX, 2, 1000000, VORTEX)
+EDGE (0, 3)
+//EDGE (0, 4)
+//EDGE (0, 5)
+//EDGE (0, 6)
+//EDGE (0, 7)
+
+//NODE (3, TRANSFER_OUT, volumeWight)
+
+//NODE (4, TRANSFER_OUT, PCRMasterMix)
+
+NODE (3, TRANSFER_OUT, PCRMix)
+
+//NODE (6, TRANSFER_OUT, replacement)
+
+//NODE (7, TRANSFER_OUT, Template)
+

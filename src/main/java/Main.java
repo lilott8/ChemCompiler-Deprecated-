@@ -66,7 +66,7 @@ public class Main {
 
         }
         catch (Exception e ){
-            logger.fatal("Exception occured");
+            logger.fatal("Exception occurred");
             logger.fatal(e.getStackTrace());
         }
 

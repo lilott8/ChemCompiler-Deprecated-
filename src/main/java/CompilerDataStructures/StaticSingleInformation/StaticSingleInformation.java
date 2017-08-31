@@ -57,7 +57,7 @@ public class StaticSingleInformation extends StaticSingleAssignment{
         ArrayList<Integer> WorkList = new ArrayList<Integer>();
 
         for (String symbol : this.__basicBlockSymbolDefinitionTable.keySet()) {
-            if (symbols != null && !symbols.contains(symbol))
+            if (symbols != null && !symbols.contains(symbol) || !this.__basicBlockSymbolUseTable.containsKey(symbol))
                 continue;
 
             for (Integer BBID : this.__basicBlockSymbolUseTable.get(symbol)) {

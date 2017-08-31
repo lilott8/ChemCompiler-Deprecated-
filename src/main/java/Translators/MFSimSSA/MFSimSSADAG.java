@@ -90,6 +90,12 @@ public class MFSimSSADAG {
                     n = new MFSimSSAOutput(__uniqueIDGen.getNextID(), (Output) instruction);
                 else if (instruction instanceof React)
                     n = new MFSimSSACool(__uniqueIDGen.getNextID(), (React) instruction);
+                else if (instruction instanceof Dispense) {
+                    Instance input = (Instance)instruction.getInputs().values().toArray()[0];
+                    Instance output = (Instance)instruction.getOutputs().values().toArray()[0];
+                    n = new MFSimSSADispense(__uniqueIDGen.getNextID(), output.getName(), input.getName(), Math.round(input.getSubstance().getVolume().getQuantity()));
+                    //System.out.println();
+                }
                 else {
                     logger.fatal("Unknown Conversion for: " + instruction.toString());
                     n = null;

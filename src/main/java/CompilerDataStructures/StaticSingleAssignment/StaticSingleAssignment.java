@@ -109,7 +109,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
     protected void RenameVariables(){
         if(DEBUG)
-            logger.debug("Inital Symbols:");
+            logger.debug("Initial Symbols:");
 
         for(String symbol : __basicBlockSymbolDefinitionTable.keySet()){
             __variableCount.put(symbol,0);

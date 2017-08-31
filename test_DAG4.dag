@@ -1,0 +1,18 @@
+DagName (DAG4)
+NODE (6, TRANSFER_IN, PCRMix)
+EDGE (6, 7)
+
+NODE (7, HEAT, 20000000, HEAT)
+EDGE (7, 8)
+
+NODE (8, DETECT, 1, 2, Weigh)
+EDGE (8, 9)
+//EDGE (16, 18)
+//EDGE (16, 19)
+
+//NODE (17, TRANSFER_OUT, PCRMasterMix)
+
+NODE (9, TRANSFER_OUT, PCRMix)
+
+//NODE (19, TRANSFER_OUT, Template)
+
