@@ -1,15 +1,12 @@
 package phases.inference.rules;
 
 
-import org.apache.logging.log4j.LogManager;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import CompilerDataStructures.InstructionNode;
-import executable.instructions.Instruction;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
 
@@ -79,7 +76,6 @@ public abstract class Rule {
     }
 
     protected Rule gatherConstraints(InstructionNode node) {
-        LogManager.getLogger(Rule.class).debug("rule.gatherconstraints");
         /*
          * Temp = Mix x with y for n
          *  ^def_use  |      |     |
