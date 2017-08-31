@@ -1,24 +1,14 @@
-import ChemicalInteractions.ChemicalResolution;
 import CompilerDataStructures.BasicBlock.BasicBlock;
 import CompilerDataStructures.BasicBlock.DependencySlicedBasicBlock;
 import CompilerDataStructures.ControlFlowGraph.CFG;
-import CompilerDataStructures.CFGBuilder;
-import CompilerDataStructures.InstructionNode;
-import CompilerDataStructures.StaticSingleAssignment.MinimalStaticSingleAssignment.MinimalStaticSingleAssignment;
-import CompilerDataStructures.StaticSingleAssignment.SemiPrunedStaticSingleAssignment.SemiPrunedStaticSingleAssignment;
-import CompilerDataStructures.StaticSingleInstruction.StaticSingleInstruction;
-import Translators.TypeSystem.TypeSystemTranslator;
-import CompilerDataStructures.StaticSingleInformation.StaticSingleInformation;
+import CompilerDataStructures.CFGBuilder;import CompilerDataStructures.StaticSingleInformation.StaticSingleInformation;
+import Config.Config;
 import executable.Experiment;
 import manager.Benchtop;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import variable.Variable;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by chriscurtis on 9/29/16.
@@ -31,6 +21,9 @@ public class Compiler {
     private List<CFG> __experimentControlFlowGraphs;
     private CFG __benchtopControlFlowGraph;
 
+    private Benchtop benchtop;
+    private StaticSingleInformation SSI;
+    private CFG controlFlow;
 
     private void initializeData() {
         __IDGen = 0;
@@ -40,40 +33,43 @@ public class Compiler {
 
     }
 
-
-    public Compiler(Benchtop benchtop) {
+    public void compile() {
         try {
-            this.initializeData();
             //TODO:: When Incorporating BenchtopCFGs, It is necessary to handle inputs given at Global scope.
             //for (String inputKey : benchtop.getInputs().keySet()) {
-             //   __benchtopControlFlowGraph.addResolution(inputKey, benchtop.getInputs().get(inputKey), true);
-                //__benchtopControlFlowGraph.addDefinition(inputKey, __benchtopControlFlowGraph.getID());
+            //   __benchtopControlFlowGraph.addResolution(inputKey, benchtop.getInputs().get(inputKey), true);
+            //__benchtopControlFlowGraph.addDefinition(inputKey, __benchtopControlFlowGraph.getID());
             //}
-            for (String experimentKey : benchtop.getExperiments().keySet()) {
-                for (Experiment experiment : benchtop.getExperiments().get(experimentKey)) {
-                    CFG controlFlow = CFGBuilder.BuildControlFlowGraph(experiment);
+            for (String experimentKey : this.benchtop.getExperiments().keySet()) {
+                for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
+                    this.controlFlow = CFGBuilder.BuildControlFlowGraph(experiment);
                     //MinimalStaticSingleAssignment SSA = new MinimalStaticSingleAssignment(controlFlow);
                     //SemiPrunedStaticSingleAssignment SPSSA = new SemiPrunedStaticSingleAssignment(controlFlow);
-                    StaticSingleInformation SSI = new StaticSingleInformation(controlFlow);
+                    this.SSI = new StaticSingleInformation(this.controlFlow);
                     //System.out.println(controlFlow);
-                    for (BasicBlock bb : SPSSA.getBasicBlocks().values()) {
-                        //replaces bb with a dependency sliced version
-                        SPSSA.newBasicBlock(new DependencySlicedBasicBlock(bb, SPSSA));
+
+                    //replaces basic blocks with dependancy sliced versions
+                    for (BasicBlock bb : this.SSI.getBasicBlocks().values()) {
+                        this.SSI.newBasicBlock(new DependencySlicedBasicBlock(bb, this.SSI));
                     }
 
-                    //logger.debug("\n" + SSA);
-                    //logger.debug("\n" + SPSSA);
-                    logger.debug("\n" + SSI);
+                    DependencySlicedBasicBlock.GetInOutSets(this.SSI);
 
+                    //logger.debug("\n" + SSA);
+                    logger.debug("\n" + this.SSI);
+                    //logger.debug("\n" + SSI);
 
                     //ProcessExperimentCFG(SPSSA);
-                     //__experimentControlFlowGraphs.add(controlFlow);
-                    __experimentControlFlowGraphs.add(SPSSA);
-                     //logger.debug(controlFlow);
+                    //__experimentControlFlowGraphs.add(controlFlow);
+                    __experimentControlFlowGraphs.add(this.SSI);
+                    //logger.debug(controlFlow);
 
                     //TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
-                    TypeSystemTranslator trans = new TypeSystemTranslator(SPSSA);
-                    trans.toFile("Experiment.txt");
+                    if (Config.INSTANCE.translationsEnabled() && Config.INSTANCE.translationEnabled("typesystem")) {
+                        Config.INSTANCE.getTranslationByName("typesystem").runTranslation(this.SSI).toFile(Config.INSTANCE.getOuptutDir() + "experiment.txt");
+                        //Translator trans = new TypeSystemTranslator().runTranslation(SSI);
+                        //trans.toFile("Experiment.txt");
+                    }
 
                     //trans.toFile("Experiment3.txt");
 
@@ -88,7 +84,19 @@ public class Compiler {
             logger.fatal(e);
             e.printStackTrace();
         }
+    }
 
+    public Compiler(Benchtop benchtop) {
+        this.benchtop = benchtop;
+        this.initializeData();
+    }
+
+    public StaticSingleInformation getSSI() {
+        return this.SSI;
+    }
+
+    public CFG getControlFlow() {
+        return this.controlFlow;
     }
 
     public List<CFG> getExperiments() { return __experimentControlFlowGraphs; }

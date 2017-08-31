@@ -24,8 +24,9 @@ public class CFG implements Serializable {
 
 
 
-    protected HashMap<Integer, BasicBlock> __basicBlocks;
+    protected LinkedHashMap<Integer, BasicBlock> __basicBlocks;
     protected BasicBlock __entry;
+    protected BasicBlock __exit;
     protected ArrayList<BasicBlockEdge> __edges;
     protected HashMap< Integer, Set<Integer>> __basicBlockPredecessorSet;
     protected HashMap< Integer, Set<Integer>> __basicBlockSuccessorSet;
@@ -35,9 +36,8 @@ public class CFG implements Serializable {
     protected Integer __UniqueIDs;
     protected Integer __ID;
 
-
     private void initializeData(){
-        __basicBlocks = new HashMap<Integer, BasicBlock>();
+        __basicBlocks = new LinkedHashMap<Integer, BasicBlock>();
         __edges = new ArrayList<BasicBlockEdge>();
         __symbolTable = new NestedSymbolTable();
 
@@ -65,6 +65,7 @@ public class CFG implements Serializable {
         this.__UniqueIDs = controlFlowGraph.__UniqueIDs;
         this.__ID = controlFlowGraph.__ID;
         this.__entry = controlFlowGraph.__entry;
+        this.__exit = controlFlowGraph.__exit;
 
 
     }
@@ -92,6 +93,8 @@ public class CFG implements Serializable {
     }
     public void SetEntry(BasicBlock entry) { this.__entry = entry; }
     public BasicBlock GetEntry() { return __entry; }
+    public void SetExit(BasicBlock exit) { this.__exit = exit; }
+    public BasicBlock GetExit() { return __exit; }
 
     public BasicBlock newBasicBlock() {
         NestedSymbolTable newTable = new NestedSymbolTable();
@@ -120,6 +123,12 @@ public class CFG implements Serializable {
 
     public void addEdge(BasicBlock source, BasicBlock destination, String condition) {
         __edges.add(new BasicBlockEdge(source.ID(),destination.ID(), condition));
+        this.addPredecessor(source,destination);
+        this.addSuccessor(source,destination);
+    }
+
+    public void addEdge(BasicBlock source, BasicBlock destination, String condition, String name) {
+        __edges.add(new BasicBlockEdge(source.ID(),destination.ID(), condition, name));
         this.addPredecessor(source,destination);
         this.addSuccessor(source,destination);
     }
@@ -192,11 +201,18 @@ public class CFG implements Serializable {
     public NestedSymbolTable getSymbolTable() { return __symbolTable; }
     public void setSymbolTable(NestedSymbolTable table) { __symbolTable = table; }
 
-    public HashMap<Integer, BasicBlock> getBasicBlocks() { return __basicBlocks; }
+    public LinkedHashMap<Integer, BasicBlock> getBasicBlocks() { return __basicBlocks; }
     public BasicBlock getBasicBlock(Integer id) {
         return this.__basicBlocks.get(id);
     }
-
+    public BasicBlock getBasicBlockByInstructionID(Integer id) {
+        for (BasicBlock bb: __basicBlocks.values()) {
+            if (bb.containsInstruction(id)) {
+                return bb;
+            }
+        }
+        return null;
+    }
 
     public List<BasicBlockEdge> getBasicBlockEdges() { return __edges; }
     public HashMap< Integer, Set<Integer>> getPredecessorTable() { return this.__basicBlockPredecessorSet; }

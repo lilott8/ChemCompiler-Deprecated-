@@ -8,6 +8,7 @@ import executable.Experiment;
 import executable.conditionals.Branch;
 import executable.conditionals.Loop;
 import executable.instructions.Instruction;
+import executable.instructions.Output;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ public class CFGBuilder {
 
         BasicBlock exitNode = InsertExitNode(danglingExitNodes, controlFlowGraph);
         controlFlowGraph.addEdge(entryNode, exitNode);
+        controlFlowGraph.SetExit(exitNode);
 
        // controlFlowGraph.addDominatorTree(new DominatorTree(controlFlowGraph));
 
@@ -93,7 +95,7 @@ public class CFGBuilder {
         if (branch != null) {
 //            controlFlowGraph.setSymbolTable(controlFlowGraph.getSymbolTable().nestTable());
             BasicBlock trueBranchEntryBasicBlock = controlFlowGraph.newBasicBlock();
-            controlFlowGraph.addEdge(bb,trueBranchEntryBasicBlock, branch.getCondition());
+            controlFlowGraph.addEdge(bb,trueBranchEntryBasicBlock, branch.getCondition(), branch.getName());
 
             for(BasicBlock processedBasicBlock: ProcessNestedInstructions(controlFlowGraph, trueBranchEntryBasicBlock, branch.getTrueBranch())) {
                 leaves.add(processedBasicBlock);
@@ -152,7 +154,7 @@ public class CFGBuilder {
             BasicBlock whileEntry = controlFlowGraph.newBasicBlock();
 
             controlFlowGraph.addEdge(bb,whileConditionEntry);
-            controlFlowGraph.addEdge(whileConditionEntry,whileEntry,loop.getCondition());
+            controlFlowGraph.addEdge(whileConditionEntry,whileEntry,loop.getCondition(), loop.getName());
 
             List<BasicBlock> loopLeaves = ProcessNestedInstructions(controlFlowGraph,whileEntry,loop.getTrueBranch());
 

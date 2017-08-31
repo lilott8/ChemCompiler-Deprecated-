@@ -31,6 +31,8 @@ public abstract class StaticSingleAssignment extends CFG {
     protected HashMap<String, Stack<RenamedVariableNode> > __variableStack;
     protected HashMap<String, Integer> __variableCount;
 
+    public HashMap<String, Stack<RenamedVariableNode>> get__variableStack() { return __variableStack; }
+
 
     public StaticSingleAssignment(CFG controlFlowGraph){
         super(controlFlowGraph);
@@ -107,7 +109,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
     protected void RenameVariables(){
         if(DEBUG)
-            logger.debug("Inital Symbols:");
+            logger.debug("Initial Symbols:");
 
         for(String symbol : __basicBlockSymbolDefinitionTable.keySet()){
             __variableCount.put(symbol,0);
