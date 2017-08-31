@@ -25,7 +25,6 @@ public class Mix extends Rule {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        logger.info("Hey, I'm here, so yeah!");
         for(String out : node.get_def()) {
             this.gatherDefConstraints(out);
         }
