@@ -1,5 +1,6 @@
 package inference;
 
+import org.apache.commons.cli.CommandLine;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ public class ElisaTest {
     @Test
     public void broadSpectrumOpiateSat() {
         String file = "broad_spectrum_opiate.json";
+        CommandLine.Builder cmd = new CommandLine.Builder();
     }
 
     @Test
