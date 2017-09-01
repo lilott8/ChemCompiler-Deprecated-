@@ -11,8 +11,13 @@ import compilation.datastructures.basicblock.DependencySlicedBasicBlock;
 import compilation.datastructures.CFGBuilder;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.ssi.StaticSingleInformation;
+import config.ConfigFactory;
 import executable.Experiment;
 import manager.Benchtop;
+import phases.Phase;
+import phases.PhaseFacade;
+import shared.Facade;
+import translators.TranslatorFacade;
 
 /**
  * Created by chriscurtis on 9/29/16.
@@ -92,9 +97,30 @@ public class Compiler {
         } catch (Exception e) {
             logger.fatal(e);
         }
+
+        runPhases();
+        runTranslations();
     }
 
+    public void runPhases() {
+        if (ConfigFactory.getConfig().phasesEnabled()) {
+            logger.info("Phases are set to be run.");
+            for (CFG experiment : this.__experimentControlFlowGraphs) {
+                Facade phase = new PhaseFacade(ConfigFactory.getConfig(), experiment);
+                phase.start();
+            }
+        }
+    }
 
+    public void runTranslations() {
+        if (ConfigFactory.getConfig().translationsEnabled()) {
+            logger.info("Translators are set to be run.");
+            for (CFG experiment : this.__experimentControlFlowGraphs) {
+                Facade translator = new TranslatorFacade(ConfigFactory.getConfig(), experiment);
+                translator.start();
+            }
+        }
+    }
 
     public StaticSingleInformation getSSI() {
         return this.SSI;

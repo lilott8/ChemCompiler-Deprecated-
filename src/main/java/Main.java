@@ -47,55 +47,15 @@ public class Main {
                 logger.trace(file);
                 BenchtopParser.parse(file);
             }
-            //logger.info(Benchtop.INSTANCE.toString());
         }
         catch (Exception e) {
             logger.fatal(e.getMessage());
-            //e.printStackTrace();
             logger.fatal("Exception: ", e);
         }
 
-
-        try {
-            Compiler benchtopCompiler = new Compiler(Benchtop.INSTANCE);
-            benchtopCompiler.compile();
-
-            for(CFG experiment : benchtopCompiler.getExperiments()){
-                //logger.debug(experiment.toString());
-                //TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
-                //tst.toFile("NeurotransmitterSensing.txt");
-                //logger.info(tst.toString());
-                if (config.translationsEnabled()) {
-                    Facade translator = new TranslatorFacade(config, experiment);
-                    translator.start();
-                }
-                //if (config.INSTANCE.translationsEnabled() && config.INSTANCE.translationEnabled(config.TRANSLATORS.MFSIM)) {
-                //    config.INSTANCE.getTranslationByName(config.TRANSLATORS.MFSIM).runTranslation(experiment).toFile(config.INSTANCE.getOuptutDir() + "test");
-                    //Translator mfsimt = new MFSimSSATranslator().runTranslation(experiment);
-                    //mfsimt.toFile(config.INSTANCE.getOuptutDir());
-                //}
-
-                //if (config.INSTANCE.phasesEnabled() &&config.INSTANCE.phaseEnabled(config.PHASES.INFERENCE)) {
-                //   config.INSTANCE.getPhaseByName(config.PHASES.INFERENCE).runPhase();
-                //}
-                if(config.phasesEnabled()) {
-                 Facade phase = new PhaseFacade(config, experiment);
-                 phase.start();
-                }
-            }
-
-        }
-        catch (Exception e ){
-            logger.fatal("Exception occurred");
-            e.getStackTrace();
-            logger.fatal("Stack Trace:", e);
-        }
-
-        if (config.isDebug()) {
-            DominatorTreeTest();
-            DominatorTreeTest2();
-            PostDominatorTreeTest();
-        }
+        // Run compilation.
+        Compiler compiler = new Compiler(Benchtop.INSTANCE);
+        compiler.compile();
     }
 
     private static void initializeEnvironment(final CommandLine cmd) throws Exception{
@@ -188,120 +148,4 @@ public class Main {
             .argName("phases").build());
         return options;
     }
-
-
-    public static void DominatorTreeTest() {
-        CFG cfg = new CFG();
-
-        BasicBlock b1 = cfg.newBasicBlock();
-        BasicBlock b2 = cfg.newBasicBlock();
-        BasicBlock b3 = cfg.newBasicBlock();
-        BasicBlock b4 = cfg.newBasicBlock();
-        BasicBlock b5 = cfg.newBasicBlock();
-        BasicBlock b6 = cfg.newBasicBlock();
-        BasicBlock b7 = cfg.newBasicBlock();
-        BasicBlock b8 = cfg.newBasicBlock();
-
-
-        cfg.addEdge(b1,b2);
-        cfg.addEdge(b2,b3);
-        cfg.addEdge(b2,b4);
-
-        cfg.addEdge(b3,b5);
-        cfg.addEdge(b4,b5);
-
-        cfg.addEdge(b5,b6);
-        cfg.addEdge(b6,b7);
-        cfg.addEdge(b7,b6);
-        cfg.addEdge(b6,b8);
-
-        cfg.addEdge(b8,b2);
-
-
-        DominatorTree t = new DominatorTree(cfg);
-        logger.info(t);
-    }
-
-    public static void DominatorTreeTest2() {
-        CFG cfg = new CFG();
-
-        BasicBlock bEntry = cfg.newBasicBlock();
-        BasicBlock b1 = cfg.newBasicBlock();
-        BasicBlock b2 = cfg.newBasicBlock();
-        BasicBlock b3 = cfg.newBasicBlock();
-        BasicBlock b4 = cfg.newBasicBlock();
-        BasicBlock b5 = cfg.newBasicBlock();
-        BasicBlock b6 = cfg.newBasicBlock();
-        BasicBlock b7 = cfg.newBasicBlock();
-        BasicBlock b8 = cfg.newBasicBlock();
-        BasicBlock b9 = cfg.newBasicBlock();
-        BasicBlock b10 = cfg.newBasicBlock();
-        BasicBlock b11 = cfg.newBasicBlock();
-        BasicBlock b12 = cfg.newBasicBlock();
-        BasicBlock bExit = cfg.newBasicBlock();
-
-        cfg.addEdge(bEntry,b1);
-        cfg.addEdge(bEntry,bExit);
-        cfg.addEdge(b1,b2);
-
-        cfg.addEdge(b2,b3);
-        cfg.addEdge(b2,b7);
-
-        cfg.addEdge(b3,b4);
-        cfg.addEdge(b3,b5);
-
-        cfg.addEdge(b4,b6);
-        cfg.addEdge(b5,b6);
-
-        cfg.addEdge(b6,b8);
-        cfg.addEdge(b7,b8);
-
-        cfg.addEdge(b8,b9);
-
-        cfg.addEdge(b9,b10);
-        cfg.addEdge(b9,b11);
-
-        cfg.addEdge(b10,b11);
-
-        cfg.addEdge(b11,b9);
-        cfg.addEdge(b11,b12);
-
-        cfg.addEdge(b12,b2);
-        cfg.addEdge(b12,bExit);
-
-        DominatorTree t = new DominatorTree(cfg);
-        logger.info(t);
-    }
-
-    public static void PostDominatorTreeTest(){
-        CFG cfg = new CFG();
-
-        BasicBlock bEntry = cfg.newBasicBlock();
-        BasicBlock b1 = cfg.newBasicBlock();
-        BasicBlock b2 = cfg.newBasicBlock();
-        BasicBlock b3 = cfg.newBasicBlock();
-        BasicBlock b4 = cfg.newBasicBlock();
-
-
-        BasicBlock bExit = cfg.newBasicBlock();
-
-        cfg.addEdge(bEntry,b1);
-        cfg.addEdge(bEntry,bExit);
-
-        cfg.addEdge(b1,b2);
-        cfg.addEdge(b1,b3);
-
-        cfg.addEdge(b2,b4);
-
-        cfg.addEdge(b3,b4);
-
-        cfg.addEdge(b4,bExit);
-
-        DominatorTree t = new DominatorTree(cfg);
-        PostDominatorTree pt = new PostDominatorTree(cfg);
-        logger.info(t);
-
-        logger.info(pt);
-    }
-
 }
