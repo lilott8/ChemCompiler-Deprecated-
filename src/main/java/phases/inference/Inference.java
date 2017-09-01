@@ -19,10 +19,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import CompilerDataStructures.BasicBlock.BasicBlock;
-import CompilerDataStructures.BasicBlock.BasicBlockEdge;
-import CompilerDataStructures.ControlFlowGraph.CFG;
-import CompilerDataStructures.InstructionNode;
+import compilation.datastructures.basicblock.BasicBlock;
+import compilation.datastructures.basicblock.BasicBlockEdge;
+import compilation.datastructures.cfg.CFG;
+import compilation.datastructures.InstructionNode;
 import phases.Phase;
 import phases.inference.rules.InferenceRule;
 import phases.inference.rules.Rule;
@@ -47,7 +47,7 @@ public class Inference implements Phase {
     public enum InferenceType {
         TERM, INSTRUCTION
     }
-    
+
     // Logging mechanism.
     public static final Logger logger = LogManager.getLogger(Inference.class);
 

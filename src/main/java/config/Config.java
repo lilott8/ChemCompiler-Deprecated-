@@ -16,25 +16,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import Translators.MFSimSSA.MFSimSSATranslator;
-import Translators.Translator;
-import Translators.TypeSystem.TypeSystemTranslator;
+import translators.mfsim.MFSimSSATranslator;
+import translators.Translator;
+import translators.typesystem.TypeSystemTranslator;
 
 /**
  * @created: 7/26/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmConfig, TranslateConfig, PhaseConfig {
-    INSTANCE;
+public class Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmConfig, TranslateConfig, PhaseConfig {
 
-
-    public static final Logger logger = LogManager.getLogger(Config.class);
-
-    /**
-     * Local variable used to guarantee we only build once
-     */
-    private boolean built = false;
+    public final Logger logger = LogManager.getLogger(Config.class);
 
     /**
      * Is the compiler in debug mode.
@@ -82,8 +75,7 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
      * @param cmd
      * Command line input
      */
-    public void buildConfig(CommandLine cmd) {
-        if(!this.built) {
+    Config(CommandLine cmd) {
             // get the files for compilation
             this.buildFiles(Arrays.asList(cmd.getOptionValues("compile")));
 
@@ -121,9 +113,6 @@ public enum Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmC
             if (cmd.hasOption("phases")) {
                 this.phases.addAll(Arrays.asList(cmd.getOptionValues("phases")));
             }
-
-            this.built = true;
-        }
     }
 
     /**

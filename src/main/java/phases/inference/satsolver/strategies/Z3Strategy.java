@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,6 +21,13 @@ import java.util.Set;
 public class Z3Strategy implements SolverStrategy {
 
     public static final Logger logger = LogManager.getLogger(Z3Strategy.class);
+
+    private Set<String> reserved = new HashSet<String>(){{
+        add("const");
+        add("assert");
+    }};
+
+    int id = 0;
 
     @Override
     public void solveConstraints(Map<String, Set<String>> constraints) {
@@ -34,7 +42,11 @@ public class Z3Strategy implements SolverStrategy {
         boolean printAssert = true;
 
         for (Map.Entry<String, Set<String>> entry : constraints.entrySet()) {
-            sb.append("(declare-const ").append(entry.getKey()).append(" Type)").append(System.lineSeparator());
+            String identifier = StringUtils.remove(entry.getKey(), " ");
+            if (this.reserved.contains(entry.getKey())) {
+                identifier += ++id;
+            }
+            sb.append("(declare-const ").append(identifier).append(" Type)").append(System.lineSeparator());
 
             //sb.append("(");
             if (entry.getValue().size() > 1) {
@@ -45,7 +57,7 @@ public class Z3Strategy implements SolverStrategy {
                 if (printAssert) {
                     sb.append("(assert ");
                 }
-                sb.append("(= ").append(entry.getKey()).append(" ").append(StringUtils.capitalize(infer)).append(")").append(System.lineSeparator());
+                sb.append("(= ").append(identifier).append(" ").append(StringUtils.capitalize(infer)).append(")").append(System.lineSeparator());
                 if (printAssert) {
                     sb.append(")").append(System.lineSeparator());
                 }

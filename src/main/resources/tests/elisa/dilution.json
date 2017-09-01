@@ -1,0 +1,511 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "Dilution",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "SubstanceA",
+          "NAME" : "SubstanceA",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "SubstanceB",
+          "NAME" : "SubstanceB",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "SubstanceC",
+          "NAME" : "SubstanceC",
+          "TYPE" : "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199300641547",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "SubstanceA"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "SubstanceC"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "First Dilute",
+                "TYPE" : "VARIABLE",
+                "NAME" : "First Dilute"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "SPLIT",
+          "ID" : "1294012199300641852",
+          "CLASSIFICATION" : "SPLIT",
+          "INPUTS:" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Ciprofloxacin-Conjugate"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TYPE" : "SPLIT_NUM",
+                "VALUE" : "2",
+                "UNITS" : ""
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE" : {
+                "ID" : "First Dilute",
+                "NAME" : "First Dilute",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
+                  "VALUE" : "0",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "VARIABLE" : {
+                "ID" : "Waste Droplet",
+                "NAME" : "Waste Droplet",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
+                  "VALUE" : "0",
+                  "UNITS" : "UL"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300642216",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Waste Droplet"
+              }            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199300642493",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "First Dilute"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "SubstanceC"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "Second Dilute",
+                "TYPE" : "VARIABLE",
+                "NAME" : "Second Dilute"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "SPLIT",
+          "ID" : "1294012199300642979",
+          "CLASSIFICATION" : "SPLIT",
+          "INPUTS:" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Ciprofloxacin-Conjugate"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TYPE" : "SPLIT_NUM",
+                "VALUE" : "2",
+                "UNITS" : ""
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE" : {
+                "ID" : "Second Dilute",
+                "NAME" : "Second Dilute",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
+                  "VALUE" : "0",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "VARIABLE" : {
+                "ID" : "Waste Droplet",
+                "NAME" : "Waste Droplet",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
+                  "VALUE" : "0",
+                  "UNITS" : "UL"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300643476",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Waste Droplet"
+              }            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199300643815",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Second Dilute"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "SubstanceA"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "Third Dilute",
+                "TYPE" : "VARIABLE",
+                "NAME" : "Third Dilute"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "SPLIT",
+          "ID" : "1294012199300644841",
+          "CLASSIFICATION" : "SPLIT",
+          "INPUTS:" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Ciprofloxacin-Conjugate"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TYPE" : "SPLIT_NUM",
+                "VALUE" : "2",
+                "UNITS" : ""
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE" : {
+                "ID" : "Third Dilute",
+                "NAME" : "Third Dilute",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
+                  "VALUE" : "0",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "VARIABLE" : {
+                "ID" : "Waste Droplet",
+                "NAME" : "Waste Droplet",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
+                  "VALUE" : "0",
+                  "UNITS" : "UL"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300645246",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Waste Droplet"
+              }            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199300645652",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "SubstanceC"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "SubstanceB"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "Fourth Dilute",
+                "TYPE" : "VARIABLE",
+                "NAME" : "Fourth Dilute"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "SPLIT",
+          "ID" : "1294012199300646084",
+          "CLASSIFICATION" : "SPLIT",
+          "INPUTS:" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Ciprofloxacin-Conjugate"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TYPE" : "SPLIT_NUM",
+                "VALUE" : "2",
+                "UNITS" : ""
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE" : {
+                "ID" : "Fourth Dilute",
+                "NAME" : "Fourth Dilute",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
+                  "VALUE" : "0",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "VARIABLE" : {
+                "ID" : "Waste Droplet",
+                "NAME" : "Waste Droplet",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
+                  "VALUE" : "0",
+                  "UNITS" : "UL"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300646634",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Waste Droplet"
+              }            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199300647331",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Third Dilute"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Fourth Dilute"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "Final Dilute",
+                "TYPE" : "VARIABLE",
+                "NAME" : "Final Dilute"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "SPLIT",
+          "ID" : "1294012199300648057",
+          "CLASSIFICATION" : "SPLIT",
+          "INPUTS:" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Ciprofloxacin-Conjugate"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TYPE" : "SPLIT_NUM",
+                "VALUE" : "2",
+                "UNITS" : ""
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE" : {
+                "ID" : "Final Dilute",
+                "NAME" : "Final Dilute",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
+                  "VALUE" : "0",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "VARIABLE" : {
+                "ID" : "Waste Droplet",
+                "NAME" : "Waste Droplet",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
+                  "VALUE" : "0",
+                  "UNITS" : "UL"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300648788",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Waste Droplet"
+              }            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Save",
+          "ID" : "1294012199300649184",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Final Dilute"
+              }            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      }
+    ]
+  }
+}

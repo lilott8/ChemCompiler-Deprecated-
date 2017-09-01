@@ -17,7 +17,7 @@ This is the minimum requirements to run the chemical compiler.
  
 #Basic Usage
 
-Chemical Compiler uses log4j for logging, so may provide a log4j xml config by: `-Dlog4j.configurationFile=/path/to/xml` 
+Chemical compilation.Compiler uses log4j for logging, so may provide a log4j xml config by: `-Dlog4j.configurationFile=/path/to/xml` 
 
 We provide a basic one for you in: `src/main/resources/log4j.xml`
 

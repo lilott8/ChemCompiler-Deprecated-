@@ -1,6 +1,6 @@
 package phases.inference.rules;
 
-import CompilerDataStructures.InstructionNode;
+import compilation.datastructures.InstructionNode;
 import phases.inference.Inference;
 import substance.Property;
 
