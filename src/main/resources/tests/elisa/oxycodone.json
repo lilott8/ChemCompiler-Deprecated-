@@ -1,0 +1,411 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "Oxycodone ELISA Kit",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Urine Sample",
+          "NAME" : "Urine Sample",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Oxycodone-Conjugate",
+          "NAME" : "Oxycodone-Conjugate",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Distilled Water",
+          "NAME" : "Distilled Water",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "TMB Substrate",
+          "NAME" : "TMB Substrate",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Stop Reagent",
+          "NAME" : "Stop Reagent",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Oxycodone Enzyme",
+          "NAME" : "Oxycodone Enzyme",
+          "TYPE" : "STATIONARY"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300650342",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Urine Sample"
+                },
+                "VOLUME" : {
+                  "VALUE" : "20",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Oxycodone Enzyme"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300650347",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Oxycodone-Conjugate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Oxycodone Enzyme"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Tap",
+          "ID" : "1294012199300650352",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Oxycodone Enzyme"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "1294012199300650355",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Oxycodone Enzyme"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300650359",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Oxycodone Enzyme"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" :  {
+          "NAME" : "REPEAT",
+          "ID" : "1294012199300650362",
+          "CLASSIFICATION" : "CFG_LOOP",
+          "LOOP_NUM" : "6",
+          "OPERATIONS" : [
+            {
+              "OPERATION" : {
+                "NAME" : "REACT",
+                "ID" : "1294012199300650364",
+                "CLASSIFICATION" : "REACT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "CHEMICAL" : {
+                      "VARIABLE" : {
+                        "NAME" : "Distilled Water"
+                      },
+                      "VOLUME" : {
+                        "VALUE" : "350",
+                        "UNITS" : "UL"
+                      }
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Oxycodone Enzyme"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "VORTEX",
+                "ID" : "1294012199300650369",
+                "CLASSIFICATION" : "MIX",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Oxycodone Enzyme"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "45",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "Drain",
+                "ID" : "1294012199300650372",
+                "CLASSIFICATION" : "OUTPUT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Oxycodone Enzyme"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300650375",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "TMB Substrate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Oxycodone Enzyme"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "1294012199300650380",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Oxycodone Enzyme"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199300650384",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Oxycodone Enzyme"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Stop Reagent"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199300650390",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Oxycodone Enzyme"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "30",
+                  "UNITS" : "MINUTE"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "Urine Reading",
+                "NAME" : "Urine Reading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300650394",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Oxycodone Enzyme"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      }
+    ]
+  }
+}

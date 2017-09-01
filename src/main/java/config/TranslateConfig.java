@@ -1,9 +1,8 @@
 package config;
 
 import java.util.Map;
-import java.util.Set;
 
-import Translators.Translator;
+import translators.Translator;
 
 /**
  * @created: 7/26/17

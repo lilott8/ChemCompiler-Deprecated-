@@ -1,0 +1,411 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "Fentanyl ELISA Kit",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Urine Sample",
+          "NAME" : "Urine Sample",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Fentanyl-Conjugate",
+          "NAME" : "Fentanyl-Conjugate",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Distilled Water",
+          "NAME" : "Distilled Water",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "TMB Substrate",
+          "NAME" : "TMB Substrate",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Stop Reagent",
+          "NAME" : "Stop Reagent",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Anti-Fentanyl",
+          "NAME" : "Anti-Fentanyl",
+          "TYPE" : "STATIONARY"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "2047940458842355805",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Urine Sample"
+                },
+                "VOLUME" : {
+                  "VALUE" : "20",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "2047940458842447329",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Fentanyl-Conjugate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Tap",
+          "ID" : "2047940458842447439",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "2047940458842447683",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "2047940458842448035",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" :  {
+          "NAME" : "REPEAT",
+          "ID" : "2047940458842448294",
+          "CLASSIFICATION" : "CFG_LOOP",
+          "LOOP_NUM" : "6",
+          "OPERATIONS" : [
+            {
+              "OPERATION" : {
+                "NAME" : "REACT",
+                "ID" : "2047940458842448402",
+                "CLASSIFICATION" : "REACT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "CHEMICAL" : {
+                      "VARIABLE" : {
+                        "NAME" : "Distilled Water"
+                      },
+                      "VOLUME" : {
+                        "VALUE" : "350",
+                        "UNITS" : "UL"
+                      }
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Anti-Fentanyl"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "VORTEX",
+                "ID" : "2047940458842448522",
+                "CLASSIFICATION" : "MIX",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Anti-Fentanyl"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "45",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "Drain",
+                "ID" : "2047940458842448742",
+                "CLASSIFICATION" : "OUTPUT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Anti-Fentanyl"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "2047940458842448957",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "TMB Substrate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "2047940458842449351",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "2047940458842450644",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Stop Reagent"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "2047940458842451274",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "30",
+                  "UNITS" : "MINUTE"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "Negative Reading",
+                "NAME" : "Negative Reading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "2047940458842452058",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      }
+    ]
+  }
+}

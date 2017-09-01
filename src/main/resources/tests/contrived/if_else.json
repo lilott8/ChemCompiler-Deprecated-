@@ -1,0 +1,134 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "If Else Test",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Water",
+          "NAME" : "Water",
+          "TYPE" : "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "HEAT",
+          "ID" : "2556094080817824885",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Water"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "67",
+                "UNITS" : "CELSIUS"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "2556094080817824913",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Water"
+              }            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "50",
+                  "UNITS" : "SECOND"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "waterFl",
+                "NAME" : "waterFl",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" :  {
+          "NAME" :  "IF",
+          "ID" : "2556094080817828356",
+          "CLASSIFICATION" : "CFG_BRANCH",
+          "CONDITION" : "waterFl == 56.0",
+          "TRUE_BRANCH" : [
+            {
+              "OPERATION" : {
+                "NAME" : "HEAT",
+                "ID" : "2556094080817831536",
+                "CLASSIFICATION" : "HEAT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "VARIABLE" : {
+                      "NAME" : "Water"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TEMPERATURE" : {
+                      "VALUE" : "10",
+                      "UNITS" : "CELSIUS"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            }
+          ],
+          "FALSE_BRANCH" : [
+            {
+              "OPERATION" : {
+                "NAME" : "HEAT",
+                "ID" : "2556094080817831585",
+                "CLASSIFICATION" : "HEAT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "VARIABLE" : {
+                      "NAME" : "Water"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TEMPERATURE" : {
+                      "VALUE" : "40",
+                      "UNITS" : "CELSIUS"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            }
+          ],
+          "ELSEIF_BRANCH" : [
+          ]
+        }
+      }
+    ]
+  }
+}

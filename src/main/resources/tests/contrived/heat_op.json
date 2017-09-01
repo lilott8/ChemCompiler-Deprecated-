@@ -1,0 +1,141 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "Heat Operation Code Generation Test",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Water",
+          "NAME" : "Water",
+          "TYPE" : "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "HEAT",
+          "ID" : "2614855910200177432",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Water"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "100",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "EVENT" : {
+                "VALUE" : "BOILING"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "HEAT",
+          "ID" : "2614855910200177473",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Water"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "300",
+                "UNITS" : "KELVIN"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "45",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "2614855910200177583",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Water"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "2614855910200236561",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Water"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "10",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "2614855910200236628",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Water"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "EVENT" : {
+                "VALUE" : "COLOR_DEVELOPS"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      }
+    ]
+  }
+}

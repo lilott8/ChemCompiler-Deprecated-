@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import Translators.MFSimSSA.MFSimSSATranslator;
-import Translators.Translator;
-import Translators.TypeSystem.TypeSystemTranslator;
+import translators.mfsim.MFSimSSATranslator;
+import translators.Translator;
+import translators.typesystem.TypeSystemTranslator;
 
 /**
  * @created: 7/26/17

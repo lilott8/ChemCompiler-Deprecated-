@@ -1,0 +1,411 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "Ciprofloxacin ELISA Kit",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Urine Sample",
+          "NAME" : "Urine Sample",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Ciprofloxacin-Conjugate",
+          "NAME" : "Ciprofloxacin-Conjugate",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Distilled Water",
+          "NAME" : "Distilled Water",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "TMB Substrate",
+          "NAME" : "TMB Substrate",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Stop Reagent",
+          "NAME" : "Stop Reagent",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Ciprofloxacin Enzyme",
+          "NAME" : "Ciprofloxacin Enzyme",
+          "TYPE" : "STATIONARY"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199298532665",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Urine Sample"
+                },
+                "VOLUME" : {
+                  "VALUE" : "20",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Ciprofloxacin Enzyme"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199298532670",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Ciprofloxacin-Conjugate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Ciprofloxacin Enzyme"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Tap",
+          "ID" : "1294012199298532675",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Ciprofloxacin Enzyme"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "1294012199298532678",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Ciprofloxacin Enzyme"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199298532682",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Ciprofloxacin Enzyme"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" :  {
+          "NAME" : "REPEAT",
+          "ID" : "1294012199298532685",
+          "CLASSIFICATION" : "CFG_LOOP",
+          "LOOP_NUM" : "5",
+          "OPERATIONS" : [
+            {
+              "OPERATION" : {
+                "NAME" : "REACT",
+                "ID" : "1294012199298532687",
+                "CLASSIFICATION" : "REACT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "CHEMICAL" : {
+                      "VARIABLE" : {
+                        "NAME" : "Distilled Water"
+                      },
+                      "VOLUME" : {
+                        "VALUE" : "250",
+                        "UNITS" : "UL"
+                      }
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Ciprofloxacin Enzyme"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "VORTEX",
+                "ID" : "1294012199298532692",
+                "CLASSIFICATION" : "MIX",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Ciprofloxacin Enzyme"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "45",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "Drain",
+                "ID" : "1294012199298532695",
+                "CLASSIFICATION" : "OUTPUT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Ciprofloxacin Enzyme"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199298532698",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "TMB Substrate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "50",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Ciprofloxacin Enzyme"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "1294012199298532703",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Ciprofloxacin Enzyme"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "25",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199298532707",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Ciprofloxacin Enzyme"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Stop Reagent"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199298532713",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Ciprofloxacin Enzyme"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "5",
+                  "UNITS" : "MINUTE"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "Urine Reading",
+                "NAME" : "Urine Reading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199298532717",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Ciprofloxacin Enzyme"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      }
+    ]
+  }
+}

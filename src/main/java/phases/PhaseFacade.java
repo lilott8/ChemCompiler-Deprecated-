@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-import CompilerDataStructures.ControlFlowGraph.CFG;
+import compilation.datastructures.cfg.CFG;
 import config.PhaseConfig;
 import phases.inference.Inference;
 import shared.Facade;

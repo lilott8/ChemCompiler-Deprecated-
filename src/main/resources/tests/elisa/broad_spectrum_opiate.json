@@ -1,0 +1,446 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "Broad Spectrum Opiate Panel",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Urine Sample",
+          "NAME" : "Urine Sample",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Anti-Morphine",
+          "NAME" : "Anti-Morphine",
+          "TYPE" : "STATIONARY"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Anti-Oxy",
+          "NAME" : "Anti-Oxy",
+          "TYPE" : "STATIONARY"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Anti-Fentanyl",
+          "NAME" : "Anti-Fentanyl",
+          "TYPE" : "STATIONARY"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Anti-Ciprofloxacin",
+          "NAME" : "Anti-Ciprofloxacin",
+          "TYPE" : "STATIONARY"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Anti-Heroin",
+          "NAME" : "Anti-Heroin",
+          "TYPE" : "STATIONARY"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199298527743",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Urine Sample"
+                },
+                "VOLUME" : {
+                  "VALUE" : "10",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Morphine"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199298527843",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Urine Sample"
+                },
+                "VOLUME" : {
+                  "VALUE" : "10",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Oxy"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199298527953",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Urine Sample"
+                },
+                "VOLUME" : {
+                  "VALUE" : "10",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199298528089",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Urine Sample"
+                },
+                "VOLUME" : {
+                  "VALUE" : "10",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Ciprofloxacin"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199298528251",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Urine Sample"
+                },
+                "VOLUME" : {
+                  "VALUE" : "10",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Heroin"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199298528472",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Morphine"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "5",
+                  "UNITS" : "SECOND"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "MorphineReading",
+                "NAME" : "MorphineReading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199298528736",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Oxy"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "5",
+                  "UNITS" : "SECOND"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "OxyReading",
+                "NAME" : "OxyReading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199298529162",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "5",
+                  "UNITS" : "SECOND"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "FentanylReading",
+                "NAME" : "FentanylReading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199298529434",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Ciprofloxacin"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "5",
+                  "UNITS" : "SECOND"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "CiproReading",
+                "NAME" : "CiproReading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199298529743",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Heroin"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "5",
+                  "UNITS" : "SECOND"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "HeroinReading",
+                "NAME" : "HeroinReading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199298530560",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Morphine"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199298530958",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Oxy"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199298531383",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Fentanyl"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199298531890",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Ciprofloxacin"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199298532369",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Anti-Heroin"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      }
+    ]
+  }
+}

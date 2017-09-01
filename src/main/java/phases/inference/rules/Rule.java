@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import CompilerDataStructures.InstructionNode;
+import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
 

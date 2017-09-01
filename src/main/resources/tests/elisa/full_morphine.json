@@ -1,0 +1,1139 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "Full Morphine ELISA Kit",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Negative Standard",
+          "NAME" : "Negative Standard",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Positive Standard",
+          "NAME" : "Positive Standard",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Diluted Sample",
+          "NAME" : "Diluted Sample",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Morphine-Conjugate",
+          "NAME" : "Morphine-Conjugate",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Distilled Water",
+          "NAME" : "Distilled Water",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "TMB Substrate",
+          "NAME" : "TMB Substrate",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Stop Reagent",
+          "NAME" : "Stop Reagent",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Antigen1",
+          "NAME" : "Antigen1",
+          "TYPE" : "STATIONARY"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Antigen2",
+          "NAME" : "Antigen2",
+          "TYPE" : "STATIONARY"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Antigen3",
+          "NAME" : "Antigen3",
+          "TYPE" : "STATIONARY"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300341081",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Negative Standard"
+                },
+                "VOLUME" : {
+                  "VALUE" : "20",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen1"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300341204",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Positive Standard"
+                },
+                "VOLUME" : {
+                  "VALUE" : "20",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen2"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300341332",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Diluted Sample"
+                },
+                "VOLUME" : {
+                  "VALUE" : "20",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen3"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300341976",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Morphine-Conjugate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen1"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300341760",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Morphine-Conjugate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen2"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300342146",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Morphine-Conjugate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen3"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Tap",
+          "ID" : "1294012199300343109",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen1"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Tap",
+          "ID" : "1294012199300342883",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen2"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Tap",
+          "ID" : "1294012199300343365",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen3"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "1294012199300344507",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen1"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "1294012199300344155",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen2"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "1294012199300344869",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen3"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300346128",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen1"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300345832",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen2"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300346425",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen3"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" :  {
+          "NAME" : "REPEAT",
+          "ID" : "1294012199300346859",
+          "CLASSIFICATION" : "CFG_LOOP",
+          "LOOP_NUM" : "6",
+          "OPERATIONS" : [
+            {
+              "OPERATION" : {
+                "NAME" : "REACT",
+                "ID" : "1294012199300347313",
+                "CLASSIFICATION" : "REACT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "CHEMICAL" : {
+                      "VARIABLE" : {
+                        "NAME" : "Distilled Water"
+                      },
+                      "VOLUME" : {
+                        "VALUE" : "350",
+                        "UNITS" : "UL"
+                      }
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Antigen1"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "REACT",
+                "ID" : "1294012199300347196",
+                "CLASSIFICATION" : "REACT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "CHEMICAL" : {
+                      "VARIABLE" : {
+                        "NAME" : "Distilled Water"
+                      },
+                      "VOLUME" : {
+                        "VALUE" : "350",
+                        "UNITS" : "UL"
+                      }
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Antigen2"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "REACT",
+                "ID" : "1294012199300347337",
+                "CLASSIFICATION" : "REACT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "CHEMICAL" : {
+                      "VARIABLE" : {
+                        "NAME" : "Distilled Water"
+                      },
+                      "VOLUME" : {
+                        "VALUE" : "350",
+                        "UNITS" : "UL"
+                      }
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Antigen3"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "VORTEX",
+                "ID" : "1294012199300347703",
+                "CLASSIFICATION" : "MIX",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Antigen1"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "45",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "VORTEX",
+                "ID" : "1294012199300347521",
+                "CLASSIFICATION" : "MIX",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Antigen2"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "45",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "VORTEX",
+                "ID" : "1294012199300347809",
+                "CLASSIFICATION" : "MIX",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Antigen3"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "45",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "Drain",
+                "ID" : "1294012199300348389",
+                "CLASSIFICATION" : "OUTPUT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Antigen1"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "Drain",
+                "ID" : "1294012199300348101",
+                "CLASSIFICATION" : "OUTPUT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Antigen2"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "Drain",
+                "ID" : "1294012199300348589",
+                "CLASSIFICATION" : "OUTPUT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "STATIONARY" : {
+                      "NAME" : "Antigen3"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300352329",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "TMB Substrate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen1"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300351661",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "TMB Substrate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen2"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "REACT",
+          "ID" : "1294012199300352917",
+          "CLASSIFICATION" : "REACT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "TMB Substrate"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen3"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "1294012199300356607",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen1"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "1294012199300355765",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen2"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "INCUBATE",
+          "ID" : "1294012199300357607",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen3"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "23",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199300362478",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen1"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Stop Reagent"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199300361328",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen2"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Stop Reagent"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199300363627",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen3"
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Stop Reagent"
+                },
+                "VOLUME" : {
+                  "VALUE" : "100",
+                  "UNITS" : "UL"
+                }
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "60",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199300367294",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen1"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "30",
+                  "UNITS" : "MINUTE"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "Negative Reading",
+                "NAME" : "Negative Reading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199300366292",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen2"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "30",
+                  "UNITS" : "MINUTE"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "Positive Reading",
+                "NAME" : "Positive Reading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199300368630",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen3"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "30",
+                  "UNITS" : "MINUTE"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "SENSOR_DECLARATION" : {
+                "ID" : "Sample Reading",
+                "NAME" : "Sample Reading",
+                "TYPE" : "SENSOR"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300374987",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen1"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300374123",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen2"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "1294012199300376760",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "STATIONARY" : {
+                "NAME" : "Antigen3"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      }
+    ]
+  }
+}

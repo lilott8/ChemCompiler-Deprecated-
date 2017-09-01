@@ -2,7 +2,7 @@ package phases.inference.rules;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import CompilerDataStructures.InstructionNode;
+import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import phases.inference.satsolver.strategies.SolverStrategy;
 import substance.Property;

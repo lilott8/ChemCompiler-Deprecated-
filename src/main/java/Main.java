@@ -9,14 +9,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 
-import CompilerDataStructures.BasicBlock.BasicBlock;
-import CompilerDataStructures.ControlFlowGraph.CFG;
-import CompilerDataStructures.DominatorTree.DominatorTree;
-import CompilerDataStructures.DominatorTree.PostDominatorTree;
+import compilation.datastructures.basicblock.BasicBlock;
+import compilation.datastructures.cfg.CFG;
+import compilation.datastructures.dominatortree.DominatorTree;
+import compilation.datastructures.dominatortree.PostDominatorTree;
+import compilation.Compiler;
 import config.Config;
 import phases.PhaseFacade;
 import shared.Facade;
-import Translators.TranslatorFacade;
+import translators.TranslatorFacade;
 import manager.Benchtop;
 import parsing.BioScript.BenchtopParser;
 
@@ -84,7 +85,7 @@ public class Main {
         catch (Exception e ){
             logger.fatal("Exception occurred");
             e.getStackTrace();
-            logger.fatal("Stack Trace:", e.getStackTrace());
+            logger.fatal("Stack Trace:", e);
         }
 
         if (Config.INSTANCE.isDebug()) {
@@ -128,7 +129,7 @@ public class Main {
     /**
      * Builds the command line options needed to run the program
      */
-    private static Options buildOptions() {
+    public static Options buildOptions() {
         Options options = new Options();
 
         // File(s) to compile

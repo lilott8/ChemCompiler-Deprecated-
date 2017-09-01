@@ -1,0 +1,174 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "testcombined",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Water",
+          "NAME" : "Water",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Blood",
+          "NAME" : "Blood",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Oil",
+          "NAME" : "Oil",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Dirt",
+          "NAME" : "Dirt",
+          "TYPE" : "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "5385954717057478618",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Water"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Blood"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "mix2",
+                "TYPE" : "VARIABLE",
+                "NAME" : "mix2"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "HEAT",
+          "ID" : "5385954717057487646",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "mix2"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "5385954717057495479",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Oil"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Dirt"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "mix1",
+                "TYPE" : "VARIABLE",
+                "NAME" : "mix1"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "5385954717057495534",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Oil"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Dirt"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "mix4",
+                "TYPE" : "VARIABLE",
+                "NAME" : "mix4"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "5385954717057495383",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "mix1"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "mix2"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "mix3",
+                "TYPE" : "VARIABLE",
+                "NAME" : "mix3"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

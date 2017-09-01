@@ -1,6 +1,6 @@
 package phases;
 
-import CompilerDataStructures.ControlFlowGraph.CFG;
+import compilation.datastructures.cfg.CFG;
 
 /**
  * @created: 7/28/17

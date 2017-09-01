@@ -3,7 +3,7 @@ package phases.inference.rules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import CompilerDataStructures.InstructionNode;
+import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
 

@@ -1,11 +1,14 @@
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import inference.AquaCoreAssayTest;
+import inference.ChemTypeTest;
+import inference.ContrivedTest;
+import inference.ElisaTest;
+import inference.InferenceSuite;
+
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        SimpleTest.class,
-        PCRMasterTest.class,
-        IfElseTest.class
+    InferenceSuite.class
 })
 public class MainTest {}

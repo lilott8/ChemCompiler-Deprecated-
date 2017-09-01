@@ -1,0 +1,150 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "PCR",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "PCR",
+          "NAME" : "PCR",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Separation Medium",
+          "NAME" : "Separation Medium",
+          "TYPE" : "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "VARIABLE_DECLARATION",
+          "ID" : "1294012199300382656",
+          "CLASSIFICATION" : "VARIABLE",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "PCR",
+                "VOLUME" : {
+                  "VALUE" : "10",
+                  "UNITS" : "UL"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "PCR Mixture",
+                "NAME" : "PCR Mixture",
+                "TYPE" : "CHEMICAL"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" :  {
+          "NAME" : "REPEAT",
+          "ID" : "1294012199300382715",
+          "CLASSIFICATION" : "CFG_LOOP",
+          "LOOP_NUM" : "20",
+          "OPERATIONS" : [
+            {
+              "OPERATION" : {
+                "NAME" : "HEAT",
+                "ID" : "1294012199300382752",
+                "CLASSIFICATION" : "HEAT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "VARIABLE" : {
+                      "NAME" : "PCR Mixture"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TEMPERATURE" : {
+                      "VALUE" : "53",
+                      "UNITS" : "CELSIUS"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "15",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "HEAT",
+                "ID" : "1294012199300382821",
+                "CLASSIFICATION" : "HEAT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "VARIABLE" : {
+                      "NAME" : "PCR Mixture"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TEMPERATURE" : {
+                      "VALUE" : "72",
+                      "UNITS" : "CELSIUS"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "10",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Measure Fluorescence",
+          "ID" : "1294012199300636842",
+          "CLASSIFICATION" : "DETECT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "PCR Mixture"
+              }            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TIME" : {
+                  "VALUE" : "3",
+                  "UNITS" : "MINUTE"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      }
+    ]
+  }
+}
