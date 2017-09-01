@@ -15,6 +15,8 @@ import compilation.datastructures.dominatortree.DominatorTree;
 import compilation.datastructures.dominatortree.PostDominatorTree;
 import compilation.Compiler;
 import config.Config;
+import config.ConfigFactory;
+import config.InputConfig;
 import phases.PhaseFacade;
 import shared.Facade;
 import translators.TranslatorFacade;
@@ -34,13 +36,14 @@ public class Main {
         cmd = parser.parse(buildOptions(), args);
         initializeEnvironment(cmd);
 
-        if (Config.INSTANCE.isDebug()) {
+        Config config = ConfigFactory.getConfig();
+
+        if (config.isDebug()) {
             logger.info("You are in test mode");
         }
 
-        //SimpleMixTest();
         try {
-            for(String file : Config.INSTANCE.getFilesForCompilation()) {
+            for(String file : config.getFilesForCompilation()) {
                 logger.trace(file);
                 BenchtopParser.parse(file);
             }
@@ -62,8 +65,8 @@ public class Main {
                 //TypeSystemTranslator tst = new TypeSystemTranslator(experiment);
                 //tst.toFile("NeurotransmitterSensing.txt");
                 //logger.info(tst.toString());
-                if (Config.INSTANCE.translationsEnabled()) {
-                    Facade translator = new TranslatorFacade(Config.INSTANCE, experiment);
+                if (config.translationsEnabled()) {
+                    Facade translator = new TranslatorFacade(config, experiment);
                     translator.start();
                 }
                 //if (config.INSTANCE.translationsEnabled() && config.INSTANCE.translationEnabled(config.TRANSLATORS.MFSIM)) {
@@ -75,8 +78,8 @@ public class Main {
                 //if (config.INSTANCE.phasesEnabled() &&config.INSTANCE.phaseEnabled(config.PHASES.INFERENCE)) {
                 //   config.INSTANCE.getPhaseByName(config.PHASES.INFERENCE).runPhase();
                 //}
-                if(Config.INSTANCE.phasesEnabled()) {
-                 Facade phase = new PhaseFacade(Config.INSTANCE, experiment);
+                if(config.phasesEnabled()) {
+                 Facade phase = new PhaseFacade(config, experiment);
                  phase.start();
                 }
             }
@@ -88,7 +91,7 @@ public class Main {
             logger.fatal("Stack Trace:", e);
         }
 
-        if (Config.INSTANCE.isDebug()) {
+        if (config.isDebug()) {
             DominatorTreeTest();
             DominatorTreeTest2();
             PostDominatorTreeTest();
@@ -118,10 +121,10 @@ public class Main {
         }
 
         // initialize our config object.
-        Config.INSTANCE.buildConfig(cmd);
+        Config config = ConfigFactory.buildConfig(cmd);
 
         // add any initializing statements derived from the command line here.
-        if(Config.INSTANCE.getFilesForCompilation().size() == 0) {
+        if(config.getFilesForCompilation().size() == 0) {
             throw new Exception("We have no valid files for input");
         }
     }
