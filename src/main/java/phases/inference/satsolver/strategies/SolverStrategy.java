@@ -10,5 +10,5 @@ import java.util.Set;
  */
 public interface SolverStrategy {
 
-    void solveConstraints(Map<String, Set<String>> constraints);
+    boolean solveConstraints(Map<String, Set<String>> constraints);
 }

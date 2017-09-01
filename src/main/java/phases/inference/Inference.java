@@ -108,7 +108,7 @@ public class Inference implements Phase {
      * Run the inference phase of the compilation process.
      * @param controlFlowGraph
      */
-    public void runPhase(CFG controlFlowGraph) {
+    public boolean runPhase(CFG controlFlowGraph) {
         this.controlFlowGraph = controlFlowGraph;
         // Iterate the CFG.
         for(Map.Entry<Integer, BasicBlock> block : this.controlFlowGraph.getBasicBlocks().entrySet()) {
@@ -128,7 +128,7 @@ public class Inference implements Phase {
             this.addConstraints(this.inferConstraints("edge", edge));
         }
 
-        this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
+        return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
     }
 
     /**

@@ -28,9 +28,8 @@ public class SatSolver {
         return this;
     }
 
-    public SatSolver solveConstraints(Map<String, Set<String>> constraints) {
-        this.strategy.solveConstraints(constraints);
-        return this;
+    public boolean solveConstraints(Map<String, Set<String>> constraints) {
+        return this.strategy.solveConstraints(constraints);
     }
 
 }
