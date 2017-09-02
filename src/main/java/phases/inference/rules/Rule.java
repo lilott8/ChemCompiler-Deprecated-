@@ -1,6 +1,9 @@
 package phases.inference.rules;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -18,6 +21,8 @@ import substance.Property;
 public abstract class Rule {
 
     protected InferenceType type;
+
+    public static final Logger logger = LogManager.getLogger(Rule.class);
 
     public static final String MAT = "mat";
     public static final String REAL = "real";
@@ -48,11 +53,6 @@ public abstract class Rule {
         this.type = type;
     }
 
-    public abstract Rule gatherAllConstraints(InstructionNode node);
-    public abstract Rule gatherUseConstraints(String input);
-    public abstract Rule gatherDefConstraints(String input);
-    public abstract Rule gatherConstraints(Property property);
-
     public Map<String, Set<String>> getConstraints() {
         return constraints;
     }
@@ -73,43 +73,6 @@ public abstract class Rule {
             this.constraints.put(key, new HashSet<>());
         }
         this.constraints.get(key).add(value);
-    }
-
-    protected Rule gatherConstraints(InstructionNode node) {
-        /*
-         * Temp = Mix x with y for n
-         *  ^def_use  |      |     |
-         *         get_use   |     |
-         *                get_use  |
-         *                      property
-         */
-        // These are the defs on instruction
-        for(String out : node.get_def()) {
-            this.gatherDefConstraints(out);
-        }
-
-        // This is the input to the instruction
-        for(String in: node.get_use()) {
-            this.gatherUseConstraints(in);
-        }
-
-        // Get the properties of the instruction if they exist
-        for (Property prop : node.Instruction().getProperties()) {
-            this.gatherConstraints(prop);
-        }
-
-        /*
-        logger.debug("Id: " + instruction.ID());
-        logger.debug("Classification: " + instruction.Instruction().getClassification());
-        logger.debug("Input Symbols: " + instruction.getInputSymbols());
-        logger.debug("Properties: " + instruction.Instruction().getProperties());
-        logger.debug("Use: " + instruction.get_use());
-        logger.debug("Def: " + instruction.get_def());
-        logger.debug("Output Symbols: " + instruction.getOutputSymbols());
-        logger.debug("toString(): " + instruction.toString());
-        logger.warn("=================================");
-        */
-        return this;
     }
 
     public static boolean isNumeric(String value) {

@@ -12,9 +12,9 @@ import substance.Property;
  * move is a synonym of mix.
  */
 @InferenceRule(ruleName = "move", ruleType = "instruction")
-public class Move extends Rule {
+public class Move extends NodeAnalyzer {
 
-    private Rule mix = new Mix(InferenceType.INSTRUCTION);
+    private NodeAnalyzer mix = new Mix(InferenceType.INSTRUCTION);
 
     public Move(InferenceType type) {
         super(type);

@@ -13,7 +13,7 @@ import substance.Property;
  * @project: ChemicalCompiler
  */
 @InferenceRule(ruleName = "math", ruleType = "term")
-public class Math extends Rule {
+public class Math extends NodeAnalyzer {
 
     public Math(InferenceType type) {
         super(type);

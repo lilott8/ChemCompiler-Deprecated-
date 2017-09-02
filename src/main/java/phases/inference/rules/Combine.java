@@ -15,10 +15,10 @@ import substance.Property;
  * This is a synonym for mix, thus we just wrap it as such.
  */
 @InferenceRule(ruleName = "combine", ruleType = "instruction")
-public class Combine extends Rule {
+public class Combine extends NodeAnalyzer {
 
     public static final Logger logger = LogManager.getLogger(Mix.class);
-    private Rule mix = new Mix(Inference.InferenceType.INSTRUCTION);
+    private NodeAnalyzer mix = new Mix(Inference.InferenceType.INSTRUCTION);
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {

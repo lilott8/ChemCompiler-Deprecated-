@@ -11,9 +11,11 @@ import compilation.datastructures.basicblock.DependencySlicedBasicBlock;
 import compilation.datastructures.CFGBuilder;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.ssi.StaticSingleInformation;
+import config.Config;
 import config.ConfigFactory;
 import executable.Experiment;
 import manager.Benchtop;
+import parsing.BioScript.BenchtopParser;
 import phases.Phase;
 import phases.PhaseFacade;
 import shared.Facade;
@@ -34,11 +36,21 @@ public class Compiler {
     private StaticSingleInformation SSI;
     private CFG controlFlow;
 
-    public Compiler(Benchtop benchtop) {
-        this.benchtop = benchtop;
+    public Compiler(Config config) {
+        try {
+            for(String file : config.getFilesForCompilation()) {
+                BenchtopParser.parse(file);
+            }
+        }
+        catch (Exception e) {
+            logger.fatal(e.getMessage());
+            logger.fatal("Exception: ", e);
+        }
+        this.benchtop = Benchtop.INSTANCE;
         //this.initializeData();
     }
 
+    @Deprecated
     private void initializeData() {
         //__IDGen = 0;
 
@@ -98,8 +110,13 @@ public class Compiler {
             logger.fatal(e);
         }
 
-        runPhases();
-        runTranslations();
+        //runPhases();
+        //runTranslations();
+    }
+
+    public void runAllOps() {
+        this.runPhases();
+        this.runTranslations();
     }
 
     public void runPhases() {

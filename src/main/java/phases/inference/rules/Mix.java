@@ -15,7 +15,7 @@ import substance.Property;
  * Mat = mix Mat with Mat ... for Real
  */
 @InferenceRule(ruleName = "mix", ruleType = "instruction")
-public class Mix extends Rule {
+public class Mix extends NodeAnalyzer {
 
     public static final Logger logger = LogManager.getLogger(Mix.class);
 

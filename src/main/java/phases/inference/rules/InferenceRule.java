@@ -15,4 +15,5 @@ import java.lang.annotation.Target;
 public @interface InferenceRule {
     String ruleName();
     String ruleType();
+    String analyze() default "node";
 }

@@ -42,20 +42,10 @@ public class Main {
             logger.info("You are in test mode");
         }
 
-        try {
-            for(String file : config.getFilesForCompilation()) {
-                logger.trace(file);
-                BenchtopParser.parse(file);
-            }
-        }
-        catch (Exception e) {
-            logger.fatal(e.getMessage());
-            logger.fatal("Exception: ", e);
-        }
-
         // Run compilation.
-        Compiler compiler = new Compiler(Benchtop.INSTANCE);
+        Compiler compiler = new Compiler(config);
         compiler.compile();
+        compiler.runAllOps();
     }
 
     private static void initializeEnvironment(final CommandLine cmd) throws Exception{

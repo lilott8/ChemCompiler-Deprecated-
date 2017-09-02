@@ -16,7 +16,7 @@ import compilation.datastructures.dominatortree.PostDominatorTree;
  */
 public class TreeTest {
 
-    Logger logger = LogManager.getLogger(TreeTest.class);
+    private static Logger logger = LogManager.getLogger(TreeTest.class);
 
     @Test
     public void DominatorTreeTest() {
@@ -49,6 +49,7 @@ public class TreeTest {
 
         DominatorTree t = new DominatorTree(cfg);
         logger.info(t);
+        // TODO: add asserts.
     }
 
     @Test
@@ -101,6 +102,7 @@ public class TreeTest {
 
         DominatorTree t = new DominatorTree(cfg);
         logger.info(t);
+        // TODO: add asserts.
     }
 
     @Test
@@ -131,7 +133,9 @@ public class TreeTest {
         DominatorTree t = new DominatorTree(cfg);
         PostDominatorTree pt = new PostDominatorTree(cfg);
         logger.info(t);
+        // TODO: add asserts.
 
         logger.info(pt);
+        // TODO: add asserts.
     }
 }

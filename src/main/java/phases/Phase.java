@@ -9,5 +9,5 @@ import compilation.datastructures.cfg.CFG;
  */
 public interface Phase {
 
-    void runPhase(CFG controlFlowGraph);
+    boolean runPhase(CFG controlFlowGraph);
 }

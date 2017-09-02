@@ -24,7 +24,9 @@ import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.InstructionNode;
 import phases.Phase;
+import phases.inference.rules.EdgeAnalyzer;
 import phases.inference.rules.InferenceRule;
+import phases.inference.rules.NodeAnalyzer;
 import phases.inference.rules.Rule;
 import phases.inference.satsolver.SatSolver;
 import phases.inference.satsolver.strategies.Z3Strategy;
@@ -45,8 +47,11 @@ public class Inference implements Phase {
 
     // Enum to determine what type the node in the CFG is.
     public enum InferenceType {
-        TERM, INSTRUCTION
+        TERM, INSTRUCTION, BRANCH
     }
+
+    public final String NODE_ANALYSIS = "NODE";
+    public final String EDGE_ANALYSIS = "EDGE";
 
     // Logging mechanism.
     public static final Logger logger = LogManager.getLogger(Inference.class);
@@ -54,9 +59,14 @@ public class Inference implements Phase {
     // Package for where to look for annotated rules.
     public static final String INFERENCE_PACKAGE = "phases.inference.rules";
 
-    // This maps the rule name the corresponding rule.
-    private final Map<String, Rule> inferenceRules = new HashMap<>();
-    //private final Map<String, Class<? extends Rule>> inferenceRules = new HashMap<>();
+    /**
+     * We have two because the differences between blocks
+     * and edges are stark.  So this enforces guarantees that
+     * each analyzer will do exactly what it's supposed to,
+     * and make troubleshooting easier.
+     */
+    private final Map<String, NodeAnalyzer> basicBlockAnalyzers = new HashMap<>();
+    private final Map<String, EdgeAnalyzer> edgeAnalyzers = new HashMap<>();
 
     // This maps each instruction/term to the constraints that it has.
     private Map<String, Set<String>> constraints = new HashMap<String, Set<String>>();
@@ -108,7 +118,7 @@ public class Inference implements Phase {
      * Run the inference phase of the compilation process.
      * @param controlFlowGraph
      */
-    public void runPhase(CFG controlFlowGraph) {
+    public boolean runPhase(CFG controlFlowGraph) {
         this.controlFlowGraph = controlFlowGraph;
         // Iterate the CFG.
         for(Map.Entry<Integer, BasicBlock> block : this.controlFlowGraph.getBasicBlocks().entrySet()) {
@@ -125,10 +135,10 @@ public class Inference implements Phase {
 
         // Iterate the edges, we need the branch conditions to infer...
         for(BasicBlockEdge edge : this.controlFlowGraph.getBasicBlockEdges()) {
-            this.addConstraints(this.inferConstraints("edge", edge));
+            this.addConstraints(this.inferConstraints(StringUtils.upperCase(edge.getClassification()), edge));
         }
 
-        this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
+        return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
     }
 
     /**
@@ -141,20 +151,22 @@ public class Inference implements Phase {
      *   A mapping of id to what was inferred.
      */
     public Map<String, Set<String>> inferConstraints(String name, InstructionNode instruction) {
-        if(this.inferenceRules.containsKey(name)) {
-            Rule rule = this.inferenceRules.get(name);
+        logger.trace(instruction);
+        if(this.basicBlockAnalyzers.containsKey(name)) {
+            NodeAnalyzer rule = this.basicBlockAnalyzers.get(name);
             return rule.gatherAllConstraints(instruction).getConstraints();
             // return the constraints from the rule
             //return rule.getConstraints();
             //return this.inferenceRules.get(name).gatherConstraints(instruction).getConstraints();
         }
-        logger.warn("We don't have a rule for: " + name);
+        logger.warn("Node Analysis: We don't have a rule for: " + name);
         // return an empty array list for ease.
         return new HashMap<String, Set<String>>();
     }
 
     /**
      * Infer constraints from edges.
+     * This handles if/elseif/else and repeats
      *
      * @param name
      *   Name of the instruction.
@@ -164,37 +176,15 @@ public class Inference implements Phase {
      *   A mapping of id to what was inferred.
      */
     public Map<String, Set<String>> inferConstraints(String name, BasicBlockEdge edge) {
-        Map<String, Set<String>> results = new HashMap<>();
-
-        // Split the condition into a string, get the operands and attempt to infer.
-        for(String s : StringUtils.split(edge.getCondition())) {
-            // we don't have the
-            if (!Rule.operands.contains(s)) {
-
-                // We cannot define a variable here, so we can safely look
-                // into the global constraints table.
-                if (this.constraints.containsKey(s)) {
-                    // create the set if we don't have it yet.
-                    if (!results.containsKey(s)) {
-                        results.put(s, new HashSet<>());
-                    }
-                    results.get(s).add(Rule.NAT);
-                }
-
-                if (Rule.isNumeric(s)) {
-                    if (!results.containsKey(s)) {
-                        results.put(s, new HashSet<>());
-                    }
-                    results.get(s).add(Rule.REAL);
-                    results.get(s).add(Rule.NAT);
-                }
-            } else {
-                results.put("if", new HashSet<>());
-                results.get("if").add(Rule.NAT);
-            }
-            //logger.info(s);
+        if (this.edgeAnalyzers.containsKey(name)) {
+            EdgeAnalyzer rule = this.edgeAnalyzers.get(name);
+            return rule.gatherConstraints(edge).getConstraints();
         }
-        return results;
+        if (!StringUtils.equalsIgnoreCase(name, "unknown")) {
+            logger.warn("Edge Analysis: We don't have a rule for: " + name);
+        }
+
+        return new HashMap<String, Set<String>>();
     }
 
     /**
@@ -240,9 +230,15 @@ public class Inference implements Phase {
                 // For obvious reasons we assume the ruleName is set.
                 String name = StringUtils.upperCase(clazz.getAnnotation(InferenceRule.class).ruleName());
                 String type = StringUtils.upperCase(clazz.getAnnotation(InferenceRule.class).ruleType());
-                final Rule newInstance = (Rule) clazz.getConstructor(InferenceType.class).newInstance(InferenceType.valueOf(type));
+                String analyze = StringUtils.lowerCase(clazz.getAnnotation(InferenceRule.class).analyze());
+                if (StringUtils.equalsIgnoreCase(analyze, NODE_ANALYSIS)) {
+                    final NodeAnalyzer newInstance = (NodeAnalyzer) clazz.getConstructor(InferenceType.class).newInstance(InferenceType.valueOf(type));
+                    this.basicBlockAnalyzers.put(name, newInstance);
+                } else {
+                    final EdgeAnalyzer newInstance = (EdgeAnalyzer) clazz.getConstructor(InferenceType.class).newInstance(InferenceType.valueOf(type));
+                    this.edgeAnalyzers.put(name, newInstance);
+                }
                 // Just in case we need it, we store the rule type the class represents.
-                this.inferenceRules.put(name, newInstance);
             } catch(InstantiationException ie) {
                 logger.warn(String.format("Cannot Instantiate: [%s]", clazz.getName()));
             } catch(IllegalAccessException iae) {

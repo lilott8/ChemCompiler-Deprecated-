@@ -1,5 +1,6 @@
 package compilation.datastructures.basicblock;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +25,7 @@ public class BasicBlockEdge implements Serializable {
 //this still needs to be created.
     private String __condition;
     protected enum __type {un, repeat, lt, lte, gt, gte, eq, neq };
+    protected String classification;
     private __type type;
 
     public static Logger logger = LogManager.getLogger(BasicBlockEdge.class);
@@ -33,12 +35,14 @@ public class BasicBlockEdge implements Serializable {
         __destination = destination;
         __condition = condition;
         this.type = un;
+        this.classification = "unknown";
     }
 
     public BasicBlockEdge(Integer source, Integer destination, String expression, String type) {
         __source = source;
         __destination = destination;
         __condition = evaluateCondition(expression, type);
+        this.classification = StringUtils.lowerCase(type);
     }
 
     private String evaluateCondition(String expression, String type) {
@@ -93,9 +97,12 @@ public class BasicBlockEdge implements Serializable {
         return this.toString("");
     }
     public String toString(String indentBuffer) {
-        return indentBuffer + __source.toString() + " ->" + __destination + " : " + __condition;
+        return indentBuffer + __source.toString() + " -> " + __destination + " : " + evaluateBoolean(__condition) + "\t(" + getType() + ")";
     }
 
+    public String getClassification() {
+        return this.classification;
+    }
     public Integer getSource() { return __source; }
     public Integer getDestination() {return __destination; }
     public String getCondition()  { return __condition; }
