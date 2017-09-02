@@ -8,6 +8,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 
+import compilation.Compiler;
+import config.Config;
+import config.ConfigFactory;
+import phases.inference.Inference;
+
 /**
  * @created: 9/1/17
  * @since: 0.1
@@ -15,7 +20,7 @@ import java.lang.reflect.Method;
  */
 public class CommonUtils {
 
-    public static CommandLine buildCommandLine(String args) {
+    private static CommandLine buildCommandLine(String args) {
         try {
             return new DefaultParser().parse(getOptionsFromMain(), StringUtils.split(args, " "));
         } catch(Exception e) {}
@@ -38,5 +43,17 @@ public class CommonUtils {
 
         }
         return new Options();
+    }
+
+    public static boolean runTest(String file) {
+        String args = String.format("-c %s -p inference", file);
+        CommandLine cmd = CommonUtils.buildCommandLine(args);
+        Config config = ConfigFactory.buildConfig(cmd);
+        // TODO: run the phases here.
+        Compiler compiler = new Compiler(config);
+        compiler.compile();
+        Inference inference = new Inference();
+        // We can do this because the test has only one experiment!
+        return inference.runPhase(compiler.getExperiments().get(0));
     }
 }

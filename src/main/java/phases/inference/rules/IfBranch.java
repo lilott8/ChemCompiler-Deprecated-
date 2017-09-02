@@ -1,6 +1,7 @@
 package phases.inference.rules;
 
 import compilation.datastructures.InstructionNode;
+import compilation.datastructures.basicblock.BasicBlockEdge;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
 
@@ -9,31 +10,15 @@ import substance.Property;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-@InferenceRule(ruleName = "if", ruleType = "instruction")
-public class IfBranch extends Rule {
+@InferenceRule(ruleName = "if", ruleType = "instruction", analyze = "edge")
+public class IfBranch extends EdgeAnalyzer {
 
     public IfBranch(InferenceType type) {
         super(type);
     }
 
     @Override
-    public Rule gatherAllConstraints(InstructionNode node) {
-        return super.gatherConstraints(node);
-    }
-
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, NAT);
-        return this;
-    }
-
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        return this;
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
+    public Rule gatherConstraints(BasicBlockEdge edge) {
         return null;
     }
 }

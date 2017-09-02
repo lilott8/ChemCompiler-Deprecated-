@@ -10,7 +10,7 @@ import substance.Property;
  * @project: ChemicalCompiler
  */
 @InferenceRule(ruleName="vortex", ruleType="instruction")
-public class Vortex extends Rule {
+public class Vortex extends NodeAnalyzer {
 
     Mix mix = new Mix(Inference.InferenceType.INSTRUCTION);
 

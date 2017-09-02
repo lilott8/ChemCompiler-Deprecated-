@@ -10,7 +10,7 @@ import substance.Property;
  * @project: ChemicalCompiler
  */
 @InferenceRule(ruleName = "split", ruleType = "instruction")
-public class Split extends Rule {
+public class Split extends NodeAnalyzer {
 
     public Split(InferenceType type) {
         super(type);

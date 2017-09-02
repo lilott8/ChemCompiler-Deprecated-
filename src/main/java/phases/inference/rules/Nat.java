@@ -10,7 +10,7 @@ import substance.Property;
  * @project: ChemicalCompiler
  */
 @InferenceRule(ruleName = "nat", ruleType = "term")
-public class Nat extends Rule {
+public class Nat extends NodeAnalyzer {
 
     public Nat(InferenceType type) {
         super(type);

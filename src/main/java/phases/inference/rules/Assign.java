@@ -12,7 +12,7 @@ import substance.Property;
  */
 
 @InferenceRule(ruleName = "assign", ruleType = "term")
-public class Assign extends Rule {
+public class Assign extends NodeAnalyzer {
 
     public Assign(InferenceType type) {
         super(type);

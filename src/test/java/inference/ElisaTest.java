@@ -1,16 +1,11 @@
 package inference;
 
-import org.apache.commons.cli.CommandLine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import compilation.Compiler;
-import config.Config;
-import config.ConfigFactory;
-import phases.inference.Inference;
-import utils.CommonUtils;
+import static utils.CommonUtils.runTest;
 
 /**
  * @created: 9/1/17
@@ -21,18 +16,6 @@ public class ElisaTest {
 
     public static String root = "src/main/resources/tests/elisa/";
     public static final Logger logger = LogManager.getLogger(ElisaTest.class);
-
-    public boolean runTest(String file) {
-        String args = String.format("-c %s -p inference", file);
-        CommandLine cmd = CommonUtils.buildCommandLine(args);
-        Config config = ConfigFactory.buildConfig(cmd);
-        // TODO: run the phases here.
-        Compiler compiler = new Compiler(config);
-        compiler.compile();
-        Inference inference = new Inference();
-        // We can do this because the test has only one experiment!
-        return inference.runPhase(compiler.getExperiments().get(0));
-    }
 
     @Test
     public void broadSpectrumOpiateSat() {
