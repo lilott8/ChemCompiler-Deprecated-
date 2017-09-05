@@ -9,19 +9,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 
-import compilation.datastructures.basicblock.BasicBlock;
-import compilation.datastructures.cfg.CFG;
-import compilation.datastructures.dominatortree.DominatorTree;
-import compilation.datastructures.dominatortree.PostDominatorTree;
 import compilation.Compiler;
 import config.Config;
 import config.ConfigFactory;
-import config.InputConfig;
-import phases.PhaseFacade;
-import shared.Facade;
-import translators.TranslatorFacade;
-import manager.Benchtop;
-import parsing.BioScript.BenchtopParser;
 
 
 public class Main {
@@ -68,6 +58,10 @@ public class Main {
 
         if ((cmd.hasOption("clean") && !cmd.hasOption("output"))) {
             throw new Exception("Attempting to clean output directory, but no directory supplied.");
+        }
+
+        if (!validateDatabase(cmd)) {
+            throw new Exception("We cannot infer the connection data for the database.");
         }
 
         // initialize our config object.
@@ -136,6 +130,51 @@ public class Main {
         options.addOption(Option.builder("p").longOpt("phases")
             .desc(desc).hasArgs().required(false)
             .argName("phases").build());
+
+        // Database name
+        desc = "Database name." +
+                "\nUsage: -dbname [name]";
+        options.addOption(Option.builder("dbname").longOpt("dbname")
+                .desc(desc).hasArg().argName("dbname").build());
+        // Database user name
+        desc = "Database user name." +
+                "\nUsage -dbuser [name]";
+        options.addOption(Option.builder("dbuser").longOpt("dbuser")
+                .desc(desc).hasArg().argName("dbuser").build());
+        // Database password
+        desc = "Database password." +
+                "\nUsage -dbpass [pass]";
+        options.addOption(Option.builder("dbpass").longOpt("dbpass")
+                .desc(desc).hasArg().argName("dbpass").build());
+        // Database port
+        desc = "Database port, default: 3306." +
+                "\nUsage -dbport [port]";
+        options.addOption(Option.builder("dbport").longOpt("dbport")
+                .desc(desc).hasArg().argName("dbport").build());
+        // Database address
+        desc = "Database address, default localhost." +
+                "\nUsage -dbaddr [addr]";
+        options.addOption(Option.builder("dbaddr").longOpt("dbaddr")
+                .desc(desc).hasArg().argName("dbaddr").build());
+        // Database driver, e.g. org.mariadb.jdbc.MySQLDataSource
+        desc = "Database driver default org.mariadb.jdbc.MySQLDataSource.  " +
+                "\nUsage: -dbdriver [driver]";
+        options.addOption(Option.builder("dbdriver").longOpt("dbdriver")
+                .desc(desc).hasArg().argName("dbdriver").build());
+        // Database timeout
+        desc = "Database timeout, default 10 seconds." +
+                "\nUsage: -dbtimeout [time]";
+        options.addOption(Option.builder("dbtimeout").longOpt("dbtimeout")
+                .desc(desc).hasArg().argName("dbtimeout").build());
         return options;
+    }
+
+    public static boolean validateDatabase(CommandLine cmd) {
+        if (cmd.hasOption("dbport") || cmd.hasOption("dbaddr") || cmd.hasOption("dbname")) {
+            // We only care if we have db flags and no user/pass to accommodate the connection.
+            return cmd.hasOption("dbuser") && cmd.hasOption("dbpass");
+        }
+        // If we have no database flags, we can return true.
+        return true;
     }
 }

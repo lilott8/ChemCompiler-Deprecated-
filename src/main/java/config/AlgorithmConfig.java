@@ -5,7 +5,7 @@ package config;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-interface AlgorithmConfig {
+interface AlgorithmConfig extends CommonConfig {
 
     boolean runSSA();
     boolean runSSI();

@@ -3,11 +3,14 @@ package config;
 import java.util.List;
 
 /**
- * @created: 7/26/17
+ * @created: 9/5/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public interface InputConfig {
+public interface CommonConfig {
 
+    String getOutputDir();
+    boolean clean();
     List<String> getFilesForCompilation();
+    public boolean isDebug();
 }
