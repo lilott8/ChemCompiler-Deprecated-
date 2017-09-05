@@ -31,8 +31,6 @@ public class Z3Strategy implements SolverStrategy {
 
     @Override
     public boolean solveConstraints(Map<String, Set<String>> constraints) {
-        logger.error("Mutating constraints for testing!");
-        //constraints.get("Water").add("Int");
         return this.solveWithSMT2(this.generateSMT2(constraints));
     }
 
@@ -71,7 +69,7 @@ public class Z3Strategy implements SolverStrategy {
         }
         //sb.append("(check-sat)").append(System.lineSeparator());
         //sb.append("(get-model)").append(System.lineSeparator());
-        logger.info(sb.toString());
+        //logger.info(sb.toString());
         return sb.toString();
     }
 
@@ -82,10 +80,10 @@ public class Z3Strategy implements SolverStrategy {
         solver.add(expr);
         Status status = solver.check();
         if (status == Status.SATISFIABLE) {
-            logger.trace("SAT!");
+            //logger.trace("SAT!");
             return true;
         } else {
-            logger.error("UNSAT");
+            //logger.error("UNSAT");
             return false;
         }
 

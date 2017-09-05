@@ -83,37 +83,6 @@ public class Inference implements Phase {
         this.loadRules();
     }
 
-    private void test() {
-        logger.trace("We are debugging things, remove the inference.test method.");
-
-        Context context = new Context();
-
-        Symbol fname = context.mkSymbol("f");
-        Symbol x = context.mkSymbol("x");
-        Symbol y = context.mkSymbol("y");
-
-        Sort bs = context.mkBoolSort();
-
-        Sort[] domain = {bs, bs};
-        // Take in two booleans, return a boolean
-        FuncDecl f = context.mkFuncDecl(fname, domain, bs);
-        // This is an application of a function.
-        Expr fapp = context.mkApp(f, context.mkConst(x, bs), context.mkConst(y, bs));
-
-        Expr[] fargs2 = {context.mkFreshConst("cp", bs)};
-        Sort[] domain2 = {bs};
-        // Create a new function and apply it
-        Expr fapp2 = context.mkApp(context.mkFreshFuncDecl("fp", domain2, bs), fargs2);
-
-        BoolExpr trivial_eq = context.mkEq(fapp, fapp);
-        BoolExpr nontrivial_eq = context.mkEq(fapp, fapp2);
-
-        Goal g = context.mkGoal(true, false, false);
-        g.add(trivial_eq);
-        g.add(nontrivial_eq);
-        logger.warn("Goal: " + g);
-    }
-
     /**
      * Run the inference phase of the compilation process.
      * @param controlFlowGraph
@@ -151,7 +120,6 @@ public class Inference implements Phase {
      *   A mapping of id to what was inferred.
      */
     public Map<String, Set<String>> inferConstraints(String name, InstructionNode instruction) {
-        logger.trace(instruction);
         if(this.basicBlockAnalyzers.containsKey(name)) {
             NodeAnalyzer rule = this.basicBlockAnalyzers.get(name);
             return rule.gatherAllConstraints(instruction).getConstraints();
