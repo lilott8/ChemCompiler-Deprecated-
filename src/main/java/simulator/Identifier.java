@@ -74,7 +74,7 @@ public class Identifier {
 
         maxChems = id;
     }
-    
+
     private int getMaxChemsFromDB() {
         HikariDB db = HikariDB.INSTANCE;
         Connection connection = this.connector.getConnection();
