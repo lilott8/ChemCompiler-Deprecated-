@@ -1,6 +1,6 @@
 package compilation.datastructures;
 
-//import chemicaiInteractions.ChemicalInteraction;
+//import chemicalInteractions.ChemicalInteraction;
 
 import java.io.Serializable;
 import java.util.ArrayList;

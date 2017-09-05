@@ -9,6 +9,6 @@ public class Database {
 
     public static Connector getConnector() {
         // TODO: build logic to handle multiple engines.
-        return Hikari.INSTANCE;
+        return HikariDB.INSTANCE;
     }
 }

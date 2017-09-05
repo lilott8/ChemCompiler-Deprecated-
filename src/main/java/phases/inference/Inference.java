@@ -1,13 +1,5 @@
 package phases.inference;
 
-import com.microsoft.z3.BoolExpr;
-import com.microsoft.z3.Context;
-import com.microsoft.z3.Expr;
-import com.microsoft.z3.FuncDecl;
-import com.microsoft.z3.Goal;
-import com.microsoft.z3.Sort;
-import com.microsoft.z3.Symbol;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +19,6 @@ import phases.Phase;
 import phases.inference.rules.EdgeAnalyzer;
 import phases.inference.rules.InferenceRule;
 import phases.inference.rules.NodeAnalyzer;
-import phases.inference.rules.Rule;
 import phases.inference.satsolver.SatSolver;
 import phases.inference.satsolver.strategies.Z3Strategy;
 import shared.Tuple;

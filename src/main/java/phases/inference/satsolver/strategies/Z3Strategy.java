@@ -69,7 +69,7 @@ public class Z3Strategy implements SolverStrategy {
         }
         //sb.append("(check-sat)").append(System.lineSeparator());
         //sb.append("(get-model)").append(System.lineSeparator());
-        //logger.info(sb.toString());
+        // logger.info(sb.toString());
         return sb.toString();
     }
 

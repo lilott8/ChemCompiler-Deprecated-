@@ -27,7 +27,7 @@ import translators.typesystem.TypeSystemTranslator;
  */
 public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, DatabaseConfig {
 
-    public final Logger logger = LogManager.getLogger(Config.class);
+    public static final Logger logger = LogManager.getLogger(Config.class);
 
     /**
      * Is the compiler in debug mode.
@@ -104,7 +104,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     /**
      * Simple check to see if we can use the DB or not.
      */
-    public final boolean isDBEnabled;
+    private final boolean isDBEnabled;
 
     /**
      * Build the config object from our command line
