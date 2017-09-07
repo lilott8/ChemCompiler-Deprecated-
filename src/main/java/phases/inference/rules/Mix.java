@@ -3,8 +3,14 @@ package phases.inference.rules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import compilation.datastructures.InstructionNode;
+import phases.inference.ChemTypes;
 import phases.inference.Inference.InferenceType;
+import simulator.FauxIdentifier;
+import simulator.Identify;
 import substance.Property;
 
 /**
@@ -25,14 +31,42 @@ public class Mix extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        for(String out : node.get_def()) {
-            this.gatherDefConstraints(out);
+        logger.trace(node);
+        logger.trace("Constraints: " + constraints);
+        // This is the input to the instruction
+        Set<ChemTypes> groups = new HashSet<>();
+        for(String in: node.getInputSymbols()) {
+            logger.trace("Uses: " + in);
+            // Use the new way!
+            if (!constraints.containsKey(in)) {
+                for (ChemTypes t : this.identifier.getReactiveGroup(in)) {
+                    this.addConstraint(in, t);
+                    groups.add(t);
+                }
+            } else {
+                groups = constraints.get(in);
+            }
+            // The old way
+            //this.gatherUseConstraints(in);
+        }
+        logger.trace(groups);
+
+        // Simulate the mix for the types.
+        Set<ChemTypes> unions = new HashSet<>();
+        for(int x = 0; x < groups.size(); x++) {
+            for (int y = x; y < groups.size(); y++) {
+                unions = this.identifier.getReaction(x+1, y+1);
+            }
         }
 
-        // This is the input to the instruction
-        for(String in: node.get_use()) {
-            this.gatherUseConstraints(in);
+        // The output of the instruction.
+        for(String out : node.get_def()) {
+            // The new way
+            this.addConstraints(out, unions);
+            // The old way.
+            //this.gatherDefConstraints(out);
         }
+
 
         // Get the properties of the instruction if they exist
         for (Property prop : node.Instruction().getProperties()) {
@@ -43,19 +77,25 @@ public class Mix extends NodeAnalyzer {
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, MAT);
+        this.addConstraint(input, ChemTypes.MAT);
         return this;
     }
 
+    /**
+     * This doesn't do anything because it is derived
+     * from the gatherUseConstraints.
+     * @param input
+     * @return
+     */
     @Override
     public Rule gatherDefConstraints(String input) {
-        this.addConstraint(input, MAT);
+        this.addConstraint(input, ChemTypes.MAT);
         return this;
     }
 
     @Override
     public Rule gatherConstraints(Property property) {
-        this.addConstraint(CONST, REAL);
+        this.addConstraint(CONST, ChemTypes.REAL);
         return this;
     }
 }

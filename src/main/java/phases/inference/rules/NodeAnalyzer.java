@@ -2,7 +2,10 @@ package phases.inference.rules;
 
 
 import compilation.datastructures.InstructionNode;
+import config.InferenceConfig;
 import phases.inference.Inference.InferenceType;
+import simulator.FauxIdentifier;
+import simulator.Identify;
 import substance.Property;
 
 /**
@@ -12,13 +15,19 @@ import substance.Property;
  */
 public abstract class NodeAnalyzer extends Rule {
 
+    protected Identify identifier = null;
+
     public NodeAnalyzer(InferenceType type) {
         super(type);
+
+        if (this.config.getInferenceLevel() != InferenceConfig.InferenceLevel.GENERIC) {
+            identifier = new FauxIdentifier();
+        }
     }
 
     public abstract Rule gatherAllConstraints(InstructionNode node);
-    public abstract Rule gatherUseConstraints(String input);
-    public abstract Rule gatherDefConstraints(String input);
+    protected abstract Rule gatherUseConstraints(String input);
+    protected abstract Rule gatherDefConstraints(String input);
     public abstract Rule gatherConstraints(Property property);
 
     protected Rule gatherConstraints(InstructionNode node) {

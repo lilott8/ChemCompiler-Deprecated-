@@ -15,6 +15,7 @@ import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.InstructionNode;
+import config.ConfigFactory;
 import phases.Phase;
 import phases.inference.rules.EdgeAnalyzer;
 import phases.inference.rules.InferenceRule;
@@ -60,10 +61,10 @@ public class Inference implements Phase {
     private final Map<String, EdgeAnalyzer> edgeAnalyzers = new HashMap<>();
 
     // This maps each instruction/term to the constraints that it has.
-    private Map<String, Set<String>> constraints = new HashMap<String, Set<String>>();
+    private Map<String, Set<ChemTypes>> constraints = new HashMap<String, Set<ChemTypes>>();
 
     // This is for human readability and testing only.  This will be removed for production.
-    private Map<Tuple<String, String>, Set<String>> testingConstraints = new HashMap<Tuple<String, String>, Set<String>>();
+    private Map<Tuple<String, String>, Set<ChemTypes>> testingConstraints = new HashMap<Tuple<String, String>, Set<ChemTypes>>();
 
     private SatSolver solver = new SatSolver();
     // Control flow graph needed to infer types from.
@@ -98,6 +99,10 @@ public class Inference implements Phase {
             this.addConstraints(this.inferConstraints(StringUtils.upperCase(edge.getClassification()), edge));
         }
 
+        if (ConfigFactory.getConfig().isDebug()) {
+            logger.trace(this.constraints);
+        }
+
         return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
     }
 
@@ -110,7 +115,7 @@ public class Inference implements Phase {
      * @return
      *   A mapping of id to what was inferred.
      */
-    public Map<String, Set<String>> inferConstraints(String name, InstructionNode instruction) {
+    public Map<String, Set<ChemTypes>> inferConstraints(String name, InstructionNode instruction) {
         if(this.basicBlockAnalyzers.containsKey(name)) {
             NodeAnalyzer rule = this.basicBlockAnalyzers.get(name);
             return rule.gatherAllConstraints(instruction).getConstraints();
@@ -120,7 +125,7 @@ public class Inference implements Phase {
         }
         logger.warn("Node Analysis: We don't have a rule for: " + name);
         // return an empty array list for ease.
-        return new HashMap<String, Set<String>>();
+        return new HashMap<String, Set<ChemTypes>>();
     }
 
     /**
@@ -134,7 +139,7 @@ public class Inference implements Phase {
      * @return
      *   A mapping of id to what was inferred.
      */
-    public Map<String, Set<String>> inferConstraints(String name, BasicBlockEdge edge) {
+    public Map<String, Set<ChemTypes>> inferConstraints(String name, BasicBlockEdge edge) {
         if (this.edgeAnalyzers.containsKey(name)) {
             EdgeAnalyzer rule = this.edgeAnalyzers.get(name);
             return rule.gatherConstraints(edge).getConstraints();
@@ -143,7 +148,7 @@ public class Inference implements Phase {
             logger.warn("Edge Analysis: We don't have a rule for: " + name);
         }
 
-        return new HashMap<String, Set<String>>();
+        return new HashMap<String, Set<ChemTypes>>();
     }
 
     /**
@@ -151,16 +156,16 @@ public class Inference implements Phase {
      * @param constraints
      *   HashSet of constraints
      */
-    private void addConstraints(Map<String, Set<String>> constraints) {
+    private void addConstraints(Map<String, Set<ChemTypes>> constraints) {
         // If the constraints are empty, don't do anything
         if(constraints == null || constraints.isEmpty()) {
             return;
         }
 
         // Otherwise add all constraints to the appropriate key.
-        for (Map.Entry<String, Set<String>> entry : constraints.entrySet()) {
+        for (Map.Entry<String, Set<ChemTypes>> entry : constraints.entrySet()) {
             if (!this.constraints.containsKey(entry.getKey())) {
-                this.constraints.put(entry.getKey(), new HashSet<String>());
+                this.constraints.put(entry.getKey(), new HashSet<ChemTypes>());
             }
 
             this.constraints.get(entry.getKey()).addAll(entry.getValue());

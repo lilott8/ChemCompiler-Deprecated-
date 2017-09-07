@@ -1,6 +1,7 @@
 package phases.inference.rules;
 
 import compilation.datastructures.InstructionNode;
+import phases.inference.ChemTypes;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
 
@@ -20,15 +21,23 @@ public class Assign extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        return super.gatherConstraints(node);
+        if (this.config.isDebug()) {
+            logger.trace(node);
+        }
+
+        // Output Symbol        Input Symbol
+        // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
+        this.addConstraints(node.getOutputSymbols().get(0), this.identifier.getReactiveGroup(node.getInputSymbols().get(0)));
+        return this;
+        //return super.gatherConstraints(node);
     }
 
     @Override
     public Rule gatherUseConstraints(String input) {
         if (isNumeric(input)) {
-            this.addConstraint(input, isRealNumber(input) ? REAL : NAT);
+            this.addConstraint(input, isRealNumber(input) ? ChemTypes.REAL : ChemTypes.NAT);
         } else {
-            this.addConstraint(input, MAT);
+            this.addConstraint(input, ChemTypes.MAT);
         }
         return this;
     }

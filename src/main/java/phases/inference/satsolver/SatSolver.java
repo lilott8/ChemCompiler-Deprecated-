@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Map;
 import java.util.Set;
 
+import phases.inference.ChemTypes;
 import phases.inference.satsolver.strategies.SolverStrategy;
 
 /**
@@ -28,7 +29,7 @@ public class SatSolver {
         return this;
     }
 
-    public boolean solveConstraints(Map<String, Set<String>> constraints) {
+    public boolean solveConstraints(Map<String, Set<ChemTypes>> constraints) {
         return this.strategy.solveConstraints(constraints);
     }
 

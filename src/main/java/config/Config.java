@@ -25,7 +25,7 @@ import translators.typesystem.TypeSystemTranslator;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, DatabaseConfig {
+public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, DatabaseConfig, InferenceConfig {
 
     public static final Logger logger = LogManager.getLogger(Config.class);
 
@@ -88,7 +88,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     /**
      * Default for timeout is 10 seconds.
      */
-    private int dbTimeout = 10000;
+    private int dbTimeout = 1000;
     /**
      * Default driver is mariadb jdbc.
      */
@@ -105,6 +105,11 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
      * Simple check to see if we can use the DB or not.
      */
     private final boolean isDBEnabled;
+
+    /**
+     * What level the inference engine is supposed to resolve at.
+     */
+    private InferenceLevel inferenceLevel = InferenceLevel.GENERIC;
 
     /**
      * Build the config object from our command line
@@ -135,13 +140,13 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
                     try {
                         FileUtils.cleanDirectory(new File(this.output));
                     } catch (IOException e) {
-                        logger.fatal(e.getMessage());
+                        logger.fatal(e);
                     }
                 }
             }
 
             // Are we in debug mode
-            this.debug = Boolean.parseBoolean(cmd.getOptionValue("debug", "false"));
+            this.debug = cmd.hasOption("debug");
 
             if (cmd.hasOption("translate")) {
                 this.buildTranslators(Arrays.asList(cmd.getOptionValues("translate")));
@@ -152,6 +157,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
             }
 
             // This is technically redundant, this is checked in the main.
+            // Build the database config.
             if (cmd.hasOption("dbuser") && cmd.hasOption("dbpass")) {
                 this.isDBEnabled = true;
                 this.dbUser = cmd.getOptionValue("dbuser");
@@ -176,6 +182,13 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
                 }
             } else {
                 this.isDBEnabled = false;
+            }
+
+            if (cmd.hasOption("resolve")) {
+                this.inferenceLevel = InferenceLevel.valueOf(StringUtils.upperCase(cmd.getOptionValue("resolve")));
+                if (this.debug) {
+                    logger.info("inference level is at: " + this.inferenceLevel);
+                }
             }
     }
 
@@ -343,5 +356,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     @Override
     public String getDBPassword() {
         return this.dbPassword;
+    }
+
+    @Override
+    public InferenceLevel getInferenceLevel() {
+        return this.inferenceLevel;
     }
 }

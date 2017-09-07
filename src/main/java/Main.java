@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import compilation.Compiler;
 import config.Config;
 import config.ConfigFactory;
-import simulator.Identifier;
+import simulator.FauxIdentifier;
 
 
 public class Main {
@@ -37,11 +37,6 @@ public class Main {
         Compiler compiler = new Compiler(config);
         compiler.compile();
         compiler.runAllOps();
-
-        if (config.isDBEnabled()) {
-            Identifier id = new Identifier();
-            id.mapInputsToChemicals(compiler.getControlFlow());
-        }
     }
 
     private static void initializeEnvironment(final CommandLine cmd) throws Exception{
@@ -122,6 +117,12 @@ public class Main {
                 .desc(desc).type(ArrayList.class).hasArgs().required(false)
                 .argName("translate").build());
 
+        desc = "What level to resolve inference at." +
+                "\n Usage: -r [union|generic]" +
+                "\n default: -r generic";
+        options.addOption(Option.builder("r").longOpt("resolve")
+                .desc(desc).hasArg().required(false).argName("resolve").build());
+
         // Clean output option
         desc = "Clean the output directory. If -clean is set, -o (output) must be set." +
                 "\nUsage: -clean";
@@ -132,7 +133,8 @@ public class Main {
         desc = "What phases to enable." +
                 "\n Usage: -p {list of phases}" +
                 "\n Available phases: " +
-                "\n\t inference: run type inference";
+                "\n\t inference: run type inference" +
+                "\n\t simple: run simple inference";
         options.addOption(Option.builder("p").longOpt("phases")
             .desc(desc).hasArgs().required(false)
             .argName("phases").build());
@@ -177,6 +179,7 @@ public class Main {
                 "\n Usage: -dbextras [extra url get options]";
         options.addOption(Option.builder("dbextras").longOpt("dbextras")
                 .desc(desc).hasArg().argName("dbextras").build());
+
         return options;
     }
 
