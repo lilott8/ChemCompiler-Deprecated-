@@ -10,9 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import config.ConfigFactory;
 import phases.inference.ChemTypes;
@@ -35,14 +37,55 @@ public class Z3Strategy implements SolverStrategy {
 
     @Override
     public boolean solveConstraints(Map<String, Set<ChemTypes>> constraints) {
-        return this.solveWithSMT2(this.generateSMT2(constraints));
+        StringBuilder declares = new StringBuilder();
+        StringBuilder assertBools = new StringBuilder();
+        StringBuilder assertSets = new StringBuilder();
+
+
+
+        // write the declarations to SMT2
+        for (Entry<String, Set<ChemTypes>> constraint : constraints.entrySet()) {
+            String key = StringUtils.replaceAll(constraint.getKey(), " ", "_");
+
+            // Declare all the bools for all the variables (num vars * 68)
+            for (Entry<Integer, ChemTypes> type : ChemTypes.getIntegerChemTypesMap().entrySet()) {
+                declares.append("(declare-const ").append(type).append("_")
+                        .append(key).append(" Bool)").append(System.lineSeparator());
+                assertBools.append("(assert (=").append(type).append("_").append(key);
+                if (constraint.getValue().contains(type.getValue())) {
+                    assertBools.append(" true))");
+                } else {
+                    assertBools.append(" false))");
+                }
+                assertBools.append(System.lineSeparator());
+            }
+
+            // Now do the intersections....
+            for (ChemTypes t : constraint.getValue()) {
+                assertBools.append(2);
+            }
+        }
+        declares.append(assertBools).append(assertSets);
+        logger.info(declares.toString());
+        return solveWithSMT2(declares.toString());
     }
+
+    /**
+     * Rem'd for right now.
+     * @param constraints
+     * @return
+     */
+    // @Override
+    //public boolean solveConstraints(Map<String, Set<ChemTypes>> constraints) {
+    //    return this.solveWithSMT2(this.generateSMT2(constraints));
+    //}
 
     private String generateSMT2(Map<String, Set<ChemTypes>> constraints) {
         StringBuilder sb = new StringBuilder();
         sb.append("(declare-datatypes () ((Type Nat Real Mat)))").append(System.lineSeparator());
         boolean printAssert = true;
 
+        // Iterate the constraints table
         for (Map.Entry<String, Set<ChemTypes>> entry : constraints.entrySet()) {
             String identifier = StringUtils.remove(entry.getKey(), " ");
             if (this.reserved.contains(entry.getKey())) {

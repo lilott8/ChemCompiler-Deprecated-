@@ -62,6 +62,10 @@ public class FauxIdentifier implements Identify {
 
     @Override
     public Set<ChemTypes> getReaction(int rg1, int rg2) {
+        if (this.comboTable.get(rg1, rg2) == null) {
+            //logger.error(rg1 + ", " + rg2 + " yielded a null value");
+            return new HashSet<>();
+        }
         return this.comboTable.get(rg1, rg2);
     }
 

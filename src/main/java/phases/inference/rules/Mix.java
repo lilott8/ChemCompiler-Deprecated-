@@ -53,9 +53,9 @@ public class Mix extends NodeAnalyzer {
 
         // Simulate the mix for the types.
         Set<ChemTypes> unions = new HashSet<>();
-        for(int x = 0; x < groups.size(); x++) {
-            for (int y = 0; y < groups.size(); y++) {
-                unions.addAll(this.identifier.getReaction(x+1, y+1));
+        for(int x = 1; x < groups.size(); x++) {
+            for (int y = x; y < groups.size(); y++) {
+                unions.addAll(this.identifier.getReaction(x, y));
             }
         }
 
