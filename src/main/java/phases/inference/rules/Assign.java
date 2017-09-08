@@ -23,13 +23,18 @@ public class Assign extends NodeAnalyzer {
     public Rule gatherAllConstraints(InstructionNode node) {
         if (this.config.isDebug()) {
             logger.trace(node);
+            logger.trace("Input: " + node.getInputSymbols());
+            logger.trace("Output: " + node.getOutputSymbols());
         }
 
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
         this.addConstraints(node.getOutputSymbols().get(0), this.identifier.getReactiveGroup(node.getInputSymbols().get(0)));
+        logger.trace("Inferred Constraints: " + constraints.get(node.getOutputSymbols().get(0)));
+
+        logger.trace("=======================");
+
         return this;
-        //return super.gatherConstraints(node);
     }
 
     @Override

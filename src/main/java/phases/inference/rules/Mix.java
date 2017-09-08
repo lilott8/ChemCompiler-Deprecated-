@@ -44,34 +44,40 @@ public class Mix extends NodeAnalyzer {
                     groups.add(t);
                 }
             } else {
-                groups = constraints.get(in);
+                groups.addAll(constraints.get(in));
             }
             // The old way
             //this.gatherUseConstraints(in);
         }
-        logger.trace(groups);
+        logger.trace("Groups: " + groups);
 
         // Simulate the mix for the types.
         Set<ChemTypes> unions = new HashSet<>();
         for(int x = 0; x < groups.size(); x++) {
-            for (int y = x; y < groups.size(); y++) {
-                unions = this.identifier.getReaction(x+1, y+1);
+            for (int y = 0; y < groups.size(); y++) {
+                unions.addAll(this.identifier.getReaction(x+1, y+1));
             }
         }
 
+        logger.trace("Unions: " + unions);
+
         // The output of the instruction.
-        for(String out : node.get_def()) {
+        for(String out : node.getOutputSymbols()) {
             // The new way
             this.addConstraints(out, unions);
             // The old way.
             //this.gatherDefConstraints(out);
         }
 
+        logger.trace("Inferred types for " + node.getOutputSymbols().get(0) + ": " + constraints.get(node.getOutputSymbols().get(0)));
+
 
         // Get the properties of the instruction if they exist
         for (Property prop : node.Instruction().getProperties()) {
             this.gatherConstraints(prop);
         }
+
+        logger.trace("=======================");
         return this;
     }
 
