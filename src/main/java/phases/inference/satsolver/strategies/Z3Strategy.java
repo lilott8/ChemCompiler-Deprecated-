@@ -43,7 +43,7 @@ public class Z3Strategy implements SolverStrategy {
 
         for (Entry<Integer, ChemTypes> illegals : ChemTypes.getIntegerChemTypesMap().entrySet()) {
             declares.append("(declare-const ").append(illegals.getValue()).append(" Bool)").append(System.lineSeparator());
-            declares.append(("(assert (= ")).append(illegals.getValue()).append(" true))").append(System.lineSeparator());`
+            declares.append(("(assert (= ")).append(illegals.getValue()).append(" true))").append(System.lineSeparator());
         }
 
         // write the declarations to SMT2
