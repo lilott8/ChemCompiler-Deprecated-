@@ -41,7 +41,10 @@ public class Z3Strategy implements SolverStrategy {
         StringBuilder assertBools = new StringBuilder();
         StringBuilder assertSets = new StringBuilder();
 
-
+        for (Entry<Integer, ChemTypes> illegals : ChemTypes.getIntegerChemTypesMap().entrySet()) {
+            declares.append("(declare-const ").append(illegals.getValue()).append(" Bool)").append(System.lineSeparator());
+            declares.append(("(assert (= ")).append(illegals.getValue()).append(" true))").append(System.lineSeparator());`
+        }
 
         // write the declarations to SMT2
         for (Entry<String, Set<ChemTypes>> constraint : constraints.entrySet()) {
@@ -49,21 +52,31 @@ public class Z3Strategy implements SolverStrategy {
 
             // Declare all the bools for all the variables (num vars * 68)
             for (Entry<Integer, ChemTypes> type : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-                declares.append("(declare-const ").append(type).append("_")
-                        .append(key).append(" Bool)").append(System.lineSeparator());
-                assertBools.append("(assert (=").append(type).append("_").append(key);
-                if (constraint.getValue().contains(type.getValue())) {
-                    assertBools.append(" true))");
-                } else {
-                    assertBools.append(" false))");
-                }
-                assertBools.append(System.lineSeparator());
-            }
+                if (ChemTypes.illegalCombos.containsKey(type.getValue())) {
+                    declares.append("(declare-const ").append(type.getValue()).append("_")
+                            .append(key).append(" Bool)").append(System.lineSeparator());
 
-            // Now do the intersections....
-            for (ChemTypes t : constraint.getValue()) {
-                assertBools.append(2);
+                    assertBools.append("(assert (= ").append(type.getValue()).append("_").append(key);
+                    if (constraint.getValue().contains(type.getValue())) {
+                        assertBools.append(" true))");
+                    } else {
+                        assertBools.append(" false))");
+                    }
+                    assertBools.append(System.lineSeparator());
+                }
             }
+            // Now do the intersections....
+            assertSets.append("(assert ").append(System.lineSeparator()).append("\t(not").append(System.lineSeparator()).append("\t\t(and( ").append(System.lineSeparator());
+            // We need to do !(constraints \cap illegals)
+            for (ChemTypes t : constraint.getValue()) {
+                if (t != ChemTypes.REAL && t != ChemTypes.NAT) {
+                    for (ChemTypes illegal : ChemTypes.illegalCombos.get(t)) {
+                        assertSets.append("\t\t\tand(").append(t).append("_").append(key).append(" ").append(illegal).append(")").append(System.lineSeparator());
+                    }
+                    //assertBools.append(2);
+                }
+            }
+            assertSets.append("\t\t)").append(System.lineSeparator()).append("\t)").append(System.lineSeparator()).append(")").append(System.lineSeparator());
         }
         declares.append(assertBools).append(assertSets);
         logger.info(declares.toString());
