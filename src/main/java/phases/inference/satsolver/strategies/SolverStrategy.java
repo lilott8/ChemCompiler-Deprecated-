@@ -1,9 +1,8 @@
 package phases.inference.satsolver.strategies;
 
 import java.util.Map;
-import java.util.Set;
 
-import phases.inference.ChemTypes;
+import phases.inference.Constraint;
 
 /**
  * @created: 8/24/17
@@ -12,5 +11,5 @@ import phases.inference.ChemTypes;
  */
 public interface SolverStrategy {
 
-    boolean solveConstraints(Map<String, Set<ChemTypes>> constraints);
+    boolean solveConstraints(Map<String, Constraint> constraints);
 }

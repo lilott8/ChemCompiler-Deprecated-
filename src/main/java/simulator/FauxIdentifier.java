@@ -48,7 +48,8 @@ public class FauxIdentifier implements Identify {
     public Set<ChemTypes> getReactiveGroup(String name) {
         Random random = new Random();
         Set<ChemTypes> types = new HashSet<>();
-        int numRGs = random.nextInt(3 - 1) + 1;
+        // pick one or two reactive groups
+        int numRGs = random.nextInt(2);
         for (int x = 0; x < numRGs; x++) {
             int t = random.nextInt(this.reactiveGroupIds.size());
             // We can't have 99, right now.

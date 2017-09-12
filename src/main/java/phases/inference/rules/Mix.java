@@ -34,41 +34,30 @@ public class Mix extends NodeAnalyzer {
         // This is the input to the instruction
         Set<ChemTypes> groups = new HashSet<>();
         for(String in: node.getInputSymbols()) {
-            //logger.trace("Uses: " + in);
-            // Use the new way!
-            if (!constraints.containsKey(in)) {
+            if (!this.constraints.containsKey(in)) {
                 for (ChemTypes t : this.identifier.getReactiveGroup(in)) {
                     this.addConstraint(in, t);
                     groups.add(t);
                 }
             } else {
-                groups.addAll(constraints.get(in));
+                groups.addAll(this.constraints.get(in).getConstraints());
             }
-            // The old way
-            //this.gatherUseConstraints(in);
         }
         //logger.trace("Groups: " + groups);
 
         // Simulate the mix for the types.
         Set<ChemTypes> unions = new HashSet<>();
-        for(int x = 1; x < groups.size(); x++) {
-            for (int y = x; y < groups.size(); y++) {
-                unions.addAll(this.identifier.getReaction(x, y));
-            }
-        }
-
-        //logger.trace("Unions: " + unions);
+        unions = groups;
+        //for(int x = 1; x < groups.size(); x++) {
+        //    for (int y = x; y < groups.size(); y++) {
+        //        unions.addAll(this.identifier.getReaction(x, y));
+        //    }
+        //}
 
         // The output of the instruction.
         for(String out : node.getOutputSymbols()) {
-            // The new way
             this.addConstraints(out, unions);
-            // The old way.
-            //this.gatherDefConstraints(out);
         }
-
-        //logger.trace("Inferred types for " + node.getOutputSymbols().get(0) + ": " + constraints.get(node.getOutputSymbols().get(0)));
-
 
         // Get the properties of the instruction if they exist
         for (Property prop : node.Instruction().getProperties()) {

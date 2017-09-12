@@ -235,6 +235,13 @@ public enum ChemTypes {
         put(WATER_AND_AQUEOUS_SOLUTIONS, new HashSet<ChemTypes>() {{add(ACIDS_STRONG_NON_OXIDIZING); add(ARYL_HALIDES); add(PEROXIDES_ORGANIC); add(ANHYDRIDES); add(SULFIDES_ORGANIC); add(KETONES); add(EPOXIDES); add(ESTERS_SULFATE_ESTERS_PHOSPHATE_ESTERS_THIOPHOSPHATE_ESTERS_AND_BORATE_ESTERS); add(ACIDS_WEAK); add(ALDEHYDES); add(SALTS_BASIC); add(ACIDS_CARBOXYLIC); add(CARBONATE_SALTS); add(METALS_ALKALI_VERY_ACTIVE); add(AZO_DIAZO_AZIDO_HYDRAZINE_AND_AZIDE_COMPOUNDS); add(DIAZONIUM_SALTS); add(HYDROCARBONS_ALIPHATIC_SATURATED); add(ACIDS_STRONG_OXIDIZING); add(ACRYLATES_AND_ACRYLIC_ACIDS); add(CYANIDES_INORGANIC); add(ALKYNES_WITH_ACETYLENIC_HYDROGEN); add(AMIDES_AND_IMIDES); add(BASES_STRONG); add(THIOCARBAMATE_ESTERS_AND_SALTS_DITHIOCARBAMATE_ESTERS_AND_SALTS); add(ISOCYANATES_AND_ISOTHIOCYANATES); add(HALOGENATED_ORGANIC_COMPOUNDS); add(METALS_ELEMENTAL_AND_POWDER_ACTIVE); add(ETHERS); add(CARBAMATES); add(ALCOHOLS_AND_POLYOLS); }});
     }};
 
+    public static Set<ChemTypes> getNums() {
+        return new HashSet<ChemTypes>(){{
+            add(REAL);
+            add(NAT);
+        }};
+    }
+
     private int value;
     ChemTypes(int value) {
         this.value = value;
@@ -250,5 +257,9 @@ public enum ChemTypes {
 
     public static Map<Integer, ChemTypes> getIntegerChemTypesMap() {
         return integerChemTypesMap;
+    }
+
+    public static boolean isNumber(ChemTypes t) {
+        return (t == NAT || t == REAL);
     }
 }

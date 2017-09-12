@@ -7,7 +7,6 @@ import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,7 +60,7 @@ public class Inference implements Phase {
     private final Map<String, EdgeAnalyzer> edgeAnalyzers = new HashMap<>();
 
     // This maps each instruction/term to the constraints that it has.
-    private Map<String, Set<ChemTypes>> constraints = new HashMap<String, Set<ChemTypes>>();
+    private Map<String, Constraint> constraints = new HashMap<>();
 
     // This is for human readability and testing only.  This will be removed for production.
     private Map<Tuple<String, String>, Set<ChemTypes>> testingConstraints = new HashMap<Tuple<String, String>, Set<ChemTypes>>();
@@ -100,7 +99,7 @@ public class Inference implements Phase {
         }
 
         if (ConfigFactory.getConfig().isDebug()) {
-            logger.trace(this.constraints);
+            //logger.trace(this.constraints);
         }
 
         return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
@@ -115,7 +114,7 @@ public class Inference implements Phase {
      * @return
      *   A mapping of id to what was inferred.
      */
-    public Map<String, Set<ChemTypes>> inferConstraints(String name, InstructionNode instruction) {
+    public Map<String, Constraint> inferConstraints(String name, InstructionNode instruction) {
         if(this.basicBlockAnalyzers.containsKey(name)) {
             NodeAnalyzer rule = this.basicBlockAnalyzers.get(name);
             return rule.gatherAllConstraints(instruction).getConstraints();
@@ -125,7 +124,7 @@ public class Inference implements Phase {
         }
         logger.warn("Node Analysis: We don't have a rule for: " + name);
         // return an empty array list for ease.
-        return new HashMap<String, Set<ChemTypes>>();
+        return new HashMap<>();
     }
 
     /**
@@ -139,7 +138,7 @@ public class Inference implements Phase {
      * @return
      *   A mapping of id to what was inferred.
      */
-    public Map<String, Set<ChemTypes>> inferConstraints(String name, BasicBlockEdge edge) {
+    public Map<String, Constraint> inferConstraints(String name, BasicBlockEdge edge) {
         if (this.edgeAnalyzers.containsKey(name)) {
             EdgeAnalyzer rule = this.edgeAnalyzers.get(name);
             return rule.gatherConstraints(edge).getConstraints();
@@ -148,7 +147,7 @@ public class Inference implements Phase {
             logger.warn("Edge Analysis: We don't have a rule for: " + name);
         }
 
-        return new HashMap<String, Set<ChemTypes>>();
+        return new HashMap<>();
     }
 
     /**
@@ -156,19 +155,18 @@ public class Inference implements Phase {
      * @param constraints
      *   HashSet of constraints
      */
-    private void addConstraints(Map<String, Set<ChemTypes>> constraints) {
+    private void addConstraints(Map<String, Constraint> constraints) {
         // If the constraints are empty, don't do anything
         if(constraints == null || constraints.isEmpty()) {
             return;
         }
 
         // Otherwise add all constraints to the appropriate key.
-        for (Map.Entry<String, Set<ChemTypes>> entry : constraints.entrySet()) {
+        for (Map.Entry<String, Constraint> entry : constraints.entrySet()) {
             if (!this.constraints.containsKey(entry.getKey())) {
-                this.constraints.put(entry.getKey(), new HashSet<ChemTypes>());
+                this.constraints.put(entry.getKey(), entry.getValue());
             }
-
-            this.constraints.get(entry.getKey()).addAll(entry.getValue());
+            this.constraints.put(entry.getKey(), entry.getValue());
         }
     }
 

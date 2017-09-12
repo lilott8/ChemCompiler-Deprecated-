@@ -9,12 +9,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import compilation.datastructures.InstructionNode;
 import config.ConfigFactory;
 import config.InferenceConfig;
 import phases.inference.ChemTypes;
+import phases.inference.SMTConstraint;
 import phases.inference.Inference.InferenceType;
-import substance.Property;
+import phases.inference.Constraint;
 
 /**
  * @created: 7/31/17
@@ -27,7 +27,7 @@ public abstract class Rule {
 
     protected final Logger logger;
 
-    public final String CONST = "const";
+    public final String CONST = "constant";
 
     public static final Set<String> operands = new HashSet<String>(){{
         add("==");
@@ -48,7 +48,7 @@ public abstract class Rule {
     protected InferenceConfig config = ConfigFactory.getConfig();
 
     // This implicitly allows us to do union sets with types
-    protected static Map<String, Set<ChemTypes>> constraints = new HashMap<>();
+    protected Map<String, Constraint> constraints = new HashMap<>();
 
     protected Rule(InferenceType type) {
         this.type = type;
@@ -59,7 +59,7 @@ public abstract class Rule {
         logger = LogManager.getLogger(clazz);
     }
 
-    public Map<String, Set<ChemTypes>> getConstraints() {
+    public Map<String, Constraint> getConstraints() {
         return constraints;
     }
 
@@ -69,16 +69,16 @@ public abstract class Rule {
 
     protected void addConstraints(String key, Set<ChemTypes> value) {
         if (!constraints.containsKey(key)) {
-            constraints.put(key, new HashSet<>());
+            constraints.put(key, new SMTConstraint(key));
         }
-        constraints.get(key).addAll(value);
+        constraints.get(key).addConstraints(value);
     }
 
     protected void addConstraint(String key, ChemTypes value) {
         if (!constraints.containsKey(key)) {
-            constraints.put(key, new HashSet<>());
+            constraints.put(key, new SMTConstraint(key));
         }
-        constraints.get(key).add(value);
+        constraints.get(key).addConstraint(value);
     }
 
     public static boolean isNumeric(String value) {

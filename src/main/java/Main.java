@@ -45,7 +45,7 @@ public class Main {
         compiler.runAllOps();
     }
 
-    private static void initializeEnvironment(final CommandLine cmd) throws Exception{
+    private static void initializeEnvironment(final CommandLine cmd) throws Exception {
         // see if we asked for help...
         if(cmd.hasOption("help")) {
             HelpFormatter hf = new HelpFormatter();
