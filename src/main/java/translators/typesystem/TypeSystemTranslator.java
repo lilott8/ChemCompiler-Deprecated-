@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import chemicaiInteractions.ChemicalResolution;
+import chemicalInteractions.ChemicalResolution;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.InstructionEdge;

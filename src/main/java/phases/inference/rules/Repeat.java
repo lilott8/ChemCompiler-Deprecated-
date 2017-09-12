@@ -3,6 +3,7 @@ package phases.inference.rules;
 import org.apache.commons.lang3.StringUtils;
 
 import compilation.datastructures.basicblock.BasicBlockEdge;
+import phases.inference.ChemTypes;
 import phases.inference.Inference.InferenceType;
 
 /**
@@ -34,9 +35,9 @@ public class Repeat extends EdgeAnalyzer {
                 if (isNumeric(edge.getCondition())) {
                     // TODO: convert this number to word.
                     if (isNaturalNumber(edge.getCondition())) {
-                        this.addConstraint(DEFAULT_ID + "_" + getAndIncrement(), NAT);
+                        this.addConstraint(DEFAULT_ID + "_" + getAndIncrement(), ChemTypes.NAT);
                     } else {
-                        this.addConstraint(DEFAULT_ID + "_" + getAndIncrement(), REAL);
+                        this.addConstraint(DEFAULT_ID + "_" + getAndIncrement(), ChemTypes.REAL);
                     }
                 }
             } else {

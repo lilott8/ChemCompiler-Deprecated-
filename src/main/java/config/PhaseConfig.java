@@ -7,7 +7,7 @@ import java.util.Set;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public interface PhaseConfig {
+public interface PhaseConfig extends CommonConfig {
     Set<String> getAllPhases();
     boolean phaseEnabled(String phase);
     boolean phasesEnabled();

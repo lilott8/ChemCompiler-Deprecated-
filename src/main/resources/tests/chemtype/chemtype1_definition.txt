@@ -1,0 +1,13 @@
+
+# Output Symbol             Input Symbol
+Allyl Ethyl Ether = 50 of C=CCOC1=CC=CC=C1
+Cycloheptatriene = 50 of C1C=CC=CC=C1
+Cycloheptatriene2 = 50 of C1C=CC=CC=C1
+Sulpheric Acid = 50 of OS(=O)(=O)O
+Chlorotrifluormethane = 50 of C(F)(F)(F)Cl
+Ammonium Dichromate = 50 of [NH4+].[NH4+].[O-][Cr](=O)(=O)O[Cr](=O)(=O)[O-]
+
+a = Mix Allyly Ethyl Ether with Cycloheptatriene for 50 s
+b = Mix a with Sulpheric Acid for 30 s
+c = Mix b with Chlorotrifluormethane for 45 s
+d = Mix Cycloheptatriene2 with Ammonium Dichromate

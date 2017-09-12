@@ -1,11 +1,10 @@
-package inference;
+package utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import config.InputConfig;
 import config.PhaseConfig;
 
 /**
@@ -13,7 +12,7 @@ import config.PhaseConfig;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class TestConfig implements InputConfig, PhaseConfig {
+public class TestConfig implements PhaseConfig {
 
     List<String> files = new ArrayList<>();
     Set<String> phases = new HashSet<>();
@@ -41,5 +40,20 @@ public class TestConfig implements InputConfig, PhaseConfig {
     @Override
     public boolean phasesEnabled() {
         return !this.phases.isEmpty();
+    }
+
+    @Override
+    public String getOutputDir() {
+        return null;
+    }
+
+    @Override
+    public boolean clean() {
+        return false;
+    }
+
+    @Override
+    public boolean isDebug() {
+        return false;
     }
 }

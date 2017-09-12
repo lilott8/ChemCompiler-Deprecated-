@@ -1,42 +1,40 @@
 package phases.inference.rules;
 
 import compilation.datastructures.InstructionNode;
-import phases.inference.Inference.InferenceType;
+import phases.inference.Inference;
 import substance.Property;
 
-import static phases.inference.ChemTypes.MAT;
-
 /**
- * @created: 7/27/17
+ * @created: 9/5/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-@InferenceRule(ruleName = "split", ruleType = "instruction")
-public class Split extends NodeAnalyzer {
+@InferenceRule(ruleName = "dispense", ruleType = "term")
+public class Dispense extends NodeAnalyzer {
 
-    public Split(InferenceType type) {
+    NodeAnalyzer assign = new Assign(Inference.InferenceType.TERM);
+
+    public Dispense(Inference.InferenceType type) {
         super(type);
     }
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        return super.gatherConstraints(node);
+        return this.assign.gatherAllConstraints(node);
     }
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, MAT);
-        return this;
+        return this.assign.gatherUseConstraints(input);
     }
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        this.addConstraint(input, MAT);
-        return this;
+        return this.assign.gatherDefConstraints(input);
     }
 
     @Override
     public Rule gatherConstraints(Property property) {
-        return this;
+        return this.gatherConstraints(property);
     }
 }

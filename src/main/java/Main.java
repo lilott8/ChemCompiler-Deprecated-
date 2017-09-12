@@ -8,20 +8,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
-import compilation.datastructures.basicblock.BasicBlock;
-import compilation.datastructures.cfg.CFG;
-import compilation.datastructures.dominatortree.DominatorTree;
-import compilation.datastructures.dominatortree.PostDominatorTree;
 import compilation.Compiler;
 import config.Config;
 import config.ConfigFactory;
-import config.InputConfig;
-import phases.PhaseFacade;
-import shared.Facade;
-import translators.TranslatorFacade;
-import manager.Benchtop;
-import parsing.BioScript.BenchtopParser;
+import phases.inference.ChemTypes;
+import simulator.FauxIdentifier;
 
 
 public class Main {
@@ -48,7 +45,7 @@ public class Main {
         compiler.runAllOps();
     }
 
-    private static void initializeEnvironment(final CommandLine cmd) throws Exception{
+    private static void initializeEnvironment(final CommandLine cmd) throws Exception {
         // see if we asked for help...
         if(cmd.hasOption("help")) {
             HelpFormatter hf = new HelpFormatter();
@@ -68,6 +65,10 @@ public class Main {
 
         if ((cmd.hasOption("clean") && !cmd.hasOption("output"))) {
             throw new Exception("Attempting to clean output directory, but no directory supplied.");
+        }
+
+        if (!validateDatabase(cmd)) {
+            throw new Exception("We cannot infer the connection data for the database.");
         }
 
         // initialize our config object.
@@ -122,6 +123,12 @@ public class Main {
                 .desc(desc).type(ArrayList.class).hasArgs().required(false)
                 .argName("translate").build());
 
+        desc = "What level to resolve inference at." +
+                "\n Usage: -r [union|generic]" +
+                "\n default: -r generic";
+        options.addOption(Option.builder("r").longOpt("resolve")
+                .desc(desc).hasArg().required(false).argName("resolve").build());
+
         // Clean output option
         desc = "Clean the output directory. If -clean is set, -o (output) must be set." +
                 "\nUsage: -clean";
@@ -132,10 +139,86 @@ public class Main {
         desc = "What phases to enable." +
                 "\n Usage: -p {list of phases}" +
                 "\n Available phases: " +
-                "\n\t inference: run type inference";
+                "\n\t inference: run type inference" +
+                "\n\t simple: run simple inference";
         options.addOption(Option.builder("p").longOpt("phases")
             .desc(desc).hasArgs().required(false)
             .argName("phases").build());
+
+        // Database name
+        desc = "Database name." +
+                "\nUsage: -dbname [name]";
+        options.addOption(Option.builder("dbname").longOpt("dbname")
+                .desc(desc).hasArg().argName("dbname").build());
+        // Database user name
+        desc = "Database user name." +
+                "\nUsage -dbuser [name]";
+        options.addOption(Option.builder("dbuser").longOpt("dbuser")
+                .desc(desc).hasArg().argName("dbuser").build());
+        // Database password
+        desc = "Database password." +
+                "\nUsage -dbpass [pass]";
+        options.addOption(Option.builder("dbpass").longOpt("dbpass")
+                .desc(desc).hasArg().argName("dbpass").build());
+        // Database port
+        desc = "Database port, default: 3306." +
+                "\nUsage -dbport [port]";
+        options.addOption(Option.builder("dbport").longOpt("dbport")
+                .desc(desc).hasArg().argName("dbport").build());
+        // Database address
+        desc = "Database address, default localhost." +
+                "\nUsage -dbaddr [addr]";
+        options.addOption(Option.builder("dbaddr").longOpt("dbaddr")
+                .desc(desc).hasArg().argName("dbaddr").build());
+        // Database driver, e.g. org.mariadb.jdbc.MySQLDataSource
+        desc = "Database driver default org.mariadb.jdbc.MySQLDataSource.  " +
+                "\nUsage: -dbdriver [driver]";
+        options.addOption(Option.builder("dbdriver").longOpt("dbdriver")
+                .desc(desc).hasArg().argName("dbdriver").build());
+        // Database timeout
+        desc = "Database timeout, default 10 seconds." +
+                "\nUsage: -dbtimeout [time]";
+        options.addOption(Option.builder("dbtimeout").longOpt("dbtimeout")
+                .desc(desc).hasArg().argName("dbtimeout").build());
+
+        desc = "Database extras, default nothing." +
+                "\n Usage: -dbextras [extra url get options]";
+        options.addOption(Option.builder("dbextras").longOpt("dbextras")
+                .desc(desc).hasArg().argName("dbextras").build());
+
         return options;
+    }
+
+    private static boolean validateDatabase(CommandLine cmd) {
+        if (cmd.hasOption("dbport") || cmd.hasOption("dbaddr") || cmd.hasOption("dbname")) {
+            // We only care if we have db flags and no user/pass to accommodate the connection.
+            return cmd.hasOption("dbuser") && cmd.hasOption("dbpass");
+        }
+        // If we have no database flags, we can return true.
+        return true;
+    }
+
+    public static void main2() {
+        logger.fatal("This was used to simulate the illegal combinations manifest in the EPAManager class");
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        List<ChemTypes> chems = new ArrayList<>(ChemTypes.getIntegerChemTypesMap().values());
+        int lower = 0;
+        int upper = chems.size()-1;
+
+        for(Map.Entry<Integer, ChemTypes> t : ChemTypes.getIntegerChemTypesMap().entrySet()) {
+            sb.append("put(").append(t.getValue()).append(", new HashSet<ChemTypes>() {{");
+            // We can select any amount from 0 to all of the things.
+            int iterateTo = random.nextInt(upper - (random.nextInt(upper-lower)+lower) + lower);
+            Set<ChemTypes> toAdd = new HashSet<>();
+            for (int x = 0; x < iterateTo; x++) {
+                int append = random.nextInt(upper - (random.nextInt(upper-lower)+lower) + lower);
+                toAdd.add(chems.get(append));
+            }
+            for (ChemTypes x : toAdd) {
+                sb.append("add(").append(x).append(")").append("; ");
+            }
+            sb.append("}};);").append(System.lineSeparator());
+        }
     }
 }

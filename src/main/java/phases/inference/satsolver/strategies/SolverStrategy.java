@@ -1,7 +1,8 @@
 package phases.inference.satsolver.strategies;
 
 import java.util.Map;
-import java.util.Set;
+
+import phases.inference.Constraint;
 
 /**
  * @created: 8/24/17
@@ -10,5 +11,5 @@ import java.util.Set;
  */
 public interface SolverStrategy {
 
-    boolean solveConstraints(Map<String, Set<String>> constraints);
+    boolean solveConstraints(Map<String, Constraint> constraints);
 }

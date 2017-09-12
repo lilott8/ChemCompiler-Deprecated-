@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import chemicaiInteractions.ChemicalResolution;
+import chemicalInteractions.ChemicalResolution;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.InstructionNode;
@@ -185,9 +185,9 @@ public class CFG implements Serializable {
             resolution.setIsLiteral(false);
         }
 
-       // for(Substance v : variable.getSubstance().values()) {
-       //     resolution.addReference(ResolveSubstance(v));
-       // }
+        // for(Substance v : variable.getSubstance().values()) {
+        //     resolution.addReference(ResolveSubstance(v));
+        // }
         return resolution;
     }
 

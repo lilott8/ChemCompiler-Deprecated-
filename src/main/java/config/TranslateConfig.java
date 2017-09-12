@@ -9,7 +9,7 @@ import translators.Translator;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public interface TranslateConfig {
+public interface TranslateConfig extends CommonConfig {
 
     String MFSIM = "mfsim";
     String TYPESYSTEM = "typesystem";

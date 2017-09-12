@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import chemicaiInteractions.ChemicalResolution;
+import chemicalInteractions.ChemicalResolution;
 
 /**
  * Created by chriscurtis on 10/17/16.

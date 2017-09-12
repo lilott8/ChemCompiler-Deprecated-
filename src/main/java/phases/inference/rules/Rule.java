@@ -9,9 +9,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import compilation.datastructures.InstructionNode;
+import config.ConfigFactory;
+import config.InferenceConfig;
+import phases.inference.ChemTypes;
+import phases.inference.SMTConstraint;
 import phases.inference.Inference.InferenceType;
-import substance.Property;
+import phases.inference.Constraint;
 
 /**
  * @created: 7/31/17
@@ -22,13 +25,9 @@ public abstract class Rule {
 
     protected InferenceType type;
 
-    public static final Logger logger = LogManager.getLogger(Rule.class);
+    protected final Logger logger;
 
-    public static final String MAT = "mat";
-    public static final String REAL = "real";
-    public static final String NAT = "nat";
-    public static final String CONST = "const";
-    public static final String UNKNOWN = "unknown";
+    public final String CONST = "constant";
 
     public static final Set<String> operands = new HashSet<String>(){{
         add("==");
@@ -46,14 +45,21 @@ public abstract class Rule {
         add("NOT");
     }};
 
-    // This implicitly allows us to do union sets with MATs
-    protected Map<String, Set<String>> constraints = new HashMap<>();
+    protected InferenceConfig config = ConfigFactory.getConfig();
+
+    // This implicitly allows us to do union sets with types
+    protected Map<String, Constraint> constraints = new HashMap<>();
 
     protected Rule(InferenceType type) {
         this.type = type;
+        this.logger = LogManager.getLogger(Rule.class);
+    }
+    protected Rule(InferenceType type, Class<? extends Rule> clazz) {
+        this.type = type;
+        logger = LogManager.getLogger(clazz);
     }
 
-    public Map<String, Set<String>> getConstraints() {
+    public Map<String, Constraint> getConstraints() {
         return constraints;
     }
 
@@ -61,18 +67,18 @@ public abstract class Rule {
         return type;
     }
 
-    protected void addConstraints(String key, Set<String> value) {
-        if (!this.constraints.containsKey(key)) {
-            this.constraints.put(key, new HashSet<>());
+    protected void addConstraints(String key, Set<ChemTypes> value) {
+        if (!constraints.containsKey(key)) {
+            constraints.put(key, new SMTConstraint(key));
         }
-        this.constraints.get(key).addAll(value);
+        constraints.get(key).addConstraints(value);
     }
 
-    protected void addConstraint(String key, String value) {
-        if (!this.constraints.containsKey(key)) {
-            this.constraints.put(key, new HashSet<>());
+    protected void addConstraint(String key, ChemTypes value) {
+        if (!constraints.containsKey(key)) {
+            constraints.put(key, new SMTConstraint(key));
         }
-        this.constraints.get(key).add(value);
+        constraints.get(key).addConstraint(value);
     }
 
     public static boolean isNumeric(String value) {

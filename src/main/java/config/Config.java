@@ -25,9 +25,9 @@ import translators.typesystem.TypeSystemTranslator;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Config implements DebugConfig, InputConfig, OutputConfig, AlgorithmConfig, TranslateConfig, PhaseConfig {
+public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, DatabaseConfig, InferenceConfig {
 
-    public final Logger logger = LogManager.getLogger(Config.class);
+    public static final Logger logger = LogManager.getLogger(Config.class);
 
     /**
      * Is the compiler in debug mode.
@@ -70,6 +70,48 @@ public class Config implements DebugConfig, InputConfig, OutputConfig, Algorithm
     private Set<String> phases = new HashSet<String>();
 
     /**
+     * No default password
+     */
+    private String dbPassword;
+    /**
+     * No default username.
+     */
+    private String dbUser;
+    /**
+     * Default for address is localhost.
+     */
+    private String dbAddr = "localhost";
+    /**
+     * Default for port is 3306.
+     */
+    private int dbPort = 3306;
+    /**
+     * Default for timeout is 10 seconds.
+     */
+    private int dbTimeout = 1000;
+    /**
+     * Default driver is mariadb jdbc.
+     */
+    private String dbDriver = "org.mariadb.jdbc.MySQLDataSource";
+    /**
+     * Default name is empty
+     */
+    private String dbName = "";
+    /**
+     * Extra arguments needed to pass to the database.
+     */
+    private String dbExtras = "";
+    /**
+     * Simple check to see if we can use the DB or not.
+     */
+    private final boolean isDBEnabled;
+
+    /**
+     * What level the inference engine is supposed to resolve at.
+     */
+    private InferenceLevel inferenceLevel = InferenceLevel.GENERIC;
+
+    /**
      * Build the config object from our command line
      * This method must match that in the main.
      * @param cmd
@@ -98,13 +140,13 @@ public class Config implements DebugConfig, InputConfig, OutputConfig, Algorithm
                     try {
                         FileUtils.cleanDirectory(new File(this.output));
                     } catch (IOException e) {
-                        logger.fatal(e.getMessage());
+                        logger.fatal(e);
                     }
                 }
             }
 
             // Are we in debug mode
-            this.debug = Boolean.parseBoolean(cmd.getOptionValue("debug", "false"));
+            this.debug = cmd.hasOption("debug");
 
             if (cmd.hasOption("translate")) {
                 this.buildTranslators(Arrays.asList(cmd.getOptionValues("translate")));
@@ -112,6 +154,41 @@ public class Config implements DebugConfig, InputConfig, OutputConfig, Algorithm
 
             if (cmd.hasOption("phases")) {
                 this.phases.addAll(Arrays.asList(cmd.getOptionValues("phases")));
+            }
+
+            // This is technically redundant, this is checked in the main.
+            // Build the database config.
+            if (cmd.hasOption("dbuser") && cmd.hasOption("dbpass")) {
+                this.isDBEnabled = true;
+                this.dbUser = cmd.getOptionValue("dbuser");
+                this.dbPassword = cmd.getOptionValue("dbpass");
+                if (cmd.hasOption("dbport")) {
+                    this.dbPort = Integer.parseInt(cmd.getOptionValue("dbport"));
+                }
+                if (cmd.hasOption("dbaddr")) {
+                    this.dbAddr = cmd.getOptionValue("dbaddr");
+                }
+                if (cmd.hasOption("dbdriver")) {
+                    this.dbDriver = cmd.getOptionValue("dbdriver");
+                }
+                if (cmd.hasOption("dbtimeout")) {
+                    this.dbTimeout = Integer.parseInt(cmd.getOptionValue("dbtimeout"));
+                }
+                if (cmd.hasOption("dbname")) {
+                    this.dbName = cmd.getOptionValue("dbname");
+                }
+                if (cmd.hasOption("dbextras")) {
+                    this.dbExtras = cmd.getOptionValue("dbextras");
+                }
+            } else {
+                this.isDBEnabled = false;
+            }
+
+            if (cmd.hasOption("resolve")) {
+                this.inferenceLevel = InferenceLevel.valueOf(StringUtils.upperCase(cmd.getOptionValue("resolve")));
+                if (this.debug) {
+                    logger.info("inference level is at: " + this.inferenceLevel);
+                }
             }
     }
 
@@ -224,4 +301,65 @@ public class Config implements DebugConfig, InputConfig, OutputConfig, Algorithm
         return this.phases.contains(name);
     }
 
+
+    @Override
+    public String getConnectionString() {
+        StringBuilder sb = new StringBuilder("jdbc:mysql://");
+        sb.append(this.dbAddr).append(":").append(this.dbPort);
+        sb.append("/").append(this.dbName);
+        if (!StringUtils.isEmpty(this.dbExtras)) {
+            sb.append(this.dbExtras);
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String getDBName() {
+        return this.dbName;
+    }
+
+    @Override
+    public String getDBAddr() {
+        return this.dbAddr;
+    }
+
+    @Override
+    public String getDBUser() {
+        return this.dbUser;
+    }
+
+    @Override
+    public int getDBPort() {
+        return this.dbPort;
+    }
+
+    @Override
+    public int getTimeout() {
+        return this.dbTimeout;
+    }
+
+    @Override
+    public String getDBDriver() {
+        return this.dbDriver;
+    }
+
+    @Override
+    public boolean isDBEnabled() {
+        return this.isDBEnabled;
+    }
+
+    @Override
+    public String getDBExtras() {
+        return this.dbExtras;
+    }
+
+    @Override
+    public String getDBPassword() {
+        return this.dbPassword;
+    }
+
+    @Override
+    public InferenceLevel getInferenceLevel() {
+        return this.inferenceLevel;
+    }
 }

@@ -1,13 +1,5 @@
 package phases.inference;
 
-import com.microsoft.z3.BoolExpr;
-import com.microsoft.z3.Context;
-import com.microsoft.z3.Expr;
-import com.microsoft.z3.FuncDecl;
-import com.microsoft.z3.Goal;
-import com.microsoft.z3.Sort;
-import com.microsoft.z3.Symbol;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +7,6 @@ import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,11 +14,11 @@ import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.InstructionNode;
+import config.ConfigFactory;
 import phases.Phase;
 import phases.inference.rules.EdgeAnalyzer;
 import phases.inference.rules.InferenceRule;
 import phases.inference.rules.NodeAnalyzer;
-import phases.inference.rules.Rule;
 import phases.inference.satsolver.SatSolver;
 import phases.inference.satsolver.strategies.Z3Strategy;
 import shared.Tuple;
@@ -69,10 +60,10 @@ public class Inference implements Phase {
     private final Map<String, EdgeAnalyzer> edgeAnalyzers = new HashMap<>();
 
     // This maps each instruction/term to the constraints that it has.
-    private Map<String, Set<String>> constraints = new HashMap<String, Set<String>>();
+    private Map<String, Constraint> constraints = new HashMap<>();
 
     // This is for human readability and testing only.  This will be removed for production.
-    private Map<Tuple<String, String>, Set<String>> testingConstraints = new HashMap<Tuple<String, String>, Set<String>>();
+    private Map<Tuple<String, String>, Set<ChemTypes>> testingConstraints = new HashMap<Tuple<String, String>, Set<ChemTypes>>();
 
     private SatSolver solver = new SatSolver();
     // Control flow graph needed to infer types from.
@@ -81,37 +72,6 @@ public class Inference implements Phase {
     // Default Constructor
     public Inference() {
         this.loadRules();
-    }
-
-    private void test() {
-        logger.trace("We are debugging things, remove the inference.test method.");
-
-        Context context = new Context();
-
-        Symbol fname = context.mkSymbol("f");
-        Symbol x = context.mkSymbol("x");
-        Symbol y = context.mkSymbol("y");
-
-        Sort bs = context.mkBoolSort();
-
-        Sort[] domain = {bs, bs};
-        // Take in two booleans, return a boolean
-        FuncDecl f = context.mkFuncDecl(fname, domain, bs);
-        // This is an application of a function.
-        Expr fapp = context.mkApp(f, context.mkConst(x, bs), context.mkConst(y, bs));
-
-        Expr[] fargs2 = {context.mkFreshConst("cp", bs)};
-        Sort[] domain2 = {bs};
-        // Create a new function and apply it
-        Expr fapp2 = context.mkApp(context.mkFreshFuncDecl("fp", domain2, bs), fargs2);
-
-        BoolExpr trivial_eq = context.mkEq(fapp, fapp);
-        BoolExpr nontrivial_eq = context.mkEq(fapp, fapp2);
-
-        Goal g = context.mkGoal(true, false, false);
-        g.add(trivial_eq);
-        g.add(nontrivial_eq);
-        logger.warn("Goal: " + g);
     }
 
     /**
@@ -138,6 +98,10 @@ public class Inference implements Phase {
             this.addConstraints(this.inferConstraints(StringUtils.upperCase(edge.getClassification()), edge));
         }
 
+        if (ConfigFactory.getConfig().isDebug()) {
+            //logger.trace(this.constraints);
+        }
+
         return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
     }
 
@@ -150,8 +114,7 @@ public class Inference implements Phase {
      * @return
      *   A mapping of id to what was inferred.
      */
-    public Map<String, Set<String>> inferConstraints(String name, InstructionNode instruction) {
-        logger.trace(instruction);
+    public Map<String, Constraint> inferConstraints(String name, InstructionNode instruction) {
         if(this.basicBlockAnalyzers.containsKey(name)) {
             NodeAnalyzer rule = this.basicBlockAnalyzers.get(name);
             return rule.gatherAllConstraints(instruction).getConstraints();
@@ -161,7 +124,7 @@ public class Inference implements Phase {
         }
         logger.warn("Node Analysis: We don't have a rule for: " + name);
         // return an empty array list for ease.
-        return new HashMap<String, Set<String>>();
+        return new HashMap<>();
     }
 
     /**
@@ -175,7 +138,7 @@ public class Inference implements Phase {
      * @return
      *   A mapping of id to what was inferred.
      */
-    public Map<String, Set<String>> inferConstraints(String name, BasicBlockEdge edge) {
+    public Map<String, Constraint> inferConstraints(String name, BasicBlockEdge edge) {
         if (this.edgeAnalyzers.containsKey(name)) {
             EdgeAnalyzer rule = this.edgeAnalyzers.get(name);
             return rule.gatherConstraints(edge).getConstraints();
@@ -184,7 +147,7 @@ public class Inference implements Phase {
             logger.warn("Edge Analysis: We don't have a rule for: " + name);
         }
 
-        return new HashMap<String, Set<String>>();
+        return new HashMap<>();
     }
 
     /**
@@ -192,19 +155,18 @@ public class Inference implements Phase {
      * @param constraints
      *   HashSet of constraints
      */
-    private void addConstraints(Map<String, Set<String>> constraints) {
+    private void addConstraints(Map<String, Constraint> constraints) {
         // If the constraints are empty, don't do anything
         if(constraints == null || constraints.isEmpty()) {
             return;
         }
 
         // Otherwise add all constraints to the appropriate key.
-        for (Map.Entry<String, Set<String>> entry : constraints.entrySet()) {
+        for (Map.Entry<String, Constraint> entry : constraints.entrySet()) {
             if (!this.constraints.containsKey(entry.getKey())) {
-                this.constraints.put(entry.getKey(), new HashSet<String>());
+                this.constraints.put(entry.getKey(), entry.getValue());
             }
-
-            this.constraints.get(entry.getKey()).addAll(entry.getValue());
+            this.constraints.put(entry.getKey(), entry.getValue());
         }
     }
 
