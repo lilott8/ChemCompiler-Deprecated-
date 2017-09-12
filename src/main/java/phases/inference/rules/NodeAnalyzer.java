@@ -17,8 +17,16 @@ public abstract class NodeAnalyzer extends Rule {
 
     protected Identify identifier = null;
 
-    public NodeAnalyzer(InferenceType type) {
+    protected NodeAnalyzer(InferenceType type) {
         super(type);
+
+        if (this.config.getInferenceLevel() != InferenceConfig.InferenceLevel.GENERIC) {
+            identifier = new FauxIdentifier();
+        }
+    }
+
+    protected NodeAnalyzer(InferenceType type, Class<? extends NodeAnalyzer> clazz) {
+        super(type, clazz);
 
         if (this.config.getInferenceLevel() != InferenceConfig.InferenceLevel.GENERIC) {
             identifier = new FauxIdentifier();

@@ -25,7 +25,7 @@ public abstract class Rule {
 
     protected InferenceType type;
 
-    public static final Logger logger = LogManager.getLogger(Rule.class);
+    protected final Logger logger;
 
     public final String CONST = "const";
 
@@ -52,6 +52,11 @@ public abstract class Rule {
 
     protected Rule(InferenceType type) {
         this.type = type;
+        this.logger = LogManager.getLogger(Rule.class);
+    }
+    protected Rule(InferenceType type, Class<? extends Rule> clazz) {
+        this.type = type;
+        logger = LogManager.getLogger(clazz);
     }
 
     public Map<String, Set<ChemTypes>> getConstraints() {

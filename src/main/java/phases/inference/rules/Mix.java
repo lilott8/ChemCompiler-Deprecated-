@@ -23,20 +23,18 @@ import substance.Property;
 @InferenceRule(ruleName = "mix", ruleType = "instruction")
 public class Mix extends NodeAnalyzer {
 
-    public static final Logger logger = LogManager.getLogger(Mix.class);
-
     public Mix(InferenceType type) {
-        super(type);
+        super(type, Mix.class);
     }
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        logger.trace(node);
-        logger.trace("Constraints: " + constraints);
+        //logger.trace(node);
+        //logger.trace("Constraints: " + constraints);
         // This is the input to the instruction
         Set<ChemTypes> groups = new HashSet<>();
         for(String in: node.getInputSymbols()) {
-            logger.trace("Uses: " + in);
+            //logger.trace("Uses: " + in);
             // Use the new way!
             if (!constraints.containsKey(in)) {
                 for (ChemTypes t : this.identifier.getReactiveGroup(in)) {
@@ -49,7 +47,7 @@ public class Mix extends NodeAnalyzer {
             // The old way
             //this.gatherUseConstraints(in);
         }
-        logger.trace("Groups: " + groups);
+        //logger.trace("Groups: " + groups);
 
         // Simulate the mix for the types.
         Set<ChemTypes> unions = new HashSet<>();
@@ -59,7 +57,7 @@ public class Mix extends NodeAnalyzer {
             }
         }
 
-        logger.trace("Unions: " + unions);
+        //logger.trace("Unions: " + unions);
 
         // The output of the instruction.
         for(String out : node.getOutputSymbols()) {
@@ -69,7 +67,7 @@ public class Mix extends NodeAnalyzer {
             //this.gatherDefConstraints(out);
         }
 
-        logger.trace("Inferred types for " + node.getOutputSymbols().get(0) + ": " + constraints.get(node.getOutputSymbols().get(0)));
+        //logger.trace("Inferred types for " + node.getOutputSymbols().get(0) + ": " + constraints.get(node.getOutputSymbols().get(0)));
 
 
         // Get the properties of the instruction if they exist
@@ -77,7 +75,7 @@ public class Mix extends NodeAnalyzer {
             this.gatherConstraints(prop);
         }
 
-        logger.trace("=======================");
+        //logger.trace("=======================");
         return this;
     }
 

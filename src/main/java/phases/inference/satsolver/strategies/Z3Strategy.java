@@ -10,14 +10,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+
 import config.ConfigFactory;
 import phases.inference.ChemTypes;
+
+import static phases.inference.ChemTypes.NAT;
+import static phases.inference.ChemTypes.REAL;
 
 /**
  * @created: 8/24/17
@@ -37,50 +43,182 @@ public class Z3Strategy implements SolverStrategy {
 
     @Override
     public boolean solveConstraints(Map<String, Set<ChemTypes>> constraints) {
-        StringBuilder declares = new StringBuilder();
-        StringBuilder assertBools = new StringBuilder();
-        StringBuilder assertSets = new StringBuilder();
+        StringBuilder declareConst = new StringBuilder();
+        StringBuilder initAsserts = new StringBuilder();
+        StringBuilder intersections = new StringBuilder();
 
-        for (Entry<Integer, ChemTypes> illegals : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-            declares.append("(declare-const ").append(illegals.getValue()).append(" Bool)").append(System.lineSeparator());
-            declares.append(("(assert (= ")).append(illegals.getValue()).append(" true))").append(System.lineSeparator());
-        }
-
-        // write the declarations to SMT2
+        // Add all the reactive group constants (Acids, Bases, etc.)
+        declareConst.append(this.buildVariableDeclarations(""));
+        // Add all the variables that exist. (a_Acids, a_Bases, etc.)
         for (Entry<String, Set<ChemTypes>> constraint : constraints.entrySet()) {
-            String key = StringUtils.replaceAll(constraint.getKey(), " ", "_");
-
-            // Declare all the bools for all the variables (num vars * 68)
-            for (Entry<Integer, ChemTypes> type : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-                if (ChemTypes.illegalCombos.containsKey(type.getValue())) {
-                    declares.append("(declare-const ").append(type.getValue()).append("_")
-                            .append(key).append(" Bool)").append(System.lineSeparator());
-
-                    assertBools.append("(assert (= ").append(type.getValue()).append("_").append(key);
-                    if (constraint.getValue().contains(type.getValue())) {
-                        assertBools.append(" true))");
-                    } else {
-                        assertBools.append(" false))");
-                    }
-                    assertBools.append(System.lineSeparator());
+            declareConst.append(this.buildVariableDeclarations(constraint.getKey()));
+            if (!constraint.getValue().contains(REAL) && !constraint.getValue().contains(NAT)) {
+                if (!constraint.getValue().isEmpty()) {
+                    initAsserts.append(this.initializeAssertions(constraint.getKey()));
+                    intersections.append(this.buildIntersections(constraint.getKey(), constraint.getValue()));
                 }
             }
-            // Now do the intersections....
-            assertSets.append("(assert ").append(System.lineSeparator()).append("\t(not").append(System.lineSeparator()).append("\t\t(and( ").append(System.lineSeparator());
-            // We need to do !(constraints \cap illegals)
-            for (ChemTypes t : constraint.getValue()) {
-                if (t != ChemTypes.REAL && t != ChemTypes.NAT) {
-                    for (ChemTypes illegal : ChemTypes.illegalCombos.get(t)) {
-                        assertSets.append("\t\t\tand(").append(t).append("_").append(key).append(" ").append(illegal).append(")").append(System.lineSeparator());
-                    }
-                    //assertBools.append(2);
-                }
-            }
-            assertSets.append("\t\t)").append(System.lineSeparator()).append("\t)").append(System.lineSeparator()).append(")").append(System.lineSeparator());
         }
-        declares.append(assertBools).append(assertSets);
-        logger.info(declares.toString());
-        return solveWithSMT2(declares.toString());
+        initAsserts.append(this.initializeAssertions(""));
+
+        logger.info(declareConst.append(initAsserts).append(intersections).toString());
+        //return true;
+        return this.solveWithSMT2(declareConst.append(initAsserts).append(intersections).toString());
+    }
+
+    /**
+     * Builds the declare-const statements for smt2.
+     *
+     * This will take the varName and append every reactive group to it
+     * @param varName
+     *   Name of variable
+     * @return
+     *   String of declare-consts.
+     */
+    private String buildVariableDeclarations(String varName) {
+        StringBuilder sb = new StringBuilder();
+        for (Entry<Integer, ChemTypes> entry : ChemTypes.getIntegerChemTypesMap().entrySet()) {
+            sb.append("(declare-const ").append(this.buildVarName(varName, entry.getValue().toString()))
+                    .append(" Bool)").append(System.lineSeparator());
+        }
+        return sb.toString();
+    }
+
+    private String initializeAssertions(String varName) {
+        StringBuilder sb = new StringBuilder();
+        // If we have an empty string, it should default to false
+        String assertAs = StringUtils.isEmpty(varName) ? "false" : "true";
+        for (Entry<Integer, ChemTypes> entry : ChemTypes.getIntegerChemTypesMap().entrySet()) {
+            sb.append("(assert (= ").append(this.buildVarName(varName, entry.getValue().toString()))
+                    .append(" ").append(assertAs).append("))").append(System.lineSeparator());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * This builds the varname for us.
+     * @param name
+     *  Name in the constraint table
+     * @param group
+     *  Group the variable belongs to
+     * @return
+     *  String formatted the way we want.
+     */
+    private String buildVarName(String name, String group) {
+        String var = "";
+        group = StringUtils.upperCase(group);
+        if (StringUtils.isEmpty(name)) {
+            var = group;
+        } else {
+            var = StringUtils.replaceAll(name, " ", "_") + "_" + group;
+        }
+        return var;
+    }
+
+    private String buildIntersections(String varName, Set<ChemTypes> constraints) {
+        StringBuilder intersection = new StringBuilder();
+        StringBuilder asserts = new StringBuilder();
+        asserts.append("(push)").append(System.lineSeparator());
+
+        for (ChemTypes constraint : constraints) {
+            if (ChemTypes.illegalCombos.get(constraint).size() > 1) {
+                String comboName = this.buildVarName(varName, constraint.toString());
+                // This isn't technically necessary.
+                asserts.append("(assert (= ").append(comboName).append(" true))").append(System.lineSeparator());
+                // begin assert
+                intersection.append("(assert").append(System.lineSeparator());
+                // begin and 1
+                intersection.append("\t(and").append(System.lineSeparator());
+                // begin not
+                intersection.append("\t\t(not").append(System.lineSeparator());
+                // begin and 2
+                intersection.append("\t\t\t(and").append(System.lineSeparator());
+                for (ChemTypes illegal : ChemTypes.illegalCombos.get(constraint)) {
+                    asserts.append("(assert (= ").append(buildVarName("", illegal.toString())).append(" true))").append(System.lineSeparator());
+                    // add the actual rule here.
+                    intersection.append("\t\t\t\t(= ").append(comboName).append(" ").append(illegal).append(")").append(System.lineSeparator());
+                }
+                // end and 2
+                intersection.append("\t\t\t)").append(System.lineSeparator());
+                // end not
+                intersection.append("\t\t)").append(System.lineSeparator());
+                // end and 1
+                intersection.append("\t)").append(System.lineSeparator());
+                // end assert
+                intersection.append(")").append(System.lineSeparator());
+            }
+        }
+
+        asserts.append(intersection);
+        asserts.append("(check-sat)").append(System.lineSeparator());
+        asserts.append("(pop)").append(System.lineSeparator());
+
+        return asserts.toString();
+    }
+
+    /**
+     * This method assumes that the constraints are purely material, no NAT || REAL.
+     * @param key
+     *  Name of the variable we are working with.
+     * @param types
+     *  List of possible types the variable could be.
+     * @return SMT2 ready string.
+     */
+    private String buildChemConstraints(String key, Set<ChemTypes> types) {
+        StringBuilder sb = new StringBuilder();
+        boolean append = false;
+        sb.append("(assert ").append(System.lineSeparator()).append("\t(and").append(System.lineSeparator());
+        // We need to do !(constraints \cap illegals)
+        for (ChemTypes t : types) {
+            if (ChemTypes.illegalCombos.containsKey(t)) {
+                for (ChemTypes illegal : ChemTypes.illegalCombos.get(t)) {
+                    // (and (= x true) (= y true))
+                    sb.append("\t\t(not").append(System.lineSeparator());
+                    sb.append("\t\t\t(and").append(System.lineSeparator());
+                    sb.append("\t\t\t\t(= ").append(t).append("_").append(key).append(" true)").append(System.lineSeparator());
+                    sb.append("\t\t\t\t(= ").append(illegal).append(" true)").append(System.lineSeparator());
+                    sb.append("\t\t\t)").append(System.lineSeparator());
+                    sb.append("\t\t)").append(System.lineSeparator());
+                }
+                append = true;
+            }
+        }
+        sb.append("\t)").append(System.lineSeparator()).append(")").append(System.lineSeparator());
+        return append ? sb.toString() : "";
+    }
+
+    private String buildMixedConstraints(String key, Set<ChemTypes> types) {
+        StringBuilder sb = new StringBuilder();
+        // This handles the case where we have a heterogeneous set of constraints
+        List<ChemTypes> differs = new ArrayList<>();
+
+        Iterator<ChemTypes> iterator = types.iterator();
+        ChemTypes t = iterator.next();
+
+        // case of one, by definition, this has to be REAL/NAT.  Otherwise we wouldn't have gotten here.
+        if (!iterator.hasNext()) {
+            sb.append("(assert (= ").append(key).append(" ").append(t).append("))").append(System.lineSeparator());
+        }
+        else {
+            while(iterator.hasNext()) {
+                if (t == NAT || t == REAL) {
+                    differs.add(t);
+                    // remove the NAT/REAL from the constraints set
+                    types.remove(t);
+                }
+                // finally move the iterator
+                t = iterator.next();
+            }
+        }
+        // process differs...
+        for (ChemTypes a : differs) {
+            sb.append("(assert (= ").append(key).append(" ").append(a).append("))").append(System.lineSeparator());
+        }
+
+        if (types.size() > 0) {
+            //sb.append(buildChemConstraints(key, types));
+        }
+        return sb.toString();
     }
 
     /**
@@ -144,10 +282,10 @@ public class Z3Strategy implements SolverStrategy {
             Status status = solver.check();
             // logger.info(solver.getModel());
             if (status == Status.SATISFIABLE) {
-                //logger.trace("SAT!");
+                logger.trace("SAT!");
                 return true;
             } else {
-                //logger.error("UNSAT");
+                logger.error("UNSAT");
                 return false;
             }
         } catch (Z3Exception e) {
