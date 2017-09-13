@@ -22,22 +22,12 @@ public abstract class NodeAnalyzer extends Rule {
 
     protected NodeAnalyzer(InferenceType type) {
         super(type);
-
-        if (this.config.getInferenceLevel() != InferenceConfig.InferenceLevel.GENERIC) {
             identifier = new FauxIdentifier();
-        }
     }
 
     protected NodeAnalyzer(InferenceType type, Class<? extends NodeAnalyzer> clazz) {
         super(type, clazz);
-
-        if (this.config.getInferenceLevel() != InferenceConfig.InferenceLevel.GENERIC) {
-            if (StringUtils.containsIgnoreCase(this.config.getFilesForCompilation().get(0), "chemtype4")) {
-                identifier = new TinyIdentifier();
-            } else {
                 identifier = new FauxIdentifier();
-            }
-        }
     }
 
     public abstract Rule gatherAllConstraints(InstructionNode node);

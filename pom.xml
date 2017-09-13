@@ -90,6 +90,29 @@
             <version>23.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <!-- Dependencies for chemaxon.  There are necessary settings.xml configs
+            necessary to receive access to the repository
+        -->
+        <dependency>
+            <groupId>com.chemaxon</groupId>
+            <artifactId>jchem-main</artifactId>
+            <version>17.3.27.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.chemaxon</groupId>
+            <artifactId>marvin-app</artifactId>
+            <version>17.3.27.0</version>
+        </dependency>
+
+        <!-- end of chemaxon -->
 
     </dependencies>
 </project>

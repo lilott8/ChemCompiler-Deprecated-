@@ -19,6 +19,7 @@ import config.Config;
 import config.ConfigFactory;
 import phases.inference.ChemTypes;
 import simulator.FauxIdentifier;
+import typesystem.EpaManager;
 
 
 public class Main {
@@ -43,6 +44,7 @@ public class Main {
         Compiler compiler = new Compiler(config);
         compiler.compile();
         compiler.runAllOps();
+        EpaManager.INSTANCE.dummy();
     }
 
     private static void initializeEnvironment(final CommandLine cmd) throws Exception {
@@ -87,23 +89,24 @@ public class Main {
         Options options = new Options();
 
         // File(s) to compile
-        String desc = "Compile the source file(s)" +
-                "\nUsage: -c /path/to/file_to_compile.json";
+        String desc = "Compile the source file(s)\n" +
+                "Usage: -c /path/to/file_to_compile.json";
         options.addOption(Option.builder("c").longOpt("compile")
                 .desc(desc).hasArgs().required().type(ArrayList.class)
                 .argName("compile").build());
 
         // Testing mode
-        desc = "Debug mode" +
-                "\nUsage: -d";
+        desc = "Debug mode\n" +
+                "Usage: -d";
         options.addOption(Option.builder("d").longOpt("debug")
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
                 .argName("debug").build());
 
         // Run SSI Algorithm
-        desc = "Run the SSI Algorithm.\nUsage: -ssi";
+        desc = "Run the SSI Algorithm.\n" +
+                "Usage: -ssi";
         options.addOption(Option.builder("ssi").longOpt("ssi")
-                .desc(desc).type(Boolean.class).hasArg().required(false)
+                .desc(desc).type(Boolean.class).hasArg(false).required(false)
                 .argName("ssi").build());
 
         // Output file option
@@ -114,20 +117,14 @@ public class Main {
                 .argName("output").build());
 
         // What translators to use
-        desc = "What translator to use.  If -o is set, this must be set." +
-                "\n Usage: -translate {list of translators}" +
-                "\n Available translators: " +
-                "\n\t mfsim: translates cfg to mfsim machine code" +
-                "\n\t typesystem: translates cfg for further typing analysis";
+        desc = "What translator to use.  If -o is set, this must be set.\n" +
+                "Usage: -translate {list of translators}\n" +
+                "Available translators: \n" +
+                "\tmfsim: translates cfg to mfsim machine code\n" +
+                "\ttypesystem: translates cfg for further typing analysis";
         options.addOption(Option.builder("t").longOpt("translate")
                 .desc(desc).type(ArrayList.class).hasArgs().required(false)
                 .argName("translate").build());
-
-        desc = "What level to resolve inference at." +
-                "\n Usage: -r [union|generic]" +
-                "\n default: -r generic";
-        options.addOption(Option.builder("r").longOpt("resolve")
-                .desc(desc).hasArg().required(false).argName("resolve").build());
 
         // Clean output option
         desc = "Clean the output directory. If -clean is set, -o (output) must be set." +
@@ -145,44 +142,76 @@ public class Main {
             .desc(desc).hasArgs().required(false)
             .argName("phases").build());
 
+        // classification scope
+        desc = "What level to attempt to classify materials at: \n" +
+                "\t1\t=>\tNaive, string-based approach\n" +
+                "\t2\t=>\tSMILES notation (Default)\n" +
+                "\t4\t=>\tInCHL-Key\n" +
+                "\t8\t=>\tCAS-Number\n" +
+                "\t16\t=>\tPubChemId\n" +
+                "\nUsage: -classify [1|2|4|8|16]";
+        options.addOption(Option.builder("classify").longOpt("classify")
+                .desc(desc).type(Integer.class).hasArg().required(false)
+                .argName("classify").build());
+
+        // Enforcement level
+        desc = "Ignores warnings.  Default is to error on warnings.";
+        options.addOption(Option.builder("i").longOpt("ignore")
+                .desc(desc).type(Boolean.class).hasArg(false).required(false)
+                .argName("ignore").build());
+
+        // Build the filters
+        desc = "Disable building the SMART filters.  This is usually only disabled for testing purposes.\n" +
+                "Usage: -nf";
+        options.addOption(Option.builder("nf").longOpt("nofilters")
+                .desc(desc).type(Boolean.class).hasArg(false).required(false)
+                .argName("nofilters").build());
+
+        // Definitions of EPA reactive groups
+        desc = "Path for EPA config file.  Defaults to internally installed file.\n" +
+                "Usage: -epadefs [/path/to/file.xml]";
+        options.addOption(Option.builder("epadefs").longOpt("epadefs")
+                .desc(desc).type(String.class).hasArg().required(false)
+                .argName("epadefs").build());
+
         // Database name
-        desc = "Database name." +
-                "\nUsage: -dbname [name]";
+        desc = "Database name.\n" +
+                "Usage: -dbname [name]";
         options.addOption(Option.builder("dbname").longOpt("dbname")
                 .desc(desc).hasArg().argName("dbname").build());
         // Database user name
-        desc = "Database user name." +
-                "\nUsage -dbuser [name]";
+        desc = "Database user name.\n" +
+                "Usage -dbuser [name]";
         options.addOption(Option.builder("dbuser").longOpt("dbuser")
                 .desc(desc).hasArg().argName("dbuser").build());
         // Database password
-        desc = "Database password." +
-                "\nUsage -dbpass [pass]";
+        desc = "Database password.\n" +
+                "Usage -dbpass [pass]";
         options.addOption(Option.builder("dbpass").longOpt("dbpass")
                 .desc(desc).hasArg().argName("dbpass").build());
         // Database port
-        desc = "Database port, default: 3306." +
-                "\nUsage -dbport [port]";
+        desc = "Database port, default: 3306.\n" +
+                "Usage -dbport [port]";
         options.addOption(Option.builder("dbport").longOpt("dbport")
                 .desc(desc).hasArg().argName("dbport").build());
         // Database address
-        desc = "Database address, default localhost." +
-                "\nUsage -dbaddr [addr]";
+        desc = "Database address, default localhost.\n" +
+                "Usage -dbaddr [addr]";
         options.addOption(Option.builder("dbaddr").longOpt("dbaddr")
                 .desc(desc).hasArg().argName("dbaddr").build());
         // Database driver, e.g. org.mariadb.jdbc.MySQLDataSource
-        desc = "Database driver default org.mariadb.jdbc.MySQLDataSource.  " +
-                "\nUsage: -dbdriver [driver]";
+        desc = "Database driver default org.mariadb.jdbc.MySQLDataSource.\n" +
+                "Usage: -dbdriver [driver]";
         options.addOption(Option.builder("dbdriver").longOpt("dbdriver")
                 .desc(desc).hasArg().argName("dbdriver").build());
         // Database timeout
-        desc = "Database timeout, default 10 seconds." +
-                "\nUsage: -dbtimeout [time]";
+        desc = "Database timeout, default 10 seconds.\n" +
+                "Usage: -dbtimeout [time]";
         options.addOption(Option.builder("dbtimeout").longOpt("dbtimeout")
                 .desc(desc).hasArg().argName("dbtimeout").build());
 
-        desc = "Database extras, default nothing." +
-                "\n Usage: -dbextras [extra url get options]";
+        desc = "Database extras, default nothing.\n" +
+                " Usage: -dbextras [extra url get options]";
         options.addOption(Option.builder("dbextras").longOpt("dbextras")
                 .desc(desc).hasArg().argName("dbextras").build());
 
