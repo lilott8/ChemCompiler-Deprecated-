@@ -25,9 +25,9 @@ public class Assign extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
         if (this.config.isDebug()) {
-            //logger.trace(node);
-            //logger.trace("Input: " + node.getInputSymbols());
-            //logger.trace("Output: " + node.getOutputSymbols());
+            // logger.trace(node);
+            // logger.trace("Input: " + node.getInputSymbols());
+            // logger.trace("Output: " + node.getOutputSymbols());
         }
 
         // Output Symbol        Input Symbol

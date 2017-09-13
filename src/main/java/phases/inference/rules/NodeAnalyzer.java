@@ -1,11 +1,14 @@
 package phases.inference.rules;
 
 
+import org.apache.commons.lang3.StringUtils;
+
 import compilation.datastructures.InstructionNode;
 import config.InferenceConfig;
 import phases.inference.Inference.InferenceType;
 import simulator.FauxIdentifier;
 import simulator.Identify;
+import simulator.TinyIdentifier;
 import substance.Property;
 
 /**
@@ -29,7 +32,11 @@ public abstract class NodeAnalyzer extends Rule {
         super(type, clazz);
 
         if (this.config.getInferenceLevel() != InferenceConfig.InferenceLevel.GENERIC) {
-            identifier = new FauxIdentifier();
+            if (StringUtils.containsIgnoreCase(this.config.getFilesForCompilation().get(0), "chemtype4")) {
+                identifier = new TinyIdentifier();
+            } else {
+                identifier = new FauxIdentifier();
+            }
         }
     }
 
