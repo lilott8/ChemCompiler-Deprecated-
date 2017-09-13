@@ -9,8 +9,6 @@ import java.util.Set;
 import compilation.datastructures.InstructionNode;
 import phases.inference.ChemTypes;
 import phases.inference.Inference.InferenceType;
-import simulator.FauxIdentifier;
-import simulator.Identify;
 import substance.Property;
 
 /**
@@ -35,10 +33,11 @@ public class Mix extends NodeAnalyzer {
         Set<ChemTypes> groups = new HashSet<>();
         for(String in: node.getInputSymbols()) {
             if (!this.constraints.containsKey(in)) {
-                for (ChemTypes t : this.identifier.getReactiveGroup(in)) {
-                    this.addConstraint(in, t);
-                    groups.add(t);
-                }
+                // TODO: converge int and chemtypes....
+                //for (ChemTypes t : this.identifier.identifyCompound(in).getReactiveGroups()) {
+                //    this.addConstraint(in, t);
+                //    groups.add(t);
+                //}
             } else {
                 groups.addAll(this.constraints.get(in).getConstraints());
             }

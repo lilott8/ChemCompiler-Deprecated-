@@ -18,8 +18,6 @@ import compilation.Compiler;
 import config.Config;
 import config.ConfigFactory;
 import phases.inference.ChemTypes;
-import simulator.FauxIdentifier;
-import typesystem.EpaManager;
 
 
 public class Main {
@@ -44,7 +42,6 @@ public class Main {
         Compiler compiler = new Compiler(config);
         compiler.compile();
         compiler.runAllOps();
-        EpaManager.INSTANCE.dummy();
     }
 
     private static void initializeEnvironment(final CommandLine cmd) throws Exception {
@@ -154,6 +151,13 @@ public class Main {
                 .desc(desc).type(Integer.class).hasArg().required(false)
                 .argName("classify").build());
 
+        desc = "Simulate mixes using a computational chemical library.\n" +
+                "This is disabled by default.\n" +
+                "Usage: -s";
+        options.addOption(Option.builder("s").longOpt("simulate")
+        .desc(desc).hasArg(false).required(false)
+        .argName("simulate").build());
+
         // Enforcement level
         desc = "Ignores warnings.  Default is to error on warnings.";
         options.addOption(Option.builder("i").longOpt("ignore")
@@ -200,8 +204,8 @@ public class Main {
         options.addOption(Option.builder("dbaddr").longOpt("dbaddr")
                 .desc(desc).hasArg().argName("dbaddr").build());
         // Database driver, e.g. org.mariadb.jdbc.MySQLDataSource
-        desc = "Database driver default org.mariadb.jdbc.MySQLDataSource.\n" +
-                "Usage: -dbdriver [driver]";
+        desc = "Database driver default mysql. Can be multiple, seperate by comma (,).\n" +
+                "Usage: -dbdriver [mysql|hikari]";
         options.addOption(Option.builder("dbdriver").longOpt("dbdriver")
                 .desc(desc).hasArg().argName("dbdriver").build());
         // Database timeout

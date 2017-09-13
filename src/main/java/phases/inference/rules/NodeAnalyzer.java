@@ -6,10 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import compilation.datastructures.InstructionNode;
 import config.InferenceConfig;
 import phases.inference.Inference.InferenceType;
-import simulator.FauxIdentifier;
-import simulator.Identify;
-import simulator.TinyIdentifier;
 import substance.Property;
+import typesystem.identification.Identifier;
+import typesystem.identification.NaiveIdentifier;
 
 /**
  * @created: 9/1/17
@@ -18,16 +17,14 @@ import substance.Property;
  */
 public abstract class NodeAnalyzer extends Rule {
 
-    protected Identify identifier = null;
+    protected Identifier identifier = new NaiveIdentifier();
 
     protected NodeAnalyzer(InferenceType type) {
         super(type);
-            identifier = new FauxIdentifier();
     }
 
     protected NodeAnalyzer(InferenceType type, Class<? extends NodeAnalyzer> clazz) {
         super(type, clazz);
-                identifier = new FauxIdentifier();
     }
 
     public abstract Rule gatherAllConstraints(InstructionNode node);

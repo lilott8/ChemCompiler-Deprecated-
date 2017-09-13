@@ -1,4 +1,4 @@
-package typesystem;
+package typesystem.epa;
 
 import java.util.Arrays;
 import java.util.EnumSet;

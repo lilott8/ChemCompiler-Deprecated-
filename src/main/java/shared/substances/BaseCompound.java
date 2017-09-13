@@ -1,4 +1,4 @@
-package shared;
+package shared.substances;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,27 +11,29 @@ import chemaxon.struc.Molecule;
  * representation of the molecule -- it acts as a cache as getting the "SMILES"
  * from the ChemAxon molecule is slow
  */
-public class Compound {
+public abstract class BaseCompound<T> {
 
     private long id = -1;
-    private Set<Integer> reactiveGroups = new HashSet<Integer>();
-    private String name;
-    private Molecule molecule;
+    private Set<Integer> reactiveGroups = new HashSet<>();
+    private String name = "unknown";
 
-    public Compound(long id) {
+    public BaseCompound(long id) {
         this.id = id;
     }
 
-    public Compound(long id, String name) {
+    public BaseCompound(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Compound(long id, String name, Set<Integer> reactiveGroups) {
+    public BaseCompound(long id, String name, Set<Integer> reactiveGroups) {
         this.id = id;
         this.name = name;
         this.reactiveGroups = reactiveGroups;
     }
+
+    public abstract T getRepresentation();
+    public abstract void setRepresentation(T representation);
 
     /**
      * Add a reactive group to the set of reactive groups
@@ -75,23 +77,6 @@ public class Compound {
     }
 
     /**
-     * Returns the ChemAxon molecule object
-     * @return molecule object
-     */
-    public Molecule getMolecule() {
-        return molecule;
-    }
-
-    /**
-     * Set the molecule for the compound
-     * @param molecule molecule object
-     */
-    public void setMolecule(Molecule molecule) {
-        this.molecule = molecule;
-        //this.molecule.aromatize();
-    }
-
-    /**
      * toString method
      * @return string representation of compound
      */
@@ -101,12 +86,6 @@ public class Compound {
         sb.append("ID: ").append(id).append("\t").append("Name: ").append(name);
         sb.append(System.lineSeparator());
         sb.append(reactiveGroups);
-        sb.append(System.lineSeparator());
-        sb.append(molecule.getName());
-        sb.append(System.lineSeparator());
-        sb.append(molecule.getAtomCount());
-        sb.append(System.lineSeparator());
-        sb.append("======");
         sb.append(System.lineSeparator());
 
         //return sb.toString();

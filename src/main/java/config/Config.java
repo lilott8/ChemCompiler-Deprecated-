@@ -122,6 +122,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
      * Where is the location of the epa defs.
      */
     private String epaDefs = "src/main/resources/epa.xml";
+    /**
+     * Use 3rd party chemistry software to simulate mixes.
+     */
+    private boolean simulateMixes = false;
 
     /**
      * Build the config object from our command line This method must match that in the main.
@@ -198,15 +202,17 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
             // handles the case that we have the minimum level.
             level = (level <= 0) ? 1 : level;
             // Handles the case where we input a number > 16.
-            level = (level > 16) ? 16: level;
+            level = (level > 16) ? 16 : level;
             // We can save the level!
-            this.classificationLevel = (int) Math.pow(2, (Integer.SIZE - Integer.numberOfLeadingZeros(level))-1);
+            this.classificationLevel = (int) Math.pow(2, (Integer.SIZE - Integer.numberOfLeadingZeros(level)) - 1);
         }
 
-            this.ignoreWarnings = cmd.hasOption("ignore");
+        this.ignoreWarnings = cmd.hasOption("ignore");
 
         // Default is build them, so if we don't have it, we build the filters.
-            this.buildFilters = !cmd.hasOption("nofilters");
+        this.buildFilters = !cmd.hasOption("nofilters");
+
+        this.simulateMixes = cmd.hasOption("simulate");
 
         if (cmd.hasOption("epadefs")) {
             this.epaDefs = cmd.getOptionValue("epadefs");
@@ -390,5 +396,11 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     @Override
     public String getEpaDefs() {
         return this.epaDefs;
+    }
+
+
+    @Override
+    public boolean simulateMixes() {
+        return this.simulateMixes;
     }
 }

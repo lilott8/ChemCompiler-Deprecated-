@@ -1,4 +1,4 @@
-package typesystem;
+package typesystem.epa;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -13,11 +13,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
 import errors.CompatabilityException;
-import shared.Compound;
+import shared.substances.BaseCompound;
 import shared.Tuple;
 
 /**
@@ -258,9 +259,9 @@ public enum EpaManager {
         }
     }
 
-    public boolean test(Compound one, Compound two) {
-        for(int x : one.getReactiveGroups()) {
-            for(int y : two.getReactiveGroups()) {
+    public boolean test(BaseCompound one, BaseCompound two) {
+        for(int x : (Set<Integer>) one.getReactiveGroups()) {
+            for(int y : (Set<Integer>) two.getReactiveGroups()) {
                 if(!test(x, y)) {
                     return false;
                 }
@@ -295,11 +296,11 @@ public enum EpaManager {
         return true;
     }
 
-    public boolean validate(Compound one, Compound two) {
+    public boolean validate(BaseCompound one, BaseCompound two) {
         logger.trace("Testing: " + one.getName() + "\t and: " + two.getName());
         logger.trace("One: " + one.getReactiveGroups() + "\t Two: " + two.getReactiveGroups());
-        for (int x : one.getReactiveGroups()) {
-            for (int y : two.getReactiveGroups()) {
+        for (int x : (Set<Integer>) one.getReactiveGroups()) {
+            for (int y : (Set<Integer>) two.getReactiveGroups()) {
                 if (!validate(x, y)) {
                     return false;
                 }
