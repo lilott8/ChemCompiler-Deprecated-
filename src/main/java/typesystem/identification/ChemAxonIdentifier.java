@@ -24,9 +24,7 @@ import shared.substances.ChemAxonCompound;
 public class ChemAxonIdentifier extends Identifier {
     public static final Logger logger = LogManager.getLogger(ChemAxonIdentifier.class);
 
-    public ChemAxonIdentifier() {
-
-    }
+    ChemAxonIdentifier() {}
 
     /**
      * Use the io.database to classify a compound.  This takes in a string, is
@@ -36,7 +34,7 @@ public class ChemAxonIdentifier extends Identifier {
      * 		InChiKey, or name.
      * @return a compound object from the io.database
      */
-    public BaseCompound identifyCompound(String name) {
+    public BaseCompound identifyCompound3(String name) {
         ChemAxonCompound compound = null;
         logger.warn("Using smiles for the where clause.");
         String where = Representation.getColumn(Representation.SMILES);
@@ -71,6 +69,50 @@ public class ChemAxonIdentifier extends Identifier {
             logger.warn(e.toString());
         }
         database.closeConnection(connection);
+        return compound;
+    }
+
+    public BaseCompound identifyCompound(String name) {
+        ChemAxonCompound compound = null;
+        boolean done = false;
+            switch(config.getClassificationLevel()) {
+                // pubchem
+                case 16:
+                    try {
+                        int x = Integer.parseInt(name);
+                        compound = this.searchByPubChemId(x);
+                        break;
+                    } catch(NumberFormatException e) {}
+                // cas-number
+                case 8:
+                    if (isCasNumber(name)) {
+                        compound = this.searchByCasNumber(name);
+                        if (compound != null) {
+                            break;
+                        }
+                    }
+                // inchl-key
+                case 4:
+                    if (isInChIKey(name)) {
+                        compound = this.searchByInCHLKey(name);
+                        if (compound != null) {
+                            break;
+                        }
+                    }
+                // smiles
+                case 2:
+                    if (isSmiles(name)) {
+                        compound = this.searchBySmiles(name);
+                        if (compound != null) {
+                            break;
+                        }
+                    }
+                default:
+                // naive name approach
+                case 1:
+                    compound = this.searchByAliases(name);
+                    break;
+        }
         return compound;
     }
 
@@ -113,15 +155,6 @@ public class ChemAxonIdentifier extends Identifier {
     }
 
     /**
-     * Wrapper function if given a compound object and not a string
-     * @param compound compound representation of an object
-     * @return new compound
-     */
-    public BaseCompound identifyCompound(BaseCompound compound) {
-        return identifyCompound(compound.getName());
-    }
-
-    /**
      * set the identification method for this run
      * @param s
      * @return
@@ -142,39 +175,24 @@ public class ChemAxonIdentifier extends Identifier {
         return this;
     }
 
-    /**
-     * Wrapper function if you want to use this as an instance method and not statically
-     * @param chemical string representation of the chemical, the system will
-     *                 determine whether the string is a CAS-Number, SMILES,
-     *                 InChiKey, or name.
-     * @return a compound object from the io.database
-     */
-    public BaseCompound getChemical(String chemical) {
-        return identifyCompound(chemical);
+    private ChemAxonCompound searchByPubChemId(int id) {
+        return null;
     }
 
-    /**
-     * How is the identifier identifying the chemical
-     */
-    public enum Representation {
-        CAS_NUMBER, SMILES, NAME, INCHIKEY, FORMULA, PUBCHEM_ID;
-
-        public static String getColumn(Representation r) {
-            switch (r) {
-                default:
-                case SMILES:
-                    return "canonical_smiles";
-                case INCHIKEY:
-                    return "inchi_key";
-                case CAS_NUMBER:
-                    return "";
-                case FORMULA:
-                    return "molecular_formula";
-                case NAME:
-                    return "name";
-                case PUBCHEM_ID:
-                    return "pubchem_id";
-            }
-        }
+    private ChemAxonCompound searchByCasNumber(String number) {
+        return null;
     }
+
+    private ChemAxonCompound searchByInCHLKey(String key) {
+        return null;
+    }
+
+    private ChemAxonCompound searchBySmiles(String smiles) {
+        return null;
+    }
+
+    private ChemAxonCompound searchByAliases(String name) {
+        return null;
+    }
+
 }

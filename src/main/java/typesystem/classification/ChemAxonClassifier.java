@@ -28,12 +28,14 @@ public class ChemAxonClassifier implements Classifier {
     public static final Logger logger = LogManager.getLogger(Classifier.class);
     private InferenceConfig config = ConfigFactory.getConfig();
 
+    ChemAxonClassifier() {}
+
     @Override
     public Set<Integer> classify(BaseCompound a) {
         Set<Integer> results = new HashSet<>();
         // Translate the compound.
         ChemAxonCompound compound = (ChemAxonCompound) a;
-        if (this.config.simulateMixes()) {
+        if (this.config.simulateChemistry()) {
             Molecule molecule = compound.getRepresentation();
             MolContext context = new MolContext();
             context.setMolecule(compound.getRepresentation());

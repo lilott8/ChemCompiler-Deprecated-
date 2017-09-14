@@ -11,6 +11,8 @@ import shared.substances.BaseCompound;
  */
 public class NaiveClassifier implements Classifier {
 
+    NaiveClassifier() {}
+
     @Override
     public Set<Integer> classify(BaseCompound compound) {
         return compound.getReactiveGroups();

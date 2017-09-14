@@ -12,5 +12,5 @@ public interface InferenceConfig extends CommonConfig {
     boolean ignoreWarnings();
     boolean buildFilters();
     String getEpaDefs();
-    boolean simulateMixes();
+    boolean simulateChemistry();
 }

@@ -7,8 +7,8 @@ import config.InferenceConfig;
 import errors.CombinationException;
 import shared.substances.ChemAxonCompound;
 import shared.substances.BaseCompound;
-import typesystem.classification.ChemAxonClassifier;
 import typesystem.classification.Classifier;
+import typesystem.classification.ClassifierFactory;
 
 /**
  * @created: 9/13/17
@@ -19,12 +19,14 @@ public class ChemAxonCombiner implements Combiner {
 
     private InferenceConfig config = ConfigFactory.getConfig();
 
-    private Classifier classifier = new ChemAxonClassifier();
+    private Classifier classifier = ClassifierFactory.getClassifier();
+
+    ChemAxonCombiner() {}
 
     @Override
     public BaseCompound combine(BaseCompound a, BaseCompound b) {
         ChemAxonCompound compound = null;
-        if (this.config.simulateMixes()) {
+        if (this.config.simulateChemistry()) {
             // build a new molecule object
             Molecule molecule = new Molecule();
             ChemAxonCompound compoundA = (ChemAxonCompound) a;

@@ -8,6 +8,7 @@ import config.InferenceConfig;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
 import typesystem.identification.Identifier;
+import typesystem.identification.IdentifierFactory;
 import typesystem.identification.NaiveIdentifier;
 
 /**
@@ -17,7 +18,7 @@ import typesystem.identification.NaiveIdentifier;
  */
 public abstract class NodeAnalyzer extends Rule {
 
-    protected Identifier identifier = new NaiveIdentifier();
+    protected Identifier identifier = IdentifierFactory.getIdentifier();
 
     protected NodeAnalyzer(InferenceType type) {
         super(type);

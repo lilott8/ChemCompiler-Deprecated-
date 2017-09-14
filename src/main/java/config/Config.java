@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -125,7 +124,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     /**
      * Use 3rd party chemistry software to simulate mixes.
      */
-    private boolean simulateMixes = false;
+    private boolean simulateChemistry = false;
 
     /**
      * Build the config object from our command line This method must match that in the main.
@@ -212,7 +211,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
         // Default is build them, so if we don't have it, we build the filters.
         this.buildFilters = !cmd.hasOption("nofilters");
 
-        this.simulateMixes = cmd.hasOption("simulate");
+        this.simulateChemistry = cmd.hasOption("simulate");
 
         if (cmd.hasOption("epadefs")) {
             this.epaDefs = cmd.getOptionValue("epadefs");
@@ -398,9 +397,8 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
         return this.epaDefs;
     }
 
-
     @Override
-    public boolean simulateMixes() {
-        return this.simulateMixes;
+    public boolean simulateChemistry() {
+        return this.simulateChemistry;
     }
 }

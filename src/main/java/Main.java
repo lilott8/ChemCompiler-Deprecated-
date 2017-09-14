@@ -151,7 +151,7 @@ public class Main {
                 .desc(desc).type(Integer.class).hasArg().required(false)
                 .argName("classify").build());
 
-        desc = "Simulate mixes using a computational chemical library.\n" +
+        desc = "Simulate chemistry using a computational chemical library.\n" +
                 "This is disabled by default.\n" +
                 "Usage: -s";
         options.addOption(Option.builder("s").longOpt("simulate")

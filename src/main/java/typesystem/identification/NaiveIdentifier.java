@@ -4,6 +4,7 @@ import java.util.Set;
 
 import phases.inference.ChemTypes;
 import shared.substances.BaseCompound;
+import shared.substances.NaiveCompound;
 
 /**
  * @created: 9/13/17
@@ -12,13 +13,15 @@ import shared.substances.BaseCompound;
  */
 public class NaiveIdentifier extends Identifier {
 
+    NaiveIdentifier() {}
+
     @Override
     public BaseCompound identifyCompound(String name) {
-        return null;
+        return new NaiveCompound(-1, name);
     }
 
     @Override
     public BaseCompound identifyCompound(long id) {
-        return null;
+        return new NaiveCompound(id);
     }
 }

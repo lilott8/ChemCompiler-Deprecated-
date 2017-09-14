@@ -14,6 +14,8 @@ import shared.substances.NaiveCompound;
  */
 public class NaiveCombiner implements Combiner {
 
+    NaiveCombiner() {}
+
     @Override
     public BaseCompound combine(BaseCompound a, BaseCompound b) {
         BaseCompound compound = new NaiveCompound(-1);

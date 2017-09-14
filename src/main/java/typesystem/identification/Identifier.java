@@ -28,7 +28,7 @@ public abstract class Identifier {
 
     protected InferenceConfig config = ConfigFactory.getConfig();
 
-    protected Identifier() {}
+    Identifier() {}
 
     public abstract BaseCompound identifyCompound(String name);
     public abstract BaseCompound identifyCompound(long id);
@@ -103,6 +103,31 @@ public abstract class Identifier {
         return (chemical.length() == 25
                 && StringUtils.equals(Character.toString(chemical.charAt(14)), "-")
                 && matcher.find());
+    }
+
+    /**
+     * How is the identifier identifying the chemical
+     */
+    public enum Representation {
+        CAS_NUMBER, SMILES, NAME, INCHIKEY, FORMULA, PUBCHEM_ID;
+
+        public static String getColumn(Representation r) {
+            switch (r) {
+                default:
+                case SMILES:
+                    return "canonical_smiles";
+                case INCHIKEY:
+                    return "inchi_key";
+                case CAS_NUMBER:
+                    return "";
+                case FORMULA:
+                    return "molecular_formula";
+                case NAME:
+                    return "name";
+                case PUBCHEM_ID:
+                    return "pubchem_id";
+            }
+        }
     }
 
 }
