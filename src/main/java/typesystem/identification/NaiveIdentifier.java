@@ -1,8 +1,5 @@
 package typesystem.identification;
 
-import java.util.Set;
-
-import phases.inference.ChemTypes;
 import shared.substances.BaseCompound;
 import shared.substances.NaiveCompound;
 

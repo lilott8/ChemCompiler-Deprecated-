@@ -1,14 +1,12 @@
 package phases.inference.rules;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import compilation.datastructures.InstructionNode;
-import phases.inference.ChemTypes;
+import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
+import phases.inference.SMTConstraint;
 import substance.Property;
 
 /**
@@ -27,35 +25,29 @@ public class Mix extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        //logger.trace(node);
-        //logger.trace("Constraints: " + constraints);
+        logger.trace(node);
+        logger.trace("Constraints: " + constraints);
         // This is the input to the instruction
-        Set<ChemTypes> groups = new HashSet<>();
+        Set<Integer> groups = new HashSet<>();
         for(String in: node.getInputSymbols()) {
             if (!this.constraints.containsKey(in)) {
                 // TODO: converge int and chemtypes....
-                //for (ChemTypes t : this.identifier.identifyCompound(in).getReactiveGroups()) {
-                //    this.addConstraint(in, t);
-                //    groups.add(t);
-                //}
+                //this.addConstraint(in, new SMTConstraint(in));
+                for (int i : (Set<Integer>) this.identifier.identifyCompound(in).getReactiveGroups()) {
+                   // this.addConstraint(in, i);
+                    groups.add(i);
+                }
             } else {
-                groups.addAll(this.constraints.get(in).getConstraints());
+                //groups.addAll(this.constraints.get(in).getConstraints());
             }
         }
-        //logger.trace("Groups: " + groups);
+        logger.trace("Groups: " + groups);
 
         // Simulate the mix for the types.
-        Set<ChemTypes> unions = new HashSet<>();
-        unions = groups;
-        //for(int x = 1; x < groups.size(); x++) {
-        //    for (int y = x; y < groups.size(); y++) {
-        //        unions.addAll(this.identifier.getReaction(x, y));
-        //    }
-        //}
 
         // The output of the instruction.
         for(String out : node.getOutputSymbols()) {
-            this.addConstraints(out, unions);
+            //this.addConstraints(out, groups);
         }
 
         // Get the properties of the instruction if they exist
@@ -63,7 +55,7 @@ public class Mix extends NodeAnalyzer {
             this.gatherConstraints(prop);
         }
 
-        //logger.trace("=======================");
+        logger.trace("=======================");
         return this;
     }
 

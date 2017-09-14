@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import chemaxon.struc.Molecule;
+import typesystem.epa.ChemTypes;
 
 /**
  * Programmatic representation of a compound.  Contains a set of reactive groups,
@@ -14,7 +15,7 @@ import chemaxon.struc.Molecule;
 public abstract class BaseCompound<T> {
 
     private long id = -1;
-    private Set<Integer> reactiveGroups = new HashSet<>();
+    private Set<ChemTypes> reactiveGroups = new HashSet<>();
     private String name = "unknown";
 
     public BaseCompound(long id) {
@@ -26,7 +27,7 @@ public abstract class BaseCompound<T> {
         this.name = name;
     }
 
-    public BaseCompound(long id, String name, Set<Integer> reactiveGroups) {
+    public BaseCompound(long id, String name, Set<ChemTypes> reactiveGroups) {
         this.id = id;
         this.name = name;
         this.reactiveGroups = reactiveGroups;
@@ -41,14 +42,14 @@ public abstract class BaseCompound<T> {
      * @param group
      */
     public void addReactiveGroup(int group) {
-        this.reactiveGroups.add(group);
+        this.reactiveGroups.add(ChemTypes.getTypeFromId(group));
     }
 
     /**
      * Add a set of reactive groups to the current set
      * @param groups
      */
-    public void addReactiveGroup(Set<Integer> groups) {
+    public void addReactiveGroup(Set<ChemTypes> groups) {
         this.reactiveGroups.addAll(groups);
     }
 
@@ -64,7 +65,7 @@ public abstract class BaseCompound<T> {
      * Returns the reactive groups the compound belongs to
      * @return set of ints that represent reactive groups
      */
-    public Set<Integer> getReactiveGroups() {
+    public Set<ChemTypes> getReactiveGroups() {
         return reactiveGroups;
     }
 

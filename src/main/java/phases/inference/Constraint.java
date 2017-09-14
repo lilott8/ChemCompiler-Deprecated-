@@ -2,6 +2,8 @@ package phases.inference;
 
 import java.util.Set;
 
+import typesystem.epa.ChemTypes;
+
 /**
  * @created: 9/12/17
  * @since: 0.1

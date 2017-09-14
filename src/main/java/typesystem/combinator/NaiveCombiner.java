@@ -6,6 +6,7 @@ import java.util.Set;
 
 import shared.substances.BaseCompound;
 import shared.substances.NaiveCompound;
+import typesystem.epa.ChemTypes;
 
 /**
  * @created: 9/13/17
@@ -22,5 +23,11 @@ public class NaiveCombiner implements Combiner {
         compound.addReactiveGroup(a.getReactiveGroups());
         compound.addReactiveGroup(b.getReactiveGroups());
         return compound;
+    }
+
+    @Override
+    public Set<ChemTypes> combine(Set<ChemTypes> a, Set<ChemTypes> b) {
+        a.addAll(b);
+        return a;
     }
 }

@@ -32,24 +32,30 @@ public class Group {
     public static final Logger logger = LogManager.getLogger(Group.class);
     public final String groupName;
     public final int groupId;
+    public final ChemTypes chemGroup;
     public final Map<EpaManager.Type, ArrayList<Tuple>> attributes = new HashMap<EpaManager.Type, ArrayList<Tuple>>();
-    private List<ChemJEP> evaluators = new ArrayList<ChemJEP>();
+    private List<ChemJEP> evaluators = new ArrayList<>();
+    private InferenceConfig config = ConfigFactory.getConfig();
+
 
     public Group() {
         this.groupName = "unknown";
         this.groupId = -1;
+        this.chemGroup = ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION;
     }
 
     public Group(int id, String name) {
         this.groupId = id;
         this.groupName = name;
+        this.chemGroup = ChemTypes.getTypeFromId(id);
     }
 
     public Group(int id, String name, Map<EpaManager.Type, ArrayList<Tuple>> attributes) {
         this.groupId = id;
         this.groupName = name;
         this.attributes.putAll(attributes);
-        InferenceConfig config = ConfigFactory.getConfig();
+        this.chemGroup = ChemTypes.getTypeFromId(id);
+
         Evaluator evaluator = null;
         try {
             evaluator = new Evaluator();

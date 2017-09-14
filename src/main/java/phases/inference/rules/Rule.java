@@ -11,7 +11,7 @@ import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
-import phases.inference.ChemTypes;
+import typesystem.epa.ChemTypes;
 import phases.inference.SMTConstraint;
 import phases.inference.Inference.InferenceType;
 import phases.inference.Constraint;

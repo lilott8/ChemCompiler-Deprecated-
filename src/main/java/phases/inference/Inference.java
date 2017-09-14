@@ -22,6 +22,7 @@ import phases.inference.rules.NodeAnalyzer;
 import phases.inference.satsolver.SatSolver;
 import phases.inference.satsolver.strategies.Z3Strategy;
 import shared.Tuple;
+import typesystem.epa.ChemTypes;
 
 /**
  * @created: 7/27/17

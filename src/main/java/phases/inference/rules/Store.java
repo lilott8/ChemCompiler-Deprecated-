@@ -4,7 +4,7 @@ import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
 
-import static phases.inference.ChemTypes.MAT;
+import static typesystem.epa.ChemTypes.MAT;
 
 /**
  * @created: 7/28/17

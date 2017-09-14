@@ -1,5 +1,7 @@
 package typesystem.combinator;
 
+import java.util.Set;
+
 import chemaxon.formats.MolExporter;
 import chemaxon.struc.Molecule;
 import config.ConfigFactory;
@@ -9,6 +11,7 @@ import shared.substances.ChemAxonCompound;
 import shared.substances.BaseCompound;
 import typesystem.classification.Classifier;
 import typesystem.classification.ClassifierFactory;
+import typesystem.epa.ChemTypes;
 
 /**
  * @created: 9/13/17
@@ -58,5 +61,11 @@ public class ChemAxonCombiner implements Combiner {
             compound.addReactiveGroup(b.getReactiveGroups());
         }
         return compound;
+    }
+
+    @Override
+    public Set<ChemTypes> combine(Set<ChemTypes> a, Set<ChemTypes> b) {
+        a.addAll(b);
+        return a;
     }
 }

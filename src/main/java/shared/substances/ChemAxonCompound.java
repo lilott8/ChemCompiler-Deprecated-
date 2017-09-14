@@ -3,6 +3,7 @@ package shared.substances;
 import java.util.Set;
 
 import chemaxon.struc.Molecule;
+import typesystem.epa.ChemTypes;
 
 /**
  * @created: 9/13/17
@@ -21,7 +22,7 @@ public class ChemAxonCompound extends BaseCompound<Molecule> {
         super(id, name);
     }
 
-    public ChemAxonCompound(long id, String name, Set<Integer> reactiveGroups) {
+    public ChemAxonCompound(long id, String name, Set<ChemTypes> reactiveGroups) {
         super(id, name, reactiveGroups);
     }
 

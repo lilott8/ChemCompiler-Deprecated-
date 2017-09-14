@@ -2,11 +2,12 @@ package phases.inference;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Set;
 
 import phases.inference.satsolver.strategies.Z3Strategy;
+import typesystem.epa.ChemTypes;
+import typesystem.epa.EpaManager;
 
 /**
  * @created: 9/12/17
@@ -86,14 +87,14 @@ public class SMTConstraint implements Constraint {
 
             for (ChemTypes t : this.chems) {
                 sb.append("(assert (= ").append(t.toString()).append(" true))").append(System.lineSeparator());
-                if (!ChemTypes.illegalCombos.get(t).isEmpty()) {
+                /*if (!ChemTypes.illegalCombos.get(t).isEmpty()) {
                     append = true;
                     for (ChemTypes illegal : ChemTypes.illegalCombos.get(t)) {
                         chemAsserts.append("(assert (= ").append(illegal).append(" true))").append(System.lineSeparator());
                         // Add the comparative asserts
                         conjunctiveAsserts.append("\t\t\t(= ").append(getAssertName(t.toString())).append(" ").append(illegal).append(")").append(System.lineSeparator());
                     }
-                }
+                }*/
             }
             sb.append(chemAsserts);
             if (append) {

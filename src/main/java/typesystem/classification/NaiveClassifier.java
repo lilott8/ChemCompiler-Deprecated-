@@ -3,6 +3,7 @@ package typesystem.classification;
 import java.util.Set;
 
 import shared.substances.BaseCompound;
+import typesystem.epa.ChemTypes;
 
 /**
  * @created: 9/13/17
@@ -14,7 +15,7 @@ public class NaiveClassifier implements Classifier {
     NaiveClassifier() {}
 
     @Override
-    public Set<Integer> classify(BaseCompound compound) {
-        return compound.getReactiveGroups();
+    public Set<ChemTypes> classify(BaseCompound compound) {
+        return (Set<ChemTypes>) compound.getReactiveGroups();
     }
 }

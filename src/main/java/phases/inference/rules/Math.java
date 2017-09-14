@@ -7,7 +7,7 @@ import phases.inference.Inference.InferenceType;
 import phases.inference.satsolver.strategies.SolverStrategy;
 import substance.Property;
 
-import static phases.inference.ChemTypes.*;
+import static typesystem.epa.ChemTypes.*;
 
 /**
  * @created: 7/27/17

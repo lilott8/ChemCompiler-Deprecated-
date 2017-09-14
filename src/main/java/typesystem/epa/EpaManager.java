@@ -32,9 +32,9 @@ public enum EpaManager {
 
     public static final Logger logger = LogManager.getLogger(EpaManager.class);
     // Maps reactive group id to the manifested group replete with classifier data.
-    public Map<Integer, Group> groupMap = new HashMap<Integer, Group>();
+    public Map<ChemTypes, Group> groupMap = new HashMap<>();
     // Sparse matrix of reactive group to reactions.
-    public Map<Integer, HashMap<Integer, Reaction>> reactionMap = new HashMap<Integer, HashMap<Integer, Reaction>>();
+    public Map<ChemTypes, HashMap<ChemTypes, Reaction>> reactionMap = new HashMap<>();
     // Config object for convenience.
     private final InferenceConfig config = ConfigFactory.getConfig();
 
@@ -88,6 +88,7 @@ public enum EpaManager {
         // iterate the groups
         for (Node group : groups) {
             id = Integer.parseInt(group.selectSingleNode("id").getText());
+            ChemTypes chemType = ChemTypes.getTypeFromId(id);
             name = group.selectSingleNode("name").getText();
             Node status = group.selectSingleNode("status");
 
@@ -111,7 +112,7 @@ public enum EpaManager {
             /*
              * Create the group and add it to the mapping.
              */
-            groupMap.put(id, new Group(id, name, new HashMap<Type, ArrayList<Tuple>>() {{
+            groupMap.put(ChemTypes.getTypeFromId(id), new Group(id, name, new HashMap<Type, ArrayList<Tuple>>() {{
                 put(Type.ELEMENT, elements);
                 put(Type.WORD, words);
                 put(Type.SMILES, smiles);
@@ -124,19 +125,19 @@ public enum EpaManager {
             if (reactions != null) {
                 // Initialize a hashmap if we have reactions...
                 if (!this.reactionMap.containsKey(id)) {
-                    this.reactionMap.put(id, new HashMap<Integer, Reaction>());
+                    this.reactionMap.put(chemType, new HashMap<>());
                 }
-                Map<Integer, Reaction> outcomes = this.buildReactionGroups(reactions);
+                Map<ChemTypes, Reaction> outcomes = this.buildReactionGroups(reactions);
                 // To make things easy, we just fill out the lower-half sparse matrix
                 // to make lookups easier by eating the space overhead
-                for (Map.Entry<Integer, Reaction> entry : outcomes.entrySet()) {
+                for (Map.Entry<ChemTypes, Reaction> entry : outcomes.entrySet()) {
                     if (!this.reactionMap.containsKey(entry.getKey())) {
-                        this.reactionMap.put(entry.getKey(), new HashMap<Integer, Reaction>());
+                        this.reactionMap.put(entry.getKey(), new HashMap<>());
                     }
                     // Lower half
-                    this.reactionMap.get(id).put(entry.getKey(), entry.getValue());
+                    this.reactionMap.get(chemType).put(entry.getKey(), entry.getValue());
                     // symmetric case
-                    this.reactionMap.get(entry.getKey()).put(id, entry.getValue());
+                    this.reactionMap.get(entry.getKey()).put(chemType, entry.getValue());
                 }
             }
             count++;
@@ -179,10 +180,10 @@ public enum EpaManager {
         return attributes;
     }
 
-    public List<Integer> getReactiveGroupIds() {
-        List<Integer> results = new ArrayList<>();
+    public List<ChemTypes> getReactiveGroupIds() {
+        List<ChemTypes> results = new ArrayList<>();
 
-        for (Map.Entry<Integer, Group> entry : this.groupMap.entrySet()) {
+        for (Map.Entry<ChemTypes, Group> entry : this.groupMap.entrySet()) {
             results.add(entry.getKey());
         }
         return results;
@@ -207,8 +208,8 @@ public enum EpaManager {
      * @param node node of reaction groups
      * @return hashmap of reactions
      */
-    private Map<Integer, Reaction> buildReactionGroups(Node node) {
-        Map<Integer, Reaction> results = new HashMap<Integer, Reaction>();
+    private Map<ChemTypes, Reaction> buildReactionGroups(Node node) {
+        Map<ChemTypes, Reaction> results = new HashMap<>();
         List<Node> reactants = node.selectNodes("reaction");
         int reactantId;
         // Get each reaction in that reacts with the respective group
@@ -222,7 +223,7 @@ public enum EpaManager {
             for (Node outcome : (List<Node>) reactant.selectNodes("outcome")) {
                 consequences.add(Consequence.valueOf(outcome.getText().toUpperCase()));
             }
-            results.put(reactantId, new Reaction(consequences));
+            results.put(ChemTypes.getTypeFromId(reactantId), new Reaction(consequences));
         }
         return results;
     }
@@ -237,6 +238,10 @@ public enum EpaManager {
      * @return true on safe to mix, otherwise false
      */
     public boolean test(int x, int y) {
+        return test(ChemTypes.getTypeFromId(x), ChemTypes.getTypeFromId(y));
+    }
+
+    public boolean test(ChemTypes x, ChemTypes y) {
         if (this.config.isDebug()) {
             logger.trace(String.format("Testing for: %s, %s", x, y));
         }
@@ -277,10 +282,11 @@ public enum EpaManager {
      * @param y category id of compound to mix
      * @return boolean or exception as to the validity of a reaction
      */
-    public boolean validate(int x, int y) {
+    public boolean validate(ChemTypes x, ChemTypes y) {
         if(this.config.isDebug()) {
             logger.trace(String.format("Testing for: %s, %s", x, y));
         }
+
         if(this.reactionMap.containsKey(x)) {
             if(this.reactionMap.get(x).containsKey(y)) {
                 StringBuilder message = new StringBuilder();
@@ -294,6 +300,10 @@ public enum EpaManager {
             }
         }
         return true;
+    }
+
+    public boolean validate(int x, int y) {
+        return validate(ChemTypes.getTypeFromId(x), ChemTypes.getTypeFromId(y));
     }
 
     public boolean validate(BaseCompound one, BaseCompound two) {
@@ -331,14 +341,14 @@ public enum EpaManager {
      */
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for(Map.Entry<Integer, Group> entry : groupMap.entrySet()) {
+        for(Map.Entry<ChemTypes, Group> entry : groupMap.entrySet()) {
             sb.append("Id: ").append(entry.getKey()).append("\n");
             sb.append(entry.getValue().toString());
         }
-        for(Map.Entry<Integer, HashMap<Integer, Reaction>> entry : this.reactionMap.entrySet()) {
+        for(Map.Entry<ChemTypes, HashMap<ChemTypes, Reaction>> entry : this.reactionMap.entrySet()) {
             sb.append("ID: ").append(entry.getKey());
             sb.append(" has the following reactions: ").append(System.getProperty("line.separator"));
-            for(Map.Entry<Integer, Reaction> inner : entry.getValue().entrySet()) {
+            for(Map.Entry<ChemTypes, Reaction> inner : entry.getValue().entrySet()) {
                 sb.append(inner.getKey()).append(":\t").append(inner.getValue().toString());
             }
             sb.append(System.getProperty("line.separator"));
@@ -349,9 +359,9 @@ public enum EpaManager {
 
     private String printMatrix() {
         StringBuilder sb = new StringBuilder("\n");
-        for(Map.Entry<Integer, HashMap<Integer, Reaction>> outer : this.reactionMap.entrySet()) {
+        for(Map.Entry<ChemTypes, HashMap<ChemTypes, Reaction>> outer : this.reactionMap.entrySet()) {
             sb.append(outer.getKey()).append("|\t");
-            for(Map.Entry<Integer, Reaction> inner : outer.getValue().entrySet()) {
+            for(Map.Entry<ChemTypes, Reaction> inner : outer.getValue().entrySet()) {
                 sb.append(inner.getKey()).append("\t");
             }
             sb.append("\n");
@@ -364,7 +374,7 @@ public enum EpaManager {
 
     public String printReactiveGroupAndIds() {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<Integer, Group> entry : this.groupMap.entrySet()) {
+        for (Map.Entry<ChemTypes, Group> entry : this.groupMap.entrySet()) {
             sb.append("put(\"").append(entry.getValue().groupName).append("\",").append(entry.getKey()).append(");\n");
         }
         return sb.toString();

@@ -15,6 +15,7 @@ import config.ConfigFactory;
 import config.InferenceConfig;
 import shared.substances.ChemAxonCompound;
 import shared.substances.BaseCompound;
+import typesystem.epa.ChemTypes;
 import typesystem.epa.EpaManager;
 import typesystem.epa.Group;
 
@@ -31,8 +32,8 @@ public class ChemAxonClassifier implements Classifier {
     ChemAxonClassifier() {}
 
     @Override
-    public Set<Integer> classify(BaseCompound a) {
-        Set<Integer> results = new HashSet<>();
+    public Set<ChemTypes> classify(BaseCompound a) {
+        Set<ChemTypes> results = new HashSet<>();
         // Translate the compound.
         ChemAxonCompound compound = (ChemAxonCompound) a;
         if (this.config.simulateChemistry()) {
@@ -43,7 +44,7 @@ public class ChemAxonClassifier implements Classifier {
                 // Don't go in here if we don't have filters.
                 if (this.config.buildFilters()) {
                     // for all the groups in the EPA map
-                    for (Map.Entry<Integer, Group> entry : EpaManager.INSTANCE.groupMap.entrySet()) {
+                    for (Map.Entry<ChemTypes, Group> entry : EpaManager.INSTANCE.groupMap.entrySet()) {
                         // for every evaluator in the group
                         for (ChemJEP jep : entry.getValue().getEvaluators()) {
                             // see if the SMARTS is represented in the SMILES
@@ -59,7 +60,7 @@ public class ChemAxonClassifier implements Classifier {
             }
             // if we have nothing, then we don't know how to classify it
             if (results.size() == 0) {
-                results.add(-1);
+                results.add(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
             }
         } else {
             results.addAll(compound.getReactiveGroups());

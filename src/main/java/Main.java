@@ -17,7 +17,8 @@ import java.util.Set;
 import compilation.Compiler;
 import config.Config;
 import config.ConfigFactory;
-import phases.inference.ChemTypes;
+import typesystem.epa.ChemTypes;
+import typesystem.epa.EpaManager;
 
 
 public class Main {
@@ -38,10 +39,12 @@ public class Main {
             logger.info("You are in test mode");
         }
 
+        logger.info(EpaManager.INSTANCE);
+
         // Run compilation.
-        Compiler compiler = new Compiler(config);
-        compiler.compile();
-        compiler.runAllOps();
+        //Compiler compiler = new Compiler(config);
+        //compiler.compile();
+        //compiler.runAllOps();
     }
 
     private static void initializeEnvironment(final CommandLine cmd) throws Exception {

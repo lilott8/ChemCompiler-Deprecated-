@@ -3,7 +3,7 @@ package phases.inference.rules;
 import org.apache.commons.lang3.StringUtils;
 
 import compilation.datastructures.basicblock.BasicBlockEdge;
-import phases.inference.ChemTypes;
+import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
 
 /**

@@ -4,22 +4,22 @@
     "INPUTS" : [
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "aaa",
-          "NAME" : "aaa",
+          "ID" : "1",
+          "NAME" : "1",
           "TYPE" : "CHEMICAL"
         }
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "bbb",
-          "NAME" : "bbb",
+          "ID" : "2",
+          "NAME" : "2",
           "TYPE" : "CHEMICAL"
         }
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "ccc",
-          "NAME" : "ccc",
+          "ID" : "3",
+          "NAME" : "3",
           "TYPE" : "CHEMICAL"
         }
       },
@@ -41,7 +41,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "aaa",
+                "NAME" : "1",
                 "VOLUME" : {
                   "VALUE" : "50",
                   "UNITS" : "UL"
@@ -52,8 +52,8 @@
           "OUTPUTS" : [
             {
               "VARIABLE_DECLARATION" : {
-                "ID" : "blood",
-                "NAME" : "blood",
+                "ID" : "x",
+                "NAME" : "x",
                 "TYPE" : "CHEMICAL"
               }
             }
@@ -69,7 +69,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "bbb",
+                "NAME" : "2",
                 "VOLUME" : {
                   "VALUE" : "50",
                   "UNITS" : "UL"
@@ -80,8 +80,8 @@
           "OUTPUTS" : [
             {
               "VARIABLE_DECLARATION" : {
-                "ID" : "water",
-                "NAME" : "water",
+                "ID" : "y",
+                "NAME" : "y",
                 "TYPE" : "CHEMICAL"
               }
             }
@@ -97,7 +97,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "ccc",
+                "NAME" : "3",
                 "VOLUME" : {
                   "VALUE" : "50",
                   "UNITS" : "UL"
@@ -108,8 +108,8 @@
           "OUTPUTS" : [
             {
               "VARIABLE_DECLARATION" : {
-                "ID" : "urine",
-                "NAME" : "urine",
+                "ID" : "z",
+                "NAME" : "z",
                 "TYPE" : "CHEMICAL"
               }
             }
@@ -125,13 +125,13 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "water"
+                "NAME" : "y"
               }
             },
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "blood"
+                "NAME" : "x"
               }
             },
             {
@@ -162,13 +162,13 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "urine"
+                "NAME" : "z"
               }
             },
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "water"
+                "NAME" : "y"
               }
             },
             {

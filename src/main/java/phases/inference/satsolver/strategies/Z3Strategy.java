@@ -6,26 +6,19 @@ import com.microsoft.z3.Solver;
 import com.microsoft.z3.Status;
 import com.microsoft.z3.Z3Exception;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
 
-import config.ConfigFactory;
-import phases.inference.ChemTypes;
+import typesystem.epa.ChemTypes;
 import phases.inference.Constraint;
 
-import static phases.inference.ChemTypes.CONST;
-import static phases.inference.ChemTypes.NAT;
-import static phases.inference.ChemTypes.REAL;
+import static typesystem.epa.ChemTypes.CONST;
 
 /**
  * @created: 8/24/17

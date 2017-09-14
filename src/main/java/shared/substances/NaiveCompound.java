@@ -2,6 +2,8 @@ package shared.substances;
 
 import java.util.Set;
 
+import typesystem.epa.ChemTypes;
+
 /**
  * @created: 9/13/17
  * @since: 0.1
@@ -17,7 +19,7 @@ public class NaiveCompound extends BaseCompound<String> {
         super(id, name);
     }
 
-    public NaiveCompound(long id, String name, Set<Integer> reactiveGroups) {
+    public NaiveCompound(long id, String name, Set<ChemTypes> reactiveGroups) {
         super(id, name, reactiveGroups);
     }
 
