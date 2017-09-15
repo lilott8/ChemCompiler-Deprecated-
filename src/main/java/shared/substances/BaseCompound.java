@@ -14,9 +14,10 @@ import typesystem.epa.ChemTypes;
  */
 public abstract class BaseCompound<T> {
 
-    private long id = -1;
-    private Set<ChemTypes> reactiveGroups = new HashSet<>();
-    private String name = "unknown";
+    protected long id = -1;
+    protected Set<ChemTypes> reactiveGroups = new HashSet<>();
+    protected String name = "unknown";
+    protected String smiles = "";
 
     public BaseCompound(long id) {
         this.id = id;
@@ -35,6 +36,7 @@ public abstract class BaseCompound<T> {
 
     public abstract T getRepresentation();
     public abstract void setRepresentation(T representation);
+    protected abstract void setSmiles(String smiles);
 
     /**
      * Add a reactive group to the set of reactive groups

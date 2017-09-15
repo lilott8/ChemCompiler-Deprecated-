@@ -27,7 +27,7 @@ public class ChemAxonCombiner implements Combiner {
     ChemAxonCombiner() {}
 
     @Override
-    public BaseCompound combine(BaseCompound a, BaseCompound b) {
+    public ChemAxonCompound combine(BaseCompound a, BaseCompound b) {
         ChemAxonCompound compound = null;
         if (this.config.simulateChemistry()) {
             // build a new molecule object

@@ -148,9 +148,9 @@ public class CliWrapper {
 
         // Enforcement level
         desc = "Ignores warnings.  Default is to error on warnings.";
-        options.addOption(Option.builder("i").longOpt("ignore")
+        options.addOption(Option.builder("i").longOpt("ephemeral")
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
-                .argName("ignore").build());
+                .argName("ephemeral").build());
 
         // Build the filters
         desc = "Disable building the SMART filters.  This is usually only disabled for testing purposes.\n" +

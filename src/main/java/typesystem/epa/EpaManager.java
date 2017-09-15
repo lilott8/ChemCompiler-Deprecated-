@@ -141,8 +141,10 @@ public enum EpaManager {
                 }
             }
             count++;
-            if (count % 5 == 0) {
-                log.debug(String.format("%.2f%% complete", 100*(count/(double) groups.size())));
+            if (this.config.isDebug()) {
+                if (count % 5 == 0) {
+                    log.debug(String.format("%.2f%% complete", 100 * (count / (double) groups.size())));
+                }
             }
         }
         if (this.config.isDebug()) {

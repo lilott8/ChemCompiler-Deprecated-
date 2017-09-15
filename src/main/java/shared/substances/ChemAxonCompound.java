@@ -48,6 +48,12 @@ public class ChemAxonCompound extends BaseCompound<Molecule> {
         this.molecule = molecule;
     }
 
+    @Override
+    protected void setSmiles(String smiles) {
+        this.smiles = smiles;
+
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString());

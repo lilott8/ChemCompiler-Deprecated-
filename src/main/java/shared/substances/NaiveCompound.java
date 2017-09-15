@@ -32,4 +32,9 @@ public class NaiveCompound extends BaseCompound<String> {
     public void setRepresentation(String representation) {
 
     }
+
+    @Override
+    protected void setSmiles(String smiles) {
+        this.smiles = smiles;
+    }
 }

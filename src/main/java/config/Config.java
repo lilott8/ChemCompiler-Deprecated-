@@ -206,7 +206,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
             this.classificationLevel = (int) Math.pow(2, (Integer.SIZE - Integer.numberOfLeadingZeros(level)) - 1);
         }
 
-        this.ignoreWarnings = cmd.hasOption("ignore");
+        this.ignoreWarnings = cmd.hasOption("ephemeral");
 
         // Default is build them, so if we don't have it, we build the filters.
         this.buildFilters = !cmd.hasOption("nofilters");
