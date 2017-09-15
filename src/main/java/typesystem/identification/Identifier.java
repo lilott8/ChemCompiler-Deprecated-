@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,7 @@ import chemaxon.formats.MolImporter;
 import config.ConfigFactory;
 import config.InferenceConfig;
 import shared.substances.BaseCompound;
+import typesystem.epa.ChemTypes;
 
 /**
  * @created: 9/13/17
@@ -32,6 +34,8 @@ public abstract class Identifier {
 
     public abstract BaseCompound identifyCompound(String name);
     public abstract BaseCompound identifyCompound(long id);
+    public abstract Set<ChemTypes> identifyCompoundForTypes(String name);
+    public abstract Set<ChemTypes> identifyCompoundForTypes(long id);
 
     /**
      * Test for a CAS number, eg 1354-53-6

@@ -3,11 +3,13 @@ package phases.inference;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import phases.inference.satsolver.strategies.Z3Strategy;
 import typesystem.epa.ChemTypes;
 import typesystem.epa.EpaManager;
+import typesystem.epa.Reaction;
 
 /**
  * @created: 9/12/17
@@ -85,14 +87,16 @@ public class SMTConstraint implements Constraint {
             StringBuilder chemAsserts = new StringBuilder();
             boolean append = false;
 
-            for (ChemTypes t : this.chems) {
-                sb.append("(assert (= ").append(t.toString()).append(" true))").append(System.lineSeparator());
-                /*if (!ChemTypes.illegalCombos.get(t).isEmpty()) {
+            for (ChemTypes constraint : this.chems) {
+                /*for (Map.Entry<ChemTypes, Reaction> entry : EpaManager.INSTANCE.groupMap.entrySet())
+                sb.append("(assert (= ").append(constraint.toString()).append(" true))").append(System.lineSeparator());
+                //if (!EpaManager.INSTANCE.test())
+                if (!ChemTypes.illegalCombos.get(constraint).isEmpty()) {
                     append = true;
-                    for (ChemTypes illegal : ChemTypes.illegalCombos.get(t)) {
+                    for (ChemTypes illegal : ChemTypes.illegalCombos.get(constraint)) {
                         chemAsserts.append("(assert (= ").append(illegal).append(" true))").append(System.lineSeparator());
                         // Add the comparative asserts
-                        conjunctiveAsserts.append("\t\t\t(= ").append(getAssertName(t.toString())).append(" ").append(illegal).append(")").append(System.lineSeparator());
+                        conjunctiveAsserts.append("\t\t\t(= ").append(getAssertName(constraint.toString())).append(" ").append(illegal).append(")").append(System.lineSeparator());
                     }
                 }*/
             }

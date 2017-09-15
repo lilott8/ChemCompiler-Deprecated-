@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
 
 import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
@@ -15,6 +16,7 @@ import io.ConnectorFactory;
 import io.DatabaseConnector;
 import shared.substances.BaseCompound;
 import shared.substances.ChemAxonCompound;
+import typesystem.epa.ChemTypes;
 
 /**
  * @created: 9/13/17
@@ -26,7 +28,7 @@ public class ChemAxonIdentifier extends Identifier {
 
     ChemAxonIdentifier() {}
 
-    public BaseCompound identifyCompound(String name) {
+    public ChemAxonCompound identifyCompound(String name) {
         ChemAxonCompound compound;
             switch(config.getClassificationLevel()) {
                 // pubchem
@@ -72,6 +74,15 @@ public class ChemAxonIdentifier extends Identifier {
     @Override
     public BaseCompound identifyCompound(long id) {
         return this.searchByPubChemId(id);
+    }
+
+    @Override
+    public Set<ChemTypes> identifyCompoundForTypes(String name) {
+        return this.identifyCompound(name).getReactiveGroups();
+    }
+
+    public Set<ChemTypes> identifyCompoundForTypes(long id) {
+        return this.searchByPubChemId(id).getReactiveGroups();
     }
 
     /**

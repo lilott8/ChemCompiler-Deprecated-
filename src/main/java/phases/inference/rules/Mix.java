@@ -28,26 +28,25 @@ public class Mix extends NodeAnalyzer {
         logger.trace(node);
         logger.trace("Constraints: " + constraints);
         // This is the input to the instruction
-        Set<Integer> groups = new HashSet<>();
+        Set<ChemTypes> groups = new HashSet<>();
         for(String in: node.getInputSymbols()) {
+            // We don't know what this is.
             if (!this.constraints.containsKey(in)) {
                 // TODO: converge int and chemtypes....
-                //this.addConstraint(in, new SMTConstraint(in));
-                for (int i : (Set<Integer>) this.identifier.identifyCompound(in).getReactiveGroups()) {
-                   // this.addConstraint(in, i);
+                //this.addConstraint(in, new SMTConstraint(in))
+                for (ChemTypes i : this.identifier.identifyCompoundForTypes(in)) {
+                    this.addConstraint(in, i);
                     groups.add(i);
                 }
             } else {
-                //groups.addAll(this.constraints.get(in).getConstraints());
+                groups.addAll(this.constraints.get(in).getConstraints());
             }
         }
         logger.trace("Groups: " + groups);
 
-        // Simulate the mix for the types.
-
         // The output of the instruction.
         for(String out : node.getOutputSymbols()) {
-            //this.addConstraints(out, groups);
+            this.addConstraints(out, groups);
         }
 
         // Get the properties of the instruction if they exist

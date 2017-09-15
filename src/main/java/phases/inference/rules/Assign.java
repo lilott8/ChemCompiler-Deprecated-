@@ -30,7 +30,7 @@ public class Assign extends NodeAnalyzer {
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
         // TODO: converge the add constraints and identify compound.
-        this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompound(node.getInputSymbols().get(0)).getReactiveGroups());
+        this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompoundForTypes(node.getInputSymbols().get(0)));
         //this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompound(node.getInputSymbols().get(0)));
         //logger.trace("Inferred Constraints: " + constraints.get(node.getOutputSymbols().get(0)));
 

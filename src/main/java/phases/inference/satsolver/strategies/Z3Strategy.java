@@ -64,7 +64,7 @@ public class Z3Strategy implements SolverStrategy {
             sb.append("(check-sat)").append(System.lineSeparator()).append("(pop)").append(System.lineSeparator());
         }
 
-        //logger.info(sb);
+        logger.info(sb);
         return this.solveWithSMT2(sb.toString());
     }
 
