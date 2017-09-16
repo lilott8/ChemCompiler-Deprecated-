@@ -11,9 +11,8 @@ import java.util.Set;
 
 import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
-import io.Connector;
-import io.ConnectorFactory;
-import io.DatabaseConnector;
+import io.database.ConnectorFactory;
+import io.database.DatabaseConnector;
 import shared.substances.BaseCompound;
 import shared.substances.ChemAxonCompound;
 import typesystem.epa.ChemTypes;

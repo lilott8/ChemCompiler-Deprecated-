@@ -1,9 +1,6 @@
-package io;
+package io.database;
 
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import config.ConfigFactory;
 import config.DatabaseConfig;

@@ -1,4 +1,4 @@
-package io;
+package io.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -8,11 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import config.ConfigFactory;
-import config.DatabaseConfig;
 
 /**
  * @created: 9/13/17

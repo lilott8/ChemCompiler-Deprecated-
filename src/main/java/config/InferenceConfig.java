@@ -13,4 +13,5 @@ public interface InferenceConfig extends CommonConfig {
     boolean buildFilters();
     String getEpaDefs();
     boolean simulateChemistry();
+    int smartsLength();
 }

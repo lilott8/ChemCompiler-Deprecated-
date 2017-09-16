@@ -166,6 +166,20 @@ public class CliWrapper {
                 .desc(desc).type(String.class).hasArg().required(false)
                 .argName("epadefs").build());
 
+        // Number of threads in the program
+        desc = "Number of threads to use during execution.\n" +
+                "Usage: -threads [number of threads]\n";
+        options.addOption(Option.builder("threads").longOpt("threads")
+                .desc(desc).type(Integer.class).hasArg().required(false)
+                .argName("threads").build());
+
+        // Minimum char limit for smart filters.
+        desc = "Minimum size of SMARTS filter to use.  Default is maximum.\n" +
+                "Usage: -smarts [number of chars]\n";
+        options.addOption(Option.builder("smarts").longOpt("smarts")
+                .desc(desc).type(Integer.class).hasArg().required(false)
+                .argName("smarts").build());
+
         // Database name
         desc = "Database name.\n" +
                 "Usage: -dbname [name]";

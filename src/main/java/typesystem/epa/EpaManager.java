@@ -54,6 +54,10 @@ public enum EpaManager {
             log.warn("EPAManager is not building the classification filters.");
         }
 
+        if (config.smartsLength() >= 1) {
+            log.warn("SMARTS filters must be length of: " + config.smartsLength() + " to be used.");
+        }
+
         try {
             // buildFromSAX();
             buildFromTree();

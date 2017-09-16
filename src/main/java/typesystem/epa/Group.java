@@ -56,6 +56,8 @@ public class Group {
         this.attributes.putAll(attributes);
         this.chemGroup = ChemTypes.getTypeFromId(id);
 
+
+
         Evaluator evaluator = null;
         try {
             evaluator = new Evaluator();
@@ -67,7 +69,11 @@ public class Group {
         if(config.buildFilters()) {
             for (Tuple<EpaManager.Type, String> t : this.attributes.get(EpaManager.Type.SMARTS)) {
                 try {
-                    evaluators.add(evaluator.compile(String.format("match('%s')", t.getRight()), MolContext.class));
+                    if (config.smartsLength() == -1) {
+                        evaluators.add(evaluator.compile(String.format("match('%s')", t.getRight()), MolContext.class));
+                    } else if(t.getRight().length() >= config.smartsLength()) {
+                        evaluators.add(evaluator.compile(String.format("match('%s')", t.getRight()), MolContext.class));
+                    }
                 } catch (Exception e) {
                     logger.error(e.toString());
                 }

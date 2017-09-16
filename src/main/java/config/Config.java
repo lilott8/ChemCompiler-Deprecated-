@@ -125,6 +125,14 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
      * Use 3rd party chemistry software to simulate mixes.
      */
     private boolean simulateChemistry = false;
+    /**
+     * Minimum length of the SMARTS notation to use as a filter.
+     */
+    private int smartsSize = -1;
+    /**
+     * Number of threads to be used.
+     */
+    private int maxThreads = 1;
 
     /**
      * Build the config object from our command line This method must match that in the main.
@@ -204,6 +212,16 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
             level = (level > 16) ? 16 : level;
             // We can save the level!
             this.classificationLevel = (int) Math.pow(2, (Integer.SIZE - Integer.numberOfLeadingZeros(level)) - 1);
+        }
+
+        if (cmd.hasOption("threads")) {
+            this.maxThreads = Integer.parseInt(cmd.getOptionValue("threads"));
+            this.maxThreads = this.maxThreads < 1 ? 1 : this.maxThreads;
+        }
+
+        if (cmd.hasOption("smarts")) {
+            this.smartsSize = Integer.parseInt(cmd.getOptionValue("smarts"));
+            this.smartsSize = this.smartsSize < 1 ? 1 : this.smartsSize;
         }
 
         this.ignoreWarnings = cmd.hasOption("ephemeral");
@@ -400,5 +418,15 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     @Override
     public boolean simulateChemistry() {
         return this.simulateChemistry;
+    }
+
+    @Override
+    public int smartsLength() {
+        return this.smartsSize;
+    }
+
+    @Override
+    public int getNumberOfThreads() {
+        return this.maxThreads;
     }
 }

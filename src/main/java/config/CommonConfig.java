@@ -13,4 +13,5 @@ public interface CommonConfig {
     boolean clean();
     List<String> getFilesForCompilation();
     public boolean isDebug();
+    int getNumberOfThreads();
 }
