@@ -40,52 +40,22 @@ public class ReactiveCombinator extends Combinator {
 
     public static final Logger logger = LogManager.getLogger(ReactiveCombinator.class);
 
+    static final Table<Integer, Integer, Set<Integer>> comboTable = HashBasedTable.create();
 
-    Table<Integer, Integer, Set<Integer>> comboTable = HashBasedTable.create();
-
+    Combiner combiner = CombinerFactory.getCombiner();
+    Classifier classifier = ClassifierFactory.getClassifier();
 
     public ReactiveCombinator(ThreadedFile threadedFile) {
         super(threadedFile);
     }
 
-    public void writeComboToDisk() throws Exception {
-        BufferedWriter bw = null;
-        File file = new File(this.config.getOutputDir());
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-        FileWriter fw = new FileWriter(file);
-        bw = new BufferedWriter(fw);
-
-        StringBuilder sb = new StringBuilder();
-        StringBuilder endProduct = new StringBuilder();
-
-        Map<Integer, Map<Integer, Set<Integer>>> map = this.comboTable.rowMap();
-        for(int x : map.keySet()) {
-            String xValue = x + "|";
-            Map<Integer, Set<Integer>> column = map.get(x);
-            for (Map.Entry<Integer, Set<Integer>> entry : column.entrySet()) {
-                String yValue = entry.getKey() + "|";
-                for(int value : entry.getValue()) {
-                    endProduct.append(value).append("_");
-                }
-                bw.write(xValue + yValue + endProduct.toString());
-                bw.newLine();
-                endProduct = new StringBuilder();
-            }
-            sb = new StringBuilder();
-        }
-        bw.close();
-    }
-
     public void run() {
-        Combiner combiner = CombinerFactory.getCombiner();
-        Classifier classifier = ClassifierFactory.getClassifier();
         ChemAxonCompound compound;
         int record;
         logger.info("Starting thread: ");
         while (!this.queue.isEmpty()) {
             record = this.queue.poll();
+            logger.info("Running combos with rg: " + record);
             Set<Chemical> set1 = this.reactiveGroupToChemicals.get(record);
             // iterate the "inner" loop
             for (Map.Entry<Integer, Set<Chemical>> inner : this.reactiveGroupToChemicals.entrySet()) {
@@ -105,33 +75,52 @@ public class ReactiveCombinator extends Combinator {
                             }
                             ChemAxonCompound compoundY = new ChemAxonCompound(chemY.pubChemId, chemY.canonicalSmiles);
                             compoundY = this.addMolecule(compoundY, chemY);
-                            compound = (ChemAxonCompound) combiner.combine(compoundX, compoundY);
+                            compound = this.combineChems(compoundX, compoundY);
                             // Add the types to the map
-                            StringBuilder reactiveGroups = new StringBuilder();
-                            for (ChemTypes types : classifier.classify(compound)) {
-                                reactiveGroups.append(types.getValue()).append("_");
-                                addToTable(chemX, chemY, types.getValue());
-                            }
-                            // Save if we need to.
-                            this.writer.push(String.format("%s|%s|%s", chemX.reactiveGroup, chemY.reactiveGroup, reactiveGroups.toString()));
+                            // StringBuilder reactiveGroups = new StringBuilder();
+                            Set<ChemTypes> types = this.classifyChem(compound);
+                            this.addToTable(chemX, chemY, types);
+                            //for (ChemTypes type : types) {
+                                //reactiveGroups.append(typet.getValue()).append("_");
+                            //    addToTable(chemX, chemY, type.getValue());
+                            //}
+                            //this.writer.push(String.format("%s|%s|%s", chemX.reactiveGroup, chemY.reactiveGroup, reactiveGroups.toString()));
                         }
                     }
+                } else {
+                    this.addToTable(record, inner.getKey(), record);
+                    this.addToTable(record, inner.getKey(), inner.getKey());
                 }
             }
             if (this.queue.size() % 4 == 0) {
                 logger.info(String.format("Done processing: %.4f%% of records.",
-                        (this.queue.size() / (double) this.totalRecords * 100)));
+                        ((1-(this.queue.size() / (double) this.totalRecords)) * 100)));
             }
         }
     }
 
-    private void determineWrite(long x, long y, String string) {
+    private synchronized boolean inTable(int x, int y, int type) {
         if (x > y) {
-            this.writer.push(string);
+            int temp = x;
+            x = y;
+            y = temp;
+        }
+
+        if (!this.comboTable.contains(x, y)) {
+            this.comboTable.put(x, y, new HashSet<>());
+            this.comboTable.get(x, y).add(y);
+            return false;
+        }
+
+        if (!this.comboTable.get(x, y).contains(type)) {
+            this.comboTable.get(x, y).add(type);
+            return false;
+        } else {
+            return true;
         }
     }
 
-    private ChemAxonCompound addMolecule(ChemAxonCompound a, Chemical chem) {
+    private synchronized ChemAxonCompound addMolecule(ChemAxonCompound a, Chemical chem) {
         try {
             a.setRepresentation(MolImporter.importMol(chem.canonicalSmiles));
         } catch(MolFormatException e) {
@@ -140,17 +129,51 @@ public class ReactiveCombinator extends Combinator {
         return a;
     }
 
-    private boolean addToTable(Chemical x, Chemical y, int type) {
+    private synchronized boolean addToTable(int x, int y, int type) {
         // If we do one way dominated, we guarantee a sparse matrix.
-        if (x.reactiveGroup < y.reactiveGroup) {
-            Chemical temp = x;
+        if (x > y) {
+            int temp = x;
             x = y;
             y = temp;
         }
-        if (!this.comboTable.contains(x.reactiveGroup, y.reactiveGroup)) {
-            this.comboTable.put(x.reactiveGroup, y.reactiveGroup, new HashSet<>());
+        if (!comboTable.contains(x, y)) {
+            comboTable.put(x, y, new HashSet<>());
         }
-        this.comboTable.get(x.reactiveGroup, y.reactiveGroup).add(type);
+        comboTable.get(x, y).add(type);
+        // just to be sure, add the rgs of the current chemicals.
+        comboTable.get(x, y).add(x);
+        comboTable.get(x, y).add(y);
         return true;
+    }
+
+    private synchronized boolean addToTable(Chemical x, Chemical y, int type) {
+        return this.addToTable(x.reactiveGroup, y.reactiveGroup, type);
+    }
+
+    private boolean addToTable(Chemical x, Chemical y, Set<ChemTypes> types) {
+        for (ChemTypes t : types) {
+            addToTable(x.reactiveGroup, y.reactiveGroup, t.getValue());
+        }
+        return true;
+    }
+
+    private synchronized ChemAxonCompound combineChems(ChemAxonCompound a, ChemAxonCompound b) {
+        return (ChemAxonCompound) combiner.combine(a, b);
+    }
+
+    private synchronized Set<ChemTypes> classifyChem(ChemAxonCompound compound) {
+        return classifier.classify(compound);
+    }
+
+    public void writeToDisk() {
+        for (Table.Cell<Integer, Integer, Set<Integer>> cell: comboTable.cellSet()){
+            StringBuilder sb = new StringBuilder();
+            sb.append(cell.getRowKey()).append("|").append(cell.getColumnKey()).append("|");
+            for (int type : cell.getValue()) {
+                sb.append(type).append("_");
+            }
+            this.writer.push(sb.toString());
+            //System.out.println(cell.getRowKey()+" "+cell.getColumnKey()+" "+cell.getValue());
+        }
     }
 }

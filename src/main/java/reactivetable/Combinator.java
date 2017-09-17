@@ -29,9 +29,9 @@ import io.file.ThreadedFile;
 abstract public class Combinator implements Runnable {
     public static Logger logger = LogManager.getLogger(Combinator.class);
 
-    protected volatile Queue<Integer> queue = new ConcurrentLinkedQueue<>();
+    protected final Queue<Integer> queue = new ConcurrentLinkedQueue<>();
 
-    protected ThreadedFile writer;
+    protected final ThreadedFile writer;
     protected int totalRecords;
     InferenceConfig config = ConfigFactory.getConfig();
     protected Map<Integer, Set<Chemical>> reactiveGroupToChemicals = new LinkedHashMap<>();
@@ -49,7 +49,6 @@ abstract public class Combinator implements Runnable {
         this.queue.addAll(this.reactiveGroupId);
 
         logger.error("Size of queue: " + this.queue);
-        this.writer = writer;
     }
 
     private void parseFile() {
