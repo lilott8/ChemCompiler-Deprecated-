@@ -224,7 +224,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
             this.smartsSize = this.smartsSize < 1 ? 1 : this.smartsSize;
         }
 
-        this.ignoreWarnings = cmd.hasOption("ephemeral");
+        this.ignoreWarnings = cmd.hasOption("ignore");
 
         // Default is build them, so if we don't have it, we build the filters.
         this.buildFilters = !cmd.hasOption("nofilters");

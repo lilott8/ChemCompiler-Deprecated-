@@ -106,6 +106,7 @@ public class ReactiveCombinator extends Combinator {
             if (this.queue.size() % 4 == 0) {
                 logger.info(String.format("Done processing: %.4f%% of records.",
                         ((1-(this.queue.size() / (double) this.totalRecords)) * 100)));
+                this.writeToDisk();
             }
         }
     }
@@ -208,7 +209,7 @@ public class ReactiveCombinator extends Combinator {
         return classifier.classify(compound);
     }
 
-    public void writeToDisk() {
+    public synchronized void writeToDisk() {
         for (Table.Cell<Integer, Integer, Set<Integer>> cell: comboTable.cellSet()){
             StringBuilder sb = new StringBuilder();
             sb.append(cell.getRowKey()).append("|").append(cell.getColumnKey()).append("|");
