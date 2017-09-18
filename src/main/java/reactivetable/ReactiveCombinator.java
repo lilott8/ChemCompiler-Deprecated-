@@ -200,8 +200,13 @@ public class ReactiveCombinator extends Combinator {
         if (comboCache.contains(a.getId(), b.getId())) {
             return comboCache.get(a.getId(), b.getId());
         } else {
-            comboCache.put(a.getId(), b.getId(), (ChemAxonCompound) combiner.combine(a, b));
-            return comboCache.get(a.getId(), b.getId());
+            try {
+                comboCache.put(a.getId(), b.getId(), (ChemAxonCompound) combiner.combine(a, b));
+                return comboCache.get(a.getId(), b.getId());
+            } catch (Exception e) {
+                comboCache.put(a.getId(), b.getId(), (ChemAxonCompound) combiner.combine(a, b));
+                return comboCache.get(a.getId(), b.getId());
+            }
         }
     }
 

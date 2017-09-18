@@ -1,5 +1,8 @@
 package typesystem.combinator;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Set;
 
 import chemaxon.formats.MolExporter;
@@ -24,6 +27,8 @@ public class ChemAxonCombiner implements Combiner {
 
     private Classifier classifier = ClassifierFactory.getClassifier();
 
+    public static final Logger logger = LogManager.getLogger(ChemAxonCombiner.class);
+
     ChemAxonCombiner() {}
 
     @Override
@@ -41,9 +46,8 @@ public class ChemAxonCombiner implements Combiner {
             // then add the second compound
             molecule.fuse(compoundB.getRepresentation());
             try {
-                molecule.aromatize();
-            } catch (Exception e) {
-            }
+                //molecule.aromatize();
+            } catch (Exception e) {}
             try {
                 // We export the SMILES representation to the compound as the name
                 compound = new ChemAxonCompound(-1, (String) MolExporter.exportToObject(molecule, "smiles"));
@@ -52,8 +56,15 @@ public class ChemAxonCombiner implements Combiner {
                 // then we classify this new compound
                 compound.addReactiveGroup(classifier.classify(compound));
             } catch (Exception e) {
-                throw new CombinationException("Cannot combine: " + a.getName() +
-                        " with " + b.getName() + "\n" + e.toString());
+                logger.error("Couldn't combin: " + a + " & " + b);
+                // Fail to the naive method, for now.
+                compound = new ChemAxonCompound(-1, "null");
+                compound.addReactiveGroup(a.getReactiveGroups());
+                compound.addReactiveGroup(b.getReactiveGroups());
+                return compound;
+                //throw new CombinationException("Cannot combine: " + a.getName() +
+                //        " with " + b.getName() + "\n" + e.toString());
+                //
             }
         } else {
             compound = new ChemAxonCompound(-1);
