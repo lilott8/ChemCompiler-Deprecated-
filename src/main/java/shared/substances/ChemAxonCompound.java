@@ -12,7 +12,7 @@ import typesystem.epa.ChemTypes;
  */
 public class ChemAxonCompound extends BaseCompound<Molecule> {
 
-    private Molecule molecule;
+    private Molecule molecule = null;
 
     public ChemAxonCompound(long id) {
         super(id);

@@ -18,6 +18,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
@@ -39,8 +41,13 @@ import typesystem.epa.ChemTypes;
 public class ReactiveCombinator extends Combinator {
 
     public static final Logger logger = LogManager.getLogger(ReactiveCombinator.class);
-
+    // actual table that holds the results.
     static final Table<Integer, Integer, Set<Integer>> comboTable = HashBasedTable.create();
+    // Cache for combining compounds.
+    static final Table<Long, Long, ChemAxonCompound> comboCache = HashBasedTable.create();
+    // Cache the creation of the chemicals.
+    Map<Long, ChemAxonCompound> chemicalCache = new ConcurrentHashMap<>();
+    AtomicInteger numChems = new AtomicInteger(0);
 
     Combiner combiner = CombinerFactory.getCombiner();
     Classifier classifier = ClassifierFactory.getClassifier();
@@ -67,24 +74,28 @@ public class ReactiveCombinator extends Combinator {
                     for (Chemical chemX : set1) {
                         // Instantiate the compound
                         ChemAxonCompound compoundX = new ChemAxonCompound(chemX.pubChemId, chemX.canonicalSmiles);
-                        compoundX = this.addMolecule(compoundX, chemX);
+                        compoundX = this.checkCache(compoundX, chemX);
+                        // iterate as our "Y"
                         for (Chemical chemY : set2) {
                             // we don't need to compare the same
                             if (chemX.equals(chemY)) {
                                 continue;
                             }
                             ChemAxonCompound compoundY = new ChemAxonCompound(chemY.pubChemId, chemY.canonicalSmiles);
-                            compoundY = this.addMolecule(compoundY, chemY);
+                            compoundY = this.checkCache(compoundY, chemY);
                             compound = this.combineChems(compoundX, compoundY);
                             // Add the types to the map
                             // StringBuilder reactiveGroups = new StringBuilder();
                             Set<ChemTypes> types = this.classifyChem(compound);
                             this.addToTable(chemX, chemY, types);
-                            //for (ChemTypes type : types) {
-                                //reactiveGroups.append(typet.getValue()).append("_");
-                            //    addToTable(chemX, chemY, type.getValue());
-                            //}
-                            //this.writer.push(String.format("%s|%s|%s", chemX.reactiveGroup, chemY.reactiveGroup, reactiveGroups.toString()));
+                            // we write the table, so we don't need this.
+                            /*
+                            for (ChemTypes type : types) {
+                                reactiveGroups.append(typet.getValue()).append("_");
+                                addToTable(chemX, chemY, type.getValue());
+                            }
+                            this.writer.push(String.format("%s|%s|%s", chemX.reactiveGroup, chemY.reactiveGroup, reactiveGroups.toString()));
+                            */
                         }
                     }
                 } else {
@@ -99,6 +110,27 @@ public class ReactiveCombinator extends Combinator {
         }
     }
 
+    /**
+     * Do the minimal work necessary to get this working.
+     * Cache the result of chemicals so we don't have to continue to recalculate the expensive JCHEM calls.
+     * @param compound
+     * @param chem
+     * @return
+     */
+    private ChemAxonCompound checkCache(ChemAxonCompound compound, Chemical chem) {
+        if (chemicalCache.containsKey(compound.getId()) && chemicalCache.get(compound.getId()).getRepresentation() != null) {
+            compound = chemicalCache.get(compound.getId());
+        } else {
+            compound = this.addMolecule(compound, chem);
+            chemicalCache.put(compound.getId(), compound);
+            numChems.getAndIncrement();
+            if (numChems.get() % 100 == 0) {
+                logger.debug(String.format("Done adding: %d\t (%.4f%% of records.)", numChems.get(), ((numChems.get()/(double) this.totalRecords)*100)));
+            }
+        }
+        return compound;
+    }
+
     private synchronized boolean inTable(int x, int y, int type) {
         if (x > y) {
             int temp = x;
@@ -106,14 +138,14 @@ public class ReactiveCombinator extends Combinator {
             y = temp;
         }
 
-        if (!this.comboTable.contains(x, y)) {
-            this.comboTable.put(x, y, new HashSet<>());
-            this.comboTable.get(x, y).add(y);
+        if (!comboTable.contains(x, y)) {
+            comboTable.put(x, y, new HashSet<>());
+            comboTable.get(x, y).add(y);
             return false;
         }
 
-        if (!this.comboTable.get(x, y).contains(type)) {
-            this.comboTable.get(x, y).add(type);
+        if (!comboTable.get(x, y).contains(type)) {
+            comboTable.get(x, y).add(type);
             return false;
         } else {
             return true;
@@ -158,7 +190,18 @@ public class ReactiveCombinator extends Combinator {
     }
 
     private synchronized ChemAxonCompound combineChems(ChemAxonCompound a, ChemAxonCompound b) {
-        return (ChemAxonCompound) combiner.combine(a, b);
+        if (a.getId() > b.getId()) {
+            ChemAxonCompound temp = a;
+            b = a;
+            a = temp;
+        }
+
+        if (comboCache.contains(a.getId(), b.getId())) {
+            return comboCache.get(a.getId(), b.getId());
+        } else {
+            comboCache.put(a.getId(), b.getId(), (ChemAxonCompound) combiner.combine(a, b));
+            return comboCache.get(a.getId(), b.getId());
+        }
     }
 
     private synchronized Set<ChemTypes> classifyChem(ChemAxonCompound compound) {
