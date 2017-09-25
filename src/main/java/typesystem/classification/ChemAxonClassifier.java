@@ -40,23 +40,27 @@ public class ChemAxonClassifier implements Classifier {
             Molecule molecule = compound.getRepresentation();
             MolContext context = new MolContext();
             context.setMolecule(compound.getRepresentation());
-            try {
-                // Don't go in here if we don't have filters.
-                if (this.config.buildFilters()) {
-                    // for all the groups in the EPA map
-                    for (Map.Entry<ChemTypes, Group> entry : EpaManager.INSTANCE.groupMap.entrySet()) {
-                        // for every evaluator in the group
-                        for (ChemJEP jep : entry.getValue().getEvaluators()) {
-                            // see if the SMARTS is represented in the SMILES
-                            if (jep.evaluate_boolean(context)) {
-                                // if it is, we add it to the results
-                                results.add(entry.getKey());
+            if (molecule != null) {
+                try {
+                    // Don't go in here if we don't have filters.
+                    if (this.config.buildFilters()) {
+                        // for all the groups in the EPA map
+                        for (Map.Entry<ChemTypes, Group> entry : EpaManager.INSTANCE.groupMap.entrySet()) {
+                            // for every evaluator in the group
+                            for (ChemJEP jep : entry.getValue().getEvaluators()) {
+                                // see if the SMARTS is represented in the SMILES
+                                if (jep.evaluate_boolean(context)) {
+                                    // if it is, we add it to the results
+                                    results.add(entry.getKey());
+                                }
                             }
                         }
                     }
+                } catch (ParseException e) {
+                    logger.error(e);
                 }
-            } catch (ParseException e) {
-                logger.error(e);
+            } else {
+                logger.info("We don't have molecular information for this chemical.");
             }
             // if we have nothing, then we don't know how to classify it
             if (results.size() == 0) {

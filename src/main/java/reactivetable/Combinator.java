@@ -34,6 +34,7 @@ abstract public class Combinator implements Runnable {
     protected final ThreadedFile writer;
     protected int totalRecords;
     InferenceConfig config = ConfigFactory.getConfig();
+    // this houses all the reactive groups and their corresponding chemicals.
     protected Map<Integer, Set<Chemical>> reactiveGroupToChemicals = new LinkedHashMap<>();
     private Set<Integer> reactiveGroupId = new LinkedHashSet<>();
 

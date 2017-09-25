@@ -56,7 +56,7 @@ public class ChemAxonCombiner implements Combiner {
                 // then we classify this new compound
                 compound.addReactiveGroup(classifier.classify(compound));
             } catch (Exception e) {
-                logger.error("Couldn't combin: " + a + " & " + b);
+                logger.error("Couldn't combine: " + a + " & " + b);
                 // Fail to the naive method, for now.
                 compound = new ChemAxonCompound(-1, "null");
                 compound.addReactiveGroup(a.getReactiveGroups());

@@ -94,5 +94,9 @@ public abstract class BaseCompound<T> {
         //return sb.toString();
         return name + reactiveGroups;
     }
+
+    public String getKey() {
+        return String.format("%d-%s", 6, "");
+    }
 }
 

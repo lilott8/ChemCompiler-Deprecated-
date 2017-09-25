@@ -36,4 +36,8 @@ public class Chemical {
         }
         return this.pubChemId == ((Chemical) obj).pubChemId;
     }
+
+    public String getKey() {
+        return String.format("%d-%d", this.pubChemId, this.reactiveGroup);
+    }
 }

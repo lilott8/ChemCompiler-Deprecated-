@@ -41,7 +41,9 @@ import typesystem.epa.ChemTypes;
 public class ReactiveCombinator extends Combinator {
 
     public static final Logger logger = LogManager.getLogger(ReactiveCombinator.class);
-    // actual table that holds the results.
+    // Actual table that holds the results.
+    // X,y coordinates retrieve the resultant reactive groups of
+    // Mixing the two groups together.
     static final Table<Integer, Integer, Set<Integer>> comboTable = HashBasedTable.create();
     // Cache for combining compounds.
     static final Table<Long, Long, ChemAxonCompound> comboCache = HashBasedTable.create();
@@ -127,6 +129,8 @@ public class ReactiveCombinator extends Combinator {
             numChems.getAndIncrement();
             if (numChems.get() % 100 == 0) {
                 logger.debug(String.format("Done adding: %d\t (%.4f%% of records.)", numChems.get(), ((numChems.get()/(double) this.totalRecords)*100)));
+            } else {
+                logger.trace("We have added: " + numChems + " chems");
             }
         }
         return compound;
@@ -155,7 +159,7 @@ public class ReactiveCombinator extends Combinator {
 
     private synchronized ChemAxonCompound addMolecule(ChemAxonCompound a, Chemical chem) {
         try {
-            a.setRepresentation(MolImporter.importMol(chem.canonicalSmiles));
+            a.setRepresentation(MolImporter.importMol(chem.canonicalSmiles, "smiles"));
         } catch(MolFormatException e) {
             logger.error("Could not instantiate: " + chem.pubChemId);
         }

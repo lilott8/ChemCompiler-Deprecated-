@@ -116,7 +116,7 @@
         </dependency>
 
         <!-- Dependencies for chemaxon.  There are necessary settings.xml configs
-            necessary to receive access to the repository
+            to obtain access to the repository
         -->
         <dependency>
             <groupId>com.chemaxon</groupId>
