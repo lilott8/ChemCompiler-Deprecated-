@@ -3,22 +3,23 @@ package reactivetable;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import chemaxon.formats.MolFormatException;
@@ -38,134 +39,92 @@ import typesystem.epa.ChemTypes;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class ReactiveCombinator extends Combinator {
+public class ReactiveCombinator implements Runnable {
 
     public static final Logger logger = LogManager.getLogger(ReactiveCombinator.class);
     // Actual table that holds the results.
     // X,y coordinates retrieve the resultant reactive groups of
     // Mixing the two groups together.
-    static final Table<Integer, Integer, Set<Integer>> comboTable = HashBasedTable.create();
-    // Cache for combining compounds.
-    static final Table<Long, Long, ChemAxonCompound> comboCache = HashBasedTable.create();
-    // Cache the creation of the chemicals.
-    Map<Long, ChemAxonCompound> chemicalCache = new ConcurrentHashMap<>();
-    AtomicInteger numChems = new AtomicInteger(0);
+    private static final Table<Integer, Integer, Set<Integer>> comboTable = HashBasedTable.create();
+    // Queue of what needs to be processed (the reactive group ids)
+    private final Queue<Integer> queue = new ConcurrentLinkedQueue<>();
+    // this houses all the reactive groups and their corresponding chemicals.
+    private Map<Integer, Set<ChemAxonCompound>> reactiveGroupToChemicals = new HashMap<>();
+    // file to write things to disk
+    private final ThreadedFile writer;
 
-    Combiner combiner = CombinerFactory.getCombiner();
-    Classifier classifier = ClassifierFactory.getClassifier();
+    // Cache for combining compounds.
+    private static final Table<Long, Long, ChemAxonCompound> comboCache = HashBasedTable.create();
+    //private AtomicInteger numChems = new AtomicInteger(0);
+    // total records to be processed (queue.size() before runn())
+    private int totalRecords;
+    // config for setting things
+    private InferenceConfig config = ConfigFactory.getConfig();
+    // List of id's we a
+    private Set<Integer> reactiveGroupId = new LinkedHashSet<>();
+
+    // handy globals to make things easier.
+    private Combiner combiner = CombinerFactory.getCombiner();
+    private Classifier classifier = ClassifierFactory.getClassifier();
 
     public ReactiveCombinator(ThreadedFile threadedFile) {
-        super(threadedFile);
+        this.writer = threadedFile;
+        this.buildChemicals(this.parseFile());
+
+        this.queue.addAll(this.reactiveGroupId);
+
+        logger.error("Size of queue: " + this.queue);
     }
 
     public void run() {
         ChemAxonCompound compound;
-        int record;
+        int currentReactiveGroup;
         logger.info("Starting thread: ");
         while (!this.queue.isEmpty()) {
-            record = this.queue.poll();
-            logger.info("Running combos with rg: " + record);
-            Set<Chemical> set1 = this.reactiveGroupToChemicals.get(record);
+            currentReactiveGroup = this.queue.poll();
+            logger.info("Running combos with rg: " + currentReactiveGroup);
+            // Set of chemicals that belong to the group.
+            Set<ChemAxonCompound> set1 = this.reactiveGroupToChemicals.get(currentReactiveGroup);
             // iterate the "inner" loop
-            for (Map.Entry<Integer, Set<Chemical>> inner : this.reactiveGroupToChemicals.entrySet()) {
-                if (inner.getKey() != record) {
-                    int group2 = inner.getKey();
-                    Set<Chemical> set2 = inner.getValue();
-
+            for (Map.Entry<Integer, Set<ChemAxonCompound>> inner : this.reactiveGroupToChemicals.entrySet()) {
+                // We don't need to do diagonal comparisons (3,3) or (5,5)
+                if (currentReactiveGroup != inner.getKey()) {
+                    // Set of chemicals that belong to the group.
+                    Set<ChemAxonCompound> set2 = inner.getValue();
                     // Iterate as our "X"
-                    for (Chemical chemX : set1) {
-                        // Instantiate the compound
-                        ChemAxonCompound compoundX = new ChemAxonCompound(chemX.pubChemId, chemX.canonicalSmiles);
-                        compoundX = this.checkCache(compoundX, chemX);
+                    for (ChemAxonCompound chemX : set1) {
                         // iterate as our "Y"
-                        for (Chemical chemY : set2) {
+                        for (ChemAxonCompound chemY : set2) {
                             // we don't need to compare the same
                             if (chemX.equals(chemY)) {
                                 continue;
                             }
-                            ChemAxonCompound compoundY = new ChemAxonCompound(chemY.pubChemId, chemY.canonicalSmiles);
-                            compoundY = this.checkCache(compoundY, chemY);
-                            compound = this.combineChems(compoundX, compoundY);
+                            compound = this.combineChems(chemX, chemY);
                             // Add the types to the map
-                            // StringBuilder reactiveGroups = new StringBuilder();
                             Set<ChemTypes> types = this.classifyChem(compound);
                             this.addToTable(chemX, chemY, types);
-                            // we write the table, so we don't need this.
-                            /*
-                            for (ChemTypes type : types) {
-                                reactiveGroups.append(typet.getValue()).append("_");
-                                addToTable(chemX, chemY, type.getValue());
-                            }
-                            this.writer.push(String.format("%s|%s|%s", chemX.reactiveGroup, chemY.reactiveGroup, reactiveGroups.toString()));
-                            */
                         }
                     }
                 } else {
-                    this.addToTable(record, inner.getKey(), record);
-                    this.addToTable(record, inner.getKey(), inner.getKey());
+                    this.addToTable(currentReactiveGroup, inner.getKey(), currentReactiveGroup);
+                    //this.addToTable(currentReactiveGroup, inner.getKey(), inner.getKey());
                 }
             }
             if (this.queue.size() % 4 == 0) {
                 logger.info(String.format("Done processing: %.4f%% of records.",
                         ((1-(this.queue.size() / (double) this.totalRecords)) * 100)));
-                this.writeToDisk();
+                //this.writeToDisk();
             }
         }
     }
 
     /**
-     * Do the minimal work necessary to get this working.
-     * Cache the result of chemicals so we don't have to continue to recalculate the expensive JCHEM calls.
-     * @param compound
-     * @param chem
-     * @return
+     * Ensures we always have a place to add the type to.
+     * @param x int
+     * @param y int
+     * @param type int
+     * @return boolean
      */
-    private ChemAxonCompound checkCache(ChemAxonCompound compound, Chemical chem) {
-        if (chemicalCache.containsKey(compound.getId()) && chemicalCache.get(compound.getId()).getRepresentation() != null) {
-            compound = chemicalCache.get(compound.getId());
-        } else {
-            compound = this.addMolecule(compound, chem);
-            chemicalCache.put(compound.getId(), compound);
-            numChems.getAndIncrement();
-            if (numChems.get() % 100 == 0) {
-                logger.debug(String.format("Done adding: %d\t (%.4f%% of records.)", numChems.get(), ((numChems.get()/(double) this.totalRecords)*100)));
-            } else {
-                logger.trace("We have added: " + numChems + " chems");
-            }
-        }
-        return compound;
-    }
-
-    private synchronized boolean inTable(int x, int y, int type) {
-        if (x > y) {
-            int temp = x;
-            x = y;
-            y = temp;
-        }
-
-        if (!comboTable.contains(x, y)) {
-            comboTable.put(x, y, new HashSet<>());
-            comboTable.get(x, y).add(y);
-            return false;
-        }
-
-        if (!comboTable.get(x, y).contains(type)) {
-            comboTable.get(x, y).add(type);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private synchronized ChemAxonCompound addMolecule(ChemAxonCompound a, Chemical chem) {
-        try {
-            a.setRepresentation(MolImporter.importMol(chem.canonicalSmiles, "smiles"));
-        } catch(MolFormatException e) {
-            logger.error("Could not instantiate: " + chem.pubChemId);
-        }
-        return a;
-    }
-
     private synchronized boolean addToTable(int x, int y, int type) {
         // If we do one way dominated, we guarantee a sparse matrix.
         if (x > y) {
@@ -183,17 +142,54 @@ public class ReactiveCombinator extends Combinator {
         return true;
     }
 
-    private synchronized boolean addToTable(Chemical x, Chemical y, int type) {
-        return this.addToTable(x.reactiveGroup, y.reactiveGroup, type);
-    }
-
-    private boolean addToTable(Chemical x, Chemical y, Set<ChemTypes> types) {
-        for (ChemTypes t : types) {
-            addToTable(x.reactiveGroup, y.reactiveGroup, t.getValue());
+    /**
+     * "Public" exposing method to add a reaction to the table
+     * @param chemX ChemAxonCompound
+     * @param chemY ChemAxonCompound
+     * @param types set of ChemTypes
+     * @return boolean
+     */
+    private synchronized boolean addToTable(ChemAxonCompound chemX, ChemAxonCompound chemY, Set<ChemTypes> types) {
+        for (ChemTypes x : chemX.getReactiveGroups()) {
+            for (ChemTypes y : chemY.getReactiveGroups()) {
+                for (ChemTypes type : types) {
+                    this.addToTable(x.getValue(), y.getValue(), type.getValue());
+                }
+            }
         }
         return true;
     }
 
+    /**
+     * Wrapper function to classify the created compound.
+     * @param compound ChemAxonCompound
+     * @return Set of ReactiveGroups
+     */
+    private synchronized Set<ChemTypes> classifyChem(ChemAxonCompound compound) {
+        return classifier.classify(compound);
+    }
+
+    /**
+     * Wrapper funciton to add the molecule to the ChemAxonCompound
+     * @param a ChemAxonCompound
+     * @param chem Chemical object
+     * @return ChemAxonCompound with molecule.
+     */
+    private synchronized ChemAxonCompound addMolecule(ChemAxonCompound a, Chemical chem) {
+        try {
+            a.setRepresentation(MolImporter.importMol(chem.canonicalSmiles, "smiles"));
+        } catch(MolFormatException e) {
+            logger.error("Could not instantiate: " + chem.pubChemId);
+        }
+        return a;
+    }
+
+    /**
+     * Combine the chemicals to get the resultant reactive group(s).
+     * @param a ChemAxonCompound
+     * @param b ChemAxonCompound
+     * @return ChemAxonCompound
+     */
     private synchronized ChemAxonCompound combineChems(ChemAxonCompound a, ChemAxonCompound b) {
         if (a.getId() > b.getId()) {
             ChemAxonCompound temp = a;
@@ -214,10 +210,10 @@ public class ReactiveCombinator extends Combinator {
         }
     }
 
-    private synchronized Set<ChemTypes> classifyChem(ChemAxonCompound compound) {
-        return classifier.classify(compound);
-    }
-
+    /**
+     * Write portions of the table to disk.
+     * Useful for obtaining intermediate results.
+     */
     public synchronized void writeToDisk() {
         for (Table.Cell<Integer, Integer, Set<Integer>> cell: comboTable.cellSet()){
             StringBuilder sb = new StringBuilder();
@@ -227,6 +223,87 @@ public class ReactiveCombinator extends Combinator {
             }
             this.writer.push(sb.toString());
             //System.out.println(cell.getRowKey()+" "+cell.getColumnKey()+" "+cell.getValue());
+        }
+    }
+
+    /**
+     * This parses the chemicals to a temporary container.
+     * This temporary container just makes it easier to manage
+     * The data and not have to put ugliness in here.
+     * @return List of chemicals.
+     */
+    private List<Chemical> parseFile() {
+        BufferedReader reader = null;
+        List<Chemical> results = new ArrayList<>();
+        try {
+            File file = new File(this.config.getFilesForCompilation().get(0));
+            reader = new BufferedReader(new FileReader(file));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Number of chemicals that ultimately need to be mixed.
+                this.totalRecords++;
+                Chemical chem = new Chemical(line);
+                results.add(chem);
+                this.reactiveGroupId.add(chem.reactiveGroup);
+                // Make sure the reactiveGroupToChemicals has the sets they need!
+                if (!this.reactiveGroupToChemicals.containsKey(chem.reactiveGroup)) {
+                    this.reactiveGroupToChemicals.put(chem.reactiveGroup, new HashSet<>());
+                }
+            }
+        } catch (IOException e) {
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch(IOException ee) {}
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Use ChemAxon to instantiate the chemicals.
+     * Store those in the cache.  "Rip the band-aid off first."
+     * @param input
+     */
+    private void buildChemicals(List<Chemical> input) {
+        int count = 0;
+
+        // Cache the creation of the chemicals.
+        Map<Long, ChemAxonCompound> chemicalCache = new ConcurrentHashMap<>();
+
+        for (Chemical chem : input) {
+            // If we have seen the chemical before, add to the reactive group
+            if (chemicalCache.containsKey(chem.pubChemId)) {
+                chemicalCache.get(chem.pubChemId).addReactiveGroup(chem.reactiveGroup);
+                this.addChemicalToReactiveGroups(chemicalCache.get(chem.pubChemId));
+            } else {
+                ChemAxonCompound compound = new ChemAxonCompound(chem.pubChemId, chem.canonicalSmiles);
+                compound.addReactiveGroup(chem.reactiveGroup);
+                compound = this.addMolecule(compound, chem);
+                chemicalCache.put(compound.getId(), compound);
+                this.addChemicalToReactiveGroups(compound);
+            }
+            count++;
+            double done = 100*(count / (double)input.size());
+            if (this.config.isDebug()) {
+                logger.trace("done with chemical " + count);
+            }
+            if (input.size() % 100 == 0) {
+                logger.debug(String.format("Done processing: %.4f%% chemicals", done));
+            }
+        }
+    }
+
+    /**
+     * Adds the instantiated chemicals to their
+     * Respective reactive group.
+     * @param compound ChemAxonCompound
+     */
+    private void addChemicalToReactiveGroups(ChemAxonCompound compound) {
+        for (ChemTypes type : compound.getReactiveGroups()) {
+            this.reactiveGroupToChemicals.get(type.getValue()).add(compound);
         }
     }
 }

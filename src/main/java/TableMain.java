@@ -22,11 +22,6 @@ public class TableMain {
     public static final Logger logger = LogManager.getLogger(TableMain.class);
 
     public static void main(String... args) throws Exception {
-        Molecule molecule = MolImporter.importMol("C[C@H]1[C@@]([C@H]([C@@H](O1)O[C@@H]2[C@H]([C@@H]([C@H]([C@@H]([C@H]2O)O)N=C(N)N)O)N=C(N)N)O[C@H]3[C@H]([C@@H]([C@H]([C@@H](O3)CO)O)O)NC)(C=O)O", "smiles");
-        logger.info(molecule.bondlength());
-        System.exit(0);
-
-
         CliWrapper cli = new CliWrapper();
         cli.parseCommandLine(args);
 
