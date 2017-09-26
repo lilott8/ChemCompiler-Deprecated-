@@ -47,6 +47,10 @@ public abstract class BaseCompound<T> {
         this.reactiveGroups.add(ChemTypes.getTypeFromId(group));
     }
 
+    public void addReactiveGroup(ChemTypes type) {
+        this.reactiveGroups.add(type);
+    }
+
     /**
      * Add a set of reactive groups to the current set
      * @param groups

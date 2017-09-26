@@ -190,4 +190,8 @@ public enum ChemTypes {
     public static boolean isNumber(ChemTypes t) {
         return (t == NAT || t == REAL);
     }
+
+    public String toString(ChemTypes t) {
+        return String.format("%s (%d)", t, t.value);
+    }
 }
