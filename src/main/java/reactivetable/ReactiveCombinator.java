@@ -309,6 +309,33 @@ public class ReactiveCombinator implements Runnable {
             this.addChemicalToReactiveGroups(entry.getValue());
         }
         logger.info("Done adding chemicals to reactive group table.");
+        printReactiveGroupTable();
+    }
+
+    private void printReactiveGroupTable() {
+        StringBuilder sb = new StringBuilder();
+        int total = 0;
+        int max = -1;
+        int idOfMax = -1;
+        for (Map.Entry<Integer, Set<ChemAxonCompound>> entry : this.reactiveGroupToChemicals.entrySet()) {
+            sb.append("Reactive Group: ").append(entry.getKey()).append(System.lineSeparator());
+            sb.append("Has ").append(entry.getValue().size()).append(" chemicals").append(System.lineSeparator());
+            total += entry.getValue().size();
+            for (ChemAxonCompound chem : entry.getValue()) {
+                sb.append(chem.getId()).append(", ");
+            }
+            if (max < entry.getValue().size()) {
+                max = entry.getValue().size();
+                idOfMax = entry.getKey();
+            }
+
+            sb.append(System.lineSeparator());
+            sb.append("=======================================").append(System.lineSeparator());
+        }
+
+        sb.append("Total chemicals: ").append(total).append(System.lineSeparator());
+        sb.append(idOfMax).append(" has the most at: ").append(max);
+        logger.warn(sb.toString());
     }
 
     /**
