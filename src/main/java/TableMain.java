@@ -7,6 +7,8 @@ import chemaxon.formats.MolImporter;
 import chemaxon.struc.Molecule;
 import cli.CliWrapper;
 import config.ConfigFactory;
+import io.file.FileHandler;
+import io.file.SimpleFile;
 import io.file.ThreadedFile;
 import reactivetable.ReactiveCombinator;
 import reactivetable.ThreadManager;
@@ -25,17 +27,17 @@ public class TableMain {
         CliWrapper cli = new CliWrapper();
         cli.parseCommandLine(args);
 
-        //EpaManager.INSTANCE.dummy();
+        //EpaManager.INSTANCE.buildEPAMap();
 
         ThreadManager threadManager = new ThreadManager();
         // Instantiate the threaded file manager.
-        ThreadedFile fileManager = new ThreadedFile();
+        FileHandler fileManager = new SimpleFile();
 
         // Create the new combinator
         ReactiveCombinator combo = new ReactiveCombinator(fileManager);
 
         // run the file manager as a new thread.
-        fileManager.start();
+        // fileManager.start();
         // threadManager.runThread(new Thread(fileManager, String.format("Thread-%d", threadManager.getNextId())));
         // Add the correct number of combine threads.
         for (int x = 0; x < ConfigFactory.getConfig().getNumberOfThreads(); x++) {
@@ -50,7 +52,7 @@ public class TableMain {
         // block anything else from happening!
         while(!threadManager.isDone()) {}
         // write the table to disk.
-        combo.writeToDisk();
+        //combo.writeToDisk();
 
         // Notify the fileManager that we are done working.
         fileManager.sendDoneSignal();

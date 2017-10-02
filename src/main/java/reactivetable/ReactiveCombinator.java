@@ -26,6 +26,8 @@ import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
 import config.ConfigFactory;
 import config.InferenceConfig;
+import io.file.FileHandler;
+import io.file.SimpleFile;
 import io.file.ThreadedFile;
 import shared.substances.ChemAxonCompound;
 import typesystem.classification.Classifier;
@@ -51,7 +53,8 @@ public class ReactiveCombinator implements Runnable {
     // this houses all the reactive groups and their corresponding chemicals.
     private Map<Integer, Set<ChemAxonCompound>> reactiveGroupToChemicals = new HashMap<>();
     // file to write things to disk
-    private final ThreadedFile writer;
+    private final FileHandler writer;
+    private final FileHandler doneWriter;
 
     // Cache for combining compounds.
     private final Table<Long, Long, ChemAxonCompound> comboCache = HashBasedTable.create();
@@ -67,11 +70,12 @@ public class ReactiveCombinator implements Runnable {
     private Combiner combiner = CombinerFactory.getCombiner();
     private Classifier classifier = ClassifierFactory.getClassifier();
 
-    public ReactiveCombinator(ThreadedFile threadedFile) {
+    public ReactiveCombinator(FileHandler threadedFile) {
         this.writer = threadedFile;
         this.buildChemicals(this.parseFile());
 
         this.queue.addAll(this.reactiveGroupId);
+        this.doneWriter = new SimpleFile("completed.txt");
 
         logger.error("Size of queue: " + this.queue);
     }
@@ -112,20 +116,28 @@ public class ReactiveCombinator implements Runnable {
                     }
                 } else {
                     this.addToTable(currentReactiveGroup, inner.getKey(), currentReactiveGroup);
-                    //this.addToTable(currentReactiveGroup, inner.getKey(), inner.getKey());
                 }
                 logger.debug(String.format("Done mixing for RG: %d, %d", currentReactiveGroup, inner.getKey()));
             } // for each RG
             if (this.queue.size() % 4 == 0) {
                 logger.info(String.format("Done processing: %.4f%% of records.",
                         ((1-(this.queue.size() / (double) this.totalRecords)) * 100)));
-                //this.writeToDisk();
             }
+            // Write the table to disk.
+            this.writer.writeTable(this.comboTable);
+            // This saves the table in an iterative form,
+            // There will be queue.size() files, monotonic in nature.
+            this.writer.changeFile();
+            // Save our completed list.
+            this.doneWriter.write(currentReactiveGroup);
         }
+        // Close the done file!
+        this.doneWriter.sendDoneSignal();
     }
 
     /**
      * Ensures we always have a place to add the type to.
+     * Sort by x ascending.
      * @param x int
      * @param y int
      * @param type int
@@ -192,6 +204,7 @@ public class ReactiveCombinator implements Runnable {
 
     /**
      * Combine the chemicals to get the resultant reactive group(s).
+     * Order by x ascending.
      * @param a ChemAxonCompound
      * @param b ChemAxonCompound
      * @return ChemAxonCompound

@@ -1,5 +1,7 @@
 package io.file;
 
+import com.google.common.collect.Table;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,23 +27,20 @@ import phases.inference.Inference;
  * Handles a buffer queue to write to a disk.
  * This will shuffle a file every N writes.
  */
-public class ThreadedFile extends Thread {
+public class ThreadedFile extends FileHandler {
 
     private Queue<String> queue = new ConcurrentLinkedQueue<>();
     private boolean receivedDone = false;
-    private String outputDir;
-    private String baseFile;
-    private final int MAX_WRITES = 100;
-    private BufferedWriter writer;
-    private int fileNumber = 1;
-    private long invalid = 0;
+
 
     public static final Logger logger = LogManager.getLogger(ThreadedFile.class);
 
     public ThreadedFile() {
-        InferenceConfig config = ConfigFactory.getConfig();
-        this.outputDir = config.getOutputDir();
-        this.baseFile = "test";
+        super();
+    }
+
+    public ThreadedFile(String name) {
+        super(name);
     }
 
     public void push(String item) {
@@ -61,28 +60,7 @@ public class ThreadedFile extends Thread {
         this.receivedDone = true;
     }
 
-    private void changeFile() {
-        this.closeFile();
-        this.openFile();
-        logger.info("Changing files: " + this.getCurrentFile());
-    }
-
-    private String getCurrentFile() {
-        return String.format("%s%s_%d", this.outputDir, this.baseFile, this.fileNumber);
-    }
-
-    private void closeFile() {
-        try {
-            this.writer.close();
-            // increment after close!
-            this.fileNumber++;
-        } catch(IOException e) {
-            logger.error(String.format("Error closing: %s", this.getCurrentFile()));
-            logger.error(e.toString());
-        }
-    }
-
-    private void openFile() {
+    protected void openFile() {
         try {
             this.writer = new BufferedWriter(new FileWriter(this.getCurrentFile()));
         } catch(IOException e) {
@@ -91,17 +69,8 @@ public class ThreadedFile extends Thread {
         }
     }
 
-    private boolean write(String item) {
-        try {
-            this.writer.write(item);
-            this.writer.newLine();
-            return true;
-        } catch(IOException e) {
-            logger.error(String.format("Error writing to: %s", this.getCurrentFile()));
-            logger.info("With data: " + item);
-            logger.error(e.toString());
-            return false;
-        }
+    protected String getCurrentFile() {
+        return String.format("%s%s_%d", this.outputDir, this.baseFile, this.fileNumber);
     }
 
     @Override
@@ -131,5 +100,10 @@ public class ThreadedFile extends Thread {
         }
         // Close the file once we are receivedDone.
         this.closeFile();
+    }
+
+    @Override
+    public void writeTable(Table<Integer, Integer, Set<Integer>> table) {
+        this.write(table);
     }
 }
