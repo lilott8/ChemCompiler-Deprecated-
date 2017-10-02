@@ -10,7 +10,9 @@ import config.ConfigFactory;
 import io.file.FileHandler;
 import io.file.SimpleFile;
 import io.file.ThreadedFile;
+import reactivetable.ChemicalCombinator;
 import reactivetable.ReactiveCombinator;
+import reactivetable.TableCombinator;
 import reactivetable.ThreadManager;
 import typesystem.epa.EpaManager;
 
@@ -34,7 +36,7 @@ public class TableMain {
         FileHandler fileManager = new SimpleFile();
 
         // Create the new combinator
-        ReactiveCombinator combo = new ReactiveCombinator(fileManager);
+        TableCombinator combo = new ChemicalCombinator(fileManager);
 
         // run the file manager as a new thread.
         // fileManager.start();

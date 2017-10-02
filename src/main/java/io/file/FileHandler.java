@@ -70,6 +70,10 @@ public abstract class FileHandler extends Thread {
         return this.write(Integer.toString(number));
     }
 
+    public boolean write(long number) {
+        return this.write(Long.toString(number));
+    }
+
     public boolean write(String item) {
         try {
             this.writer.write(item);
