@@ -69,9 +69,7 @@ public abstract class TableCombinator implements Runnable {
     public TableCombinator(FileHandler handler) {
         this.writer = handler;
         this.buildChemicals(this.parseFile());
-
-
-        this.doneWriter = new SimpleFile("completed.txt");
+        this.doneWriter = new SimpleFile("completed.txt", false);
     }
 
     /**

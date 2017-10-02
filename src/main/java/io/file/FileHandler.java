@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
 
@@ -26,20 +27,21 @@ public abstract class FileHandler extends Thread {
     protected BufferedWriter writer;
     protected int fileNumber = 1;
     protected long invalid = 0;
+    protected boolean useNumbering = false;
     private Logger logger = LogManager.getLogger(FileHandler.class);
 
-    abstract void openFile();
+    //abstract void openFile();
     public abstract void push(String string);
     public abstract void sendDoneSignal();
     public abstract void writeTable(Table<Integer, Integer, Set<Integer>> table);
-    abstract String getCurrentFile();
+    public abstract void flush();
 
     {
         InferenceConfig config = ConfigFactory.getConfig();
         this.outputDir = config.getOutputDir();
     }
 
-    protected  FileHandler() {
+    protected FileHandler() {
         this.baseFile = "test";
         this.openFile();
     }
@@ -49,10 +51,25 @@ public abstract class FileHandler extends Thread {
         this.openFile();
     }
 
+    protected FileHandler(String fileName, boolean useNumbering) {
+        this.baseFile = fileName;
+        this.useNumbering = useNumbering;
+        this.openFile();
+    }
+
     public void changeFile() {
         this.closeFile();
         this.openFile();
-        logger.info("Changing files: " + this.getCurrentFile());
+        logger.trace("Changing files: " + this.getCurrentFile());
+    }
+
+    protected void openFile() {
+        try {
+            this.writer = new BufferedWriter(new FileWriter(this.getCurrentFile()));
+        } catch(IOException e) {
+            logger.error(String.format("Error opening: %s", this.getCurrentFile()));
+            logger.error(e.toString());
+        }
     }
 
     protected void closeFile() {
@@ -63,6 +80,14 @@ public abstract class FileHandler extends Thread {
         } catch(IOException e) {
             logger.error(String.format("Error closing: %s", this.getCurrentFile()));
             logger.error(e.toString());
+        }
+    }
+
+    protected String getCurrentFile() {
+        if (this.useNumbering) {
+            return String.format("%s%s_%d", this.outputDir, this.baseFile, this.fileNumber);
+        } else {
+            return this.outputDir + this.baseFile;
         }
     }
 

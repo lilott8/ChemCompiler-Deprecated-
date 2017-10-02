@@ -22,7 +22,6 @@ import reactivetable.Chemical;
  */
 public class SimpleFile extends FileHandler {
 
-
     public static final Logger logger = LogManager.getLogger(ThreadedFile.class);
 
     public SimpleFile() {
@@ -31,6 +30,10 @@ public class SimpleFile extends FileHandler {
 
     public SimpleFile(String name) {
         super(name);
+    }
+
+    public SimpleFile(String name, boolean useNumbering) {
+        super(name, useNumbering);
     }
 
     @Override
@@ -49,16 +52,12 @@ public class SimpleFile extends FileHandler {
     }
 
     @Override
-    String getCurrentFile() {
-        return String.format("%s%s_%d", this.outputDir, this.baseFile, this.fileNumber);
-    }
-
-    public void openFile() {
+    public void flush() {
         try {
-            this.writer = new BufferedWriter(new FileWriter(this.getCurrentFile()));
+            this.writer.flush();
         } catch(IOException e) {
-            logger.error(String.format("Error opening: %s", this.getCurrentFile()));
-            logger.error(e.toString());
+            logger.error("Could not flush to disk.");
+            logger.error(e);
         }
     }
 }

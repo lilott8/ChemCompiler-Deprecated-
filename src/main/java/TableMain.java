@@ -33,7 +33,7 @@ public class TableMain {
 
         ThreadManager threadManager = new ThreadManager();
         // Instantiate the threaded file manager.
-        FileHandler fileManager = new SimpleFile();
+        FileHandler fileManager = new SimpleFile("test", true);
 
         // Create the new combinator
         TableCombinator combo = new ChemicalCombinator(fileManager);

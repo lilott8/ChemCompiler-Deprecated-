@@ -43,6 +43,10 @@ public class ThreadedFile extends FileHandler {
         super(name);
     }
 
+    public ThreadedFile(String name, boolean useNumbering) {
+        super(name, useNumbering);
+    }
+
     public void push(String item) {
         this.queue.add(item);
     }
@@ -56,21 +60,7 @@ public class ThreadedFile extends FileHandler {
     }
 
     public void sendDoneSignal() {
-        logger.info("Caught the receivedDone signal!");
         this.receivedDone = true;
-    }
-
-    protected void openFile() {
-        try {
-            this.writer = new BufferedWriter(new FileWriter(this.getCurrentFile()));
-        } catch(IOException e) {
-            logger.error(String.format("Error closing: %s", this.getCurrentFile()));
-            logger.error(e.toString());
-        }
-    }
-
-    protected String getCurrentFile() {
-        return String.format("%s%s_%d", this.outputDir, this.baseFile, this.fileNumber);
     }
 
     @Override
@@ -101,6 +91,9 @@ public class ThreadedFile extends FileHandler {
         // Close the file once we are receivedDone.
         this.closeFile();
     }
+
+    @Override
+    public void flush() {}
 
     @Override
     public void writeTable(Table<Integer, Integer, Set<Integer>> table) {
