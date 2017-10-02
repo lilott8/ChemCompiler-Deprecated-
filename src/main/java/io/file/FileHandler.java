@@ -60,7 +60,7 @@ public abstract class FileHandler extends Thread {
     public void changeFile() {
         this.closeFile();
         this.openFile();
-        logger.trace("Changing files: " + this.getCurrentFile());
+        // logger.trace("Changing files: " + this.getCurrentFile());
     }
 
     protected void openFile() {

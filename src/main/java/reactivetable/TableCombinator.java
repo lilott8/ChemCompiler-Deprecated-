@@ -158,15 +158,6 @@ public abstract class TableCombinator implements Runnable {
     }
 
     /**
-     * Wrapper function to classify the created compound.
-     * @param compound ChemAxonCompound
-     * @return Set of ReactiveGroups
-     */
-    protected synchronized Set<ChemTypes> classifyChem(ChemAxonCompound compound) {
-        return classifier.classify(compound);
-    }
-
-    /**
      * Wrapper funciton to add the molecule to the ChemAxonCompound
      * @param a ChemAxonCompound
      * @param chem Chemical object
@@ -227,6 +218,7 @@ public abstract class TableCombinator implements Runnable {
     /**
      * Combine the chemicals to get the resultant reactive group(s).
      * Order by x ascending.
+     * This also classifies the compound.
      * @param a ChemAxonCompound
      * @param b ChemAxonCompound
      * @return ChemAxonCompound
@@ -242,7 +234,9 @@ public abstract class TableCombinator implements Runnable {
             return this.comboCache.get(a.getId(), b.getId());
         } else {
             try {
-                this.comboCache.put(a.getId(), b.getId(), (ChemAxonCompound) combiner.combine(a, b));
+                ChemAxonCompound compound = (ChemAxonCompound) combiner.combine(a, b);
+                compound.addReactiveGroup(classifier.classify(compound));
+                this.comboCache.put(a.getId(), b.getId(), compound);
                 return this.comboCache.get(a.getId(), b.getId());
             } catch (Exception e) {
                 ChemAxonCompound compound = new ChemAxonCompound(-1, "");

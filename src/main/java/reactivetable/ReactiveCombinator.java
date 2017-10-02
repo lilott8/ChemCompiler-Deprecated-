@@ -82,9 +82,8 @@ public class ReactiveCombinator extends TableCombinator {
                             logger.trace(String.format("Beginning chemical simulation for: %d, %d (iter: %d)", currentReactiveGroup, inner.getKey(), loopCounter));
                             compound = this.combineChems(chemX, chemY);
                             // Add the types to the map
-                            Set<ChemTypes> types = this.classifyChem(compound);
                             logger.trace(String.format("Done chemical simulation for: %d, %d (iter: %d)", currentReactiveGroup, inner.getKey(), loopCounter));
-                            this.addToTable(chemX, chemY, types);
+                            this.addToTable(chemX, chemY, compound.getReactiveGroups());
                             loopCounter++;
                         }
                     }

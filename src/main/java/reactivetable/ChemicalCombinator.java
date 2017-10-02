@@ -36,8 +36,7 @@ public class ChemicalCombinator extends TableCombinator {
                 for (long y : this.chemicalIds) {
                     if (x != y) {
                         ChemAxonCompound compound = this.combineChems(this.chemicalCache.get(x), this.chemicalCache.get(y));
-                        Set<ChemTypes> result = this.classifyChem(compound);
-                        this.addReactiveGroups(this.chemicalCache.get(x), this.chemicalCache.get(y), result);
+                        this.addReactiveGroups(this.chemicalCache.get(x), this.chemicalCache.get(y), compound.getReactiveGroups());
                     } else {
                         this.addReactiveGroups(this.chemicalCache.get(x), this.chemicalCache.get(y), this.chemicalCache.get(x).getReactiveGroups());
                     }
