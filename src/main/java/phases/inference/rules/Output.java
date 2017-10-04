@@ -2,6 +2,7 @@ package phases.inference.rules;
 
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
+import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 import substance.Property;
 
 import static typesystem.epa.ChemTypes.MAT;
@@ -25,7 +26,7 @@ public class Output extends NodeAnalyzer {
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, MAT);
+        this.addConstraint(input, MAT, ConstraintType.OUTPUT);
         return this;
     }
 

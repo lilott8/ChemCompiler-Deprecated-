@@ -163,6 +163,8 @@ public enum ChemTypes {
         //put(131, CONST);
     }};
 
+    public static final int NUM_REACTIVE_GROUPS = integerChemTypesMap.size();
+
     public static Set<ChemTypes> getNums() {
         return new HashSet<ChemTypes>(){{
             add(REAL);

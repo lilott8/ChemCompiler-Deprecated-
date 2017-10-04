@@ -16,6 +16,6 @@ public class NaiveClassifier implements Classifier {
 
     @Override
     public Set<ChemTypes> classify(BaseCompound compound) {
-        return (Set<ChemTypes>) compound.getReactiveGroups();
+        return compound.getReactiveGroups();
     }
 }

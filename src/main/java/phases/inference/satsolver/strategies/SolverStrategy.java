@@ -2,7 +2,7 @@ package phases.inference.satsolver.strategies;
 
 import java.util.Map;
 
-import phases.inference.Constraint;
+import phases.inference.satsolver.constraints.Constraint;
 
 /**
  * @created: 8/24/17

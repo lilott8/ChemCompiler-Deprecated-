@@ -4,6 +4,7 @@ import compilation.datastructures.InstructionNode;
 import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
+import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
 /**
  * @created: 7/27/17
@@ -30,7 +31,7 @@ public class Assign extends NodeAnalyzer {
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
         // TODO: converge the add constraints and identify compound.
-        this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompoundForTypes(node.getInputSymbols().get(0)));
+        this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompoundForTypes(node.getInputSymbols().get(0)), ConstraintType.ASSIGN);
         //this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompound(node.getInputSymbols().get(0)));
         //logger.trace("Inferred Constraints: " + constraints.get(node.getOutputSymbols().get(0)));
 
@@ -42,9 +43,9 @@ public class Assign extends NodeAnalyzer {
     @Override
     public Rule gatherUseConstraints(String input) {
         if (isNumeric(input)) {
-            this.addConstraint(input, isRealNumber(input) ? ChemTypes.REAL : ChemTypes.NAT);
+            this.addConstraint(input, isRealNumber(input) ? ChemTypes.REAL : ChemTypes.NAT, ConstraintType.NUMBER);
         } else {
-            this.addConstraint(input, ChemTypes.MAT);
+            this.addConstraint(input, ChemTypes.MAT, ConstraintType.ASSIGN);
         }
         return this;
     }

@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-import phases.inference.Constraint;
+import phases.inference.satsolver.constraints.Constraint;
 import phases.inference.satsolver.strategies.SolverStrategy;
 
 /**

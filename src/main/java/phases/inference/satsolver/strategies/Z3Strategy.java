@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 
 
 import typesystem.epa.ChemTypes;
-import phases.inference.Constraint;
+import phases.inference.satsolver.constraints.Constraint;
 
 import static typesystem.epa.ChemTypes.CONST;
 
@@ -47,15 +47,12 @@ public class Z3Strategy implements SolverStrategy {
         }
         sb.append(")))").append(System.lineSeparator());
         for(Entry<Integer, ChemTypes> chem : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-            sb.append("(declare-const ").append(chem.getValue()).append(" Bool)").append(System.lineSeparator());
+            //sb.append("(declare-const ").append(chem.getValue()).append(" Bool)").append(System.lineSeparator());
         }
 
         for (Entry<String, Constraint> entry : constraints.entrySet()) {
-            sb.append("(push)").append(System.lineSeparator());
+            //logger.info(entry.getKey());
             sb.append(entry.getValue().buildOutput());
-            sb.append("(check-sat)").append(System.lineSeparator());
-            sb.append("(pop)").append(System.lineSeparator());
-
         }
 
         if (constraints.containsKey(CONST)) {
@@ -65,7 +62,8 @@ public class Z3Strategy implements SolverStrategy {
         }
 
         logger.info(sb);
-        return this.solveWithSMT2(sb.toString());
+        return true;
+        //return this.solveWithSMT2(sb.toString());
     }
 
     private boolean solveWithSMT2(String smt2) {

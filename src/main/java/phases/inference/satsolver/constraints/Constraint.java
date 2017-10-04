@@ -1,4 +1,4 @@
-package phases.inference;
+package phases.inference.satsolver.constraints;
 
 import java.util.Set;
 
@@ -10,6 +10,10 @@ import typesystem.epa.ChemTypes;
  * @project: ChemicalCompiler
  */
 public interface Constraint {
+
+    enum ConstraintType {
+        ASSIGN, MIX, CONST, SPLIT, NUMBER, DETECT, HEAT, OUTPUT, STORE
+    }
 
     void addConstraint(ChemTypes type);
     void addConstraints(Set<ChemTypes> types);

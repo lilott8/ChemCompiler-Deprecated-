@@ -3,6 +3,7 @@ package phases.inference.rules;
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
+import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
 import static typesystem.epa.ChemTypes.MAT;
 
@@ -25,13 +26,13 @@ public class Split extends NodeAnalyzer {
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, MAT);
+        this.addConstraint(input, MAT, ConstraintType.SPLIT);
         return this;
     }
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        this.addConstraint(input, MAT);
+        this.addConstraint(input, MAT, ConstraintType.SPLIT);
         return this;
     }
 

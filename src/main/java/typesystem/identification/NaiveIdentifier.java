@@ -28,11 +28,19 @@ public class NaiveIdentifier extends Identifier {
 
     @Override
     public Set<ChemTypes> identifyCompoundForTypes(String name) {
-        return new HashSet<>();
+        Set<ChemTypes> types = new HashSet<>();
+        int total = 0;
+        for (Character c : name.toCharArray()) {
+            total += c;
+        }
+        types.add(ChemTypes.getTypeFromId(total%ChemTypes.NUM_REACTIVE_GROUPS));
+        return types;
     }
 
     @Override
     public Set<ChemTypes> identifyCompoundForTypes(long id) {
-        return new HashSet<>();
+        Set<ChemTypes> types = new HashSet<>();
+        types.add(ChemTypes.getTypeFromId(((int) id%ChemTypes.NUM_REACTIVE_GROUPS)));
+        return types;
     }
 }

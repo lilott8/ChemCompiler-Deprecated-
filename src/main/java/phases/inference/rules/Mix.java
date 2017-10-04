@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import compilation.datastructures.InstructionNode;
+import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
-import phases.inference.SMTConstraint;
 import substance.Property;
 
 /**
@@ -25,28 +25,29 @@ public class Mix extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        logger.trace(node);
-        logger.trace("Constraints: " + constraints);
+        //logger.trace(node);
+        //logger.trace("Constraints: " + constraints);
         // This is the input to the instruction
         Set<ChemTypes> groups = new HashSet<>();
         for(String in: node.getInputSymbols()) {
+            logger.trace(in);
             // We don't know what this is.
             if (!this.constraints.containsKey(in)) {
                 // TODO: converge int and chemtypes....
                 //this.addConstraint(in, new SMTConstraint(in))
                 for (ChemTypes i : this.identifier.identifyCompoundForTypes(in)) {
-                    this.addConstraint(in, i);
+                    this.addConstraint(in, i, ConstraintType.MIX);
                     groups.add(i);
                 }
             } else {
                 groups.addAll(this.constraints.get(in).getConstraints());
             }
         }
-        logger.trace("Groups: " + groups);
+        //logger.trace("Groups: " + groups);
 
         // The output of the instruction.
         for(String out : node.getOutputSymbols()) {
-            this.addConstraints(out, groups);
+            this.addConstraints(out, groups, ConstraintType.MIX);
         }
 
         // Get the properties of the instruction if they exist
@@ -54,13 +55,13 @@ public class Mix extends NodeAnalyzer {
             this.gatherConstraints(prop);
         }
 
-        logger.trace("=======================");
+        //logger.trace("=======================");
         return this;
     }
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, ChemTypes.MAT);
+        this.addConstraint(input, ChemTypes.MAT, ConstraintType.MIX);
         return this;
     }
 
@@ -72,13 +73,13 @@ public class Mix extends NodeAnalyzer {
      */
     @Override
     public Rule gatherDefConstraints(String input) {
-        this.addConstraint(input, ChemTypes.MAT);
+        this.addConstraint(input, ChemTypes.MAT, ConstraintType.MIX);
         return this;
     }
 
     @Override
     public Rule gatherConstraints(Property property) {
-        this.addConstraint(CONST, ChemTypes.REAL);
+        this.addConstraint(CONST, ChemTypes.REAL, ConstraintType.MIX);
         return this;
     }
 }

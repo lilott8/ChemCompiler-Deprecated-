@@ -6,6 +6,7 @@ import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import phases.inference.satsolver.strategies.SolverStrategy;
 import substance.Property;
+import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
 import static typesystem.epa.ChemTypes.*;
 
@@ -29,15 +30,15 @@ public class Math extends NodeAnalyzer {
 
     public Rule gatherConstraints(InstructionNode node, SolverStrategy solver) {
         for (String out : node.get_def()) {
-            this.addConstraint(out, isRealNumber(out) ? REAL : NAT);
+            this.addConstraint(out, isRealNumber(out) ? REAL : NAT, ConstraintType.NUMBER);
         }
 
         for (String in : node.get_use()) {
-            this.addConstraint(in, isRealNumber(in) ? REAL : NAT);
+            this.addConstraint(in, isRealNumber(in) ? REAL : NAT, ConstraintType.NUMBER);
         }
 
         for (Property prop : node.Instruction().getProperties()) {
-            this.addConstraint(CONST, REAL);
+            this.addConstraint(CONST, REAL, ConstraintType.NUMBER);
         }
         return this;
     }

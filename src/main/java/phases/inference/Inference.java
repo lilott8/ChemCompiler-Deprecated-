@@ -20,6 +20,7 @@ import phases.inference.rules.EdgeAnalyzer;
 import phases.inference.rules.InferenceRule;
 import phases.inference.rules.NodeAnalyzer;
 import phases.inference.satsolver.SatSolver;
+import phases.inference.satsolver.constraints.Constraint;
 import phases.inference.satsolver.strategies.Z3Strategy;
 import shared.Tuple;
 import typesystem.epa.ChemTypes;
@@ -100,7 +101,7 @@ public class Inference implements Phase {
         }
 
         if (ConfigFactory.getConfig().isDebug()) {
-            //logger.trace(this.constraints);
+            logger.trace(this.constraints);
         }
 
         return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
