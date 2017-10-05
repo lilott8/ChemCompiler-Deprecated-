@@ -15,18 +15,17 @@ import typesystem.epa.ChemTypes;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class SMTConstraint implements Constraint {
+public class GenericSMT implements Constraint {
     private Set<ChemTypes> chems = new HashSet<>();
     private Set<ChemTypes> nums = new HashSet<>();
     private String varName = "";
     private ConstraintType type;
 
-    public final static Logger logger = LogManager.getLogger(SMTConstraint.class);
+    public final static Logger logger = LogManager.getLogger(GenericSMT.class);
 
-    public SMTConstraint(String name, ConstraintType type) {
+    public GenericSMT(String name, ConstraintType type) {
         this.varName = StringUtils.replaceAll(name, " ", "_");
         this.type = type;
-        logger.info("We have type: " + this.type);
     }
 
     public void addConstraint(ChemTypes type) {

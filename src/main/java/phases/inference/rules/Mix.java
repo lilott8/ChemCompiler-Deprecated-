@@ -1,6 +1,8 @@
 package phases.inference.rules;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import compilation.datastructures.InstructionNode;
@@ -29,12 +31,12 @@ public class Mix extends NodeAnalyzer {
         //logger.trace("Constraints: " + constraints);
         // This is the input to the instruction
         Set<ChemTypes> groups = new HashSet<>();
+        List<ChemTypes> groupsList = new ArrayList<>();
         for(String in: node.getInputSymbols()) {
-            logger.trace(in);
             // We don't know what this is.
             if (!this.constraints.containsKey(in)) {
                 // TODO: converge int and chemtypes....
-                //this.addConstraint(in, new SMTConstraint(in))
+                //this.addConstraint(in, new GenericSMT(in))
                 for (ChemTypes i : this.identifier.identifyCompoundForTypes(in)) {
                     this.addConstraint(in, i, ConstraintType.MIX);
                     groups.add(i);
@@ -42,12 +44,17 @@ public class Mix extends NodeAnalyzer {
             } else {
                 groups.addAll(this.constraints.get(in).getConstraints());
             }
+            logger.trace("Constraints: " + this.constraints.get(in));
+            logger.trace("-------------------------");
         }
-        //logger.trace("Groups: " + groups);
+        logger.trace("Groups: " + groups);
+
+        groupsList.addAll(groups);
 
         // The output of the instruction.
         for(String out : node.getOutputSymbols()) {
             this.addConstraints(out, groups, ConstraintType.MIX);
+            combiner.combine(groupsList);
         }
 
         // Get the properties of the instruction if they exist
@@ -55,7 +62,7 @@ public class Mix extends NodeAnalyzer {
             this.gatherConstraints(prop);
         }
 
-        //logger.trace("=======================");
+        logger.trace("=======================");
         return this;
     }
 

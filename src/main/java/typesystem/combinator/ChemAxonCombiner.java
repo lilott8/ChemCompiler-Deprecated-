@@ -3,6 +3,8 @@ package typesystem.combinator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import chemaxon.formats.MolExporter;
@@ -15,6 +17,7 @@ import shared.substances.BaseCompound;
 import typesystem.classification.Classifier;
 import typesystem.classification.ClassifierFactory;
 import typesystem.epa.ChemTypes;
+import typesystem.epa.EpaManager;
 
 /**
  * @created: 9/13/17
@@ -34,6 +37,12 @@ public class ChemAxonCombiner implements Combiner {
     @Override
     public ChemAxonCompound combine(BaseCompound a, BaseCompound b) {
         ChemAxonCompound compound = null;
+        List<ChemTypes> listA = new ArrayList<>();
+        List<ChemTypes> listB = new ArrayList<>();
+
+        listA.addAll(a.getReactiveGroups());
+        listB.addAll(b.getReactiveGroups());
+
         if (this.config.simulateChemistry()) {
             // build a new molecule object
             Molecule molecule = new Molecule();
@@ -71,11 +80,20 @@ public class ChemAxonCombiner implements Combiner {
             compound.addReactiveGroup(a.getReactiveGroups());
             compound.addReactiveGroup(b.getReactiveGroups());
         }
+        this.combine(listA, listB);
         return compound;
     }
 
     @Override
     public Set<ChemTypes> combine(Set<ChemTypes> a, Set<ChemTypes> b) {
+        List<ChemTypes> listA = new ArrayList<>();
+        List<ChemTypes> listB = new ArrayList<>();
+
+        listA.addAll(a);
+        listB.addAll(b);
+
+        this.combine(a, b);
+
         a.addAll(b);
         return a;
     }

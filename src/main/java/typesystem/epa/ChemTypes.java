@@ -82,11 +82,7 @@ public enum ChemTypes {
     MAT(128),
     REAL(129),
     NAT(130),
-    CONST(131),
-    A(1000),
-    B(2000),
-    C(3000);
-
+    CONST(131);
 
     private static Map<Integer, ChemTypes> integerChemTypesMap = new HashMap<Integer, ChemTypes>() {{
         put(1, ACIDS_STRONG_NON_OXIDIZING);
