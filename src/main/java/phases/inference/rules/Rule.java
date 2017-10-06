@@ -76,23 +76,21 @@ public abstract class Rule {
 
     protected void addConstraints(String key, Set<ChemTypes> value, ConstraintType type) {
         logger.debug(type);
-        if (!constraints.containsKey(key)) {
-            if (!simpleConstraints.contains(type)) {
-                constraints.put(key, new NumSMT(key, type));
-            } else {
-                constraints.put(key, new MatSMT(key, type));
-            }
+        for (ChemTypes t : value) {
+            this.addConstraint(key, t, type);
         }
-        constraints.get(key).addConstraints(value);
     }
 
     protected void addConstraint(String key, ChemTypes value, ConstraintType type) {
         logger.info(type);
-        if (!constraints.containsKey(key)) {
-            if (!simpleConstraints.contains(type)) {
-                constraints.put(key, new NumSMT(key, type));
-            } else {
-                constraints.put(key, new MatSMT(key, type));
+        if (!this.constraints.containsKey(key)) {
+            switch (type) {
+                default:
+                    constraints.put(key, new NumSMT(key, type));
+                    break;
+                case MIX:
+                    constraints.put(key, new MatSMT(key, type));
+                    break;
             }
         }
         constraints.get(key).addConstraint(value);

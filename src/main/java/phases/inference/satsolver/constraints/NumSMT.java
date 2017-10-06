@@ -25,10 +25,9 @@ public class NumSMT extends Constraint {
     public String buildDeclares() {
         StringBuilder sb = new StringBuilder();
         sb.append("(declare-const ").append(varName).append(" ").append(Z3Strategy.numType).append(")").append(System.lineSeparator());
-        logger.debug(sb);
         if (!this.constraints.isEmpty()) {
             for (ChemTypes t : this.constraints) {
-
+                // Nothing to do here.
             }
         }
         return sb.toString();
@@ -45,6 +44,10 @@ public class NumSMT extends Constraint {
 
     @Override
     public String buildAsserts() {
-        return "";
+        StringBuilder sb = new StringBuilder();
+        for (ChemTypes t : this.constraints) {
+            sb.append("(assert (= ").append(this.varName).append(" ").append(t).append("))").append(System.lineSeparator());
+        }
+        return sb.toString();
     }
 }

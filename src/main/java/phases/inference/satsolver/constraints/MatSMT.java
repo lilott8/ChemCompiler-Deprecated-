@@ -48,6 +48,7 @@ public class MatSMT extends Constraint {
     public String buildAsserts() {
         StringBuilder sb = new StringBuilder();
 
+        sb.append("; Building asserts for: ").append(this.varName).append(NL);
         sb.append("(assert").append(NL);
         sb.append(TAB).append("(=>").append(NL);
         sb.append(TAB+TAB).append("(and").append(NL);

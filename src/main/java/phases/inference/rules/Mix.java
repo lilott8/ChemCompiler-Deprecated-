@@ -86,7 +86,7 @@ public class Mix extends NodeAnalyzer {
 
     @Override
     public Rule gatherConstraints(Property property) {
-        this.addConstraint(CONST, ChemTypes.REAL, ConstraintType.MIX);
+        this.addConstraint(CONST, ChemTypes.REAL, ConstraintType.NUMBER);
         return this;
     }
 }
