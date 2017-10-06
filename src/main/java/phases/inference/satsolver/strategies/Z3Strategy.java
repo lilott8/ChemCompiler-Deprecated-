@@ -41,19 +41,35 @@ public class Z3Strategy implements SolverStrategy {
     public boolean solveConstraints(Map<String, Constraint> constraints) {
         StringBuilder sb = new StringBuilder();
 
+        // Add {Real, Nat, Const} to the z3 stacks.
         sb.append("(declare-datatypes () ((").append(numType);
         for (ChemTypes t : ChemTypes.getNums()) {
             sb.append(" ").append(t);
         }
         sb.append(")))").append(System.lineSeparator());
+
+
         for(Entry<Integer, ChemTypes> chem : ChemTypes.getIntegerChemTypesMap().entrySet()) {
             //sb.append("(declare-const ").append(chem.getValue()).append(" Bool)").append(System.lineSeparator());
         }
 
         for (Entry<String, Constraint> entry : constraints.entrySet()) {
             //logger.info(entry.getKey());
-            sb.append(entry.getValue().buildOutput());
+            sb.append(entry.getValue().buildDeclares());
+            //sb.append(entry.getValue().buildOutput());
         }
+
+        for (Entry<String, Constraint> entry : constraints.entrySet()) {
+            //logger.info(entry.getKey());
+            sb.append(entry.getValue().buildConstraintValues());
+            //sb.append(entry.getValue().buildOutput());
+        }
+
+        for (Entry<String, Constraint> entry : constraints.entrySet()) {
+            sb.append(entry.getValue().buildAsserts());
+        }
+
+
 
         if (constraints.containsKey(CONST)) {
             sb.append("(push)").append(System.lineSeparator());
@@ -62,8 +78,8 @@ public class Z3Strategy implements SolverStrategy {
         }
 
         logger.info(sb);
-        return true;
-        //return this.solveWithSMT2(sb.toString());
+        //return true;
+        return this.solveWithSMT2(sb.toString());
     }
 
     private boolean solveWithSMT2(String smt2) {

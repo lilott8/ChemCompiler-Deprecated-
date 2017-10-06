@@ -44,10 +44,10 @@ public class Mix extends NodeAnalyzer {
             } else {
                 groups.addAll(this.constraints.get(in).getConstraints());
             }
-            logger.trace("Constraints: " + this.constraints.get(in));
-            logger.trace("-------------------------");
+            // logger.trace("Constraints: " + this.constraints.get(in));
+            // logger.trace("-------------------------");
         }
-        logger.trace("Groups: " + groups);
+        // logger.trace("Groups: " + groups);
 
         groupsList.addAll(groups);
 
@@ -62,7 +62,7 @@ public class Mix extends NodeAnalyzer {
             this.gatherConstraints(prop);
         }
 
-        logger.trace("=======================");
+        // logger.trace("=======================");
         return this;
     }
 

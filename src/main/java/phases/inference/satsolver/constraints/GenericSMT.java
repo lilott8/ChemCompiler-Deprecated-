@@ -15,17 +15,20 @@ import typesystem.epa.ChemTypes;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class GenericSMT implements Constraint {
+public class GenericSMT extends Constraint {
     private Set<ChemTypes> chems = new HashSet<>();
     private Set<ChemTypes> nums = new HashSet<>();
     private String varName = "";
     private ConstraintType type;
+    public static final String TAB = "\t";
+    public static final String NL = System.lineSeparator();
 
     public final static Logger logger = LogManager.getLogger(GenericSMT.class);
 
     public GenericSMT(String name, ConstraintType type) {
-        this.varName = StringUtils.replaceAll(name, " ", "_");
-        this.type = type;
+        super(name, type);
+        //this.varName = StringUtils.replaceAll(name, " ", "_");
+        //this.type = type;
     }
 
     public void addConstraint(ChemTypes type) {
@@ -42,31 +45,13 @@ public class GenericSMT implements Constraint {
         }
     }
 
-    private String getAssertName(String append) {
-        return this.varName + "_" + append;
-    }
-
     private String buildBasicAsserts() {
         StringBuilder sb = new StringBuilder();
-        for (ChemTypes t : this.chems) {
-            sb.append("(assert (= ").append(getAssertName(t.toString())).append(" true))").append(System.lineSeparator());
-        }
-        for (ChemTypes t : this.nums) {
-            sb.append("(assert (= ").append(this.varName).append(" ").append(t).append("))").append(System.lineSeparator());
-        }
         return sb.toString();
     }
 
-    private String buildDeclares() {
+    public String buildDeclares() {
         StringBuilder sb = new StringBuilder();
-
-        for (ChemTypes t : this.chems) {
-            sb.append("(declare-const ").append(getAssertName(t.toString())).append(" Bool)").append(System.lineSeparator());
-        }
-        for (ChemTypes t : this.nums) {
-            sb.append("(declare-const ").append(varName).append(" ").append(Z3Strategy.numType).append(")").append(System.lineSeparator());
-        }
-
         return sb.toString();
     }
 
@@ -84,19 +69,16 @@ public class GenericSMT implements Constraint {
 
     public String buildImplication() {
         StringBuilder sb = new StringBuilder();
-
         return sb.toString();
     }
 
     public String buildSubset() {
         StringBuilder sb = new StringBuilder();
-
         return sb.toString();
     }
 
     private String buildChemIllegalAssert() {
         StringBuilder sb = new StringBuilder();
-
         return sb.toString();
     }
 
@@ -111,10 +93,10 @@ public class GenericSMT implements Constraint {
     @Override
     public String buildOutput() {
         StringBuilder sb = new StringBuilder();
-        //sb.append(this.buildDeclares());
-        //sb.append(this.buildBasicAsserts());
-        sb.append("(assert ").append(System.lineSeparator()).append("\t");
-        sb.append(this.buildMembership()).append(")").append(System.lineSeparator());
+        // sb.append(this.buildDeclares());
+        sb.append(this.buildBasicAsserts());
+        //sb.append("(assert ").append(System.lineSeparator()).append("\t");
+        //sb.append(this.buildMembership()).append(")").append(System.lineSeparator());
         return sb.toString();
     }
 
@@ -126,6 +108,28 @@ public class GenericSMT implements Constraint {
         for (ChemTypes t : this.nums) {
             sb.append("\t").append(t).append(System.lineSeparator());
         }
+        return sb.toString();
+    }
+
+    @Override
+    public String buildConstraintValues() {
+        return this.buildBasicAsserts();
+    }
+
+    public String buildAsserts() {
+        StringBuilder sb = new StringBuilder();
+
+        if (!this.chems.isEmpty()) {
+
+            //sb.append()
+        }
+        if (!this.nums.isEmpty()) {
+            for (ChemTypes t : this.nums) {
+                sb.append(t).append(NL);
+            }
+        }
+
+
         return sb.toString();
     }
 }

@@ -390,6 +390,17 @@ public enum EpaManager {
         return sb.toString();
     }
 
+    public Set<ChemTypes> lookUp(Set<ChemTypes> types) {
+        return types;
+    }
+
+    public Set<ChemTypes> lookUp(ChemTypes a, ChemTypes b) {
+        Set<ChemTypes> result = new HashSet<>();
+        result.add(a);
+        result.add(b);
+        return result;
+    }
+
     /**
      * Type of classifiers available to the system.
      * SMARTS is the most accurate and complete, but

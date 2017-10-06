@@ -12,6 +12,8 @@ import java.util.Set;
 import config.ConfigFactory;
 import config.InferenceConfig;
 import phases.inference.satsolver.constraints.GenericSMT;
+import phases.inference.satsolver.constraints.MatSMT;
+import phases.inference.satsolver.constraints.NumSMT;
 import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
 import phases.inference.satsolver.constraints.Constraint;
@@ -46,6 +48,10 @@ public abstract class Rule {
         add("NOT");
     }};
 
+    private final Set<ConstraintType> simpleConstraints = new HashSet<ConstraintType>() {{
+       add(ConstraintType.MIX);
+    }};
+
     protected InferenceConfig config = ConfigFactory.getConfig();
 
     // This implicitly allows us to do union sets with types
@@ -69,15 +75,25 @@ public abstract class Rule {
     }
 
     protected void addConstraints(String key, Set<ChemTypes> value, ConstraintType type) {
+        logger.debug(type);
         if (!constraints.containsKey(key)) {
-            constraints.put(key, new GenericSMT(key, type));
+            if (!simpleConstraints.contains(type)) {
+                constraints.put(key, new NumSMT(key, type));
+            } else {
+                constraints.put(key, new MatSMT(key, type));
+            }
         }
         constraints.get(key).addConstraints(value);
     }
 
     protected void addConstraint(String key, ChemTypes value, ConstraintType type) {
+        logger.info(type);
         if (!constraints.containsKey(key)) {
-            constraints.put(key, new GenericSMT(key, type));
+            if (!simpleConstraints.contains(type)) {
+                constraints.put(key, new NumSMT(key, type));
+            } else {
+                constraints.put(key, new MatSMT(key, type));
+            }
         }
         constraints.get(key).addConstraint(value);
     }
