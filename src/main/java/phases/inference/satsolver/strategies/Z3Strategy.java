@@ -48,11 +48,16 @@ public class Z3Strategy implements SolverStrategy {
         }
         sb.append(")))").append(System.lineSeparator());
 
-
+        // Add the chemical reactivity groups
         for(Entry<Integer, ChemTypes> chem : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-            //sb.append("(declare-const ").append(chem.getValue()).append(" Bool)").append(System.lineSeparator());
+            sb.append("(declare-const ").append(chem.getValue()).append(" Bool)").append(System.lineSeparator());
         }
 
+        /*
+         * We split them up for debugging purposes.
+         * We can simply call `entry.getValue().buildOutput`
+         * And we will have the entire SMT2 string.
+         */
         for (Entry<String, Constraint> entry : constraints.entrySet()) {
             //logger.info(entry.getKey());
             sb.append(entry.getValue().buildDeclares());
@@ -67,14 +72,6 @@ public class Z3Strategy implements SolverStrategy {
 
         for (Entry<String, Constraint> entry : constraints.entrySet()) {
             sb.append(entry.getValue().buildAsserts());
-        }
-
-
-
-        if (constraints.containsKey(CONST)) {
-            sb.append("(push)").append(System.lineSeparator());
-            sb.append(constraints.get(CONST).buildOutput());
-            sb.append("(check-sat)").append(System.lineSeparator()).append("(pop)").append(System.lineSeparator());
         }
 
         logger.info(sb);
