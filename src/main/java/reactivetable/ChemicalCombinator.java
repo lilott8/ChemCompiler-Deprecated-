@@ -72,7 +72,7 @@ public class ChemicalCombinator extends TableCombinator {
 
     private void logProgress(int counter, int total) {
         double percent = (counter / (double) total) * 100;
-        logger.info(String.format("Done processing: %.4f%% of records.", percent));
+        logger.info(String.format("Done processing: %.4f%% of records. (%d/%d)", percent, counter, total));
     }
 
     private void addReactiveGroups(ChemAxonCompound x, ChemAxonCompound y, Set<ChemTypes> result) {

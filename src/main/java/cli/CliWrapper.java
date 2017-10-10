@@ -6,13 +6,20 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import config.Config;
 import config.ConfigFactory;
+import errors.ChemTrailsException;
+import errors.ConfigurationException;
 
 /**
  * @created: 9/14/17
@@ -22,17 +29,23 @@ import config.ConfigFactory;
 public class CliWrapper {
     private CommandLine cmd;
     private CommandLineParser parser = new DefaultParser();
-    Logger logger = LogManager.getLogger(this);
+    public static final Logger logger = LogManager.getLogger(CliWrapper.class);
 
     public CliWrapper() {
     }
 
-    public void parseCommandLine(String... args) throws Exception {
-        this.cmd = this.parser.parse(this.buildOptions(), args);
-        this.initializeEnvironment(this.cmd);
+    public void parseCommandLine(String... args) {
+        checkForChemAxon();
+        try {
+            this.cmd = this.parser.parse(this.buildOptions(), args);
+            this.initializeEnvironment(this.cmd);
+        } catch(ParseException e) {
+            logger.fatal("Error parsing command line, illegal command: " + Arrays.toString(args));
+            logger.fatal(e);
+        }
     }
 
-    private void initializeEnvironment(final CommandLine cmd) throws Exception {
+    private void initializeEnvironment(final CommandLine cmd) {
         // see if we asked for help...
         if(cmd.hasOption("help")) {
             HelpFormatter hf = new HelpFormatter();
@@ -42,20 +55,20 @@ public class CliWrapper {
 
         // See if we have the argument we need.
         if(!cmd.hasOption("compile")) {
-            throw new Exception("No input file to compile given.");
+            throw new ConfigurationException("No input file to compile given.");
         }
 
         // If we have a translator we must also have output.
         if ((cmd.hasOption("translate") && !cmd.hasOption("output")) || cmd.hasOption("output") && !cmd.hasOption("translate")) {
-            throw new Exception("If you provide a translation or an output, the other must accompany.");
+            throw new ConfigurationException("If you provide a translation or an output, the other must accompany.");
         }
 
         if ((cmd.hasOption("clean") && !cmd.hasOption("output"))) {
-            throw new Exception("Attempting to clean output directory, but no directory supplied.");
+            throw new ConfigurationException("Attempting to clean output directory, but no directory supplied.");
         }
 
         if (!validateDatabase(cmd)) {
-            throw new Exception("We cannot infer the connection data for the database.");
+            throw new ConfigurationException("We cannot infer the connection data for the database.");
         }
 
         // initialize our config object.
@@ -63,7 +76,7 @@ public class CliWrapper {
 
         // add any initializing statements derived from the command line here.
         if(config.getFilesForCompilation().size() == 0) {
-            throw new Exception("We have no valid files for input");
+            throw new ConfigurationException("We have no valid files for input");
         }
     }
 
@@ -153,7 +166,7 @@ public class CliWrapper {
                 .argName("ignore").build());
 
         // Build the filters
-        desc = "Disable building the SMART filters.  This is usually only disabled for testing purposes.\n" +
+        desc = "Disable building the SMART filters.  This is only disabled for testing purposes.\n" +
                 "Usage: -nf";
         options.addOption(Option.builder("nf").longOpt("nofilters")
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
@@ -230,6 +243,22 @@ public class CliWrapper {
             return cmd.hasOption("dbuser") && cmd.hasOption("dbpass");
         }
         // If we have no database flags, we can return true.
+        return true;
+    }
+
+    private static boolean checkForChemAxon() {
+        String licensePath = "";
+        String userName = System.getProperty("user.name");
+        if (SystemUtils.IS_OS_WINDOWS) {
+            licensePath += String.format("C:\\Users\\%s\\chemaxon\\license.cxl", userName);
+        } else {
+            licensePath += String.format("/Users/%s/.chemaxon/license.cxl", userName);
+        }
+
+        if (!new File(licensePath).exists()) {
+            logger.fatal("ChemAxon license file not found. Please view: https://docs.chemaxon.com/display/docs/Installing+licenses+LIC");
+            throw new ConfigurationException("Chem Axon License file not found.");
+        }
         return true;
     }
 }

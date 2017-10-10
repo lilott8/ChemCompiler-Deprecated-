@@ -250,7 +250,7 @@ public enum EpaManager {
 
     public boolean test(ChemTypes x, ChemTypes y) {
         if (this.config.isDebug()) {
-            logger.trace(String.format("Testing for: %s, %s", x, y));
+            // logger.trace(String.format("Testing for: %s, %s", x, y));
         }
 
         if(this.reactionMap.containsKey(x)) {
@@ -291,7 +291,7 @@ public enum EpaManager {
      */
     public boolean validate(ChemTypes x, ChemTypes y) {
         if(this.config.isDebug()) {
-            logger.trace(String.format("Testing for: %s, %s", x, y));
+            // logger.trace(String.format("Testing for: %s, %s", x, y));
         }
 
         if(this.reactionMap.containsKey(x)) {
@@ -314,8 +314,8 @@ public enum EpaManager {
     }
 
     public boolean validate(BaseCompound one, BaseCompound two) {
-        logger.trace("Testing: " + one.getName() + "\t and: " + two.getName());
-        logger.trace("One: " + one.getReactiveGroups() + "\t Two: " + two.getReactiveGroups());
+        //logger.trace("Testing: " + one.getName() + "\t and: " + two.getName());
+        //logger.trace("One: " + one.getReactiveGroups() + "\t Two: " + two.getReactiveGroups());
         for (int x : (Set<Integer>) one.getReactiveGroups()) {
             for (int y : (Set<Integer>) two.getReactiveGroups()) {
                 if (!validate(x, y)) {

@@ -23,7 +23,10 @@ import phases.inference.Inference;
 public class CommonUtils {
 
     public static boolean runTest(String file) {
-        String args = String.format("-c %s -p inference", file);
+        String args = String.format("-c %s -p inference " +
+                "-dbname chem_trails -dbuser root -dbpass root " +
+                "-dbextras ?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false " +
+                "-d -nf -i -classify 16\n", file);
         CliWrapper cli = new CliWrapper();
         try {
             cli.parseCommandLine(StringUtils.split(args));
