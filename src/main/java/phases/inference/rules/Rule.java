@@ -11,10 +11,13 @@ import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
-import phases.inference.ChemTypes;
-import phases.inference.SMTConstraint;
+import phases.inference.satsolver.constraints.GenericSMT;
+import phases.inference.satsolver.constraints.MatSMT;
+import phases.inference.satsolver.constraints.NumSMT;
+import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
-import phases.inference.Constraint;
+import phases.inference.satsolver.constraints.Constraint;
+import static phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
 /**
  * @created: 7/31/17
@@ -45,6 +48,10 @@ public abstract class Rule {
         add("NOT");
     }};
 
+    private final Set<ConstraintType> simpleConstraints = new HashSet<ConstraintType>() {{
+       add(ConstraintType.MIX);
+    }};
+
     protected InferenceConfig config = ConfigFactory.getConfig();
 
     // This implicitly allows us to do union sets with types
@@ -67,16 +74,24 @@ public abstract class Rule {
         return type;
     }
 
-    protected void addConstraints(String key, Set<ChemTypes> value) {
-        if (!constraints.containsKey(key)) {
-            constraints.put(key, new SMTConstraint(key));
+    protected void addConstraints(String key, Set<ChemTypes> value, ConstraintType type) {
+        logger.debug(type);
+        for (ChemTypes t : value) {
+            this.addConstraint(key, t, type);
         }
-        constraints.get(key).addConstraints(value);
     }
 
-    protected void addConstraint(String key, ChemTypes value) {
-        if (!constraints.containsKey(key)) {
-            constraints.put(key, new SMTConstraint(key));
+    protected void addConstraint(String key, ChemTypes value, ConstraintType type) {
+        logger.info(type);
+        if (!this.constraints.containsKey(key)) {
+            switch (type) {
+                default:
+                    constraints.put(key, new NumSMT(key, type));
+                    break;
+                case MIX:
+                    constraints.put(key, new MatSMT(key, type));
+                    break;
+            }
         }
         constraints.get(key).addConstraint(value);
     }

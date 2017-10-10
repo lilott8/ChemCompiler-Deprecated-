@@ -3,9 +3,10 @@ package phases.inference.rules;
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
+import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
-import static phases.inference.ChemTypes.MAT;
-import static phases.inference.ChemTypes.REAL;
+import static typesystem.epa.ChemTypes.MAT;
+import static typesystem.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/27/17
@@ -26,19 +27,19 @@ public class Detect extends NodeAnalyzer {
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, MAT);
+        this.addConstraint(input, MAT, ConstraintType.DETECT);
         return this;
     }
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        this.addConstraint(input, REAL);
+        this.addConstraint(input, REAL, ConstraintType.NUMBER);
         return this;
     }
 
     @Override
     public Rule gatherConstraints(Property property) {
-        this.addConstraint(CONST, REAL);
+        this.addConstraint(CONST, REAL, ConstraintType.NUMBER);
         return this;
     }
 }

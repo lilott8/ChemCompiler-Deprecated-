@@ -1,12 +1,17 @@
 package phases.inference.rules;
 
 
+import org.apache.commons.lang3.StringUtils;
+
 import compilation.datastructures.InstructionNode;
 import config.InferenceConfig;
 import phases.inference.Inference.InferenceType;
-import simulator.FauxIdentifier;
-import simulator.Identify;
 import substance.Property;
+import typesystem.combinator.Combiner;
+import typesystem.combinator.CombinerFactory;
+import typesystem.identification.Identifier;
+import typesystem.identification.IdentifierFactory;
+import typesystem.identification.NaiveIdentifier;
 
 /**
  * @created: 9/1/17
@@ -15,22 +20,15 @@ import substance.Property;
  */
 public abstract class NodeAnalyzer extends Rule {
 
-    protected Identify identifier = null;
+    protected Identifier identifier = IdentifierFactory.getIdentifier();
+    protected Combiner combiner = CombinerFactory.getCombiner();
 
     protected NodeAnalyzer(InferenceType type) {
         super(type);
-
-        if (this.config.getInferenceLevel() != InferenceConfig.InferenceLevel.GENERIC) {
-            identifier = new FauxIdentifier();
-        }
     }
 
     protected NodeAnalyzer(InferenceType type, Class<? extends NodeAnalyzer> clazz) {
         super(type, clazz);
-
-        if (this.config.getInferenceLevel() != InferenceConfig.InferenceLevel.GENERIC) {
-            identifier = new FauxIdentifier();
-        }
     }
 
     public abstract Rule gatherAllConstraints(InstructionNode node);

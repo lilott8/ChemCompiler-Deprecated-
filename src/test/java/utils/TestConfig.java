@@ -56,4 +56,9 @@ public class TestConfig implements PhaseConfig {
     public boolean isDebug() {
         return false;
     }
+
+    @Override
+    public int getNumberOfThreads() {
+        return 0;
+    }
 }

@@ -3,8 +3,9 @@ package phases.inference.rules;
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
+import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
-import static phases.inference.ChemTypes.MAT;
+import static typesystem.epa.ChemTypes.MAT;
 
 /**
  * @created: 7/28/17
@@ -30,7 +31,7 @@ public class Store extends NodeAnalyzer {
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        this.addConstraint(input, MAT);
+        this.addConstraint(input, MAT, ConstraintType.STORE);
         return this;
     }
 

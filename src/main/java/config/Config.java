@@ -104,141 +104,178 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     /**
      * Simple check to see if we can use the DB or not.
      */
-    private final boolean isDBEnabled;
-
+    private boolean isDBEnabled = false;
     /**
-     * What level the inference engine is supposed to resolve at.
+     * What scope is the classification engine allowed to run at?
      */
-    private InferenceLevel inferenceLevel = InferenceLevel.GENERIC;
+    private int classificationLevel = 2;
+    /**
+     * Are we ignoring warnings?
+     */
+    private boolean ignoreWarnings = false;
+    /**
+     * Does the EPAManager build the filters or not?
+     */
+    private boolean buildFilters = true;
+    /**
+     * Where is the location of the epa defs.
+     */
+    private String epaDefs = "src/main/resources/epa.xml";
+    /**
+     * Use 3rd party chemistry software to simulate mixes.
+     */
+    private boolean simulateChemistry = false;
+    /**
+     * Minimum length of the SMARTS notation to use as a filter.
+     */
+    private int smartsSize = -1;
+    /**
+     * Number of threads to be used.
+     */
+    private int maxThreads = 1;
 
     /**
-     * Build the config object from our command line
-     * This method must match that in the main.
-     * @param cmd
-     * Command line input
+     * Build the config object from our command line This method must match that in the main.
+     *
+     * @param cmd Command line input
      */
     Config(CommandLine cmd) {
-            // get the files for compilation
-            this.buildFiles(Arrays.asList(cmd.getOptionValues("compile")));
+        // get the files for compilation
+        this.buildFiles(Arrays.asList(cmd.getOptionValues("compile")));
 
-            // should we run the SSI algorithm
-            if (cmd.hasOption("ssi")) {
-                this.ssi = true;
+        // should we run the SSI algorithm
+        if (cmd.hasOption("ssi")) {
+            this.ssi = true;
+        }
+
+        // do we have output
+        if (cmd.hasOption("output")) {
+            this.output = cmd.getOptionValue("output");
+            // Make sure we have the trailing slash.
+            if (!StringUtils.equals(this.output.substring(this.output.length() - 1), "/")) {
+                this.output += "/";
             }
 
-            // do we have output
-            if (cmd.hasOption("output")) {
-                this.output = cmd.getOptionValue("output");
-                // Make sure we have the trailing slash.
-                if (!StringUtils.equals(this.output.substring(this.output.length()-1), "/")) {
-                    this.output += "/";
-                }
-
-                // should we clean the output directory
-                if (cmd.hasOption("clean")) {
-                    this.clean = true;
-                    try {
-                        FileUtils.cleanDirectory(new File(this.output));
-                    } catch (IOException e) {
-                        logger.fatal(e);
-                    }
+            // should we clean the output directory
+            if (cmd.hasOption("clean")) {
+                this.clean = true;
+                try {
+                    FileUtils.cleanDirectory(new File(this.output));
+                } catch (IOException e) {
+                    logger.fatal(e);
                 }
             }
+        }
 
-            // Are we in debug mode
-            this.debug = cmd.hasOption("debug");
+        // Are we in debug mode
+        this.debug = cmd.hasOption("debug");
 
-            if (cmd.hasOption("translate")) {
-                this.buildTranslators(Arrays.asList(cmd.getOptionValues("translate")));
+        if (cmd.hasOption("translate")) {
+            this.buildTranslators(Arrays.asList(cmd.getOptionValues("translate")));
+        }
+
+        if (cmd.hasOption("phases")) {
+            this.phases.addAll(Arrays.asList(cmd.getOptionValues("phases")));
+        }
+
+        // This is technically redundant, this is checked in the main.
+        // Build the database config.
+        if (cmd.hasOption("dbuser") && cmd.hasOption("dbpass")) {
+            this.isDBEnabled = true;
+            this.dbUser = cmd.getOptionValue("dbuser");
+            this.dbPassword = cmd.getOptionValue("dbpass");
+            if (cmd.hasOption("dbport")) {
+                this.dbPort = Integer.parseInt(cmd.getOptionValue("dbport"));
             }
-
-            if (cmd.hasOption("phases")) {
-                this.phases.addAll(Arrays.asList(cmd.getOptionValues("phases")));
+            if (cmd.hasOption("dbaddr")) {
+                this.dbAddr = cmd.getOptionValue("dbaddr");
             }
-
-            // This is technically redundant, this is checked in the main.
-            // Build the database config.
-            if (cmd.hasOption("dbuser") && cmd.hasOption("dbpass")) {
-                this.isDBEnabled = true;
-                this.dbUser = cmd.getOptionValue("dbuser");
-                this.dbPassword = cmd.getOptionValue("dbpass");
-                if (cmd.hasOption("dbport")) {
-                    this.dbPort = Integer.parseInt(cmd.getOptionValue("dbport"));
-                }
-                if (cmd.hasOption("dbaddr")) {
-                    this.dbAddr = cmd.getOptionValue("dbaddr");
-                }
-                if (cmd.hasOption("dbdriver")) {
-                    this.dbDriver = cmd.getOptionValue("dbdriver");
-                }
-                if (cmd.hasOption("dbtimeout")) {
-                    this.dbTimeout = Integer.parseInt(cmd.getOptionValue("dbtimeout"));
-                }
-                if (cmd.hasOption("dbname")) {
-                    this.dbName = cmd.getOptionValue("dbname");
-                }
-                if (cmd.hasOption("dbextras")) {
-                    this.dbExtras = cmd.getOptionValue("dbextras");
-                }
-            } else {
-                this.isDBEnabled = false;
+            if (cmd.hasOption("dbdriver")) {
+                this.dbDriver = cmd.getOptionValue("dbdriver");
             }
-
-            if (cmd.hasOption("resolve")) {
-                this.inferenceLevel = InferenceLevel.valueOf(StringUtils.upperCase(cmd.getOptionValue("resolve")));
-                if (this.debug) {
-                    logger.info("inference level is at: " + this.inferenceLevel);
-                }
+            if (cmd.hasOption("dbtimeout")) {
+                this.dbTimeout = Integer.parseInt(cmd.getOptionValue("dbtimeout"));
             }
+            if (cmd.hasOption("dbname")) {
+                this.dbName = cmd.getOptionValue("dbname");
+            }
+            if (cmd.hasOption("dbextras")) {
+                this.dbExtras = cmd.getOptionValue("dbextras");
+            }
+        }
+
+        if (cmd.hasOption("classify")) {
+            int level = Integer.parseInt(cmd.getOptionValue("classify"));
+            // handles the case that we have the minimum level.
+            level = (level <= 0) ? 1 : level;
+            // Handles the case where we input a number > 16.
+            level = (level > 16) ? 16 : level;
+            // We can save the level!
+            this.classificationLevel = (int) Math.pow(2, (Integer.SIZE - Integer.numberOfLeadingZeros(level)) - 1);
+        }
+
+        if (cmd.hasOption("threads")) {
+            this.maxThreads = Integer.parseInt(cmd.getOptionValue("threads"));
+            this.maxThreads = this.maxThreads < 1 ? 1 : this.maxThreads;
+        }
+
+        if (cmd.hasOption("smarts")) {
+            this.smartsSize = Integer.parseInt(cmd.getOptionValue("smarts"));
+            this.smartsSize = this.smartsSize < 1 ? 1 : this.smartsSize;
+        }
+
+        this.ignoreWarnings = cmd.hasOption("ignore");
+
+        // Default is build them, so if we don't have it, we build the filters.
+        this.buildFilters = !cmd.hasOption("nofilters");
+
+        this.simulateChemistry = cmd.hasOption("simulate");
+
+        if (cmd.hasOption("epadefs")) {
+            this.epaDefs = cmd.getOptionValue("epadefs");
+        }
     }
 
     /**
-     * Part of the InputConfig interface,
-     * gets the input files to be compiled.
+     * Part of the InputConfig interface, gets the input files to be compiled.
      *
-     * @return      List
-     * List of files to compile
+     * @return List List of files to compile
      */
     public List<String> getFilesForCompilation() {
         return this.input;
     }
 
     /**
-     * Part of the OutputConfig interface,
-     * gets the output file for compilation.
+     * Part of the OutputConfig interface, gets the output file for compilation.
      *
-     * @return      String
-     * String location for output
+     * @return String String location for output
      */
     public String getOutputDir() {
         return this.output;
     }
 
     /**
-     * Part of the DebugConfig interface,
-     * tells us if we are in testing mode or not.
-     * @return  boolean
-     * true if we are in testing mode
+     * Part of the DebugConfig interface, tells us if we are in testing mode or not.
+     *
+     * @return boolean true if we are in testing mode
      */
     public boolean isDebug() {
         return this.debug;
     }
 
     /**
-     * part of the AlgorithmConfig interface,
-     * tells us if we should run SSA algorithm
-     * @return  boolean
-     * true if we should run ssa
+     * part of the AlgorithmConfig interface, tells us if we should run SSA algorithm
+     *
+     * @return boolean true if we should run ssa
      */
     public boolean runSSA() {
         return this.ssa;
     }
 
     /**
-     * Part of the AlgorithmConfig interface,
-     * tells us if we should run SSI algorithm
-     * @return  boolean
-     * true if we should run ssi
+     * Part of the AlgorithmConfig interface, tells us if we should run SSI algorithm
+     *
+     * @return boolean true if we should run ssi
      */
     public boolean runSSI() {
         return this.ssi;
@@ -254,12 +291,13 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     }
 
     /**
-     * Part of the CleanConfig interface,
-     * tells us if we should run the clean method
-     * @return boolean
-     * true if we should clean the output directory
+     * Part of the CleanConfig interface, tells us if we should run the clean method
+     *
+     * @return boolean true if we should clean the output directory
      */
-    public boolean clean() { return this.clean; }
+    public boolean clean() {
+        return this.clean;
+    }
 
     private void buildTranslators(List<String> strings) {
         for (String name : strings) {
@@ -272,10 +310,9 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     }
 
     /**
-     * Part of the TranslateConfig interface,
-     * gets all the translations we need to run.
-     * @return  Map of translations that can occur
-     *     Map of all translations
+     * Part of the TranslateConfig interface, gets all the translations we need to run.
+     *
+     * @return Map of translations that can occur Map of all translations
      */
     public Map<String, Translator> getAllTranslations() {
         return this.translators;
@@ -359,7 +396,37 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     }
 
     @Override
-    public InferenceLevel getInferenceLevel() {
-        return this.inferenceLevel;
+    public int getClassificationLevel() {
+        return this.classificationLevel;
+    }
+
+    @Override
+    public boolean ignoreWarnings() {
+        return this.ignoreWarnings;
+    }
+
+    @Override
+    public boolean buildFilters() {
+        return this.buildFilters;
+    }
+
+    @Override
+    public String getEpaDefs() {
+        return this.epaDefs;
+    }
+
+    @Override
+    public boolean simulateChemistry() {
+        return this.simulateChemistry;
+    }
+
+    @Override
+    public int smartsLength() {
+        return this.smartsSize;
+    }
+
+    @Override
+    public int getNumberOfThreads() {
+        return this.maxThreads;
     }
 }

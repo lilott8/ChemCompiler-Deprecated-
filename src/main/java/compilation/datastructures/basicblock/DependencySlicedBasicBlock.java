@@ -109,16 +109,16 @@ public class DependencySlicedBasicBlock extends BasicBlock{
         lastInstructions.remove(CFG.GetExit());
         lastInstructions.remove(CFG.GetEntry());
 
-        //ignore instructions from entry node
+        //ephemeral instructions from entry node
         for (Integer i = 0; i < CFG.getBasicBlocks().get(0).getInstructions().size(); i++) {
             instructions.remove(0);
         }
-        //ignore instructions from exit node
+        //ephemeral instructions from exit node
         for (Integer i = 0; i < CFG.getBasicBlock(last).getInstructions().size(); i++) {
             instructions.remove(instructions.size()-1);
         }
 
-        //ignore phi and sigma instructions
+        //ephemeral phi and sigma instructions
         for (Integer i = instructions.size()-1; i > 0; i--) {
             InstructionNode instr = instructions.get(i);
             if (instr instanceof PHIInstruction || instr instanceof SigmaInstruction) {

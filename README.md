@@ -15,7 +15,7 @@ This is an SSA/SSI compiler for BioScript.  It implements the ChemType type syst
  
 This is the minimum requirements to run the chemical compiler.
  
-#Basic Usage
+# Basic Usage
 
 Chemical compilation.Compiler uses log4j for logging, so may provide a log4j xml config by: `-Dlog4j.configurationFile=/path/to/xml` 
 
