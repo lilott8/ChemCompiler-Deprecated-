@@ -3,18 +3,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.TimeUnit;
 
-import chemaxon.formats.MolImporter;
-import chemaxon.struc.Molecule;
 import cli.CliWrapper;
 import config.ConfigFactory;
-import io.file.FileHandler;
-import io.file.SimpleFile;
-import io.file.ThreadedFile;
+import io.file.write.FileWriter;
+import io.file.write.SimpleWriter;
 import reactivetable.ChemicalCombinator;
-import reactivetable.ReactiveCombinator;
+import reactivetable.StatisticCombinator;
 import reactivetable.TableCombinator;
 import reactivetable.ThreadManager;
-import typesystem.epa.EpaManager;
 
 /**
  * @created: 9/14/17
@@ -33,10 +29,11 @@ public class TableMain {
 
         ThreadManager threadManager = new ThreadManager();
         // Instantiate the threaded file manager.
-        FileHandler fileManager = new SimpleFile("test", true);
+        FileWriter fileManager = new SimpleWriter("test", true);
 
         // Create the new combinator
         TableCombinator combo = new ChemicalCombinator(fileManager);
+        // TableCombinator combo = new StatisticCombinator(fileManager);
 
         // run the file manager as a new thread.
         // fileManager.start();

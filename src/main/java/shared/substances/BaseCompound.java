@@ -36,7 +36,6 @@ public abstract class BaseCompound<T> {
 
     public abstract T getRepresentation();
     public abstract void setRepresentation(T representation);
-    protected abstract void setSmiles(String smiles);
 
     /**
      * Add a reactive group to the set of reactive groups
@@ -83,6 +82,13 @@ public abstract class BaseCompound<T> {
         return name;
     }
 
+    public void setSmiles(String smiles) {
+        this.smiles = smiles;
+    }
+
+    public String getSmiles() {
+        return this.smiles;
+    }
     /**
      * toString method
      * @return string representation of compound

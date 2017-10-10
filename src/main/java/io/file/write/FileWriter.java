@@ -1,4 +1,4 @@
-package io.file;
+package io.file.write;
 
 
 import com.google.common.collect.Table;
@@ -7,11 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
 
-import chemaxon.jep.function.In;
 import config.ConfigFactory;
 import config.InferenceConfig;
 
@@ -20,7 +18,7 @@ import config.InferenceConfig;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public abstract class FileHandler extends Thread {
+public abstract class FileWriter extends Thread {
     protected String outputDir;
     protected String baseFile;
     protected final int MAX_WRITES = 100;
@@ -28,7 +26,7 @@ public abstract class FileHandler extends Thread {
     protected int fileNumber = 1;
     protected long invalid = 0;
     protected boolean useNumbering = false;
-    private Logger logger = LogManager.getLogger(FileHandler.class);
+    private Logger logger = LogManager.getLogger(FileWriter.class);
 
     //abstract void openFile();
     public abstract void push(String string);
@@ -41,17 +39,17 @@ public abstract class FileHandler extends Thread {
         this.outputDir = config.getOutputDir();
     }
 
-    protected FileHandler() {
+    protected FileWriter() {
         this.baseFile = "test";
         this.openFile();
     }
 
-    protected FileHandler(String fileName) {
+    protected FileWriter(String fileName) {
         this.baseFile = fileName;
         this.openFile();
     }
 
-    protected FileHandler(String fileName, boolean useNumbering) {
+    protected FileWriter(String fileName, boolean useNumbering) {
         this.baseFile = fileName;
         this.useNumbering = useNumbering;
         this.openFile();
@@ -65,7 +63,7 @@ public abstract class FileHandler extends Thread {
 
     protected void openFile() {
         try {
-            this.writer = new BufferedWriter(new FileWriter(this.getCurrentFile()));
+            this.writer = new BufferedWriter(new java.io.FileWriter(this.getCurrentFile()));
         } catch(IOException e) {
             logger.error(String.format("Error opening: %s", this.getCurrentFile()));
             logger.error(e.toString());

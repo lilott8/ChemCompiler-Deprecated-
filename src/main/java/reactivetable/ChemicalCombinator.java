@@ -1,12 +1,10 @@
 package reactivetable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import io.file.FileHandler;
+import io.file.write.FileWriter;
 import shared.substances.ChemAxonCompound;
 import typesystem.epa.ChemTypes;
 
@@ -14,6 +12,10 @@ import typesystem.epa.ChemTypes;
  * @created: 10/2/17
  * @since: 0.1
  * @project: ChemicalCompiler
+ *
+ * This orders pair-wise comparison by chemical,
+ * e.g. every chemical will be combined and worry about
+ * RG's later.
  */
 public class ChemicalCombinator extends TableCombinator {
 
@@ -21,7 +23,7 @@ public class ChemicalCombinator extends TableCombinator {
     List<Long> chemicalIds = new ArrayList<>();
 
 
-    public ChemicalCombinator(FileHandler handler) {
+    public ChemicalCombinator(FileWriter handler) {
         super(handler);
         chemicalIds.addAll(this.chemicalCache.keySet());
     }

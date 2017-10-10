@@ -1,45 +1,25 @@
 package reactivetable;
 
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import chemaxon.formats.MolFormatException;
-import chemaxon.formats.MolImporter;
-import config.ConfigFactory;
-import config.InferenceConfig;
-import io.file.FileHandler;
-import io.file.SimpleFile;
-import io.file.ThreadedFile;
+import io.file.write.FileWriter;
 import shared.substances.ChemAxonCompound;
-import typesystem.classification.Classifier;
-import typesystem.classification.ClassifierFactory;
-import typesystem.combinator.Combiner;
-import typesystem.combinator.CombinerFactory;
-import typesystem.epa.ChemTypes;
 
 /**
  * @created: 9/14/17
  * @since: 0.1
  * @project: ChemicalCompiler
+ *
+ * This orders pair-wise comparison by reactive groups
+ * e.g. every chemical in every reactive group will be combined.
  */
 public class ReactiveCombinator extends TableCombinator {
 
@@ -48,7 +28,7 @@ public class ReactiveCombinator extends TableCombinator {
     // Queue of what needs to be processed (the reactive group ids)
     private final Queue<Integer> queue = new ConcurrentLinkedQueue<>();
 
-    public ReactiveCombinator(FileHandler threadedFile) {
+    public ReactiveCombinator(FileWriter threadedFile) {
         super(threadedFile);
         this.queue.addAll(this.reactiveGroupId);
         logger.error("Size of queue: " + this.queue);

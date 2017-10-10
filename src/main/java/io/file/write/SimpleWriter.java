@@ -1,38 +1,31 @@
-package io.file;
+package io.file.write;
 
 import com.google.common.collect.Table;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
-
-import config.ConfigFactory;
-import config.InferenceConfig;
-import reactivetable.Chemical;
 
 /**
  * @created: 10/2/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class SimpleFile extends FileHandler {
+public class SimpleWriter extends FileWriter {
 
-    public static final Logger logger = LogManager.getLogger(ThreadedFile.class);
+    public static final Logger logger = LogManager.getLogger(ThreadedWriter.class);
 
-    public SimpleFile() {
+    public SimpleWriter() {
         super();
     }
 
-    public SimpleFile(String name) {
+    public SimpleWriter(String name) {
         super(name);
     }
 
-    public SimpleFile(String name, boolean useNumbering) {
+    public SimpleWriter(String name, boolean useNumbering) {
         super(name, useNumbering);
     }
 

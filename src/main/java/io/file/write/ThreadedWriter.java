@@ -1,23 +1,14 @@
-package io.file;
+package io.file.write;
 
 import com.google.common.collect.Table;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.Buffer;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import config.Config;
-import config.ConfigFactory;
-import config.InferenceConfig;
-import phases.inference.Inference;
 
 /**
  * @created: 8/14/17
@@ -27,23 +18,23 @@ import phases.inference.Inference;
  * Handles a buffer queue to write to a disk.
  * This will shuffle a file every N writes.
  */
-public class ThreadedFile extends FileHandler {
+public class ThreadedWriter extends FileWriter {
 
     private Queue<String> queue = new ConcurrentLinkedQueue<>();
     private boolean receivedDone = false;
 
 
-    public static final Logger logger = LogManager.getLogger(ThreadedFile.class);
+    public static final Logger logger = LogManager.getLogger(ThreadedWriter.class);
 
-    public ThreadedFile() {
+    public ThreadedWriter() {
         super();
     }
 
-    public ThreadedFile(String name) {
+    public ThreadedWriter(String name) {
         super(name);
     }
 
-    public ThreadedFile(String name, boolean useNumbering) {
+    public ThreadedWriter(String name, boolean useNumbering) {
         super(name, useNumbering);
     }
 

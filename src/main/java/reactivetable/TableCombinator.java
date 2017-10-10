@@ -22,8 +22,8 @@ import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
 import config.ConfigFactory;
 import config.InferenceConfig;
-import io.file.FileHandler;
-import io.file.SimpleFile;
+import io.file.write.FileWriter;
+import io.file.write.SimpleWriter;
 import shared.substances.ChemAxonCompound;
 import typesystem.classification.Classifier;
 import typesystem.classification.ClassifierFactory;
@@ -43,8 +43,8 @@ public abstract class TableCombinator implements Runnable {
     protected Combiner combiner = CombinerFactory.getCombiner();
     protected Classifier classifier = ClassifierFactory.getClassifier();
     // file to write things to disk
-    protected final FileHandler writer;
-    protected final FileHandler doneWriter;
+    protected final FileWriter writer;
+    protected final FileWriter doneWriter;
     // config for setting things
     protected InferenceConfig config = ConfigFactory.getConfig();
     // total records to be processed (queue.size() before runn())
@@ -66,10 +66,10 @@ public abstract class TableCombinator implements Runnable {
 
     public abstract void printReactiveGroupTable();
 
-    public TableCombinator(FileHandler handler) {
+    public TableCombinator(FileWriter handler) {
         this.writer = handler;
         this.buildChemicals(this.parseFile());
-        this.doneWriter = new SimpleFile("completed.txt", false);
+        this.doneWriter = new SimpleWriter("completed.txt", false);
     }
 
     /**
@@ -126,6 +126,7 @@ public abstract class TableCombinator implements Runnable {
                 chemicalCache.get(chem.pubChemId).addReactiveGroup(chem.reactiveGroup);
             } else {
                 ChemAxonCompound compound = new ChemAxonCompound(chem.pubChemId, chem.canonicalSmiles);
+                compound.setSmiles(chem.canonicalSmiles);
                 compound.addReactiveGroup(chem.reactiveGroup);
                 compound = this.addMolecule(compound, chem);
                 chemicalCache.put(compound.getId(), compound);
@@ -143,7 +144,7 @@ public abstract class TableCombinator implements Runnable {
             this.addChemicalToReactiveGroups(entry.getValue());
         }
         logger.info("Done adding chemicals to reactive group table.");
-        printReactiveGroupTable();
+        //printReactiveGroupTable();
     }
 
     /**
