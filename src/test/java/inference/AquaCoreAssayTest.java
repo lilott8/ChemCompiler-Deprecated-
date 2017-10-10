@@ -31,6 +31,10 @@ public class AquaCoreAssayTest {
         Inference inference = new Inference();
         inference.runPhase(compiler.getExperiments().get(0));
         assertTrue(runTest(baseCommand + root + file));
+
+        if (1 == 1) {
+            
+        }
     }
 
     @Test
