@@ -1,7 +1,9 @@
 package inference;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
+import cli.CliWrapper;
 import compilation.Compiler;
 import config.ConfigFactory;
 import phases.inference.Inference;
@@ -16,38 +18,56 @@ import static utils.CommonUtils.runTest;
  */
 public class AquaCoreAssayTest {
 
-    public static String root = "src/main/resources/tests/aquacoreassays/";
-    public static String baseCommand = "-p inference " +
+    public static final String root = "src/main/resources/tests/aquacoreassays/";
+    public static final String baseCommand = "-p inference " +
             "-dbname chem_trails -dbuser root -dbpass root " +
             "-dbextras ?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false " +
             "-d -nf -i -classify 16 -c ";
 
+    private final CliWrapper cli = new CliWrapper();
+    private Compiler compiler;
+
     @Test
     public void glucoseDetectionSimpleSat() {
         String file = "glucose_detection.json";
-
-        Compiler compiler = new Compiler(ConfigFactory.getConfig());
-        compiler.compile();
-        Inference inference = new Inference();
-        inference.runPhase(compiler.getExperiments().get(0));
-        assertTrue(runTest(baseCommand + root + file));
+        //cli.parseCommandLine(StringUtils.split(baseCommand + root + file));
+        //this.compiler = new Compiler(ConfigFactory.getConfig());
+        //this.compiler.compile();
+        //Inference inference = new Inference();
+        //assertTrue(inference.runPhase(compiler.getExperiments().get(0)));
+        assertTrue(runTest(root + file));
     }
 
     @Test
     public void imageProbeSynthSimpleSat() {
         String file = "image_probe_synth.json";
-        //assertTrue(runTest(root + file));
+        cli.parseCommandLine(StringUtils.split(baseCommand + root + file));
+        this.compiler = new Compiler(ConfigFactory.getConfig());
+        this.compiler.compile();
+        Inference inference = new Inference();
+        inference.runPhase(compiler.getExperiments().get(0));
+        assertTrue(runTest(root + file));
     }
 
     @Test
     public void neuroTransmitterSensingSimpleSat() {
         String file = "neurotransmitter_sensing.json";
-        //assertTrue(runTest(root + file));
+        cli.parseCommandLine(StringUtils.split(baseCommand + root + file));
+        this.compiler = new Compiler(ConfigFactory.getConfig());
+        this.compiler.compile();
+        Inference inference = new Inference();
+        inference.runPhase(compiler.getExperiments().get(0));
+        assertTrue(runTest(root + file));
     }
 
     @Test
     public void pcrSimpleSat() {
         String file = "pcr.json";
-        //assertTrue(runTest(root + file));
+        cli.parseCommandLine(StringUtils.split(baseCommand + root + file));
+        this.compiler = new Compiler(ConfigFactory.getConfig());
+        this.compiler.compile();
+        Inference inference = new Inference();
+        inference.runPhase(compiler.getExperiments().get(0));
+        assertTrue(runTest(root + file));
     }
 }

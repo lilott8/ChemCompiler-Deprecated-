@@ -17,9 +17,9 @@ import utils.CommonUtils;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        AquaCoreAssayTest.class,
         ChemTypeTest.class,
         ContrivedTest.class,
+        AquaCoreAssayTest.class,
         ElisaTest.class
 })
 public class InferenceSuite {}

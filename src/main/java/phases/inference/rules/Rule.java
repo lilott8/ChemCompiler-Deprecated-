@@ -11,7 +11,6 @@ import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
-import phases.inference.satsolver.constraints.GenericSMT;
 import phases.inference.satsolver.constraints.MatSMT;
 import phases.inference.satsolver.constraints.NumSMT;
 import typesystem.epa.ChemTypes;
@@ -75,20 +74,19 @@ public abstract class Rule {
     }
 
     protected void addConstraints(String key, Set<ChemTypes> value, ConstraintType type) {
-        logger.debug(type);
         for (ChemTypes t : value) {
             this.addConstraint(key, t, type);
         }
     }
 
     protected void addConstraint(String key, ChemTypes value, ConstraintType type) {
-        logger.info(type);
         if (!this.constraints.containsKey(key)) {
             switch (type) {
                 default:
                     constraints.put(key, new NumSMT(key, type));
                     break;
                 case MIX:
+                case ASSIGN:
                     constraints.put(key, new MatSMT(key, type));
                     break;
             }
