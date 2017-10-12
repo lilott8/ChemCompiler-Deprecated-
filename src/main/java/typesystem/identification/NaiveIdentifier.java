@@ -1,5 +1,8 @@
 package typesystem.identification;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +16,8 @@ import typesystem.epa.ChemTypes;
  * @project: ChemicalCompiler
  */
 public class NaiveIdentifier extends Identifier {
+
+    public static final Logger logger = LogManager.getLogger(NaiveIdentifier.class);
 
     NaiveIdentifier() {}
 
@@ -33,7 +38,16 @@ public class NaiveIdentifier extends Identifier {
         for (Character c : name.toCharArray()) {
             total += c;
         }
-        types.add(ChemTypes.getTypeFromId(total%ChemTypes.NUM_REACTIVE_GROUPS));
+        logger.debug("==============");
+        logger.debug(total%ChemTypes.NUM_REACTIVE_GROUPS);
+        int modulus = total%ChemTypes.NUM_REACTIVE_GROUPS;
+        if (modulus == 0 || modulus == 67) {
+            modulus = 1;
+        }
+
+        types.add(ChemTypes.getTypeFromId(modulus));
+        logger.debug(types);
+        logger.debug("==============");
         return types;
     }
 

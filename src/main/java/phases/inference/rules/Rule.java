@@ -3,7 +3,10 @@ package phases.inference.rules;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.Message;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -87,6 +90,7 @@ public abstract class Rule {
                     break;
                 case MIX:
                 case ASSIGN:
+                case HEAT:
                     constraints.put(key, new MatSMT(key, type));
                     break;
             }
@@ -113,6 +117,26 @@ public abstract class Rule {
             return true;
         } catch(NumberFormatException e) {
             return false;
+        }
+    }
+
+    public static String createHash(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] bytes = digest.digest(input.getBytes());
+            StringBuffer sb = new StringBuffer();
+            int x = 0;
+            for (byte b : bytes) {
+                if (x == 0 && Rule.isNumeric(String.format("%02x", b))) {
+                    sb.append("a");
+                }
+                sb.append(String.format("%02x", b));
+                x++;
+            }
+            return sb.toString();
+        } catch(NoSuchAlgorithmException e) {
+            input = "a" + input;
+            return input;
         }
     }
 

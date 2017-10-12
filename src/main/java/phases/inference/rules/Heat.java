@@ -17,29 +17,40 @@ import static typesystem.epa.ChemTypes.REAL;
 public class Heat extends NodeAnalyzer {
 
     public Heat(InferenceType type) {
-        super(type);
+        super(type, Heat.class);
     }
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        return super.gatherConstraints(node);
+        logger.info(node);
+        logger.debug("InputSymbols: " + node.getInputSymbols());
+
+        for(String s : node.getInputSymbols()) {
+            this.addConstraints(s, identifier.identifyCompoundForTypes(s), ConstraintType.HEAT);
+        }
+
+        for (Property prop : node.Instruction().getProperties()) {
+            this.addConstraint(Rule.createHash(prop.toString()), REAL, ConstraintType.NUMBER);
+        }
+
+        return this;
     }
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, MAT, ConstraintType.HEAT);
+        this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.HEAT);
         return this;
     }
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        this.addConstraint(input, MAT, ConstraintType.HEAT);
+        this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.HEAT);
         return this;
     }
 
     @Override
     public Rule gatherConstraints(Property property) {
-        this.addConstraint(CONST, REAL, ConstraintType.HEAT);
+        this.addConstraint(Rule.createHash(property.toString()), REAL, ConstraintType.HEAT);
         return this;
     }
 }

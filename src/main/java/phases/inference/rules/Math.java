@@ -38,7 +38,7 @@ public class Math extends NodeAnalyzer {
         }
 
         for (Property prop : node.Instruction().getProperties()) {
-            this.addConstraint(CONST, REAL, ConstraintType.NUMBER);
+            this.addConstraint(Rule.createHash(prop.toString()), REAL, ConstraintType.NUMBER);
         }
         return this;
     }

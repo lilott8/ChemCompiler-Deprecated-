@@ -22,7 +22,7 @@ public class Combine extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        return mix.gatherAllConstraints(node);
+        return this.mix.gatherAllConstraints(node);
     }
 
     public Combine(Inference.InferenceType type) {
@@ -30,12 +30,14 @@ public class Combine extends NodeAnalyzer {
     }
     @Override
     public Rule gatherUseConstraints(String input) {
-        return mix.gatherUseConstraints(input);
+        //return this.mix.gatherUseConstraints(input);
+        return this;
     }
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        return this.mix.gatherDefConstraints(input);
+        //return this.mix.gatherDefConstraints(input);
+        return this;
     }
 
     @Override

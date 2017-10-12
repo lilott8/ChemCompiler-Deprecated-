@@ -19,6 +19,7 @@ public class MatSMT extends Constraint {
 
     public MatSMT(String key, ConstraintType type) {
         super(key, type);
+        logger.info("Key: " + key);
     }
 
     @Override
@@ -30,6 +31,9 @@ public class MatSMT extends Constraint {
     public String buildDeclares() {
         StringBuilder sb = new StringBuilder();
         for (ChemTypes t : this.constraints) {
+            if (t == null) {
+                logger.fatal("ChemTypes is null: " + this.varName);
+            }
             sb.append("(declare-const ").append(getAssertName(t)).append(" Bool)").append(System.lineSeparator());
         }
         return sb.toString();
@@ -114,4 +118,6 @@ public class MatSMT extends Constraint {
 
         return sb.toString();
     }
+
+
 }

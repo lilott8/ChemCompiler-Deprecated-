@@ -1,6 +1,8 @@
 package phases.inference.satsolver.constraints;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,12 +18,13 @@ public abstract class Constraint {
 
     protected Set<ChemTypes> constraints = new HashSet<>();
     protected String varName = "";
-    private ConstraintType type;
+    protected ConstraintType type;
     public static final String TAB = "\t";
     public static final String NL = System.lineSeparator();
+    private static final Logger logger = LogManager.getLogger(Constraint.class);
 
     public enum ConstraintType {
-        ASSIGN, MIX, CONST, SPLIT, NUMBER, DETECT, HEAT, OUTPUT, STORE
+        ASSIGN, MIX, CONST, SPLIT, NUMBER, DETECT, HEAT, OUTPUT, STORE, BRANCH
     }
 
     // For debugging stuff.
@@ -30,7 +33,8 @@ public abstract class Constraint {
     public abstract String buildAsserts();
 
     Constraint(String key, ConstraintType type) {
-        this.varName = StringUtils.replaceAll(key, " ", "_");;
+        this.varName = StringUtils.replaceAll(key, " ", "_");
+        this.varName = StringUtils.replace(this.varName, "-", "_");
         this.type = type;
     }
 
@@ -39,6 +43,10 @@ public abstract class Constraint {
     }
 
     protected String getAssertName(ChemTypes append) {
+        if(append == null) {
+            logger.fatal("Append is null: " + this.varName);
+            logger.error("Check the class: NaiveIdentifier.identifyCompoundForTypes, the modulus operation is probably giving us something incorrect.");
+        }
         return this.varName + "_" + append.toString();
     }
 
@@ -56,5 +64,9 @@ public abstract class Constraint {
 
     public Set<ChemTypes> getConstraints() {
         return this.constraints;
+    }
+
+    public String toString() {
+        return this.varName + "\t" + this.type;
     }
 }

@@ -32,7 +32,7 @@ public class CommonUtils {
                 "-d -nf -i -classify 16\n", file);
         CliWrapper cli = new CliWrapper();
         cli.parseCommandLine(StringUtils.split(args));
-        LogManager.getLogger(CommonUtils.class).info(ConfigFactory.getConfig().getAllPhases());
+        LogManager.getLogger(CommonUtils.class).info(ConfigFactory.getConfig().getFilesForCompilation());
         Compiler compiler = new Compiler(ConfigFactory.getConfig());
         compiler.compile();
         Inference inference = new Inference();

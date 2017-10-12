@@ -6,14 +6,16 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
 
-import static compilation.datastructures.basicblock.BasicBlockEdge.__type.eq;
-import static compilation.datastructures.basicblock.BasicBlockEdge.__type.gt;
-import static compilation.datastructures.basicblock.BasicBlockEdge.__type.gte;
-import static compilation.datastructures.basicblock.BasicBlockEdge.__type.lt;
-import static compilation.datastructures.basicblock.BasicBlockEdge.__type.lte;
-import static compilation.datastructures.basicblock.BasicBlockEdge.__type.neq;
-import static compilation.datastructures.basicblock.BasicBlockEdge.__type.repeat;
-import static compilation.datastructures.basicblock.BasicBlockEdge.__type.un;
+import compilation.datastructures.ConditionalNode;
+
+import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalType.eq;
+import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalType.gt;
+import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalType.gte;
+import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalType.lt;
+import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalType.lte;
+import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalType.neq;
+import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalType.repeat;
+import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalType.un;
 
 /**
  * Created by chriscurtis on 9/28/16.
@@ -24,9 +26,73 @@ public class BasicBlockEdge implements Serializable {
 
 //this still needs to be created.
     private String __condition;
-    protected enum __type {un, repeat, lt, lte, gt, gte, eq, neq };
+    public enum ConditionalType {
+        un{
+            public String toString() {
+                return "";
+            }
+        },
+        repeat{
+            public String toString() {
+                return " ";
+            }
+        },
+        lt {
+            public String toString() {
+                return "<";
+            }
+        },
+        lte {
+            public String toString() {
+                return "<=";
+            }
+        },
+        gt {
+            public String toString() {
+                return ">";
+            }
+        },
+        gte {
+            public String toString() {
+                return ">=";
+            }
+        },
+        eq {
+            public String toString() {
+                return "==";
+            }
+        },
+        neq {
+            public String toString() {
+                return "";
+            }
+        };
+
+        public String toString(ConditionalType t) {
+            switch (t) {
+                default:
+                case un:
+                    return "";
+                case repeat:
+                    return " ";
+                case lt:
+                    return "<";
+                case lte:
+                    return "<=";
+                case gt:
+                    return ">";
+                case gte:
+                    return ">=";
+                case eq:
+                    return "==";
+                case neq:
+                    return "!=";
+            }
+        }
+    }
     protected String classification;
-    private __type type;
+    private ConditionalType type;
+    private ConditionalNode conditional;
 
     public static Logger logger = LogManager.getLogger(BasicBlockEdge.class);
 
@@ -36,6 +102,7 @@ public class BasicBlockEdge implements Serializable {
         __condition = condition;
         this.type = un;
         this.classification = "unknown";
+        this.conditional = new ConditionalNode(this.type, __condition);
     }
 
     public BasicBlockEdge(Integer source, Integer destination, String expression, String type) {
@@ -43,6 +110,7 @@ public class BasicBlockEdge implements Serializable {
         __destination = destination;
         __condition = evaluateCondition(expression, type);
         this.classification = StringUtils.lowerCase(type);
+        this.conditional = new ConditionalNode(this.type, __condition);
     }
 
     private String evaluateCondition(String expression, String type) {
@@ -51,6 +119,11 @@ public class BasicBlockEdge implements Serializable {
             this.type = repeat;
         }
         else if (type.equals("WHILE") || type.equals("IF")) {
+            this.type = evaluateBoolean(expression);
+        }
+        // TODO: validate the correctness of this.
+        // added 2017-10-11
+        else if (StringUtils.equalsIgnoreCase(type, "ELSEIF")) {
             this.type = evaluateBoolean(expression);
         }
         else {
@@ -67,7 +140,7 @@ public class BasicBlockEdge implements Serializable {
         return ret;
     }
 
-    private __type evaluateBoolean(String expression) {
+    private ConditionalType evaluateBoolean(String expression) {
         if (expression.contains("<=")) {
             return lte;
         }
@@ -106,4 +179,8 @@ public class BasicBlockEdge implements Serializable {
     public Integer getSource() { return __source; }
     public Integer getDestination() {return __destination; }
     public String getCondition()  { return __condition; }
+
+    public ConditionalNode getConditional() {
+        return this.conditional;
+    }
 }

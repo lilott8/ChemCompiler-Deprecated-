@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 
+import config.ConfigFactory;
 import typesystem.epa.ChemTypes;
 import phases.inference.satsolver.constraints.Constraint;
 
@@ -74,8 +75,10 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(entry.getValue().buildAsserts());
         }
 
-        logger.info(sb);
-        //return true;
+        if (ConfigFactory.getConfig().isDebug()) {
+            logger.info(sb);
+        }
+        // return true;
         return this.solveWithSMT2(sb.toString());
     }
 

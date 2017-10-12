@@ -17,9 +17,8 @@ import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 public class Repeat extends EdgeAnalyzer {
 
     public Repeat(InferenceType type) {
-        super(type);
+        super(type, Repeat.class);
     }
-    public String DEFAULT_ID = "number";
 
     @Override
     public Rule gatherConstraints(BasicBlockEdge edge) {
@@ -35,11 +34,10 @@ public class Repeat extends EdgeAnalyzer {
                 // We cannot define a variable here, so we can safely look
                 // into the global constraints table.
                 if (isNumeric(edge.getCondition())) {
-                    // TODO: convert this number to word.
                     if (isNaturalNumber(edge.getCondition())) {
-                        this.addConstraint(DEFAULT_ID + "_" + getAndIncrement(), ChemTypes.NAT, ConstraintType.NUMBER);
+                        this.addConstraint(createHash(edge.getConditional().getLeftOperand()), ChemTypes.NAT, ConstraintType.NUMBER);
                     } else {
-                        this.addConstraint(DEFAULT_ID + "_" + getAndIncrement(), ChemTypes.REAL, ConstraintType.NUMBER);
+                        this.addConstraint(createHash(edge.getConditional().getLeftOperand()), ChemTypes.REAL, ConstraintType.NUMBER);
                     }
                 }
             } else {

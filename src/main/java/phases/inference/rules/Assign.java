@@ -1,6 +1,9 @@
 package phases.inference.rules;
 
+import java.util.Set;
+
 import compilation.datastructures.InstructionNode;
+import errors.ChemTrailsException;
 import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
@@ -45,7 +48,7 @@ public class Assign extends NodeAnalyzer {
         if (isNumeric(input)) {
             this.addConstraint(input, isRealNumber(input) ? ChemTypes.REAL : ChemTypes.NAT, ConstraintType.NUMBER);
         } else {
-            this.addConstraint(input, ChemTypes.MAT, ConstraintType.ASSIGN);
+            this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.ASSIGN);
         }
         return this;
     }
