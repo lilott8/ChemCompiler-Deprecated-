@@ -12,27 +12,29 @@ import substance.Property;
 @InferenceRule(ruleName = "var", ruleType = "term")
 public class Var extends NodeAnalyzer {
 
+    private NodeAnalyzer assign = new Assign(InferenceType.TERM);
+
     public Var(InferenceType type) {
-        super(type);
+        super(type, Var.class);
     }
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        return super.gatherConstraints(node);
+        return this.assign.gatherConstraints(node);
     }
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        return null;
+        return this.assign.gatherUseConstraints(input);
     }
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        return null;
+        return this.assign.gatherDefConstraints(input);
     }
 
     @Override
     public Rule gatherConstraints(Property property) {
-        return null;
+        return this.assign.gatherConstraints(property);
     }
 }

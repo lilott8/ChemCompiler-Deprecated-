@@ -33,6 +33,10 @@ public class Detect extends NodeAnalyzer {
             this.addConstraint(output, REAL, ConstraintType.NUMBER);
         }
 
+        for (Property prop : node.Instruction().getProperties()) {
+            this.gatherConstraints(prop);
+        }
+
         return this;
     }
 

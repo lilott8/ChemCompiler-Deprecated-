@@ -31,22 +31,21 @@ public class Assign extends NodeAnalyzer {
              logger.trace("Output: " + node.getOutputSymbols());
         }
 
+
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
-        // TODO: converge the add constraints and identify compound.
         this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompoundForTypes(node.getInputSymbols().get(0)), ConstraintType.ASSIGN);
-        //this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompound(node.getInputSymbols().get(0)));
-        //logger.trace("Inferred Constraints: " + constraints.get(node.getOutputSymbols().get(0)));
 
-        //logger.trace("=======================");
-
+        for (Property prop : node.Instruction().getProperties()) {
+            this.gatherConstraints(prop);
+        }
         return this;
     }
 
     @Override
     public Rule gatherUseConstraints(String input) {
         if (isNumeric(input)) {
-            this.addConstraint(input, isRealNumber(input) ? ChemTypes.REAL : ChemTypes.NAT, ConstraintType.NUMBER);
+            this.addConstraint(Rule.createHash(input), isRealNumber(input) ? ChemTypes.REAL : ChemTypes.NAT, ConstraintType.NUMBER);
         } else {
             this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.ASSIGN);
         }
@@ -60,6 +59,7 @@ public class Assign extends NodeAnalyzer {
 
     @Override
     public Rule gatherConstraints(Property property) {
+        this.addConstraint(Rule.createHash(property.toString()), ChemTypes.REAL, ConstraintType.NUMBER);
         return this;
     }
 }

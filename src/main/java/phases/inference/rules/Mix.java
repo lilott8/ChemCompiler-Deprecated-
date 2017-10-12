@@ -33,9 +33,9 @@ public class Mix extends NodeAnalyzer {
         Set<ChemTypes> groups = new HashSet<>();
         List<ChemTypes> groupsList = new ArrayList<>();
         for(String in: node.getInputSymbols()) {
-            // We don't know what this is.
+            // We don't know what this is -- this case should never fire.
             if (!this.constraints.containsKey(in)) {
-                // TODO: converge int and chemtypes....
+                logger.error("We shouldn't be identifying [" + in +  "] on input.");
                 //this.addConstraint(in, new GenericSMT(in))
                 for (ChemTypes i : this.identifier.identifyCompoundForTypes(in)) {
                     this.addConstraint(in, i, ConstraintType.MIX);

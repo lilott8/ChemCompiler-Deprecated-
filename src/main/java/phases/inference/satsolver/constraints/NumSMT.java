@@ -19,6 +19,7 @@ public class NumSMT extends Constraint {
 
     public NumSMT(String key, ConstraintType type) {
         super(key, type);
+        logger.info("Num Key: " + this.varName);
     }
 
     @Override
@@ -36,7 +37,7 @@ public class NumSMT extends Constraint {
     @Override
     public String buildConstraintValues() {
         StringBuilder sb = new StringBuilder();
-        sb.append("; Building asserts for: ").append(this.varName).append(NL);
+        sb.append("; aaaaa Building asserts for: ").append(this.varName).append(NL);
         for (ChemTypes t : this.constraints) {
             sb.append("(assert (= ").append(this.varName).append(" ").append(t).append("))").append(System.lineSeparator());
         }

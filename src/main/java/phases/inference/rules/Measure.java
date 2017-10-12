@@ -33,12 +33,12 @@ public class Measure extends NodeAnalyzer {
 
     @Override
     protected Rule gatherUseConstraints(String input) {
-        return this;
+        return this.detect.gatherUseConstraints(input);
     }
 
     @Override
     protected Rule gatherDefConstraints(String input) {
-        return this;
+        return this.detect.gatherDefConstraints(input);
     }
 
     @Override

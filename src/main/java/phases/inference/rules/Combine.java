@@ -20,13 +20,13 @@ public class Combine extends NodeAnalyzer {
     public static final Logger logger = LogManager.getLogger(Mix.class);
     private NodeAnalyzer mix = new Mix(Inference.InferenceType.INSTRUCTION);
 
+    public Combine(Inference.InferenceType type) {
+        super(type, Combine.class);
+    }
+
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
         return this.mix.gatherAllConstraints(node);
-    }
-
-    public Combine(Inference.InferenceType type) {
-        super(type);
     }
     @Override
     public Rule gatherUseConstraints(String input) {

@@ -19,6 +19,14 @@ public class NaiveIdentifier extends Identifier {
 
     public static final Logger logger = LogManager.getLogger(NaiveIdentifier.class);
 
+    private Set<Integer> unknowns = new HashSet<Integer>(){{
+        unknowns.add(0);
+        unknowns.add(67);
+        unknowns.add(24);
+        unknowns.add(36);
+        unknowns.add(43);
+    }};
+
     NaiveIdentifier() {}
 
     @Override
@@ -38,23 +46,23 @@ public class NaiveIdentifier extends Identifier {
         for (Character c : name.toCharArray()) {
             total += c;
         }
-        logger.debug("==============");
-        logger.debug(total%ChemTypes.NUM_REACTIVE_GROUPS);
-        int modulus = total%ChemTypes.NUM_REACTIVE_GROUPS;
-        if (modulus == 0 || modulus == 67) {
-            modulus = 1;
-        }
-
-        types.add(ChemTypes.getTypeFromId(modulus));
-        logger.debug(types);
-        logger.debug("==============");
+        types.add(ChemTypes.getTypeFromId(this.getModulo(total)));
         return types;
     }
 
     @Override
     public Set<ChemTypes> identifyCompoundForTypes(long id) {
         Set<ChemTypes> types = new HashSet<>();
-        types.add(ChemTypes.getTypeFromId(((int) id%ChemTypes.NUM_REACTIVE_GROUPS)));
+        types.add(ChemTypes.getTypeFromId((this.getModulo(id))));
         return types;
+    }
+
+    private int getModulo(long x) {
+        int modulus = (int) x%ChemTypes.NUM_REACTIVE_GROUPS;
+
+        if (unknowns.contains(modulus)) {
+            modulus = 1;
+        }
+        return modulus;
     }
 }

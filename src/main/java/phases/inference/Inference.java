@@ -119,10 +119,8 @@ public class Inference implements Phase {
     public Map<String, Constraint> inferConstraints(String name, InstructionNode instruction) {
         if(this.basicBlockAnalyzers.containsKey(name)) {
             NodeAnalyzer rule = this.basicBlockAnalyzers.get(name);
-            return rule.gatherAllConstraints(instruction).getConstraints();
             // return the constraints from the rule
-            //return rule.getConstraints();
-            //return this.inferenceRules.get(name).gatherConstraints(instruction).getConstraints();
+            return rule.gatherAllConstraints(instruction).getConstraints();
         }
         logger.warn("Node Analysis: We don't have a rule for: " + name);
         // return an empty array list for ease.
@@ -211,6 +209,9 @@ public class Inference implements Phase {
                 logger.warn(String.format("We cannot find the correct instructor for: %s", clazz.getName()));
             } catch(InvocationTargetException ite) {
                 logger.warn(String.format("We cannot invoke that dark magic (%s)", clazz.getName()));
+                ite.printStackTrace();
+                logger.error(ite.getCause().getMessage());
+                logger.error(ite.getTargetException().getMessage());
             }
         }
     }

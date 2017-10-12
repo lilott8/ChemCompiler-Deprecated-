@@ -21,6 +21,7 @@ public class Split extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
+        logger.warn("Using generic implementation for split!");
         return super.gatherConstraints(node);
     }
 

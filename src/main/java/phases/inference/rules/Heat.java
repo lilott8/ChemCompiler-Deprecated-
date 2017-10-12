@@ -30,7 +30,7 @@ public class Heat extends NodeAnalyzer {
         }
 
         for (Property prop : node.Instruction().getProperties()) {
-            this.addConstraint(Rule.createHash(prop.toString()), REAL, ConstraintType.NUMBER);
+            this.gatherConstraints(prop);
         }
 
         return this;
@@ -50,7 +50,7 @@ public class Heat extends NodeAnalyzer {
 
     @Override
     public Rule gatherConstraints(Property property) {
-        this.addConstraint(Rule.createHash(property.toString()), REAL, ConstraintType.HEAT);
+        this.addConstraint(Rule.createHash(property.toString()), REAL, ConstraintType.NUMBER);
         return this;
     }
 }

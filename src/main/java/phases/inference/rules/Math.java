@@ -45,16 +45,16 @@ public class Math extends NodeAnalyzer {
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        return null;
+        return this;
     }
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        return null;
+        return this;
     }
 
     @Override
     public Rule gatherConstraints(Property property) {
-        return null;
+        return this;
     }
 }

@@ -12,7 +12,7 @@ import substance.Property;
 @InferenceRule(ruleName="vortex", ruleType="instruction")
 public class Vortex extends NodeAnalyzer {
 
-    Mix mix = new Mix(Inference.InferenceType.INSTRUCTION);
+    NodeAnalyzer mix = new Mix(Inference.InferenceType.INSTRUCTION);
 
     public Vortex(Inference.InferenceType type) {
         super(type, Vortex.class);

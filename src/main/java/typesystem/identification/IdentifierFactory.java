@@ -1,5 +1,8 @@
 package typesystem.identification;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import config.ConfigFactory;
 import config.DatabaseConfig;
 import config.InferenceConfig;
@@ -11,12 +14,12 @@ import config.InferenceConfig;
  */
 public class IdentifierFactory {
 
-    private static InferenceConfig config = ConfigFactory.getConfig();
-    private static DatabaseConfig dbConfig = ConfigFactory.getConfig();
     private static final Identifier identifier;
+    private static boolean initialized = false;
+    public static final Logger logger = LogManager.getLogger(IdentifierFactory.class);
 
     static {
-        if (dbConfig.isDBEnabled() && config.simulateChemistry()) {
+        if (ConfigFactory.getConfig().isDBEnabled() && ConfigFactory.getConfig().simulateChemistry()) {
             identifier = new ChemAxonIdentifier();
         } else {
             identifier = new NaiveIdentifier();

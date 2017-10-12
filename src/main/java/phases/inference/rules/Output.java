@@ -26,7 +26,7 @@ public class Output extends NodeAnalyzer {
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, MAT, ConstraintType.OUTPUT);
+        this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.OUTPUT);
         return this;
     }
 

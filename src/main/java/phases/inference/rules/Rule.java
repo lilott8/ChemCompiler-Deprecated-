@@ -121,21 +121,25 @@ public abstract class Rule {
     }
 
     public static String createHash(String input) {
+        Logger log = LogManager.getLogger(Rule.class);
+        log.debug("creating hash for: " + input);
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             byte[] bytes = digest.digest(input.getBytes());
             StringBuffer sb = new StringBuffer();
             int x = 0;
             for (byte b : bytes) {
-                if (x == 0 && Rule.isNumeric(String.format("%02x", b))) {
-                    sb.append("a");
-                }
                 sb.append(String.format("%02x", b));
                 x++;
             }
+            if (Rule.isNumeric(Character.toString(sb.charAt(0)))) {
+                sb.insert(0, "a");
+            }
+            log.debug("Hash of: " + input + ":\t " + sb.toString());
             return sb.toString();
         } catch(NoSuchAlgorithmException e) {
             input = "a" + input;
+            log.debug("Hash of: " + input + ":\t " + input);
             return input;
         }
     }

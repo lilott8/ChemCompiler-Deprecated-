@@ -15,28 +15,29 @@ import static typesystem.epa.ChemTypes.MAT;
 @InferenceRule(ruleName = "store", ruleType = "instruction")
 public class Store extends NodeAnalyzer {
 
+    private NodeAnalyzer output = new Output(InferenceType.INSTRUCTION);
+
     public Store(InferenceType type) {
-        super(type);
+        super(type, Store.class);
     }
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        return super.gatherConstraints(node);
+        return this.output.gatherAllConstraints(node);
     }
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        return this;
+        return this.output.gatherUseConstraints(input);
     }
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        this.addConstraint(input, MAT, ConstraintType.STORE);
-        return this;
+        return this.output.gatherDefConstraints(input);
     }
 
     @Override
     public Rule gatherConstraints(Property property) {
-        return this;
+        return this.output.gatherConstraints(property);
     }
 }
