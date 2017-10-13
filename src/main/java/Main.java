@@ -27,9 +27,6 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         // Build the command line parser
-        CommandLine cmd;
-        CommandLineParser parser = new DefaultParser();
-
         CliWrapper cli = new CliWrapper();
         cli.parseCommandLine(args);
 
@@ -43,29 +40,5 @@ public class Main {
         Compiler compiler = new Compiler(config);
         compiler.compile();
         compiler.runAllOps();
-    }
-
-    public static void main2() {
-        logger.fatal("This was used to simulate the illegal combinations manifest in the EPAManager class");
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
-        List<ChemTypes> chems = new ArrayList<>(ChemTypes.getIntegerChemTypesMap().values());
-        int lower = 0;
-        int upper = chems.size()-1;
-
-        for(Map.Entry<Integer, ChemTypes> t : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-            sb.append("put(").append(t.getValue()).append(", new HashSet<ChemTypes>() {{");
-            // We can select any amount from 0 to all of the things.
-            int iterateTo = random.nextInt(upper - (random.nextInt(upper-lower)+lower) + lower);
-            Set<ChemTypes> toAdd = new HashSet<>();
-            for (int x = 0; x < iterateTo; x++) {
-                int append = random.nextInt(upper - (random.nextInt(upper-lower)+lower) + lower);
-                toAdd.add(chems.get(append));
-            }
-            for (ChemTypes x : toAdd) {
-                sb.append("add(").append(x).append(")").append("; ");
-            }
-            sb.append("}};);").append(System.lineSeparator());
-        }
     }
 }

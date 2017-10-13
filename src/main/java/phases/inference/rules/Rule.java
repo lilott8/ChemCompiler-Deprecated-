@@ -3,7 +3,10 @@ package phases.inference.rules;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.Message;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,7 +14,6 @@ import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
-import phases.inference.satsolver.constraints.GenericSMT;
 import phases.inference.satsolver.constraints.MatSMT;
 import phases.inference.satsolver.constraints.NumSMT;
 import typesystem.epa.ChemTypes;
@@ -31,26 +33,6 @@ public abstract class Rule {
     protected final Logger logger;
 
     public final String CONST = "constant";
-
-    public static final Set<String> operands = new HashSet<String>(){{
-        add("==");
-        add(">=");
-        add("<=");
-        add("!=");
-        add("&&");
-        add("||");
-        add("!");
-        add("and");
-        add("AND");
-        add("or");
-        add("OR");
-        add("not");
-        add("NOT");
-    }};
-
-    private final Set<ConstraintType> simpleConstraints = new HashSet<ConstraintType>() {{
-       add(ConstraintType.MIX);
-    }};
 
     protected InferenceConfig config = ConfigFactory.getConfig();
 
@@ -75,20 +57,20 @@ public abstract class Rule {
     }
 
     protected void addConstraints(String key, Set<ChemTypes> value, ConstraintType type) {
-        logger.debug(type);
         for (ChemTypes t : value) {
             this.addConstraint(key, t, type);
         }
     }
 
     protected void addConstraint(String key, ChemTypes value, ConstraintType type) {
-        logger.info(type);
         if (!this.constraints.containsKey(key)) {
             switch (type) {
                 default:
                     constraints.put(key, new NumSMT(key, type));
                     break;
                 case MIX:
+                case ASSIGN:
+                case HEAT:
                     constraints.put(key, new MatSMT(key, type));
                     break;
             }
@@ -115,6 +97,30 @@ public abstract class Rule {
             return true;
         } catch(NumberFormatException e) {
             return false;
+        }
+    }
+
+    public static String createHash(String input) {
+        Logger log = LogManager.getLogger(Rule.class);
+        log.debug("creating hash for: " + input);
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] bytes = digest.digest(input.getBytes());
+            StringBuffer sb = new StringBuffer();
+            int x = 0;
+            for (byte b : bytes) {
+                sb.append(String.format("%02x", b));
+                x++;
+            }
+            if (Rule.isNumeric(Character.toString(sb.charAt(0)))) {
+                sb.insert(0, "a");
+            }
+            log.debug("Hash of: " + input + ":\t " + sb.toString());
+            return sb.toString();
+        } catch(NoSuchAlgorithmException e) {
+            input = "a" + input;
+            log.debug("Hash of: " + input + ":\t " + input);
+            return input;
         }
     }
 

@@ -17,37 +17,16 @@ import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 public class Repeat extends EdgeAnalyzer {
 
     public Repeat(InferenceType type) {
-        super(type);
+        super(type, Repeat.class);
     }
-    public String DEFAULT_ID = "number";
 
     @Override
     public Rule gatherConstraints(BasicBlockEdge edge) {
-        logger.trace(edge);
-
-        // Split the condition into a string, get the operands and attempt to infer.
-        for(String s : StringUtils.split(edge.getCondition())) {
-            /*
-             * If this isn't an operand, then we know it's a value, and can take that as is.
-             * If it is an operand, we need to do some parsing to get at the values/terms.
-             */
-            if (!Rule.operands.contains(s)) {
-                // We cannot define a variable here, so we can safely look
-                // into the global constraints table.
-                if (isNumeric(edge.getCondition())) {
-                    // TODO: convert this number to word.
-                    if (isNaturalNumber(edge.getCondition())) {
-                        this.addConstraint(DEFAULT_ID + "_" + getAndIncrement(), ChemTypes.NAT, ConstraintType.NUMBER);
-                    } else {
-                        this.addConstraint(DEFAULT_ID + "_" + getAndIncrement(), ChemTypes.REAL, ConstraintType.NUMBER);
-                    }
-                }
-            } else {
-                logger.error("No implementation for conditionals in repeat");
-                //results.put("if", new HashSet<>());
-                //results.get("if").add(Rule.NAT);
-            }
-            //logger.info(s);
+        // We are always guaranteed to have the left operand.
+        this.addConstraint(edge.getConditional().getLeftOperand(), ChemTypes.REAL, Constraint.ConstraintType.BRANCH);
+        // But we are not guaranteed to have
+        if (!StringUtils.isEmpty(edge.getConditional().getRightOperand())) {
+            this.addConstraint(edge.getConditional().getRightOperand(), ChemTypes.REAL, Constraint.ConstraintType.BRANCH);
         }
         return this;
     }

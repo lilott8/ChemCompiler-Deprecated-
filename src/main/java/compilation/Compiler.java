@@ -61,7 +61,7 @@ public class Compiler {
 
     public void compile() {
         try {
-            //TODO:: When Incorporating BenchtopCFGs, It is necessary to handle inputs given at Global scope.
+            //TODO: When Incorporating BenchtopCFGs, It is necessary to handle inputs given at Global scope.
             //for (String inputKey : benchtop.getInputs().keySet()) {
             //   __benchtopControlFlowGraph.addResolution(inputKey, benchtop.getInputs().get(inputKey), true);
             //__benchtopControlFlowGraph.addDefinition(inputKey, __benchtopControlFlowGraph.getID());

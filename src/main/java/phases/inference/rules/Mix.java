@@ -33,9 +33,9 @@ public class Mix extends NodeAnalyzer {
         Set<ChemTypes> groups = new HashSet<>();
         List<ChemTypes> groupsList = new ArrayList<>();
         for(String in: node.getInputSymbols()) {
-            // We don't know what this is.
+            // We don't know what this is -- this case should never fire.
             if (!this.constraints.containsKey(in)) {
-                // TODO: converge int and chemtypes....
+                logger.error("We shouldn't be identifying [" + in +  "] on input.");
                 //this.addConstraint(in, new GenericSMT(in))
                 for (ChemTypes i : this.identifier.identifyCompoundForTypes(in)) {
                     this.addConstraint(in, i, ConstraintType.MIX);
@@ -68,7 +68,7 @@ public class Mix extends NodeAnalyzer {
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, ChemTypes.MAT, ConstraintType.MIX);
+        this.addConstraints(input, new HashSet<>(), ConstraintType.MIX);
         return this;
     }
 
@@ -80,13 +80,13 @@ public class Mix extends NodeAnalyzer {
      */
     @Override
     public Rule gatherDefConstraints(String input) {
-        this.addConstraint(input, ChemTypes.MAT, ConstraintType.MIX);
+        this.addConstraints(input, new HashSet<>(), ConstraintType.MIX);
         return this;
     }
 
     @Override
     public Rule gatherConstraints(Property property) {
-        this.addConstraint(CONST, ChemTypes.REAL, ConstraintType.NUMBER);
+        this.addConstraint(Rule.createHash(property.toString()), ChemTypes.REAL, ConstraintType.NUMBER);
         return this;
     }
 }

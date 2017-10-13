@@ -23,7 +23,6 @@ public class GenericSMT extends Constraint {
     public static final String TAB = "\t";
     public static final String NL = System.lineSeparator();
 
-    public final static Logger logger = LogManager.getLogger(GenericSMT.class);
 
     public GenericSMT(String name, ConstraintType type) {
         super(name, type);
@@ -62,7 +61,7 @@ public class GenericSMT extends Constraint {
                 sb.append("(= ").append(getAssertName(t.toString())).append(" ").append("true").append(")").append(System.lineSeparator());
             }
         } else {
-            logger.info("We have membership");
+            //logger.info("We have membership");
         }
         return sb.toString();
     }

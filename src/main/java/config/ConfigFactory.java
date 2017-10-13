@@ -15,31 +15,15 @@ import java.util.Map;
 public final class ConfigFactory {
 
     public static final Logger logger = LogManager.getLogger(ConfigFactory.class);
-    public static final String configName = "default";
 
-    private static Map<String, Config> configCache = new HashMap<>();
+    private static Config config;
 
     public static Config buildConfig(CommandLine cmd) {
-        return ConfigFactory.buildConfig(cmd, configName);
-    }
-
-    public static Config buildConfig(CommandLine cmd, String name) {
-        if (!configCache.containsKey(name)) {
-            Config config = new Config(cmd);
-            configCache.put(name, config);
-        }
-        return configCache.get(name);
-    }
-
-    public static Config getConfig(String name) {
-        if (configCache.containsKey(name)) {
-            return configCache.get(name);
-        }
-        logger.warn("No config exists for: " + name);
-        return null;
+        config = new Config(cmd);
+        return config;
     }
 
     public static Config getConfig() {
-        return getConfig(configName);
+        return config;
     }
 }

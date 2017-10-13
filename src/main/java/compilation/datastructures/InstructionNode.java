@@ -101,15 +101,24 @@ public class InstructionNode implements Serializable {
         return this.toString("");
     }
     public String toString(String indentBuffer) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(indentBuffer).append(__ID.toString()).append(":\t");
+
         String ret = indentBuffer + __ID.toString() + ":\t";
-        for(String out: __outputSymbols)
+        for(String out: __outputSymbols) {
             ret += out + " = ";
+            sb.append(out).append(" = ");
+        }
 
-        if(__instruction != null)
-            ret +=  __instruction.getName() + " ";
+        if(__instruction != null) {
+            ret += __instruction.getName() + " ";
+            sb.append(__instruction.getName());
+        }
 
-        for(String input : __inputSymbols)
-            ret+=  " \"" + input + "\"";
+        for(String input : __inputSymbols) {
+            ret += " \"" + input + "\"";
+        }
+
 
         if(__instruction != null)
             for(Property property : __instruction.getProperties())

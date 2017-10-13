@@ -5,17 +5,17 @@ import phases.inference.Inference;
 import substance.Property;
 
 /**
- * @created: 8/31/17
+ * @created: 10/12/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-@InferenceRule(ruleName="vortex", ruleType="instruction")
-public class Vortex extends NodeAnalyzer {
+@InferenceRule(ruleName = "tap", ruleType = "instruction")
+public class Tap extends NodeAnalyzer {
 
     NodeAnalyzer mix = new Mix(Inference.InferenceType.INSTRUCTION);
 
-    public Vortex(Inference.InferenceType type) {
-        super(type, Vortex.class);
+    public Tap(Inference.InferenceType type) {
+        super(type, Tap.class);
     }
 
     @Override
@@ -24,12 +24,12 @@ public class Vortex extends NodeAnalyzer {
     }
 
     @Override
-    public Rule gatherUseConstraints(String input) {
+    protected Rule gatherUseConstraints(String input) {
         return this.mix.gatherUseConstraints(input);
     }
 
     @Override
-    public Rule gatherDefConstraints(String input) {
+    protected Rule gatherDefConstraints(String input) {
         return this.mix.gatherDefConstraints(input);
     }
 

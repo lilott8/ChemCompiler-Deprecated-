@@ -33,7 +33,7 @@ public class Group {
     public final String groupName;
     public final int groupId;
     public final ChemTypes chemGroup;
-    public final Map<EpaManager.Type, ArrayList<Tuple>> attributes = new HashMap<EpaManager.Type, ArrayList<Tuple>>();
+    public final Map<EpaManager.Type, List<Tuple>> attributes = new HashMap<>();
     private List<ChemJEP> evaluators = new ArrayList<>();
     private InferenceConfig config = ConfigFactory.getConfig();
 
@@ -50,7 +50,7 @@ public class Group {
         this.chemGroup = ChemTypes.getTypeFromId(id);
     }
 
-    public Group(int id, String name, Map<EpaManager.Type, ArrayList<Tuple>> attributes) {
+    public Group(int id, String name, Map<EpaManager.Type, List<Tuple>> attributes) {
         this.groupId = id;
         this.groupName = name;
         this.attributes.putAll(attributes);
@@ -85,7 +85,7 @@ public class Group {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ID: ").append(this.groupId).append("\t").append("Name: ").append(this.groupName).append("\n");
-        for (Map.Entry<EpaManager.Type, ArrayList<Tuple>> entry : this.attributes.entrySet()) {
+        for (Map.Entry<EpaManager.Type, List<Tuple>> entry : this.attributes.entrySet()) {
             sb.append(entry.getKey().toString()).append("\n");
             for(Tuple a : entry.getValue()) {
                 sb.append(a.toString()).append("\n");

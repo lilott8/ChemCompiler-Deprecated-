@@ -38,23 +38,23 @@ public class Math extends NodeAnalyzer {
         }
 
         for (Property prop : node.Instruction().getProperties()) {
-            this.addConstraint(CONST, REAL, ConstraintType.NUMBER);
+            this.addConstraint(Rule.createHash(prop.toString()), REAL, ConstraintType.NUMBER);
         }
         return this;
     }
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        return null;
+        return this;
     }
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        return null;
+        return this;
     }
 
     @Override
     public Rule gatherConstraints(Property property) {
-        return null;
+        return this;
     }
 }

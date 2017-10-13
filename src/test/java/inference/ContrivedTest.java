@@ -33,12 +33,6 @@ public class ContrivedTest {
     }
 
     @Test
-    public void mixOpSimpleSat() {
-        String file = "mix_op.json";
-        assertTrue(runTest(root + file));
-    }
-
-    @Test
     public void simpleSimpleSat() {
         String file = "simple.json";
         assertTrue(runTest(root + file));

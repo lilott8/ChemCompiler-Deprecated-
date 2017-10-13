@@ -20,8 +20,8 @@ import typesystem.identification.NaiveIdentifier;
  */
 public abstract class NodeAnalyzer extends Rule {
 
-    protected Identifier identifier = IdentifierFactory.getIdentifier();
-    protected Combiner combiner = CombinerFactory.getCombiner();
+    protected Identifier identifier;
+    protected Combiner combiner;
 
     protected NodeAnalyzer(InferenceType type) {
         super(type);
@@ -29,6 +29,11 @@ public abstract class NodeAnalyzer extends Rule {
 
     protected NodeAnalyzer(InferenceType type, Class<? extends NodeAnalyzer> clazz) {
         super(type, clazz);
+    }
+
+    {
+        this.identifier = IdentifierFactory.getIdentifier();
+        this.combiner = CombinerFactory.getCombiner();
     }
 
     public abstract Rule gatherAllConstraints(InstructionNode node);

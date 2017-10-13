@@ -1,5 +1,7 @@
 package phases.inference.rules;
 
+import java.util.HashSet;
+
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
@@ -22,12 +24,25 @@ public class Detect extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        return super.gatherConstraints(node);
+
+        for (String input : node.getInputSymbols()) {
+            // this.addConstraints(input, new HashSet<>(), ConstraintType.DETECT);
+        }
+
+        for (String output : node.getOutputSymbols()) {
+            this.addConstraint(output, REAL, ConstraintType.NUMBER);
+        }
+
+        for (Property prop : node.Instruction().getProperties()) {
+            this.gatherConstraints(prop);
+        }
+
+        return this;
     }
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraint(input, MAT, ConstraintType.DETECT);
+        this.addConstraints(input, new HashSet<>(), ConstraintType.DETECT);
         return this;
     }
 
@@ -39,7 +54,7 @@ public class Detect extends NodeAnalyzer {
 
     @Override
     public Rule gatherConstraints(Property property) {
-        this.addConstraint(CONST, REAL, ConstraintType.NUMBER);
+        this.addConstraint(Rule.createHash(property.toString()), REAL, ConstraintType.NUMBER);
         return this;
     }
 }

@@ -122,6 +122,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
      */
     private String epaDefs = "src/main/resources/epa.xml";
     /**
+     * Where is the location of the reactive matrix.
+     */
+    private String reactiveMatrix = "src/main/resources/reactive_matrix.txt";
+    /**
      * Use 3rd party chemistry software to simulate mixes.
      */
     private boolean simulateChemistry = false;
@@ -233,6 +237,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
 
         if (cmd.hasOption("epadefs")) {
             this.epaDefs = cmd.getOptionValue("epadefs");
+        }
+
+        if (cmd.hasOption("matrix")) {
+            this.reactiveMatrix = cmd.getOptionValue("matrix");
         }
     }
 
@@ -413,6 +421,11 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     @Override
     public String getEpaDefs() {
         return this.epaDefs;
+    }
+
+    @Override
+    public String getReactiveMatrix() {
+        return this.reactiveMatrix;
     }
 
     @Override
