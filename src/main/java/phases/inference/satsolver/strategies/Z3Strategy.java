@@ -30,23 +30,17 @@ import static typesystem.epa.ChemTypes.CONST;
 public class Z3Strategy implements SolverStrategy {
 
     public static final Logger logger = LogManager.getLogger(Z3Strategy.class);
-    int id = 0;
 
     public static final String REAL = "REAL";
     public static final String NAT = "NAT";
-
-    private Set<String> reserved = new HashSet<String>(){{
-        add("const");
-        add("assert");
-    }};
 
     @Override
     public boolean solveConstraints(Map<String, Constraint> constraints) {
         StringBuilder sb = new StringBuilder();
 
         // Add the chemical reactivity groups
+        sb.append("; Declarations for reactive groups").append(NL);
         for(Entry<Integer, ChemTypes> chem : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-            sb.append("; Declarations for reactive groups").append(NL);
             sb.append("(declare-const ").append(chem.getValue()).append(" Bool)").append(System.lineSeparator());
         }
 

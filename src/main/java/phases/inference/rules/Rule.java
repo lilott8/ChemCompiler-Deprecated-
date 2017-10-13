@@ -34,26 +34,6 @@ public abstract class Rule {
 
     public final String CONST = "constant";
 
-    public static final Set<String> operands = new HashSet<String>(){{
-        add("==");
-        add(">=");
-        add("<=");
-        add("!=");
-        add("&&");
-        add("||");
-        add("!");
-        add("and");
-        add("AND");
-        add("or");
-        add("OR");
-        add("not");
-        add("NOT");
-    }};
-
-    private final Set<ConstraintType> simpleConstraints = new HashSet<ConstraintType>() {{
-       add(ConstraintType.MIX);
-    }};
-
     protected InferenceConfig config = ConfigFactory.getConfig();
 
     // This implicitly allows us to do union sets with types

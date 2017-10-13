@@ -12,7 +12,7 @@ import static utils.CommonUtils.runTest;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class ElisaTest {
+public class  ElisaTest {
 
     public static String root = "src/main/resources/tests/elisa/";
     public static final Logger logger = LogManager.getLogger(ElisaTest.class);
@@ -49,7 +49,7 @@ public class ElisaTest {
 
     @Test
     public void fullMorphineSat() {
-        String file = "full_morphone.json";
+        String file = "full_morphine.json";
         assertTrue(runTest(root + file));
     }
 

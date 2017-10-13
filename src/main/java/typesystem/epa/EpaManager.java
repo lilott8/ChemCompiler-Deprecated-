@@ -69,7 +69,7 @@ public enum EpaManager {
         buildReactiveMatrix();
         log.info("Done building reactive matrix.");
 
-        /*
+
         try {
             // buildFromSAX();
             buildFromTree();
@@ -79,7 +79,7 @@ public enum EpaManager {
             log.fatal(e.toString());
             e.printStackTrace();
         }
-        */
+
         if (this.config.isDebug()) {
             log.info("EPAManager initialized successfully.");
         }
@@ -128,13 +128,13 @@ public enum EpaManager {
             /*
              * Create the group and add it to the mapping.
              */
-            groupMap.put(ChemTypes.getTypeFromId(id), new Group(id, name, new HashMap<Type, ArrayList<Tuple>>() {{
-                put(Type.ELEMENT, elements);
-                put(Type.WORD, words);
-                put(Type.SMILES, smiles);
-                put(Type.SMARTS, smarts);
-            }}
-            ));
+            Map<Type, List<Tuple>> groupHashMap = new HashMap<>();
+            groupHashMap.put(Type.ELEMENT, elements);
+            groupHashMap.put(Type.WORD, words);
+            groupHashMap.put(Type.SMILES, smiles);
+            groupHashMap.put(Type.SMARTS, smarts);
+            Group newGroup = new Group(id, name, groupHashMap);
+            groupMap.put(ChemTypes.getTypeFromId(id), newGroup);
 
             // Get the reactions that can occur with each group
             Node reactions = group.selectSingleNode("reactivegroups");
