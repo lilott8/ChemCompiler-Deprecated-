@@ -80,10 +80,11 @@ public enum ChemTypes {
     NOT_CHEMICALLY_REACTIVE(98),
     INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION(99),
     WATER_AND_AQUEOUS_SOLUTIONS(100),
-    MAT(128),
-    REAL(129),
-    NAT(130),
-    CONST(131);
+    REAL(128),
+    NAT(129),
+    MAT(130),
+    CONST(131),
+    FALSE(-1);
 
     private static Map<Integer, ChemTypes> integerChemTypesMap = new HashMap<Integer, ChemTypes>() {{
         put(1, ACIDS_STRONG_NON_OXIDIZING);
@@ -155,9 +156,9 @@ public enum ChemTypes {
         put(98, NOT_CHEMICALLY_REACTIVE);
         put(99, INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
         put(100, WATER_AND_AQUEOUS_SOLUTIONS);
-        //put(128, MAT);
-        //put(129, REAL);
-        //put(130, NAT);
+        put(128, REAL);
+        put(129, NAT);
+        //put(130, MAT);
         //put(131, CONST);
     }};
 
@@ -180,6 +181,9 @@ public enum ChemTypes {
     }
 
     public static ChemTypes getTypeFromId(int id) {
+        if (integerChemTypesMap.get(id) == null) {
+            return integerChemTypesMap.get(1);
+        }
         return integerChemTypesMap.get(id);
     }
 

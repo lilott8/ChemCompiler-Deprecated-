@@ -13,11 +13,10 @@ import substance.Property;
 @InferenceRule(ruleName = "incubate", ruleType = "instruction")
 public class Incubate extends NodeAnalyzer {
 
-    private NodeAnalyzer heat;
+    private NodeAnalyzer heat = new Heat(Inference.InferenceType.INSTRUCTION);
 
     public Incubate(Inference.InferenceType type) {
         super(type, Incubate.class);
-        this.heat = new Heat(type);
     }
 
     @Override

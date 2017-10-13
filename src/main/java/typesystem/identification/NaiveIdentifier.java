@@ -19,15 +19,9 @@ public class NaiveIdentifier extends Identifier {
 
     public static final Logger logger = LogManager.getLogger(NaiveIdentifier.class);
 
-    private Set<Integer> unknowns = new HashSet<Integer>(){{
-        unknowns.add(0);
-        unknowns.add(67);
-        unknowns.add(24);
-        unknowns.add(36);
-        unknowns.add(43);
-    }};
 
-    NaiveIdentifier() {}
+    NaiveIdentifier() {
+    }
 
     @Override
     public NaiveCompound identifyCompound(String name) {
@@ -58,11 +52,6 @@ public class NaiveIdentifier extends Identifier {
     }
 
     private int getModulo(long x) {
-        int modulus = (int) x%ChemTypes.NUM_REACTIVE_GROUPS;
-
-        if (unknowns.contains(modulus)) {
-            modulus = 1;
-        }
-        return modulus;
+        return (int) x%ChemTypes.NUM_REACTIVE_GROUPS;
     }
 }

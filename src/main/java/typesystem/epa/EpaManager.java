@@ -1,5 +1,8 @@
 package typesystem.epa;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +13,7 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +23,8 @@ import java.util.Set;
 import config.ConfigFactory;
 import config.InferenceConfig;
 import errors.CompatabilityException;
+import io.file.read.FileReader;
+import io.file.read.SimpleReader;
 import shared.substances.BaseCompound;
 import shared.Tuple;
 
@@ -38,7 +44,7 @@ public enum EpaManager {
     public Map<ChemTypes, HashMap<ChemTypes, Reaction>> reactionMap = new HashMap<>();
     // Config object for convenience.
     private final InferenceConfig config = ConfigFactory.getConfig();
-
+    private final Table<Integer, Integer, Set<Integer>> reactionMatrix = HashBasedTable.create();
     /**
      * Instantiates the EpaManager and parses the XML file that contains all* the chemical groups which exist in the EPA
      * PDF cheat sheet
@@ -59,16 +65,21 @@ public enum EpaManager {
             log.warn("SMARTS filters must be length of: " + config.smartsLength() + " to be used.");
         }
 
+        log.info("Building reactive matrix");
+        buildReactiveMatrix();
+        log.info("Done building reactive matrix.");
+
+        /*
         try {
             // buildFromSAX();
             buildFromTree();
-
         } catch (DocumentException e) {
             log.fatal("Cannot read the chemical reactions file: " + e.toString());
         } catch (Exception e) {
             log.fatal(e.toString());
             e.printStackTrace();
         }
+        */
         if (this.config.isDebug()) {
             log.info("EPAManager initialized successfully.");
         }
@@ -233,6 +244,29 @@ public enum EpaManager {
             results.put(ChemTypes.getTypeFromId(reactantId), new Reaction(consequences));
         }
         return results;
+    }
+
+    public void initialize() {
+        // this intentionally does nothing.
+    }
+
+    private void buildReactiveMatrix() {
+        Logger logger = LogManager.getLogger(EpaManager.class);
+        FileReader reader = new SimpleReader(config.getReactiveMatrix());
+
+        String line;
+        while ((line = reader.nextLine()) != null) {
+            String[] coordinates = StringUtils.split(line, "|");
+            String[] groupings = StringUtils.split(coordinates[2], "_");
+            int x = Integer.parseInt(coordinates[0]);
+            int y = Integer.parseInt(coordinates[1]);
+            Set<Integer> groups = new HashSet<>();
+            for (String s : groupings) {
+                groups.add(Integer.parseInt(s));
+            }
+            this.reactionMatrix.put(x, y, groups);
+        }
+        reader.close();
     }
 
     /**
@@ -400,6 +434,8 @@ public enum EpaManager {
         result.add(b);
         return result;
     }
+
+
 
     /**
      * Type of classifiers available to the system.

@@ -82,6 +82,7 @@ public class Inference implements Phase {
      */
     public boolean runPhase(CFG controlFlowGraph) {
         this.controlFlowGraph = controlFlowGraph;
+
         // Iterate the CFG.
         for(Map.Entry<Integer, BasicBlock> block : this.controlFlowGraph.getBasicBlocks().entrySet()) {
             // Iterate the instructions.

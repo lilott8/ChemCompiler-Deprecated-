@@ -14,4 +14,5 @@ public interface InferenceConfig extends CommonConfig {
     String getEpaDefs();
     boolean simulateChemistry();
     int smartsLength();
+    String getReactiveMatrix();
 }

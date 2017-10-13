@@ -15,15 +15,11 @@ import substance.Property;
 @InferenceRule(ruleName = "measure", ruleType = "instruction")
 public class Measure extends NodeAnalyzer {
 
-    public static final Logger logger = LogManager.getLogger(Measure.class);
+    //public static final Logger logger = LogManager.getLogger(Measure.class);
     private NodeAnalyzer detect = new Detect(Inference.InferenceType.INSTRUCTION);
 
     public Measure(Inference.InferenceType type) {
-        super(type);
-    }
-
-    public Measure(Inference.InferenceType type, Class<? extends NodeAnalyzer> clazz) {
-        super(type, clazz);
+        super(type, Measure.class);
     }
 
     @Override

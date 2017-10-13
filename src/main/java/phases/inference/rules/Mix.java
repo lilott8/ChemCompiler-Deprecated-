@@ -68,7 +68,7 @@ public class Mix extends NodeAnalyzer {
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        //this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.MIX);
+        this.addConstraints(input, new HashSet<>(), ConstraintType.MIX);
         return this;
     }
 
@@ -80,7 +80,7 @@ public class Mix extends NodeAnalyzer {
      */
     @Override
     public Rule gatherDefConstraints(String input) {
-        //this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.MIX);
+        this.addConstraints(input, new HashSet<>(), ConstraintType.MIX);
         return this;
     }
 

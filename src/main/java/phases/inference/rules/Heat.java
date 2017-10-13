@@ -1,5 +1,7 @@
 package phases.inference.rules;
 
+import java.util.HashSet;
+
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
@@ -26,7 +28,7 @@ public class Heat extends NodeAnalyzer {
         logger.debug("InputSymbols: " + node.getInputSymbols());
 
         for(String s : node.getInputSymbols()) {
-            this.addConstraints(s, identifier.identifyCompoundForTypes(s), ConstraintType.HEAT);
+            this.addConstraints(s, new HashSet<>(), ConstraintType.HEAT);
         }
 
         for (Property prop : node.Instruction().getProperties()) {
@@ -38,13 +40,13 @@ public class Heat extends NodeAnalyzer {
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.HEAT);
+        this.addConstraints(input, new HashSet<>(), ConstraintType.HEAT);
         return this;
     }
 
     @Override
     public Rule gatherDefConstraints(String input) {
-        this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.HEAT);
+        this.addConstraints(input, new HashSet<>(), ConstraintType.HEAT);
         return this;
     }
 

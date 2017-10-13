@@ -26,7 +26,7 @@ public class Detect extends NodeAnalyzer {
     public Rule gatherAllConstraints(InstructionNode node) {
 
         for (String input : node.getInputSymbols()) {
-            this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.DETECT);
+            // this.addConstraints(input, new HashSet<>(), ConstraintType.DETECT);
         }
 
         for (String output : node.getOutputSymbols()) {
@@ -42,7 +42,7 @@ public class Detect extends NodeAnalyzer {
 
     @Override
     public Rule gatherUseConstraints(String input) {
-        this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.DETECT);
+        this.addConstraints(input, new HashSet<>(), ConstraintType.DETECT);
         return this;
     }
 

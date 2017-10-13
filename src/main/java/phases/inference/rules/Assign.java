@@ -31,7 +31,6 @@ public class Assign extends NodeAnalyzer {
              logger.trace("Output: " + node.getOutputSymbols());
         }
 
-
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
         this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompoundForTypes(node.getInputSymbols().get(0)), ConstraintType.ASSIGN);

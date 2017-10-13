@@ -19,6 +19,7 @@ import config.ConfigFactory;
 import typesystem.epa.ChemTypes;
 import phases.inference.satsolver.constraints.Constraint;
 
+import static phases.inference.satsolver.constraints.Constraint.NL;
 import static typesystem.epa.ChemTypes.CONST;
 
 /**
@@ -31,7 +32,8 @@ public class Z3Strategy implements SolverStrategy {
     public static final Logger logger = LogManager.getLogger(Z3Strategy.class);
     int id = 0;
 
-    public static final String numType = "Type";
+    public static final String REAL = "REAL";
+    public static final String NAT = "NAT";
 
     private Set<String> reserved = new HashSet<String>(){{
         add("const");
@@ -42,15 +44,9 @@ public class Z3Strategy implements SolverStrategy {
     public boolean solveConstraints(Map<String, Constraint> constraints) {
         StringBuilder sb = new StringBuilder();
 
-        // Add {Real, Nat, Const} to the z3 stacks.
-        sb.append("(declare-datatypes () ((").append(numType);
-        for (ChemTypes t : ChemTypes.getNums()) {
-            sb.append(" ").append(t);
-        }
-        sb.append(")))").append(System.lineSeparator());
-
         // Add the chemical reactivity groups
         for(Entry<Integer, ChemTypes> chem : ChemTypes.getIntegerChemTypesMap().entrySet()) {
+            sb.append("; Declarations for reactive groups").append(NL);
             sb.append("(declare-const ").append(chem.getValue()).append(" Bool)").append(System.lineSeparator());
         }
 
