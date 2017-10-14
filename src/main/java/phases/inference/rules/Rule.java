@@ -3,17 +3,17 @@ package phases.inference.rules;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.message.Message;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Variable;
 import phases.inference.satsolver.constraints.MatSMT;
 import phases.inference.satsolver.constraints.NumSMT;
 import typesystem.epa.ChemTypes;
@@ -39,6 +39,10 @@ public abstract class Rule {
     // This implicitly allows us to do union sets with types
     protected Map<String, Constraint> constraints = new HashMap<>();
 
+    // Keep track of the instruction id to input/outputs
+    protected static Map<Integer, Instruction> instructions = new HashMap<>();
+    protected static Map<String, Variable> variables = new HashMap<>();
+
     protected Rule(InferenceType type) {
         this.type = type;
         this.logger = LogManager.getLogger(Rule.class);
@@ -56,9 +60,30 @@ public abstract class Rule {
         return type;
     }
 
+    public Map<String, Variable> getVariables() {
+        return this.variables;
+    }
+
+    public Map<Integer, Instruction> getInstructions() {
+        return instructions;
+    }
+
     protected void addConstraints(String key, Set<ChemTypes> value, ConstraintType type) {
         for (ChemTypes t : value) {
             this.addConstraint(key, t, type);
+        }
+    }
+
+    protected static void addInstruction(Instruction i) {
+        instructions.put(i.id, i);
+    }
+
+    protected static void addVariable(Variable t) {
+        if (!variables.containsKey(t.getVarName())) {
+            variables.put(t.getVarName(), t);
+        } else {
+            if (variables.get(t.getVarName()).equals(t)) {
+            }
         }
     }
 

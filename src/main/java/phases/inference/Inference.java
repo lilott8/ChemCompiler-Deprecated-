@@ -16,12 +16,13 @@ import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.InstructionNode;
 import config.ConfigFactory;
 import phases.Phase;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Variable;
 import phases.inference.rules.EdgeAnalyzer;
 import phases.inference.rules.InferenceRule;
 import phases.inference.rules.NodeAnalyzer;
 import phases.inference.satsolver.SatSolver;
 import phases.inference.satsolver.constraints.Constraint;
-import phases.inference.satsolver.strategies.Z3Strategy;
 import shared.Tuple;
 import typesystem.epa.ChemTypes;
 
@@ -64,6 +65,9 @@ public class Inference implements Phase {
     // This maps each instruction/term to the constraints that it has.
     private Map<String, Constraint> constraints = new HashMap<>();
 
+    private Map<Integer, Instruction> instructions = new HashMap<>();
+    private Map<String, Variable> variables = new HashMap<>();
+
     // This is for human readability and testing only.  This will be removed for production.
     private Map<Tuple<String, String>, Set<ChemTypes>> testingConstraints = new HashMap<Tuple<String, String>, Set<ChemTypes>>();
 
@@ -105,7 +109,11 @@ public class Inference implements Phase {
             logger.trace(this.constraints);
         }
 
-        return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
+        logger.info(this.instructions);
+        logger.debug(this.variables);
+        logger.fatal("We are only returning true for inference.");
+        return true;
+        //return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
     }
 
     /**
@@ -120,8 +128,11 @@ public class Inference implements Phase {
     public Map<String, Constraint> inferConstraints(String name, InstructionNode instruction) {
         if(this.basicBlockAnalyzers.containsKey(name)) {
             NodeAnalyzer rule = this.basicBlockAnalyzers.get(name);
+            rule = (NodeAnalyzer) rule.gatherAllConstraints(instruction);
+            this.addInstructions(rule.getInstructions());
+            this.addTerms(rule.getVariables());
             // return the constraints from the rule
-            return rule.gatherAllConstraints(instruction).getConstraints();
+            return rule.getConstraints();
         }
         logger.warn("Node Analysis: We don't have a rule for: " + name);
         // return an empty array list for ease.
@@ -151,8 +162,22 @@ public class Inference implements Phase {
         return new HashMap<>();
     }
 
+    private void addInstructions(Map<Integer, Instruction> i) {
+        this.instructions.putAll(i);
+    }
+
+    private void addTerms(Map<String, Variable> t) {
+        for (Map.Entry<String, Variable> entry : t.entrySet()) {
+            if (this.variables.containsKey(entry.getKey())) {
+                // pass, for now
+            } else {
+                this.variables.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
     /**
-     * Allows adding of constraints to terms/instructions
+     * Allows adding of constraints to variables/instructions
      * @param constraints
      *   HashSet of constraints
      */
@@ -210,9 +235,6 @@ public class Inference implements Phase {
                 logger.warn(String.format("We cannot find the correct instructor for: %s", clazz.getName()));
             } catch(InvocationTargetException ite) {
                 logger.warn(String.format("We cannot invoke that dark magic (%s)", clazz.getName()));
-                ite.printStackTrace();
-                logger.error(ite.getCause().getMessage());
-                logger.error(ite.getTargetException().getMessage());
             }
         }
     }

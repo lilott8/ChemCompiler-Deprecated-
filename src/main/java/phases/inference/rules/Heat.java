@@ -4,6 +4,9 @@ import java.util.HashSet;
 
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Term;
+import phases.inference.elements.Variable;
 import substance.Property;
 import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
@@ -31,10 +34,27 @@ public class Heat extends NodeAnalyzer {
             this.addConstraints(s, new HashSet<>(), ConstraintType.HEAT);
         }
 
-        for (Property prop : node.Instruction().getProperties()) {
-            this.gatherConstraints(prop);
+        Variable input = new Term(node.getInputSymbols().get(0));
+        if (variables.containsKey(input.getVarName())) {
+            input.addTypingConstraints(variables.get(input.getVarName()).getTypingConstraints());
         }
 
+        Variable output = input;
+        Instruction instruction = new Instruction(node.ID(), Heat.class.getName());
+        instruction.addInputTerm(input);
+        instruction.addOutputTerm(output);
+
+        addVariable(input);
+        addVariable(output);
+
+        for (Property p : node.Instruction().getProperties()) {
+            Variable prop = new Term(Rule.createHash(p.toString()));
+            prop.addTypingConstraint(REAL);
+            instruction.addInputTerm(prop);
+            addVariable(prop);
+        }
+
+        addInstruction(instruction);
         return this;
     }
 
@@ -52,6 +72,7 @@ public class Heat extends NodeAnalyzer {
 
     @Override
     public Rule gatherConstraints(Property property) {
+        addVariable(new Term(Rule.createHash(property.toString())).addTypingConstraint(REAL));
         this.addConstraint(Rule.createHash(property.toString()), REAL, ConstraintType.NUMBER);
         return this;
     }

@@ -3,15 +3,22 @@ package phases.inference.rules;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
 import compilation.datastructures.InstructionNode;
 import config.InferenceConfig;
 import phases.inference.Inference.InferenceType;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Term;
+import phases.inference.elements.Variable;
 import substance.Property;
 import typesystem.combinator.Combiner;
 import typesystem.combinator.CombinerFactory;
 import typesystem.identification.Identifier;
 import typesystem.identification.IdentifierFactory;
 import typesystem.identification.NaiveIdentifier;
+
+import static typesystem.epa.ChemTypes.REAL;
 
 /**
  * @created: 9/1/17
@@ -40,6 +47,16 @@ public abstract class NodeAnalyzer extends Rule {
     protected abstract Rule gatherUseConstraints(String input);
     protected abstract Rule gatherDefConstraints(String input);
     public abstract Rule gatherConstraints(Property property);
+
+    protected Instruction gatherProperties(Instruction instruction, List<Property> properties) {
+        for (Property p : properties) {
+            Variable prop = new Term(Rule.createHash(p.toString()));
+            prop.addTypingConstraint(REAL);
+            instruction.addInputTerm(prop);
+            addVariable(prop);
+        }
+        return instruction;
+    }
 
     protected Rule gatherConstraints(InstructionNode node) {
         /*

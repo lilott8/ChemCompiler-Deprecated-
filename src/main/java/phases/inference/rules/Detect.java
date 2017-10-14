@@ -1,9 +1,14 @@
 package phases.inference.rules;
 
+import com.sun.tools.javac.tree.DCTree;
+
 import java.util.HashSet;
 
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Term;
+import phases.inference.elements.Variable;
 import substance.Property;
 import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
@@ -32,10 +37,28 @@ public class Detect extends NodeAnalyzer {
         for (String output : node.getOutputSymbols()) {
             this.addConstraint(output, REAL, ConstraintType.NUMBER);
         }
-
-        for (Property prop : node.Instruction().getProperties()) {
-            this.gatherConstraints(prop);
+        Variable input = variables.get(node.getInputSymbols().get(0));
+        if (input == null) {
+            logger.warn("input is null!?");
         }
+
+        Variable output = new Term(node.getOutputSymbols().get(0));
+        output.addTypingConstraint(REAL);
+
+        Instruction instruction = new Instruction(node.ID(), Detect.class.getName());
+        instruction.addInputTerm(input);
+        instruction.addOutputTerm(output);
+
+        addVariable(input);
+        addVariable(output);
+
+        for (Property p : node.Instruction().getProperties()) {
+            Variable prop = new Term(Rule.createHash(p.toString()));
+            prop.addTypingConstraint(REAL);
+            instruction.addInputTerm(prop);
+            addVariable(prop);
+        }
+        addInstruction(instruction);
 
         return this;
     }

@@ -6,10 +6,16 @@ import java.util.List;
 import java.util.Set;
 
 import compilation.datastructures.InstructionNode;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Term;
+import phases.inference.elements.Variable;
 import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
+import typesystem.epa.EpaManager;
+
+import static typesystem.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/27/17
@@ -57,11 +63,47 @@ public class Mix extends NodeAnalyzer {
             combiner.combine(groupsList);
         }
 
-        // Get the properties of the instruction if they exist
-        for (Property prop : node.Instruction().getProperties()) {
-            this.gatherConstraints(prop);
+        /*
+         * This begins the new inference gathering.
+         */
+        Instruction instruction = new Instruction(node.ID(), Mix.class.getName());
+        Variable output;
+        if (node.getOutputSymbols().size() > 0) {
+            output = new Term(node.getOutputSymbols().get(0));
+        } else {
+            output = new Term(node.getInputSymbols().get(node.getInputSymbols().size()-1));
         }
 
+        for (String in : node.getInputSymbols()) {
+            Variable input = new Term(in);
+            if (variables.containsKey(input.getVarName())) {
+                input.addTypingConstraints(variables.get(input.getVarName()).getTypingConstraints());
+            } else {
+                logger.warn(input.getVarName() + " has no previous declarations...");
+            }
+            instruction.addInputTerm(input);
+            // We can use the input for the naive approach to the output
+            output.addTypingConstraints(input.getTypingConstraints());
+        }
+        // Reference the lookup table
+        output.addTypingConstraints(EpaManager.INSTANCE.lookUp(output.getTypingConstraints()));
+        // Finally add the types to the output
+        instruction.addOutputTerm(output);
+
+        addVariable(output);
+        for (Variable v : instruction.getInput()) {
+            addVariable(v);
+        }
+
+        // Get the properties of the instruction if they exist
+        for (Property p : node.Instruction().getProperties()) {
+            Variable prop = new Term(Rule.createHash(p.toString()));
+            prop.addTypingConstraint(REAL);
+            instruction.addInputTerm(prop);
+            addVariable(prop);
+        }
+
+        addInstruction(instruction);
         // logger.trace("=======================");
         return this;
     }
@@ -86,7 +128,8 @@ public class Mix extends NodeAnalyzer {
 
     @Override
     public Rule gatherConstraints(Property property) {
-        this.addConstraint(Rule.createHash(property.toString()), ChemTypes.REAL, ConstraintType.NUMBER);
+        addVariable(new Term(Rule.createHash(property.toString())).addTypingConstraint(REAL));
+        this.addConstraint(Rule.createHash(property.toString()), REAL, ConstraintType.NUMBER);
         return this;
     }
 }
