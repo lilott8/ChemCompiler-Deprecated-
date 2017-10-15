@@ -62,37 +62,56 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(this.buildAssertsForNumberMaterial(i.getValue()));
         }
 
-        logger.info(sb);
+        //logger.info(sb);
         return this.solveWithSMT2(sb.toString());
     }
 
     /**
-     * This builds the (declare-const varname_x Bool)
-     * For all variables.
+     * This builds the (declare-const varname_x Bool) For all variables.
+     *
      * @param v input variable
+     *
      * @return SMT String
      */
     private String buildDeclares(Variable v) {
         StringBuilder sb = new StringBuilder();
 
-            sb.append("; Initialize declares for: ").append(getSMTName(v.getVarName())).append(NL);
-            for (Entry<Integer, ChemTypes> types : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-                sb.append("(declare-const ").append(getSMTName(v.getVarName(), types.getValue())).append(" Bool)").append(NL);
-            }
+        sb.append("; Initialize declares for: ").append(getSMTName(v.getVarName())).append(NL);
+        for (Entry<Integer, ChemTypes> types : ChemTypes.getIntegerChemTypesMap().entrySet()) {
+            sb.append("(declare-const ").append(getSMTName(v.getVarName(), types.getValue())).append(" Bool)").append(NL);
+        }
 
         return sb.toString();
     }
 
     /**
-     * This builds the (assert (not (or (= NAT true) (= REAL true)))
-     * Or the opposite, for each variable.
+     * This builds the (assert (not (or (= NAT true) (= REAL true))) Or the opposite, for each
+     * variable.
+     *
      * @param v input variable
+     *
      * @return SMT String
      */
     private String buildAssertsForNumberMaterial(Variable v) {
         StringBuilder sb = new StringBuilder();
-        boolean isMat = true;
+        boolean isMat;
 
+        Set<ChemTypes> numbers = new HashSet<>(ChemTypes.getNums());
+        Set<ChemTypes> materials = new HashSet<>(ChemTypes.getMaterials());
+
+        numbers.retainAll(v.getTypingConstraints());
+        materials.retainAll(v.getTypingConstraints());
+
+        // If we have an intersection, i.e. NAT || REAL appear in both sets,
+        // And the typing constraints are > 2 (more than NAT & REAL), then
+        // This program is untypeable.
+        if (!numbers.isEmpty() && !materials.isEmpty()) {
+            sb.append("; Kill the type inference for ").append(v.getVarName()).append(NL);
+            sb.append("(assert (= true false))").append(NL);
+            return sb.toString();
+        }
+
+        // Otherwise we assume correctness.
         if (v.getTypingConstraints().contains(REAL) || v.getTypingConstraints().contains(NAT)) {
             sb.append("; ").append(getSMTName(v.getVarName())).append(" is a NUMBER").append(NL);
             isMat = false;
@@ -101,19 +120,19 @@ public class Z3Strategy implements SolverStrategy {
             isMat = true;
         }
 
-            sb.append("(assert").append(NL);
-            if (isMat) {
-                sb.append(TAB).append("(not").append(NL);
-            }
-            sb.append(TAB+TAB).append("(or").append(NL)
-            .append(TAB+TAB+TAB).append("(= ").append(getSMTName(v.getVarName(), REAL))
-            .append(" true)").append(NL)
-            .append(TAB+TAB+TAB).append("(= ").append(getSMTName(v.getVarName(), NAT))
-            .append(" true)").append(NL);
-            if (isMat) {
-                sb.append(TAB + TAB).append(")").append(NL);
-            }
-            sb.append(TAB).append(")").append(NL).append(")").append(NL);
+        sb.append("(assert").append(NL);
+        if (isMat) {
+            sb.append(TAB).append("(not").append(NL);
+        }
+        sb.append(TAB + TAB).append("(or").append(NL)
+                .append(TAB + TAB + TAB).append("(= ").append(getSMTName(v.getVarName(), REAL))
+                .append(" true)").append(NL)
+                .append(TAB + TAB + TAB).append("(= ").append(getSMTName(v.getVarName(), NAT))
+                .append(" true)").append(NL);
+        if (isMat) {
+            sb.append(TAB + TAB).append(")").append(NL);
+        }
+        sb.append(TAB).append(")").append(NL).append(")").append(NL);
 
         return sb.toString();
     }
@@ -124,7 +143,7 @@ public class Z3Strategy implements SolverStrategy {
 
         // Add the chemical reactivity groups
         sb.append("; Declarations for reactive groups").append(NL);
-        for(Entry<Integer, ChemTypes> chem : ChemTypes.getIntegerChemTypesMap().entrySet()) {
+        for (Entry<Integer, ChemTypes> chem : ChemTypes.getIntegerChemTypesMap().entrySet()) {
             sb.append("(declare-const ").append(chem.getValue()).append(" Bool)").append(System.lineSeparator());
         }
 

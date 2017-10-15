@@ -1,12 +1,9 @@
 package phases.inference.rules;
 
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.List;
 
 import compilation.datastructures.InstructionNode;
-import config.InferenceConfig;
 import phases.inference.Inference.InferenceType;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
@@ -16,7 +13,6 @@ import typesystem.combinator.Combiner;
 import typesystem.combinator.CombinerFactory;
 import typesystem.identification.Identifier;
 import typesystem.identification.IdentifierFactory;
-import typesystem.identification.NaiveIdentifier;
 
 import static typesystem.epa.ChemTypes.REAL;
 
@@ -52,7 +48,7 @@ public abstract class NodeAnalyzer extends Rule {
         for (Property p : properties) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
-            instruction.addInputTerm(prop);
+            instruction.addInputVariable(prop);
             addVariable(prop);
         }
         return instruction;

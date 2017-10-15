@@ -37,22 +37,41 @@ public class Assign extends NodeAnalyzer {
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
         this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompoundForTypes(node.getInputSymbols().get(0)), ConstraintType.ASSIGN);
 
-        Term input = new Term(node.getInputSymbols().get(0));
-        Term output = new Term(node.getOutputSymbols().get(0));
-        output.addTypingConstraints(this.identifier.identifyCompoundForTypes(input.name));
+        /*
+         * New workings here.
+         */
+        Term output = null;
+        for (String s : node.get_def()) {
+            output = new Term(s);
+        }
+
+        Term input = null;
+        // This has to be input symbols.
+        // There are no uses, these are the "constants".
+        for (String s : node.getInputSymbols()) {
+            input = new Term(s);
+        }
+
+        try {
+            output.addTypingConstraints(this.identifier.identifyCompoundForTypes(input.name));
+        } catch(NullPointerException e) {
+            logger.fatal("An assignment operation doesn't have a \"get_def()\"");
+        }
 
         Instruction instruction = new Instruction(node.ID(), Assign.class.getName());
-        instruction.addInputTerm(input);
-        instruction.addOutputTerm(output);
+        // The input is superfluous in an assign for type inference.
+        // instruction.addInputVariable(input);
+        instruction.addOutputVariable(output);
 
-        addVariable(input);
+        // The input is superfluous in an assign for type inference.
+        // addVariable(input);
         addVariable(output);
         addInstruction(instruction);
 
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
-            instruction.addInputTerm(prop);
+            instruction.addInputVariable(prop);
             addVariable(prop);
         }
         return this;

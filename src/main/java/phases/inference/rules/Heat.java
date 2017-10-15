@@ -9,8 +9,8 @@ import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
 import substance.Property;
 import phases.inference.satsolver.constraints.Constraint.ConstraintType;
+import typesystem.identification.IdentifierFactory;
 
-import static typesystem.epa.ChemTypes.MAT;
 import static typesystem.epa.ChemTypes.REAL;
 
 /**
@@ -27,30 +27,30 @@ public class Heat extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        logger.info(node);
-        logger.debug("InputSymbols: " + node.getInputSymbols());
 
-        for(String s : node.getInputSymbols()) {
-            this.addConstraints(s, new HashSet<>(), ConstraintType.HEAT);
-        }
+        logger.info("Uses: " + node.get_use());
+        logger.info("Defs: " + node.get_def());
 
-        Variable input = new Term(node.getInputSymbols().get(0));
-        if (variables.containsKey(input.getVarName())) {
-            input.addTypingConstraints(variables.get(input.getVarName()).getTypingConstraints());
-        }
-
-        Variable output = input;
         Instruction instruction = new Instruction(node.ID(), Heat.class.getName());
-        instruction.addInputTerm(input);
-        instruction.addOutputTerm(output);
 
-        addVariable(input);
+        Variable input = null;
+        // There is only ever one input.
+        for (String s : node.get_use()) {
+            input = new Term(s);
+            input.addTypingConstraints(getTypingConstraints(input));
+            instruction.addInputVariable(input);
+            addVariable(input);
+        }
+
+        // The output of the instruction is the same as the input.
+        Variable output = input;
+        instruction.addOutputVariable(output);
         addVariable(output);
 
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
-            instruction.addInputTerm(prop);
+            instruction.addInputVariable(prop);
             addVariable(prop);
         }
 

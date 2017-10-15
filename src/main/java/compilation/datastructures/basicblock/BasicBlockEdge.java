@@ -93,6 +93,7 @@ public class BasicBlockEdge implements Serializable {
     protected String classification;
     private ConditionalType type;
     private ConditionalNode conditional;
+    private int id;
 
     public static Logger logger = LogManager.getLogger(BasicBlockEdge.class);
 
@@ -100,6 +101,7 @@ public class BasicBlockEdge implements Serializable {
         __source = source;
         __destination = destination;
         __condition = condition;
+        this.id = source * destination;
         this.type = un;
         this.classification = "unknown";
         this.conditional = new ConditionalNode(this.type, __condition);
@@ -109,6 +111,7 @@ public class BasicBlockEdge implements Serializable {
         __source = source;
         __destination = destination;
         __condition = evaluateCondition(expression, type);
+        this.id = source * destination;
         this.classification = StringUtils.lowerCase(type);
         this.conditional = new ConditionalNode(this.type, __condition);
     }
@@ -138,6 +141,10 @@ public class BasicBlockEdge implements Serializable {
         }
 
         return ret;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     private ConditionalType evaluateBoolean(String expression) {

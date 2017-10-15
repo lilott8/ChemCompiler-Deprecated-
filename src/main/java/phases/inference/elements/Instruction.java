@@ -23,12 +23,12 @@ public class Instruction {
         this.instructionName = instructionName;
     }
 
-    public Instruction addOutputTerm(Variable output) {
+    public Instruction addOutputVariable(Variable output) {
         this.output.add(output);
         return this;
     }
 
-    public Instruction addInputTerm(Variable input) {
+    public Instruction addInputVariable(Variable input) {
         this.input.add(input);
         return this;
     }

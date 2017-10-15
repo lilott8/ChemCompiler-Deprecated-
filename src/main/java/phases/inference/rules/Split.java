@@ -33,19 +33,19 @@ public class Split extends NodeAnalyzer {
         }
 
         Instruction instruction = new Instruction(node.ID(), Split.class.getName());
-        instruction.addInputTerm(input);
+        instruction.addInputVariable(input);
         for (String s : node.getOutputSymbols()) {
             Variable output = new Term(s);
             output.addTypingConstraints(input.getTypingConstraints());
             addVariable(output);
-            instruction.addOutputTerm(output);
+            instruction.addOutputVariable(output);
         }
 
         // there should be only one.
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(NAT);
-            instruction.addInputTerm(prop);
+            instruction.addInputVariable(prop);
             addVariable(prop);
         }
 

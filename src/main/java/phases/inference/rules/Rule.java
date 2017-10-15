@@ -20,6 +20,8 @@ import phases.inference.satsolver.constraints.NumSMT;
 import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
 import phases.inference.satsolver.constraints.Constraint;
+import typesystem.identification.IdentifierFactory;
+
 import static phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
 /**
@@ -126,9 +128,16 @@ public abstract class Rule {
         }
     }
 
+    protected Set<ChemTypes> getTypingConstraints(Variable input) {
+        if (variables.containsKey(input.getVarName())) {
+            return variables.get(input.getVarName()).getTypingConstraints();
+        } else {
+            return IdentifierFactory.getIdentifier().identifyCompoundForTypes(input.getVarName());
+        }
+    }
+
     public static String createHash(String input) {
         Logger log = LogManager.getLogger(Rule.class);
-        log.debug("creating hash for: " + input);
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             byte[] bytes = digest.digest(input.getBytes());
@@ -141,11 +150,9 @@ public abstract class Rule {
             if (Rule.isNumeric(Character.toString(sb.charAt(0)))) {
                 sb.insert(0, "a");
             }
-            log.debug("Hash of: " + input + ":\t " + sb.toString());
             return sb.toString();
         } catch(NoSuchAlgorithmException e) {
             input = "a" + input;
-            log.debug("Hash of: " + input + ":\t " + input);
             return input;
         }
     }

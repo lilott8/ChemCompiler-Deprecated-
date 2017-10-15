@@ -21,7 +21,7 @@ public class MatSMT extends Constraint {
 
     public MatSMT(String key, ConstraintType type) {
         super(key, type);
-        logger.info("Mat Key: " + this.varName);
+        //logger.info("Mat Key: " + this.varName);
     }
 
     @Override

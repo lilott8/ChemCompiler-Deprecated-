@@ -22,7 +22,6 @@ public class NumSMT extends Constraint {
 
     public NumSMT(String key, ConstraintType type) {
         super(key, type);
-        logger.info("Num Key: " + this.varName);
     }
 
     @Override

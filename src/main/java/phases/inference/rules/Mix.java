@@ -2,6 +2,7 @@ package phases.inference.rules;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -33,73 +34,51 @@ public class Mix extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        //logger.trace(node);
-        //logger.trace("Constraints: " + constraints);
-        // This is the input to the instruction
-        Set<ChemTypes> groups = new HashSet<>();
-        List<ChemTypes> groupsList = new ArrayList<>();
-        for(String in: node.getInputSymbols()) {
-            // We don't know what this is -- this case should never fire.
-            if (!this.constraints.containsKey(in)) {
-                logger.error("We shouldn't be identifying [" + in +  "] on input.");
-                //this.addConstraint(in, new GenericSMT(in))
-                for (ChemTypes i : this.identifier.identifyCompoundForTypes(in)) {
-                    this.addConstraint(in, i, ConstraintType.MIX);
-                    groups.add(i);
-                }
-            } else {
-                groups.addAll(this.constraints.get(in).getConstraints());
-            }
-            // logger.trace("Constraints: " + this.constraints.get(in));
-            // logger.trace("-------------------------");
-        }
-        // logger.trace("Groups: " + groups);
 
-        groupsList.addAll(groups);
-
-        // The output of the instruction.
-        for(String out : node.getOutputSymbols()) {
-            this.addConstraints(out, groups, ConstraintType.MIX);
-            combiner.combine(groupsList);
-        }
-
-        /*
-         * This begins the new inference gathering.
-         */
         Instruction instruction = new Instruction(node.ID(), Mix.class.getName());
-        Variable output;
-        if (node.getOutputSymbols().size() > 0) {
-            output = new Term(node.getOutputSymbols().get(0));
-        } else {
-            output = new Term(node.getInputSymbols().get(node.getInputSymbols().size()-1));
-        }
 
-        for (String in : node.getInputSymbols()) {
-            Variable input = new Term(in);
+        Set<ChemTypes> groupings = new HashSet<>();
+
+        Variable input = null;
+        for (String in : node.get_use()) {
+            input = new Term(in);
+            // If we have seen this before, we can just pull the old types.
             if (variables.containsKey(input.getVarName())) {
                 input.addTypingConstraints(variables.get(input.getVarName()).getTypingConstraints());
             } else {
+                // Otherwise we probably need to identify it.
+                input.addTypingConstraints(identifier.identifyCompoundForTypes(input.getVarName()));
                 logger.warn(input.getVarName() + " has no previous declarations...");
             }
-            instruction.addInputTerm(input);
-            // We can use the input for the naive approach to the output
-            output.addTypingConstraints(input.getTypingConstraints());
+            // Add the input to the instruction.
+            instruction.addInputVariable(input);
+            groupings.addAll(input.getTypingConstraints());
+            addVariable(input);
         }
-        // Reference the lookup table
-        output.addTypingConstraints(EpaManager.INSTANCE.lookUp(output.getTypingConstraints()));
-        // Finally add the types to the output
-        instruction.addOutputTerm(output);
 
-        addVariable(output);
-        for (Variable v : instruction.getInput()) {
-            addVariable(v);
+        Variable output;
+        // If we have a def, we can get it.
+        if (!node.get_def().isEmpty()) {
+            // There will only ever be one def for a mix.
+            for (String out : node.get_def()) {
+                output = new Term(out);
+                output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
+                instruction.addOutputVariable(output);
+                addVariable(output);
+            }
+        } else {
+            // Otherwise, get the last use.
+            output = new Term(input.getVarName());
+            output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
+            instruction.addOutputVariable(output);
+            addVariable(output);
         }
 
         // Get the properties of the instruction if they exist
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
-            instruction.addInputTerm(prop);
+            instruction.addInputVariable(prop);
             addVariable(prop);
         }
 
@@ -115,10 +94,7 @@ public class Mix extends NodeAnalyzer {
     }
 
     /**
-     * This doesn't do anything because it is derived
-     * from the gatherUseConstraints.
-     * @param input
-     * @return
+     * This doesn't do anything because it is derived from the gatherUseConstraints.
      */
     @Override
     public Rule gatherDefConstraints(String input) {

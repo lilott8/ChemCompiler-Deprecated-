@@ -1,7 +1,5 @@
 package phases.inference.rules;
 
-import com.sun.tools.javac.tree.DCTree;
-
 import java.util.HashSet;
 
 import compilation.datastructures.InstructionNode;
@@ -12,7 +10,6 @@ import phases.inference.elements.Variable;
 import substance.Property;
 import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
-import static typesystem.epa.ChemTypes.MAT;
 import static typesystem.epa.ChemTypes.REAL;
 
 /**
@@ -30,32 +27,30 @@ public class Detect extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        for (String input : node.getInputSymbols()) {
-            // this.addConstraints(input, new HashSet<>(), ConstraintType.DETECT);
-        }
-
-        for (String output : node.getOutputSymbols()) {
-            this.addConstraint(output, REAL, ConstraintType.NUMBER);
-        }
-        Variable input = variables.get(node.getInputSymbols().get(0));
-        if (input == null) {
-            logger.warn("input is null!?");
-        }
-
-        Variable output = new Term(node.getOutputSymbols().get(0));
-        output.addTypingConstraint(REAL);
-
         Instruction instruction = new Instruction(node.ID(), Detect.class.getName());
-        instruction.addInputTerm(input);
-        instruction.addOutputTerm(output);
 
-        addVariable(input);
-        addVariable(output);
+        // There can be only one input variable.
+        Variable input = null;
+        for (String s : node.get_use()) {
+            input = new Term(s);
+            input.addTypingConstraints(getTypingConstraints(input));
+            instruction.addInputVariable(input);
+            addVariable(input);
+        }
+
+        // There can be only one output variable.
+        Variable output = null;
+        for (String s : node.get_def()) {
+            output = new Term(s);
+            output.addTypingConstraint(REAL);
+            instruction.addOutputVariable(output);
+            addVariable(output);
+        }
 
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
-            instruction.addInputTerm(prop);
+            instruction.addInputVariable(prop);
             addVariable(prop);
         }
         addInstruction(instruction);

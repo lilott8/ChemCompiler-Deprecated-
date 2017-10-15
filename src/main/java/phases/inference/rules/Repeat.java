@@ -20,15 +20,11 @@ public class Repeat extends EdgeAnalyzer {
         super(type, Repeat.class);
     }
 
+    private IfBranch branch = new IfBranch(InferenceType.INSTRUCTION);
+
     @Override
     public Rule gatherConstraints(BasicBlockEdge edge) {
-        // We are always guaranteed to have the left operand.
-        this.addConstraint(edge.getConditional().getLeftOperand(), ChemTypes.REAL, Constraint.ConstraintType.BRANCH);
-        // But we are not guaranteed to have
-        if (!StringUtils.isEmpty(edge.getConditional().getRightOperand())) {
-            this.addConstraint(edge.getConditional().getRightOperand(), ChemTypes.REAL, Constraint.ConstraintType.BRANCH);
-        }
-        return this;
+        return this.branch.gatherConstraints(edge);
     }
 
 

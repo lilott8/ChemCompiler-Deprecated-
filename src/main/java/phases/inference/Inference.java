@@ -155,6 +155,8 @@ public class Inference implements Phase {
     public Map<String, Constraint> inferConstraints(String name, BasicBlockEdge edge) {
         if (this.edgeAnalyzers.containsKey(name)) {
             EdgeAnalyzer rule = this.edgeAnalyzers.get(name);
+            this.addInstructions(rule.getInstructions());
+            this.addTerms(rule.getVariables());
             return rule.gatherConstraints(edge).getConstraints();
         }
         if (!StringUtils.equalsIgnoreCase(name, "unknown")) {
