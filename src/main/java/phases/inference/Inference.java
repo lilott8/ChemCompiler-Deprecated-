@@ -23,6 +23,7 @@ import phases.inference.rules.InferenceRule;
 import phases.inference.rules.NodeAnalyzer;
 import phases.inference.satsolver.SatSolver;
 import phases.inference.satsolver.constraints.Constraint;
+import phases.inference.satsolver.strategies.Z3Strategy;
 import shared.Tuple;
 import typesystem.epa.ChemTypes;
 
@@ -112,7 +113,8 @@ public class Inference implements Phase {
         logger.info(this.instructions);
         logger.debug(this.variables);
         logger.fatal("We are only returning true for inference.");
-        return true;
+        //return true;
+        return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(this.instructions, this.variables);
         //return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
     }
 

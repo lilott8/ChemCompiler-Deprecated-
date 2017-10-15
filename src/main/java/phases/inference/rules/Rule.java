@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public abstract class Rule {
     protected Map<String, Constraint> constraints = new HashMap<>();
 
     // Keep track of the instruction id to input/outputs
-    protected static Map<Integer, Instruction> instructions = new HashMap<>();
+    protected static Map<Integer, Instruction> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
 
     protected Rule(InferenceType type) {

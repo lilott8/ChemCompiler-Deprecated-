@@ -16,11 +16,17 @@ import java.util.Map.Entry;
 
 
 import config.ConfigFactory;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Term;
+import phases.inference.elements.Variable;
 import typesystem.epa.ChemTypes;
 import phases.inference.satsolver.constraints.Constraint;
 
 import static phases.inference.satsolver.constraints.Constraint.NL;
+import static phases.inference.satsolver.constraints.Constraint.TAB;
 import static typesystem.epa.ChemTypes.CONST;
+import static typesystem.epa.ChemTypes.NAT;
+import static typesystem.epa.ChemTypes.REAL;
 
 /**
  * @created: 8/24/17
@@ -31,8 +37,86 @@ public class Z3Strategy implements SolverStrategy {
 
     public static final Logger logger = LogManager.getLogger(Z3Strategy.class);
 
-    public static final String REAL = "REAL";
-    public static final String NAT = "NAT";
+    private Map<Integer, Instruction> instructions;
+    private Map<String, Variable> variables;
+
+    @Override
+    public boolean solveConstraints(Map<Integer, Instruction> instructions, Map<String, Variable> variables) {
+        this.instructions = instructions;
+        this.variables = variables;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("; Initialize declares for chemtypes").append(NL);
+        // Initialize the declares for the chemtrail objects.
+        for (Entry<Integer, ChemTypes> chemtype : ChemTypes.getIntegerChemTypesMap().entrySet()) {
+            sb.append("(declare-const ").append(chemtype.getValue()).append(" Bool)").append(NL);
+        }
+
+        // Initialize declares for all terms.
+        for (Entry<String, Variable> i : this.variables.entrySet()) {
+            sb.append(this.buildDeclares(i.getValue()));
+        }
+
+        for (Entry<String, Variable> i : this.variables.entrySet()) {
+            sb.append(this.buildAssertsForNumberMaterial(i.getValue()));
+        }
+
+        logger.info(sb);
+        return this.solveWithSMT2(sb.toString());
+    }
+
+    /**
+     * This builds the (declare-const varname_x Bool)
+     * For all variables.
+     * @param v input variable
+     * @return SMT String
+     */
+    private String buildDeclares(Variable v) {
+        StringBuilder sb = new StringBuilder();
+
+            sb.append("; Initialize declares for: ").append(getSMTName(v.getVarName())).append(NL);
+            for (Entry<Integer, ChemTypes> types : ChemTypes.getIntegerChemTypesMap().entrySet()) {
+                sb.append("(declare-const ").append(getSMTName(v.getVarName(), types.getValue())).append(" Bool)").append(NL);
+            }
+
+        return sb.toString();
+    }
+
+    /**
+     * This builds the (assert (not (or (= NAT true) (= REAL true)))
+     * Or the opposite, for each variable.
+     * @param v input variable
+     * @return SMT String
+     */
+    private String buildAssertsForNumberMaterial(Variable v) {
+        StringBuilder sb = new StringBuilder();
+        boolean isMat = true;
+
+        if (v.getTypingConstraints().contains(REAL) || v.getTypingConstraints().contains(NAT)) {
+            sb.append("; ").append(getSMTName(v.getVarName())).append(" is a NUMBER").append(NL);
+            isMat = false;
+        } else {
+            sb.append("; ").append(getSMTName(v.getVarName())).append(" is a MAT").append(NL);
+            isMat = true;
+        }
+
+            sb.append("(assert").append(NL);
+            if (isMat) {
+                sb.append(TAB).append("(not").append(NL);
+            }
+            sb.append(TAB+TAB).append("(or").append(NL)
+            .append(TAB+TAB+TAB).append("(= ").append(getSMTName(v.getVarName(), REAL))
+            .append(" true)").append(NL)
+            .append(TAB+TAB+TAB).append("(= ").append(getSMTName(v.getVarName(), NAT))
+            .append(" true)").append(NL);
+            if (isMat) {
+                sb.append(TAB + TAB).append(")").append(NL);
+            }
+            sb.append(TAB).append(")").append(NL).append(")").append(NL);
+
+        return sb.toString();
+    }
 
     @Override
     public boolean solveConstraints(Map<String, Constraint> constraints) {
