@@ -40,9 +40,6 @@ public abstract class NodeAnalyzer extends Rule {
     }
 
     public abstract Rule gatherAllConstraints(InstructionNode node);
-    protected abstract Rule gatherUseConstraints(String input);
-    protected abstract Rule gatherDefConstraints(String input);
-    public abstract Rule gatherConstraints(Property property);
 
     protected Instruction gatherProperties(Instruction instruction, List<Property> properties) {
         for (Property p : properties) {
@@ -62,21 +59,6 @@ public abstract class NodeAnalyzer extends Rule {
          *                get_use  |
          *                      property
          */
-        // These are the defs on instruction
-        for(String out : node.get_def()) {
-            this.gatherDefConstraints(out);
-        }
-
-        // This is the input to the instruction
-        for(String in: node.get_use()) {
-            this.gatherUseConstraints(in);
-        }
-
-        // Get the properties of the instruction if they exist
-        for (Property prop : node.Instruction().getProperties()) {
-            this.gatherConstraints(prop);
-        }
-
         /*
         logger.debug("Id: " + instruction.ID());
         logger.debug("Classification: " + instruction.Instruction().getClassification());

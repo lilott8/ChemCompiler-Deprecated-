@@ -71,12 +71,6 @@ public abstract class Rule {
         return instructions;
     }
 
-    protected void addConstraints(String key, Set<ChemTypes> value, ConstraintType type) {
-        for (ChemTypes t : value) {
-            this.addConstraint(key, t, type);
-        }
-    }
-
     protected static void addInstruction(Instruction i) {
         instructions.put(i.id, i);
     }

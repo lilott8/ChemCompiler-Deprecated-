@@ -25,19 +25,4 @@ public class Store extends NodeAnalyzer {
     public Rule gatherAllConstraints(InstructionNode node) {
         return this.output.gatherAllConstraints(node);
     }
-
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        return this.output.gatherUseConstraints(input);
-    }
-
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        return this.output.gatherDefConstraints(input);
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        return this.output.gatherConstraints(property);
-    }
 }

@@ -23,19 +23,4 @@ public class Incubate extends NodeAnalyzer {
     public Rule gatherAllConstraints(InstructionNode node) {
         return this.heat.gatherAllConstraints(node);
     }
-
-    @Override
-    protected Rule gatherUseConstraints(String input) {
-        return this.heat.gatherUseConstraints(input);
-    }
-
-    @Override
-    protected Rule gatherDefConstraints(String input) {
-        return this.heat.gatherDefConstraints(input);
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        return this.heat.gatherConstraints(property);
-    }
 }

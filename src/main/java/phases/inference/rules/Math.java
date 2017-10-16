@@ -19,7 +19,7 @@ import static typesystem.epa.ChemTypes.*;
 public class Math extends NodeAnalyzer {
 
     public Math(InferenceType type) {
-        super(type);
+        super(type, Math.class);
     }
 
     @Override
@@ -40,21 +40,6 @@ public class Math extends NodeAnalyzer {
         for (Property prop : node.Instruction().getProperties()) {
             this.addConstraint(Rule.createHash(prop.toString()), REAL, ConstraintType.NUMBER);
         }
-        return this;
-    }
-
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        return this;
-    }
-
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        return this;
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
         return this;
     }
 }

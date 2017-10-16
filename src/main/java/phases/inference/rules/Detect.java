@@ -21,7 +21,7 @@ import static typesystem.epa.ChemTypes.REAL;
 public class Detect extends NodeAnalyzer {
 
     public Detect(InferenceType type) {
-        super(type);
+        super(type, Detect.class);
     }
 
     @Override
@@ -55,24 +55,6 @@ public class Detect extends NodeAnalyzer {
         }
         addInstruction(instruction);
 
-        return this;
-    }
-
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        this.addConstraints(input, new HashSet<>(), ConstraintType.DETECT);
-        return this;
-    }
-
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        this.addConstraint(input, REAL, ConstraintType.NUMBER);
-        return this;
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        this.addConstraint(Rule.createHash(property.toString()), REAL, ConstraintType.NUMBER);
         return this;
     }
 }

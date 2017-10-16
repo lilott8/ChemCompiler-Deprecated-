@@ -13,7 +13,7 @@ import substance.Property;
 public class Mat extends NodeAnalyzer {
 
     public Mat(InferenceType type) {
-        super(type);
+        super(type, Mat.class);
     }
 
     @Override
@@ -21,18 +21,4 @@ public class Mat extends NodeAnalyzer {
         return super.gatherConstraints(node);
     }
 
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        return null;
-    }
-
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        return null;
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        return null;
-    }
 }

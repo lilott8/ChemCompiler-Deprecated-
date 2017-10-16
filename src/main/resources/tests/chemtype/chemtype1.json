@@ -341,6 +341,22 @@
             }
           ]
         }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Output",
+          "ID" : "721034809732345251",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "b"
+              }            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
       }
     ]
   }

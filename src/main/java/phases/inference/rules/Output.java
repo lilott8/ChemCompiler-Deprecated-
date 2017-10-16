@@ -4,6 +4,9 @@ import java.util.HashSet;
 
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Term;
+import phases.inference.elements.Variable;
 import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 import substance.Property;
 
@@ -24,32 +27,19 @@ public class Output extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        for(String s : node.getInputSymbols()) {
-            this.addConstraints(s, new HashSet<>(), ConstraintType.OUTPUT);
+
+        Instruction instruction = new Instruction(node.ID(), Output.class.getName());
+
+        Variable input = null;
+        for (String s : node.get_use()) {
+            input = new Term(s);
+            input.addTypingConstraints(getTypingConstraints(input));
+            instruction.addInputVariable(input);
+            addVariable(input);
         }
 
-        for (Property prop : node.Instruction().getProperties()) {
-            this.gatherConstraints(prop);
-        }
+        addInstruction(instruction);
 
-        return super.gatherConstraints(node);
-    }
-
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        this.addConstraints(input, new HashSet<>(), ConstraintType.OUTPUT);
-        return this;
-    }
-
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        this.addConstraints(input, new HashSet<>(), ConstraintType.OUTPUT);
-        return this;
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        this.addConstraint(Rule.createHash(property.toString()), REAL, ConstraintType.NUMBER);
         return this;
     }
 }

@@ -34,6 +34,8 @@ public class Assign extends NodeAnalyzer {
              //logger.trace("Output: " + node.getOutputSymbols());
         }
 
+        Instruction instruction = new Instruction(node.ID(), Assign.class.getName());
+
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
         /*
@@ -66,7 +68,6 @@ public class Assign extends NodeAnalyzer {
             logger.fatal("An assignment operation doesn't have a \"get_def()\"");
         }
 
-        Instruction instruction = new Instruction(node.ID(), Assign.class.getName());
         // The input is superfluous in an assign for type inference.
         // instruction.addInputVariable(input);
         instruction.addOutputVariable(output);
@@ -74,7 +75,6 @@ public class Assign extends NodeAnalyzer {
         // The input is superfluous in an assign for type inference.
         // addVariable(input);
         addVariable(output);
-        addInstruction(instruction);
 
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
@@ -82,28 +82,8 @@ public class Assign extends NodeAnalyzer {
             instruction.addInputVariable(prop);
             addVariable(prop);
         }
-        return this;
-    }
 
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        if (isNumeric(input)) {
-            this.addConstraint(Rule.createHash(input), isRealNumber(input) ? ChemTypes.REAL : ChemTypes.NAT, ConstraintType.NUMBER);
-        } else {
-            this.addConstraints(input, this.identifier.identifyCompoundForTypes(input), ConstraintType.ASSIGN);
-        }
-        return this;
-    }
-
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        return this;
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        addVariable(new Term(Rule.createHash(property.toString())).addTypingConstraint(ChemTypes.REAL));
-        this.addConstraint(Rule.createHash(property.toString()), ChemTypes.REAL, ConstraintType.NUMBER);
+        addInstruction(instruction);
         return this;
     }
 }

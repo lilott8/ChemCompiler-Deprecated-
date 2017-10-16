@@ -26,19 +26,4 @@ public class Measure extends NodeAnalyzer {
     public Rule gatherAllConstraints(InstructionNode node) {
         return this.detect.gatherAllConstraints(node);
     }
-
-    @Override
-    protected Rule gatherUseConstraints(String input) {
-        return this.detect.gatherUseConstraints(input);
-    }
-
-    @Override
-    protected Rule gatherDefConstraints(String input) {
-        return this.detect.gatherDefConstraints(input);
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        return this.detect.gatherConstraints(property);
-    }
 }

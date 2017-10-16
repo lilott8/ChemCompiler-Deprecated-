@@ -86,26 +86,4 @@ public class Mix extends NodeAnalyzer {
         // logger.trace("=======================");
         return this;
     }
-
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        this.addConstraints(input, new HashSet<>(), ConstraintType.MIX);
-        return this;
-    }
-
-    /**
-     * This doesn't do anything because it is derived from the gatherUseConstraints.
-     */
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        this.addConstraints(input, new HashSet<>(), ConstraintType.MIX);
-        return this;
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        addVariable(new Term(Rule.createHash(property.toString())).addTypingConstraint(REAL));
-        this.addConstraint(Rule.createHash(property.toString()), REAL, ConstraintType.NUMBER);
-        return this;
-    }
 }
