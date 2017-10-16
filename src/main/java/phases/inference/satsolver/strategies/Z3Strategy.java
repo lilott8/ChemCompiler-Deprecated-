@@ -62,7 +62,7 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(this.buildAssertsForNumberMaterial(i.getValue()));
         }
 
-        //logger.info(sb);
+        logger.info(sb);
         return this.solveWithSMT2(sb.toString());
     }
 

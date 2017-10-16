@@ -9,6 +9,7 @@ import phases.inference.Inference.InferenceType;
 import substance.Property;
 import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
+import static typesystem.epa.ChemTypes.NAT;
 import static typesystem.epa.ChemTypes.REAL;
 
 /**
@@ -35,8 +36,6 @@ public class Assign extends NodeAnalyzer {
 
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
-        this.addConstraints(node.getOutputSymbols().get(0), this.identifier.identifyCompoundForTypes(node.getInputSymbols().get(0)), ConstraintType.ASSIGN);
-
         /*
          * New workings here.
          */
@@ -53,7 +52,16 @@ public class Assign extends NodeAnalyzer {
         }
 
         try {
-            output.addTypingConstraints(this.identifier.identifyCompoundForTypes(input.name));
+            // See if this is a number.
+            if (isNumeric(output.getVarName())) {
+                if (isRealNumber(output.getVarName())) {
+                    output.addTypingConstraint(REAL);
+                } else {
+                    output.addTypingConstraint(NAT);
+                }
+            } else {
+                output.addTypingConstraints(this.identifier.identifyCompoundForTypes(input.name));
+            }
         } catch(NullPointerException e) {
             logger.fatal("An assignment operation doesn't have a \"get_def()\"");
         }
