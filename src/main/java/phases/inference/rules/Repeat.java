@@ -1,12 +1,7 @@
 package phases.inference.rules;
 
-import org.apache.commons.lang3.StringUtils;
-
 import compilation.datastructures.basicblock.BasicBlockEdge;
-import phases.inference.satsolver.constraints.Constraint;
-import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
-import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
 /**
  * @created: 7/27/17

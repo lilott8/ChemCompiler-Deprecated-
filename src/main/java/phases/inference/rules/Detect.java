@@ -1,14 +1,11 @@
 package phases.inference.rules;
 
-import java.util.HashSet;
-
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
 import substance.Property;
-import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
 import static typesystem.epa.ChemTypes.REAL;
 
@@ -27,7 +24,7 @@ public class Detect extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        Instruction instruction = new Instruction(node.ID(), Detect.class.getName());
+        Instruction instruction = new Instruction(node.ID(), InstructionType.DETECT);
 
         // There can be only one input variable.
         Variable input = null;
@@ -50,7 +47,7 @@ public class Detect extends NodeAnalyzer {
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
-            instruction.addInputVariable(prop);
+            instruction.addProperty(prop);
             addVariable(prop);
         }
         addInstruction(instruction);

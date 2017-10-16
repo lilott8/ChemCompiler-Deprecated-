@@ -6,10 +6,7 @@ import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
 import substance.Property;
-import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
-import static typesystem.epa.ChemTypes.MAT;
-import static typesystem.epa.ChemTypes.NAT;
 import static typesystem.epa.ChemTypes.REAL;
 
 /**
@@ -37,7 +34,7 @@ public class Split extends NodeAnalyzer {
         logger.info(node.getDispenseSymbols());
         logger.info("=========================");
 
-        Instruction instruction = new Instruction(node.ID(), Split.class.getName());
+        Instruction instruction = new Instruction(node.ID(), InstructionType.SPLIT);
 
         Variable input = null;
         for (String s : node.get_use()) {
@@ -61,7 +58,7 @@ public class Split extends NodeAnalyzer {
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
-            instruction.addInputVariable(prop);
+            instruction.addProperty(prop);
             addVariable(prop);
         }
 

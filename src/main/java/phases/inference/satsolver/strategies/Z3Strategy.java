@@ -9,22 +9,20 @@ import com.microsoft.z3.Z3Exception;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
 
-import config.ConfigFactory;
 import phases.inference.elements.Instruction;
-import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
+import phases.inference.rules.Rule;
+import phases.inference.satsolver.constraints.Composer;
+import phases.inference.satsolver.constraints.SMT.*;
 import typesystem.epa.ChemTypes;
-import phases.inference.satsolver.constraints.Constraint;
 
-import static phases.inference.satsolver.constraints.Constraint.NL;
-import static phases.inference.satsolver.constraints.Constraint.TAB;
-import static typesystem.epa.ChemTypes.CONST;
 import static typesystem.epa.ChemTypes.NAT;
 import static typesystem.epa.ChemTypes.REAL;
 
@@ -39,6 +37,18 @@ public class Z3Strategy implements SolverStrategy {
 
     private Map<Integer, Instruction> instructions;
     private Map<String, Variable> variables;
+
+    private Map<Rule.InstructionType, Composer> composers = new HashMap<>();
+
+    public Z3Strategy() {
+        composers.put(Rule.InstructionType.ASSIGN, new Assign());
+        composers.put(Rule.InstructionType.BRANCH, new Branch());
+        composers.put(Rule.InstructionType.DETECT, new Detect());
+        composers.put(Rule.InstructionType.HEAT, new Heat());
+        composers.put(Rule.InstructionType.MIX, new Mix());
+        composers.put(Rule.InstructionType.OUTPUT, new Output());
+        composers.put(Rule.InstructionType.SPLIT, new Split());
+    }
 
     @Override
     public boolean solveConstraints(Map<Integer, Instruction> instructions, Map<String, Variable> variables) {
@@ -62,6 +72,12 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(this.buildAssertsForNumberMaterial(i.getValue()));
         }
 
+        for (Map.Entry<Integer, Instruction> instruction : this.instructions.entrySet()) {
+            if (instruction.getValue().type == Rule.InstructionType.MIX) {
+                sb.append(this.composers.get(instruction.getValue().type).compose(instruction.getValue()));
+            }
+        }
+
         logger.info(sb);
         return this.solveWithSMT2(sb.toString());
     }
@@ -76,9 +92,9 @@ public class Z3Strategy implements SolverStrategy {
     private String buildDeclares(Variable v) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("; Initialize declares for: ").append(getSMTName(v.getVarName())).append(NL);
+        sb.append("; Initialize declares for: ").append(SolverStrategy.getSMTName(v.getVarName())).append(NL);
         for (Entry<Integer, ChemTypes> types : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-            sb.append("(declare-const ").append(getSMTName(v.getVarName(), types.getValue())).append(" Bool)").append(NL);
+            sb.append("(declare-const ").append(SolverStrategy.getSMTName(v.getVarName(), types.getValue())).append(" Bool)").append(NL);
         }
 
         return sb.toString();
@@ -113,10 +129,10 @@ public class Z3Strategy implements SolverStrategy {
 
         // Otherwise we assume correctness.
         if (v.getTypingConstraints().contains(REAL) || v.getTypingConstraints().contains(NAT)) {
-            sb.append("; ").append(getSMTName(v.getVarName())).append(" is a NUMBER").append(NL);
+            sb.append("; ").append(SolverStrategy.getSMTName(v.getVarName())).append(" is a NUMBER").append(NL);
             isMat = false;
         } else {
-            sb.append("; ").append(getSMTName(v.getVarName())).append(" is a MAT").append(NL);
+            sb.append("; ").append(SolverStrategy.getSMTName(v.getVarName())).append(" is a MAT").append(NL);
             isMat = true;
         }
 
@@ -125,9 +141,9 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(TAB).append("(not").append(NL);
         }
         sb.append(TAB + TAB).append("(or").append(NL)
-                .append(TAB + TAB + TAB).append("(= ").append(getSMTName(v.getVarName(), REAL))
+                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getVarName(), REAL))
                 .append(" true)").append(NL)
-                .append(TAB + TAB + TAB).append("(= ").append(getSMTName(v.getVarName(), NAT))
+                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getVarName(), NAT))
                 .append(" true)").append(NL);
         if (isMat) {
             sb.append(TAB + TAB).append(")").append(NL);
@@ -137,42 +153,10 @@ public class Z3Strategy implements SolverStrategy {
         return sb.toString();
     }
 
-    @Override
-    public boolean solveConstraints(Map<String, Constraint> constraints) {
-        StringBuilder sb = new StringBuilder();
+    private String routeInstruction(Instruction instruction) {
+        logger.trace(instruction.type);
 
-        // Add the chemical reactivity groups
-        sb.append("; Declarations for reactive groups").append(NL);
-        for (Entry<Integer, ChemTypes> chem : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-            sb.append("(declare-const ").append(chem.getValue()).append(" Bool)").append(System.lineSeparator());
-        }
-
-        /*
-         * We split them up for debugging purposes.
-         * We can simply call `entry.getValue().buildOutput`
-         * And we will have the entire SMT2 string.
-         */
-        for (Entry<String, Constraint> entry : constraints.entrySet()) {
-            //logger.info(entry.getKey());
-            sb.append(entry.getValue().buildDeclares());
-            //sb.append(entry.getValue().buildOutput());
-        }
-
-        for (Entry<String, Constraint> entry : constraints.entrySet()) {
-            //logger.info(entry.getKey());
-            sb.append(entry.getValue().buildConstraintValues());
-            //sb.append(entry.getValue().buildOutput());
-        }
-
-        for (Entry<String, Constraint> entry : constraints.entrySet()) {
-            sb.append(entry.getValue().buildAsserts());
-        }
-
-        if (ConfigFactory.getConfig().isDebug()) {
-            logger.info(sb);
-        }
-        // return true;
-        return this.solveWithSMT2(sb.toString());
+        return "";
     }
 
     private boolean solveWithSMT2(String smt2) {

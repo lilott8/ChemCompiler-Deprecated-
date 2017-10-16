@@ -10,8 +10,6 @@ import phases.inference.Inference;
  */
 public abstract class EdgeAnalyzer extends Rule {
 
-    protected static int counter = 0;
-
     public EdgeAnalyzer(Inference.InferenceType type) {
         super(type);
     }
@@ -20,12 +18,4 @@ public abstract class EdgeAnalyzer extends Rule {
     }
 
     public abstract Rule gatherConstraints(BasicBlockEdge edge);
-
-    protected int getAndIncrement() {
-        return counter++;
-    }
-
-    protected int get() {
-        return counter;
-    }
 }

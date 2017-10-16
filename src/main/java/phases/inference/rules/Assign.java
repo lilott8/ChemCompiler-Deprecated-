@@ -4,10 +4,8 @@ import compilation.datastructures.InstructionNode;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
-import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
-import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
 import static typesystem.epa.ChemTypes.NAT;
 import static typesystem.epa.ChemTypes.REAL;
@@ -34,7 +32,7 @@ public class Assign extends NodeAnalyzer {
              //logger.trace("Output: " + node.getOutputSymbols());
         }
 
-        Instruction instruction = new Instruction(node.ID(), Assign.class.getName());
+        Instruction instruction = new Instruction(node.ID(), InstructionType.ASSIGN);
 
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
@@ -79,7 +77,7 @@ public class Assign extends NodeAnalyzer {
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
-            instruction.addInputVariable(prop);
+            instruction.addProperty(prop);
             addVariable(prop);
         }
 

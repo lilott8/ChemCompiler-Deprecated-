@@ -7,8 +7,6 @@ import phases.inference.Inference.InferenceType;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
-import phases.inference.satsolver.constraints.Constraint;
-import typesystem.epa.ChemTypes;
 
 import static typesystem.epa.ChemTypes.NAT;
 import static typesystem.epa.ChemTypes.REAL;
@@ -28,7 +26,7 @@ public class IfBranch extends EdgeAnalyzer {
     @Override
     public Rule gatherConstraints(BasicBlockEdge edge) {
         logger.info(edge.getConditional());
-        Instruction instruction = new Instruction(edge.getId(), IfBranch.class.getName());
+        Instruction instruction = new Instruction(edge.getId(), InstructionType.BRANCH);
 
         Variable output = new Term(Rule.createHash(edge.getConditional().toString()));
         output.addTypingConstraint(NAT);

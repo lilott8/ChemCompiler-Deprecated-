@@ -15,14 +15,9 @@ import config.ConfigFactory;
 import config.InferenceConfig;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Variable;
-import phases.inference.satsolver.constraints.MatSMT;
-import phases.inference.satsolver.constraints.NumSMT;
 import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
-import phases.inference.satsolver.constraints.Constraint;
 import typesystem.identification.IdentifierFactory;
-
-import static phases.inference.satsolver.constraints.Constraint.ConstraintType;
 
 /**
  * @created: 7/31/17
@@ -31,16 +26,15 @@ import static phases.inference.satsolver.constraints.Constraint.ConstraintType;
  */
 public abstract class Rule {
 
+    public enum InstructionType {
+        ASSIGN, DETECT, HEAT, BRANCH, MIX, SPLIT, OUTPUT
+    }
+
     protected InferenceType type;
 
     protected final Logger logger;
 
-    public final String CONST = "constant";
-
     protected InferenceConfig config = ConfigFactory.getConfig();
-
-    // This implicitly allows us to do union sets with types
-    protected Map<String, Constraint> constraints = new HashMap<>();
 
     // Keep track of the instruction id to input/outputs
     protected static Map<Integer, Instruction> instructions = new LinkedHashMap<>();
@@ -53,10 +47,6 @@ public abstract class Rule {
     protected Rule(InferenceType type, Class<? extends Rule> clazz) {
         this.type = type;
         logger = LogManager.getLogger(clazz);
-    }
-
-    public Map<String, Constraint> getConstraints() {
-        return constraints;
     }
 
     public InferenceType getType() {
@@ -82,22 +72,6 @@ public abstract class Rule {
             if (variables.get(t.getVarName()).equals(t)) {
             }
         }
-    }
-
-    protected void addConstraint(String key, ChemTypes value, ConstraintType type) {
-        if (!this.constraints.containsKey(key)) {
-            switch (type) {
-                default:
-                    constraints.put(key, new NumSMT(key, type));
-                    break;
-                case MIX:
-                case ASSIGN:
-                case HEAT:
-                    constraints.put(key, new MatSMT(key, type));
-                    break;
-            }
-        }
-        constraints.get(key).addConstraint(value);
     }
 
     public static boolean isNumeric(String value) {

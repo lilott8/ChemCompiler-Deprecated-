@@ -1,5 +1,7 @@
 package phases.inference.rules;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
@@ -18,7 +20,7 @@ public class Mat extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        return super.gatherConstraints(node);
+        throw new NotImplementedException();
     }
 
 }

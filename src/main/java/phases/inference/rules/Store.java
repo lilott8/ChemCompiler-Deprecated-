@@ -2,10 +2,6 @@ package phases.inference.rules;
 
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
-import substance.Property;
-import phases.inference.satsolver.constraints.Constraint.ConstraintType;
-
-import static typesystem.epa.ChemTypes.MAT;
 
 /**
  * @created: 7/28/17

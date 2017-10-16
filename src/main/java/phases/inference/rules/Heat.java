@@ -1,15 +1,11 @@
 package phases.inference.rules;
 
-import java.util.HashSet;
-
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
 import substance.Property;
-import phases.inference.satsolver.constraints.Constraint.ConstraintType;
-import typesystem.identification.IdentifierFactory;
 
 import static typesystem.epa.ChemTypes.REAL;
 
@@ -31,7 +27,7 @@ public class Heat extends NodeAnalyzer {
         logger.info("Uses: " + node.get_use());
         logger.info("Defs: " + node.get_def());
 
-        Instruction instruction = new Instruction(node.ID(), Heat.class.getName());
+        Instruction instruction = new Instruction(node.ID(), InstructionType.HEAT);
 
         Variable input = null;
         // There is only ever one input.
@@ -50,7 +46,7 @@ public class Heat extends NodeAnalyzer {
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
-            instruction.addInputVariable(prop);
+            instruction.addProperty(prop);
             addVariable(prop);
         }
 

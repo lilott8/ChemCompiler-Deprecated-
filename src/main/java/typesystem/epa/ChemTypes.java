@@ -253,6 +253,14 @@ public enum ChemTypes {
 
     private int value;
 
+    public static boolean isMaterial(ChemTypes t) {
+        return materials.contains(t);
+    }
+
+    public static boolean isNumber(ChemTypes t) {
+        return numbers.contains(t);
+    }
+
     ChemTypes(int value) {
         this.value = value;
     }
@@ -270,10 +278,6 @@ public enum ChemTypes {
 
     public static Map<Integer, ChemTypes> getIntegerChemTypesMap() {
         return integerChemTypesMap;
-    }
-
-    public static boolean isNumber(ChemTypes t) {
-        return (t == NAT || t == REAL);
     }
 
     public String toString(ChemTypes t) {

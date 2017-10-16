@@ -1,16 +1,12 @@
 package phases.inference.rules;
 
-import java.util.HashSet;
-
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
-import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 import substance.Property;
 
-import static typesystem.epa.ChemTypes.MAT;
 import static typesystem.epa.ChemTypes.REAL;
 
 /**
@@ -28,7 +24,7 @@ public class Output extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        Instruction instruction = new Instruction(node.ID(), Output.class.getName());
+        Instruction instruction = new Instruction(node.ID(), InstructionType.OUTPUT);
 
         Variable input = null;
         for (String s : node.get_use()) {
@@ -36,6 +32,13 @@ public class Output extends NodeAnalyzer {
             input.addTypingConstraints(getTypingConstraints(input));
             instruction.addInputVariable(input);
             addVariable(input);
+        }
+
+        for (Property p : node.Instruction().getProperties()) {
+            Variable prop = new Term(Rule.createHash(p.toString()));
+            prop.addTypingConstraint(REAL);
+            instruction.addProperty(prop);
+            addVariable(prop);
         }
 
         addInstruction(instruction);

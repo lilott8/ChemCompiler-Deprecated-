@@ -1,9 +1,9 @@
 package phases.inference.elements;
 
-import org.apache.commons.lang.SystemUtils;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import phases.inference.rules.Rule;
 
 /**
  * @created: 10/13/17
@@ -13,14 +13,15 @@ import java.util.List;
 public class Instruction {
 
     public final int id;
-    public final String instructionName;
+    public final Rule.InstructionType type;
     private List<Variable> output = new ArrayList<>();
     private List<Variable> input = new ArrayList<>();
+    private List<Variable> properties = new ArrayList<>();
 
 
-    public Instruction(int id, String instructionName) {
+    public Instruction(int id, Rule.InstructionType type) {
         this.id = id;
-        this.instructionName = instructionName;
+        this.type = type;
     }
 
     public Instruction addOutputVariable(Variable output) {
@@ -31,6 +32,15 @@ public class Instruction {
     public Instruction addInputVariable(Variable input) {
         this.input.add(input);
         return this;
+    }
+
+    public Instruction addProperty(Variable prop) {
+        this.properties.add(prop);
+        return this;
+    }
+
+    public List<Variable> getProperties() {
+        return this.properties;
     }
 
     public List<Variable> getOutput() {
@@ -45,7 +55,7 @@ public class Instruction {
         StringBuilder sb = new StringBuilder();
 
         sb.append("===================").append(System.lineSeparator());
-        sb.append("ID: ").append(this.id).append("\tType: ").append(this.instructionName).append(System.lineSeparator());
+        sb.append("ID: ").append(this.id).append("\tType: ").append(this.type).append(System.lineSeparator());
         sb.append("Inputs: ").append(this.input).append(System.lineSeparator());
         sb.append("Outputs: ").append(this.output).append(System.lineSeparator());
         sb.append("===================").append(System.lineSeparator());

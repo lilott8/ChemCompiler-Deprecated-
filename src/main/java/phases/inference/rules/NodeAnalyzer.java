@@ -51,7 +51,7 @@ public abstract class NodeAnalyzer extends Rule {
         return instruction;
     }
 
-    protected Rule gatherConstraints(InstructionNode node) {
+    /*protected Rule gatherConstraints(InstructionNode node) {
         /*
          * Temp = Mix x with y for n
          *  ^def_use  |      |     |
@@ -69,7 +69,6 @@ public abstract class NodeAnalyzer extends Rule {
         logger.debug("Output Symbols: " + instruction.getOutputSymbols());
         logger.debug("toString(): " + instruction.toString());
         logger.warn("=================================");
-        */
         return this;
-    }
+    }*/
 }

@@ -244,7 +244,7 @@ public class BasicBlock implements Serializable {
     public  String toString(String indentBuffer) {
         String ret = indentBuffer + "Basic Block : " + __ID.toString() + '\n';
 
-        ret += indentBuffer + '\t' + "Instructions: \n";
+        ret += indentBuffer + '\t' + "InstructionType: \n";
         for(InstructionNode node : __instructions)
             ret += node.toString(indentBuffer+'\t'+'\t') +'\n';
         ret += indentBuffer +'\t' + "Edges: \n";

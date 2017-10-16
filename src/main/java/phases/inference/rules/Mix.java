@@ -1,16 +1,12 @@
 package phases.inference.rules;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import compilation.datastructures.InstructionNode;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
-import phases.inference.satsolver.constraints.Constraint.ConstraintType;
 import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
@@ -35,7 +31,7 @@ public class Mix extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        Instruction instruction = new Instruction(node.ID(), Mix.class.getName());
+        Instruction instruction = new Instruction(node.ID(), InstructionType.MIX);
 
         Set<ChemTypes> groupings = new HashSet<>();
 
@@ -78,7 +74,7 @@ public class Mix extends NodeAnalyzer {
         for (Property p : node.Instruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
-            instruction.addInputVariable(prop);
+            instruction.addProperty(prop);
             addVariable(prop);
         }
 

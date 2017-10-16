@@ -20,6 +20,6 @@ public class Var extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        return this.assign.gatherConstraints(node);
+        return this.assign.gatherAllConstraints(node);
     }
 }
