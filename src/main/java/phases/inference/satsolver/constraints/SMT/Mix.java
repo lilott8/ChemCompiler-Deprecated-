@@ -64,7 +64,7 @@ public class Mix implements Composer {
             for (Variable input2 : input) {
                 for (ChemTypes t1 : input1.getTypingConstraints()) {
                     for (ChemTypes t2 : input2.getTypingConstraints()) {
-                        if (!EpaManager.INSTANCE.test(t1, t2)) {
+                        if (!EpaManager.INSTANCE.validate(t1, t2)) {
                             killSwitch = true;
                         }
                         sb.append("(assert").append(NL);

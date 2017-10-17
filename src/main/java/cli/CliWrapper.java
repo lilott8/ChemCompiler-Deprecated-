@@ -132,11 +132,11 @@ public class CliWrapper {
                 .argName("clean").build());
 
         desc = "What phases to enable." +
-                "\n Usage: -p {list of phases}" +
                 "\n Available phases: " +
                 "\n\t inference: run type inference" +
-                "\n\t simple: run simple inference";
-        options.addOption(Option.builder("p").longOpt("phases")
+                "\n\t simple: run simple inference" +
+                "\n Usage: -p {list of phases}";
+                options.addOption(Option.builder("p").longOpt("phases")
                 .desc(desc).hasArgs().required(false)
                 .argName("phases").build());
 
