@@ -46,7 +46,6 @@ public abstract class Identifier {
      * todo: implement the checksum algorithm for CAS numbers for better handling
      */
     public static boolean isCasNumber(String chemical) {
-        logger.fatal("Searching by CAS number is not implemented yet");
         //throw new NotImplementedException();
         try {
             // the first character must be a integer
@@ -86,7 +85,7 @@ public abstract class Identifier {
      */
     public static boolean isSmiles(String chemical) {
         try {
-            MolImporter.importMol(chemical);
+            MolImporter.importMol(chemical, "smiles");
             return true;
         } catch (MolFormatException e) {
             return false;

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import phases.PhaseFacade;
 import translators.mfsim.MFSimSSATranslator;
 import translators.Translator;
 import translators.typesystem.TypeSystemTranslator;
@@ -67,7 +68,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     /**
      * List of phases that are enabled for compilation
      */
-    private Set<String> phases = new HashSet<String>();
+    private Set<PhaseFacade.PHASES> phases = new HashSet<>();
 
     /**
      * No default password
@@ -179,7 +180,9 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
         }
 
         if (cmd.hasOption("phases")) {
-            this.phases.addAll(Arrays.asList(cmd.getOptionValues("phases")));
+            for (String s : cmd.getOptionValues("phases")) {
+                this.phases.add(PhaseFacade.PHASES.valueOf(StringUtils.upperCase(s)));
+            }
         }
 
         // This is technically redundant, this is checked in the main.
@@ -334,7 +337,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
         return !this.translators.isEmpty();
     }
 
-    public Set<String> getAllPhases() {
+    public Set<PhaseFacade.PHASES> getAllPhases() {
         return this.phases;
     }
 
@@ -342,8 +345,8 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
         return !this.phases.isEmpty();
     }
 
-    public boolean phaseEnabled(String name) {
-        return this.phases.contains(name);
+    public boolean phaseEnabled(PhaseFacade.PHASES phase) {
+        return this.phases.contains(phase);
     }
 
 

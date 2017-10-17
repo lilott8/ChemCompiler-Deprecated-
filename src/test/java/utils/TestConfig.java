@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import config.PhaseConfig;
+import phases.PhaseFacade;
 
 /**
  * @created: 9/1/17
@@ -15,11 +16,11 @@ import config.PhaseConfig;
 public class TestConfig implements PhaseConfig {
 
     List<String> files = new ArrayList<>();
-    Set<String> phases = new HashSet<>();
+    Set<PhaseFacade.PHASES> phases = new HashSet<>();
 
     public TestConfig(String file) {
         files.add(file);
-        phases.add("inference");
+        phases.add(PhaseFacade.PHASES.INFERENCE);
     }
 
     @Override
@@ -28,12 +29,12 @@ public class TestConfig implements PhaseConfig {
     }
 
     @Override
-    public Set<String> getAllPhases() {
+    public Set<PhaseFacade.PHASES> getAllPhases() {
         return phases;
     }
 
     @Override
-    public boolean phaseEnabled(String phase) {
+    public boolean phaseEnabled(PhaseFacade.PHASES phase) {
         return this.phases.contains(phase);
     }
 

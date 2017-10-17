@@ -37,9 +37,8 @@ public class PhaseFacade implements Facade {
         this.controlFlowGraph = cfg;
         this.config = config;
 
-        for(String s : this.config.getAllPhases()) {
-            PHASES t = PHASES.valueOf(StringUtils.upperCase(s));
-            this.phases.put(t, PHASES.getPhase(t));
+        for(PHASES s : this.config.getAllPhases()) {
+            this.phases.put(s, PHASES.getPhase(s));
         }
     }
 

@@ -80,6 +80,7 @@ public class Z3Strategy implements SolverStrategy {
             }
         }
 
+        logger.info(variables);
         //logger.info(sb);
         return this.solveWithSMT2(sb.toString());
     }

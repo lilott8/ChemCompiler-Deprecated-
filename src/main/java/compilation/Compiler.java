@@ -121,7 +121,7 @@ public class Compiler {
 
     public void runPhases() {
         if (ConfigFactory.getConfig().phasesEnabled()) {
-            logger.info("Phases are set to be run.");
+            logger.info("Phases set to run: " + ConfigFactory.getConfig().getAllPhases());
             for (CFG experiment : this.__experimentControlFlowGraphs) {
                 Facade phase = new PhaseFacade(ConfigFactory.getConfig(), experiment);
                 phase.start();

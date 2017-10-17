@@ -323,20 +323,23 @@ public enum EpaManager {
             // logger.trace(String.format("Testing for: %s, %s", x, y));
         }
 
+
         boolean throwException = false;
-        if (this.reactionTable.containsRow(x)) {
-            if (this.reactionTable.containsColumn(y)) {
-                Reaction reaction = this.reactionTable.get(x, y);
-                if (!config.ignoreWarnings() && !reaction.getConsequences().isEmpty()) {
+        if (this.reactionTable.get(x,y) != null) {
+            Reaction reaction = this.reactionTable.get(x, y);
+            // We are not ignoring warnings.
+            if (!config.ignoreWarnings()) {
+                if (!reaction.getConsequences().isEmpty()) {
                     throwException = true;
-                } else {
-                    Set<Consequence> results = new HashSet<>(reaction.getConsequences());
-                    if (config.ignoreWarnings() && results.contains(Consequence.C)) {
-                        results.remove(Consequence.C);
-                        if (!results.isEmpty()) {
-                            throwException = true;
-                        }
-                    }
+                }
+            } else {
+                // We are ignoring warnings.
+                Set<Consequence> consequences = new HashSet<>(reaction.getConsequences());
+                // We are ignoring warnings, so we can simply remove them from the set.
+                consequences.remove(Consequence.C);
+                // If there is anything left, we should throw an error
+                if (consequences.size() > 0) {
+                    throwException = true;
                 }
             }
         }
@@ -382,6 +385,10 @@ public enum EpaManager {
             return this.reactionTable.get(x, y);
         }
         return null;
+    }
+
+    public Reaction getReaction(ChemTypes a, ChemTypes b) {
+        return this.getReaction(a.getValue(), b.getValue());
     }
 
     /**

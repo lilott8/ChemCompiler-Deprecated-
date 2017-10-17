@@ -47,7 +47,7 @@ public class Assign extends NodeAnalyzer {
         Term input = null;
         // This has to be input symbols.
         // There are no uses, these are the "constants".
-        for (String s : node.getInputSymbols()) {
+        for (String s : node.getDispenseSymbols()) {
             input = new Term(s);
         }
 
