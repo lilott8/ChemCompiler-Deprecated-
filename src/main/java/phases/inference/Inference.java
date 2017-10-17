@@ -104,12 +104,9 @@ public class Inference implements Phase {
             this.inferConstraints(StringUtils.upperCase(edge.getClassification()), edge);
         }
 
-        logger.info(this.instructions);
-        logger.debug(this.variables);
-        logger.fatal("We are only returning true for inference.");
-        //return true;
+        // logger.info(this.instructions);
+        // logger.debug(this.variables);
         return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(this.instructions, this.variables);
-        //return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
     }
 
     /**
@@ -147,10 +144,11 @@ public class Inference implements Phase {
     public void inferConstraints(String name, BasicBlockEdge edge) {
         if (this.edgeAnalyzers.containsKey(name)) {
             EdgeAnalyzer rule = this.edgeAnalyzers.get(name);
+            rule = (EdgeAnalyzer) rule.gatherConstraints(edge);
             this.addInstructions(rule.getInstructions());
             this.addTerms(rule.getVariables());
         }
-        if (!StringUtils.equalsIgnoreCase(name, "unknown")) {
+        if (!this.edgeAnalyzers.containsKey(name) && !StringUtils.equalsIgnoreCase(name, "unknown")) {
             logger.warn("Edge Analysis: We don't have a rule for: " + name);
         }
     }

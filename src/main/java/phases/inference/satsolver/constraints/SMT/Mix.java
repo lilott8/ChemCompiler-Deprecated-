@@ -12,9 +12,7 @@ import phases.inference.satsolver.strategies.SolverStrategy;
 import typesystem.epa.ChemTypes;
 import typesystem.epa.EpaManager;
 
-import static phases.inference.satsolver.strategies.SolverStrategy.NL;
-import static phases.inference.satsolver.strategies.SolverStrategy.TAB;
-import static phases.inference.satsolver.strategies.SolverStrategy.getSMTName;
+import static phases.inference.satsolver.strategies.SolverStrategy.*;
 
 /**
  * @created: 10/16/17
@@ -61,10 +59,14 @@ public class Mix implements Composer {
         // At this point, output's set contains the look up values already.
         // So we don't need to run it here.  We still need to reference the
         // Lookup table for building the above formula, however.
+        boolean killSwitch = false;
         for (Variable input1 : input) {
             for (Variable input2 : input) {
                 for (ChemTypes t1 : input1.getTypingConstraints()) {
                     for (ChemTypes t2 : input2.getTypingConstraints()) {
+                        if (!EpaManager.INSTANCE.test(t1, t2)) {
+                            killSwitch = true;
+                        }
                         sb.append("(assert").append(NL);
                         sb.append(TAB).append("(=>").append(NL);
                         sb.append(TAB+TAB).append("(and").append(NL);
@@ -83,8 +85,10 @@ public class Mix implements Composer {
                 }
             }
         }
-
-        logger.info(sb);
+        if (killSwitch) {
+            sb.append("; Nuke it, from orbit!").append(NL);
+            sb.append("(assert (= true false))").append(NL);
+        }
 
         return sb.toString();
     }

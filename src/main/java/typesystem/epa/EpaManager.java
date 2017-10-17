@@ -447,12 +447,13 @@ public enum EpaManager {
             y = temp;
         }
 
-        try {
+        if (this.reactionMatrix.get(x, y) != null) {
             for (int t : this.reactionMatrix.get(x, y)) {
                 results.add(ChemTypes.getTypeFromId(t));
             }
-        } catch(NullPointerException e) {
-            logger.debug(String.format("%d|%d|%d_%d", x, y, x, y));
+        } else {
+            results.add(ChemTypes.getTypeFromId(x));
+            results.add(ChemTypes.getTypeFromId(y));
         }
 
         return results;

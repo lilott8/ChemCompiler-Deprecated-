@@ -24,9 +24,6 @@ public class Heat extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        logger.info("Uses: " + node.get_use());
-        logger.info("Defs: " + node.get_def());
-
         Instruction instruction = new Instruction(node.ID(), InstructionType.HEAT);
 
         Variable input = null;

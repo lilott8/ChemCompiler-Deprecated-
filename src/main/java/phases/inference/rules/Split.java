@@ -7,6 +7,7 @@ import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
 import substance.Property;
 
+import static typesystem.epa.ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION;
 import static typesystem.epa.ChemTypes.REAL;
 
 /**
@@ -23,8 +24,8 @@ public class Split extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        logger.fatal("Using generic implementation for split!");
 
+        /*
         logger.info(node);
         logger.info(node.Instruction());
         logger.info(node.Instruction());
@@ -33,6 +34,7 @@ public class Split extends NodeAnalyzer {
         logger.info("Props: " + node.Instruction().getProperties());
         logger.info(node.getDispenseSymbols());
         logger.info("=========================");
+        */
 
         Instruction instruction = new Instruction(node.ID(), InstructionType.SPLIT);
 
@@ -48,9 +50,11 @@ public class Split extends NodeAnalyzer {
         for (String s : node.get_def()) {
             output = new Term(s);
             if (input == null) {
-                logger.warn("Input is null!?");
+                // logger.warn("Input is null!?");
+                output.addTypingConstraint(INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
+            } else {
+                output.addTypingConstraints(getTypingConstraints(input));
             }
-            output.addTypingConstraints(getTypingConstraints(input));
             instruction.addOutputVariable(output);
             addVariable(output);
         }

@@ -165,12 +165,13 @@ public class Z3Strategy implements SolverStrategy {
             if (status == Status.SATISFIABLE) {
                 if (ConfigFactory.getConfig().isDebug()) {
                     logger.trace("SAT!");
-                    logger.debug(solver.getModel().toString());
+                    // logger.debug(solver.getModel().toString());
                 }
                 return true;
             } else {
                 if (ConfigFactory.getConfig().isDebug()) {
                     logger.error("UNSAT");
+                    logger.info(smt2);
                 }
                 return false;
             }

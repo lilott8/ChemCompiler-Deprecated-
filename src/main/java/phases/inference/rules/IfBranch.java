@@ -25,7 +25,6 @@ public class IfBranch extends EdgeAnalyzer {
 
     @Override
     public Rule gatherConstraints(BasicBlockEdge edge) {
-        logger.info(edge.getConditional());
         Instruction instruction = new Instruction(edge.getId(), InstructionType.BRANCH);
 
         Variable output = new Term(Rule.createHash(edge.getConditional().toString()));

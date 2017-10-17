@@ -2,7 +2,7 @@ package inference;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static utils.CommonUtils.runTest;
 
 /**
@@ -17,18 +17,18 @@ public class ChemTypeTest {
     @Test
     public void chemType1SimpleSat() {
         String file = "chemtype1.json";
-        assertTrue(runTest(root + file));
+        assertFalse(runTest(root + file));
     }
 
     @Test
     public void chemType2SimpleSat() {
         String file = "chemtype2.json";
-        assertTrue(runTest(root + file));
+        assertFalse(runTest(root + file));
     }
 
     @Test
     public void chemType3SimpleSat() {
         String file = "chemtype3.json";
-        assertTrue(runTest(root + file));
+        assertFalse(runTest(root + file));
     }
 }
