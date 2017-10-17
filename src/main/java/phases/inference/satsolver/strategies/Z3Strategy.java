@@ -170,8 +170,8 @@ public class Z3Strategy implements SolverStrategy {
                 return true;
             } else {
                 if (ConfigFactory.getConfig().isDebug()) {
+                    // logger.info(smt2);
                     logger.error("UNSAT");
-                    logger.info(smt2);
                 }
                 return false;
             }
