@@ -3,6 +3,7 @@ package typesystem.epa;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -425,14 +426,36 @@ public enum EpaManager {
     }
 
     public Set<ChemTypes> lookUp(Set<ChemTypes> types) {
-        return types;
+        Set<ChemTypes> results = new HashSet<>();
+        for (ChemTypes t1 : types) {
+            for (ChemTypes t2: types) {
+                results.addAll(lookUp(t1, t2));
+            }
+        }
+        return results;
     }
 
     public Set<ChemTypes> lookUp(ChemTypes a, ChemTypes b) {
-        Set<ChemTypes> result = new HashSet<>();
-        result.add(a);
-        result.add(b);
-        return result;
+        Set<ChemTypes> results = new HashSet<>();
+
+        int x = a.getValue();
+        int y = b.getValue();
+
+        if (x > y) {
+            int temp = x;
+            x = y;
+            y = temp;
+        }
+
+        try {
+            for (int t : this.reactionMatrix.get(x, y)) {
+                results.add(ChemTypes.getTypeFromId(t));
+            }
+        } catch(NullPointerException e) {
+            logger.debug(String.format("%d|%d|%d_%d", x, y, x, y));
+        }
+
+        return results;
     }
 
 

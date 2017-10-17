@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 
+import config.Config;
+import config.ConfigFactory;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Variable;
 import phases.inference.rules.Rule;
@@ -78,7 +80,7 @@ public class Z3Strategy implements SolverStrategy {
             }
         }
 
-        logger.info(sb);
+        //logger.info(sb);
         return this.solveWithSMT2(sb.toString());
     }
 
@@ -153,12 +155,6 @@ public class Z3Strategy implements SolverStrategy {
         return sb.toString();
     }
 
-    private String routeInstruction(Instruction instruction) {
-        logger.trace(instruction.type);
-
-        return "";
-    }
-
     private boolean solveWithSMT2(String smt2) {
         try {
             Context context = new Context();
@@ -166,12 +162,16 @@ public class Z3Strategy implements SolverStrategy {
             Solver solver = context.mkSolver();
             solver.add(expr);
             Status status = solver.check();
-            // logger.info(solver.getModel());
             if (status == Status.SATISFIABLE) {
-                logger.trace("SAT!");
+                if (ConfigFactory.getConfig().isDebug()) {
+                    logger.trace("SAT!");
+                    logger.debug(solver.getModel().toString());
+                }
                 return true;
             } else {
-                logger.error("UNSAT");
+                if (ConfigFactory.getConfig().isDebug()) {
+                    logger.error("UNSAT");
+                }
                 return false;
             }
         } catch (Z3Exception e) {
