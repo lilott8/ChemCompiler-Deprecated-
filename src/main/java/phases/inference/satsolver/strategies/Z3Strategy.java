@@ -12,17 +12,21 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
-
-import config.Config;
 import config.ConfigFactory;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Variable;
 import phases.inference.rules.Rule;
 import phases.inference.satsolver.constraints.Composer;
-import phases.inference.satsolver.constraints.SMT.*;
+import phases.inference.satsolver.constraints.SMT.Assign;
+import phases.inference.satsolver.constraints.SMT.Branch;
+import phases.inference.satsolver.constraints.SMT.Detect;
+import phases.inference.satsolver.constraints.SMT.Heat;
+import phases.inference.satsolver.constraints.SMT.Mix;
+import phases.inference.satsolver.constraints.SMT.Output;
+import phases.inference.satsolver.constraints.SMT.Split;
 import typesystem.epa.ChemTypes;
 
 import static typesystem.epa.ChemTypes.NAT;
@@ -80,8 +84,9 @@ public class Z3Strategy implements SolverStrategy {
             }
         }
 
-        logger.info(variables);
-        //logger.info(sb);
+        // logger.info(variables);
+        // logger.info(instructions);
+        // logger.info(sb);
         return this.solveWithSMT2(sb.toString());
     }
 
@@ -165,8 +170,8 @@ public class Z3Strategy implements SolverStrategy {
             Status status = solver.check();
             if (status == Status.SATISFIABLE) {
                 if (ConfigFactory.getConfig().isDebug()) {
+                    logger.debug(solver.getModel().toString());
                     logger.trace("SAT!");
-                    // logger.debug(solver.getModel().toString());
                 }
                 return true;
             } else {

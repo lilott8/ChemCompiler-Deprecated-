@@ -16,7 +16,7 @@ public class Chemical {
     public final String isomericSmiles;
     public final String canonicalSmiles;
 
-    public Chemical(String line) { ;
+    public Chemical(String line) {
         String[] temp = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "|_|");
         reactiveGroup = Integer.parseInt(temp[0]);
         pubChemId = Long.parseLong(temp[1]);

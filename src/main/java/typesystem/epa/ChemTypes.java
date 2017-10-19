@@ -89,6 +89,7 @@ public enum ChemTypes {
     private static Map<Integer, ChemTypes> integerChemTypesMap = new HashMap<>();
     private static Set<ChemTypes> materials = new HashSet<>();
     private static Set<ChemTypes> numbers = new HashSet<>();
+    private static Set<ChemTypes> allTypes = new HashSet<>();
 
     static {
         integerChemTypesMap.put(1, ACIDS_STRONG_NON_OXIDIZING);
@@ -239,6 +240,9 @@ public enum ChemTypes {
         materials.add(WATER_AND_AQUEOUS_SOLUTIONS);
 
         NUM_REACTIVE_GROUPS = integerChemTypesMap.size();
+
+        allTypes.addAll(materials);
+        allTypes.addAll(numbers);
     }
 
     public static final int NUM_REACTIVE_GROUPS;
@@ -249,6 +253,10 @@ public enum ChemTypes {
 
     public static Set<ChemTypes> getNums() {
         return numbers;
+    }
+
+    public static Set<ChemTypes> getAllTypes() {
+        return allTypes;
     }
 
     private int value;

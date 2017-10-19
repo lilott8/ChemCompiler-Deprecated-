@@ -13,10 +13,10 @@ import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
+import phases.inference.Inference.InferenceType;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Variable;
 import typesystem.epa.ChemTypes;
-import phases.inference.Inference.InferenceType;
 import typesystem.identification.IdentifierFactory;
 
 /**
@@ -54,7 +54,7 @@ public abstract class Rule {
     }
 
     public Map<String, Variable> getVariables() {
-        return this.variables;
+        return variables;
     }
 
     public Map<Integer, Instruction> getInstructions() {

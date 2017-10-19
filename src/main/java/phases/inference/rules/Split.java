@@ -25,7 +25,7 @@ public class Split extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        /*
+
         logger.info(node);
         logger.info(node.Instruction());
         logger.info(node.Instruction());
@@ -34,7 +34,6 @@ public class Split extends NodeAnalyzer {
         logger.info("Props: " + node.Instruction().getProperties());
         logger.info(node.getDispenseSymbols());
         logger.info("=========================");
-        */
 
         Instruction instruction = new Instruction(node.ID(), InstructionType.SPLIT);
 

@@ -30,9 +30,7 @@ public class StaticSingleInformation extends StaticSingleAssignment{
 
         Boolean changesMade = true;
         while (changesMade){
-            changesMade = false;
-            if(this.PlacePhiNodes())
-                changesMade = true;
+            changesMade = this.PlacePhiNodes();
            // logger.debug(this);
             if(this.PlaceSigmaNodes())
                 changesMade = true;

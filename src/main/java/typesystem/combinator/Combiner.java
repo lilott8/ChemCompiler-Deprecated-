@@ -1,12 +1,9 @@
 package typesystem.combinator;
 
-import org.apache.logging.log4j.LogManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import config.Config;
 import config.ConfigFactory;
 import shared.substances.BaseCompound;
 import shared.substances.NaiveCompound;
@@ -36,6 +33,14 @@ public interface Combiner {
         this.combine(a, b);
 
         return compound;
+    }
+
+    default boolean combine(ChemTypes a, ChemTypes b) {
+        if (ConfigFactory.getConfig().isDebug()) {
+            return EpaManager.INSTANCE.test(a, b);
+        } else {
+            return EpaManager.INSTANCE.validate(a, b);
+        }
     }
 
     default boolean combine(List<ChemTypes> a, List<ChemTypes> b) {

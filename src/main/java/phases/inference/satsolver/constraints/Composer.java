@@ -1,15 +1,10 @@
 package phases.inference.satsolver.constraints;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Variable;
-import typesystem.epa.ChemTypes;
+
+import static phases.inference.satsolver.strategies.SolverStrategy.NL;
+
 
 /**
  * @created: 9/12/17
@@ -20,4 +15,8 @@ public interface Composer {
 
     String compose(Instruction instruction);
     String compose(Variable variable);
+
+    default String killSwitch() {
+        return "; Nuke it from orbit!" + NL + "(assert (= true false))" + NL;
+    }
 }
