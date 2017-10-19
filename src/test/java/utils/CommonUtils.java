@@ -24,15 +24,13 @@ import phases.inference.Inference;
  * @project: ChemicalCompiler
  */
 public class CommonUtils {
-
     public static boolean runTest(String file) {
         String args = String.format("-c %s -p inference " +
-                //"-dbname chem_trails -dbuser root -dbpass root " +
-                //"-dbextras ?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false " +
-                "-d -nf -i -classify 16\n", file);
+                "%s " +
+                "-d -nf -i -classify 16\n", file, DBArgs.getDBArgs());
         CliWrapper cli = new CliWrapper();
         cli.parseCommandLine(StringUtils.split(args));
-        LogManager.getLogger(CommonUtils.class).info(ConfigFactory.getConfig().getFilesForCompilation());
+        //LogManager.getLogger(CommonUtils.class).info(ConfigFactory.getConfig().getFilesForCompilation());
         Compiler compiler = new Compiler(ConfigFactory.getConfig());
         compiler.compile();
         Inference inference = new Inference();

@@ -1,13 +1,12 @@
 package phases.inference.rules;
 
-import java.util.HashSet;
-
 import compilation.datastructures.InstructionNode;
 import phases.inference.Inference.InferenceType;
-import phases.inference.satsolver.constraints.Constraint.ConstraintType;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Term;
+import phases.inference.elements.Variable;
 import substance.Property;
 
-import static typesystem.epa.ChemTypes.MAT;
 import static typesystem.epa.ChemTypes.REAL;
 
 /**
@@ -24,32 +23,26 @@ public class Output extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        for(String s : node.getInputSymbols()) {
-            this.addConstraints(s, new HashSet<>(), ConstraintType.OUTPUT);
+
+        Instruction instruction = new Instruction(node.ID(), InstructionType.OUTPUT);
+
+        Variable input = null;
+        for (String s : node.get_use()) {
+            input = new Term(s);
+            input.addTypingConstraints(getTypingConstraints(input));
+            instruction.addInputVariable(input);
+            addVariable(input);
         }
 
-        for (Property prop : node.Instruction().getProperties()) {
-            this.gatherConstraints(prop);
+        for (Property p : node.Instruction().getProperties()) {
+            Variable prop = new Term(Rule.createHash(p.toString()));
+            prop.addTypingConstraint(REAL);
+            instruction.addProperty(prop);
+            addVariable(prop);
         }
 
-        return super.gatherConstraints(node);
-    }
+        addInstruction(instruction);
 
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        this.addConstraints(input, new HashSet<>(), ConstraintType.OUTPUT);
-        return this;
-    }
-
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        this.addConstraints(input, new HashSet<>(), ConstraintType.OUTPUT);
-        return this;
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        this.addConstraint(Rule.createHash(property.toString()), REAL, ConstraintType.NUMBER);
         return this;
     }
 }

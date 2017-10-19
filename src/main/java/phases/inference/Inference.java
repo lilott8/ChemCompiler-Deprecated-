@@ -14,13 +14,13 @@ import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.InstructionNode;
-import config.ConfigFactory;
 import phases.Phase;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Variable;
 import phases.inference.rules.EdgeAnalyzer;
 import phases.inference.rules.InferenceRule;
 import phases.inference.rules.NodeAnalyzer;
 import phases.inference.satsolver.SatSolver;
-import phases.inference.satsolver.constraints.Constraint;
 import phases.inference.satsolver.strategies.Z3Strategy;
 import shared.Tuple;
 import typesystem.epa.ChemTypes;
@@ -61,13 +61,17 @@ public class Inference implements Phase {
     private final Map<String, NodeAnalyzer> basicBlockAnalyzers = new HashMap<>();
     private final Map<String, EdgeAnalyzer> edgeAnalyzers = new HashMap<>();
 
-    // This maps each instruction/term to the constraints that it has.
-    private Map<String, Constraint> constraints = new HashMap<>();
+    // Contains the typing constraints for instructions.
+    private Map<Integer, Instruction> instructions = new HashMap<>();
+    // Contains the typing constraints for all terms.
+    private Map<String, Variable> variables = new HashMap<>();
 
     // This is for human readability and testing only.  This will be removed for production.
     private Map<Tuple<String, String>, Set<ChemTypes>> testingConstraints = new HashMap<Tuple<String, String>, Set<ChemTypes>>();
 
+    // How are we going to solve this type inference problem?
     private SatSolver solver = new SatSolver();
+
     // Control flow graph needed to infer types from.
     private CFG controlFlowGraph;
 
@@ -90,22 +94,19 @@ public class Inference implements Phase {
                 // If we have an instruction, see what we can infer.
                 if(node.Instruction() != null) {
                     // This will give us the typing of all the constraints in the instruction.
-                    this.addConstraints(this.inferConstraints(StringUtils.upperCase(node.Instruction().getClassification()), node));
+                    this.inferConstraints(StringUtils.upperCase(node.Instruction().getClassification()), node);
                 }
-                // logger.info(node.Instruction());
             }
         }
 
         // Iterate the edges, we need the branch conditions to infer...
         for(BasicBlockEdge edge : this.controlFlowGraph.getBasicBlockEdges()) {
-            this.addConstraints(this.inferConstraints(StringUtils.upperCase(edge.getClassification()), edge));
+            this.inferConstraints(StringUtils.upperCase(edge.getClassification()), edge);
         }
 
-        if (ConfigFactory.getConfig().isDebug()) {
-            logger.trace(this.constraints);
-        }
-
-        return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(constraints);
+        // logger.info(this.instructions);
+        // logger.debug(this.variables);
+        return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(this.instructions, this.variables);
     }
 
     /**
@@ -117,15 +118,16 @@ public class Inference implements Phase {
      * @return
      *   A mapping of id to what was inferred.
      */
-    public Map<String, Constraint> inferConstraints(String name, InstructionNode instruction) {
+    public void inferConstraints(String name, InstructionNode instruction) {
         if(this.basicBlockAnalyzers.containsKey(name)) {
             NodeAnalyzer rule = this.basicBlockAnalyzers.get(name);
-            // return the constraints from the rule
-            return rule.gatherAllConstraints(instruction).getConstraints();
+            rule = (NodeAnalyzer) rule.gatherAllConstraints(instruction);
+            this.addInstructions(rule.getInstructions());
+            this.addTerms(rule.getVariables());
+        } else {
+            logger.warn("Node Analysis: We don't have a rule for: " + name);
         }
-        logger.warn("Node Analysis: We don't have a rule for: " + name);
         // return an empty array list for ease.
-        return new HashMap<>();
     }
 
     /**
@@ -139,35 +141,29 @@ public class Inference implements Phase {
      * @return
      *   A mapping of id to what was inferred.
      */
-    public Map<String, Constraint> inferConstraints(String name, BasicBlockEdge edge) {
+    public void inferConstraints(String name, BasicBlockEdge edge) {
         if (this.edgeAnalyzers.containsKey(name)) {
             EdgeAnalyzer rule = this.edgeAnalyzers.get(name);
-            return rule.gatherConstraints(edge).getConstraints();
+            rule = (EdgeAnalyzer) rule.gatherConstraints(edge);
+            this.addInstructions(rule.getInstructions());
+            this.addTerms(rule.getVariables());
         }
-        if (!StringUtils.equalsIgnoreCase(name, "unknown")) {
+        if (!this.edgeAnalyzers.containsKey(name) && !StringUtils.equalsIgnoreCase(name, "unknown")) {
             logger.warn("Edge Analysis: We don't have a rule for: " + name);
         }
-
-        return new HashMap<>();
     }
 
-    /**
-     * Allows adding of constraints to terms/instructions
-     * @param constraints
-     *   HashSet of constraints
-     */
-    private void addConstraints(Map<String, Constraint> constraints) {
-        // If the constraints are empty, don't do anything
-        if(constraints == null || constraints.isEmpty()) {
-            return;
-        }
+    private void addInstructions(Map<Integer, Instruction> i) {
+        this.instructions.putAll(i);
+    }
 
-        // Otherwise add all constraints to the appropriate key.
-        for (Map.Entry<String, Constraint> entry : constraints.entrySet()) {
-            if (!this.constraints.containsKey(entry.getKey())) {
-                this.constraints.put(entry.getKey(), entry.getValue());
+    private void addTerms(Map<String, Variable> t) {
+        for (Map.Entry<String, Variable> entry : t.entrySet()) {
+            if (this.variables.containsKey(entry.getKey())) {
+                // pass, for now
+            } else {
+                this.variables.put(entry.getKey(), entry.getValue());
             }
-            this.constraints.put(entry.getKey(), entry.getValue());
         }
     }
 
@@ -176,7 +172,7 @@ public class Inference implements Phase {
      *   String representation.
      */
     public String toString() {
-        return super.toString() + this.constraints.toString();
+        return super.toString() + this.instructions;
     }
 
     /**
@@ -210,9 +206,6 @@ public class Inference implements Phase {
                 logger.warn(String.format("We cannot find the correct instructor for: %s", clazz.getName()));
             } catch(InvocationTargetException ite) {
                 logger.warn(String.format("We cannot invoke that dark magic (%s)", clazz.getName()));
-                ite.printStackTrace();
-                logger.error(ite.getCause().getMessage());
-                logger.error(ite.getTargetException().getMessage());
             }
         }
     }

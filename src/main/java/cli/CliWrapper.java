@@ -131,23 +131,25 @@ public class CliWrapper {
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
                 .argName("clean").build());
 
+        // Enable additional phases for compilation.
         desc = "What phases to enable." +
-                "\n Usage: -p {list of phases}" +
                 "\n Available phases: " +
                 "\n\t inference: run type inference" +
-                "\n\t simple: run simple inference";
+                "\n\t simple: run simple inference" +
+                "\n Usage: -p {list of phases}";
         options.addOption(Option.builder("p").longOpt("phases")
                 .desc(desc).hasArgs().required(false)
                 .argName("phases").build());
 
         // classification scope
         desc = "What level to attempt to classify materials at: \n" +
+                "\t0\t=>\tDisable identification\n" +
                 "\t1\t=>\tNaive, string-based approach\n" +
                 "\t2\t=>\tSMILES notation (Default)\n" +
                 "\t4\t=>\tInCHL-Key\n" +
                 "\t8\t=>\tCAS-Number\n" +
                 "\t16\t=>\tPubChemId\n" +
-                "\nUsage: -classify [1|2|4|8|16]";
+                "\nUsage: -classify [0|1|2|4|8|16]";
         options.addOption(Option.builder("classify").longOpt("classify")
                 .desc(desc).type(Integer.class).hasArg().required(false)
                 .argName("classify").build());

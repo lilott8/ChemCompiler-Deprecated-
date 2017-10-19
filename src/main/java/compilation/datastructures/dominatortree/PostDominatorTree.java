@@ -53,7 +53,7 @@ public class PostDominatorTree extends DominatorTreeBase {
             for(int i = __nodes.size()-2; i>=0 ;--i){
                 List<Integer> currentSet = __dominatorTable.get(__nodes.get(i));
                 List<Integer> newSet = super.DenominatorFormula(__nodes.get(i));
-                if( !super.checkEq(newSet, currentSet)) {
+                if (!checkEq(newSet, currentSet)) {
                     changed = true;
                     __dominatorTable.put(__nodes.get(i),newSet);
                 }

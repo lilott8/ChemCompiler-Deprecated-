@@ -3,6 +3,7 @@ package typesystem.epa;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,10 +30,9 @@ import shared.substances.BaseCompound;
 import shared.Tuple;
 
 /**
- * Responsible for managing all the groups which exist in
- * the EPA Compatability Cheat Sheet.
- * This is an enum so we don't have to go through the expense
- * of parsing the XML file every time we want to classify things
+ * Responsible for managing all the groups which exist in the EPA Compatability Cheat Sheet. This is
+ * an enum so we don't have to go through the expense of parsing the XML file every time we want to
+ * classify things
  */
 public enum EpaManager {
     INSTANCE;
@@ -41,13 +41,15 @@ public enum EpaManager {
     // Maps reactive group id to the manifested group replete with classifier data.
     public Map<ChemTypes, Group> groupMap = new HashMap<>();
     // Sparse matrix of reactive group to reactions.
-    public Map<ChemTypes, HashMap<ChemTypes, Reaction>> reactionMap = new HashMap<>();
+    //public Map<ChemTypes, HashMap<ChemTypes, Reaction>> reactionMap = new HashMap<>();
+    public Table<ChemTypes, ChemTypes, Reaction> reactionTable = HashBasedTable.create();
     // Config object for convenience.
     private final InferenceConfig config = ConfigFactory.getConfig();
     private final Table<Integer, Integer, Set<Integer>> reactionMatrix = HashBasedTable.create();
+
     /**
-     * Instantiates the EpaManager and parses the XML file that contains all* the chemical groups which exist in the EPA
-     * PDF cheat sheet
+     * Instantiates the EpaManager and parses the XML file that contains all* the chemical groups
+     * which exist in the EPA PDF cheat sheet
      */
     EpaManager() {
         // necessary for logging in the constructor of an instance enum.
@@ -87,7 +89,6 @@ public enum EpaManager {
 
     /**
      * Parses the XML tree and instantiates the sparse matrix and classifier data.
-     * @throws DocumentException
      */
     private void buildFromTree() throws DocumentException {
         Logger log = LogManager.getLogger(EpaManager.class);
@@ -140,20 +141,22 @@ public enum EpaManager {
             Node reactions = group.selectSingleNode("reactivegroups");
             if (reactions != null) {
                 // Initialize a hashmap if we have reactions...
-                if (!this.reactionMap.containsKey(id)) {
-                    this.reactionMap.put(chemType, new HashMap<>());
-                }
+                //if (!this.reactionMap.containsKey(id)) {
+                //    this.reactionMap.put(chemType, new HashMap<>());
+                //}
                 Map<ChemTypes, Reaction> outcomes = this.buildReactionGroups(reactions);
                 // To make things easy, we just fill out the lower-half sparse matrix
                 // to make lookups easier by eating the space overhead
                 for (Map.Entry<ChemTypes, Reaction> entry : outcomes.entrySet()) {
-                    if (!this.reactionMap.containsKey(entry.getKey())) {
-                        this.reactionMap.put(entry.getKey(), new HashMap<>());
-                    }
+                    //if (!this.reactionMap.containsKey(entry.getKey())) {
+                        //this.reactionMap.put(entry.getKey(), new HashMap<>());
+                    //}
                     // Lower half
-                    this.reactionMap.get(chemType).put(entry.getKey(), entry.getValue());
+                    this.reactionTable.put(chemType, entry.getKey(), entry.getValue());
                     // symmetric case
-                    this.reactionMap.get(entry.getKey()).put(chemType, entry.getValue());
+                    this.reactionTable.put(entry.getKey(), chemType, entry.getValue());
+                    //this.reactionMap.get(chemType).put(entry.getKey(), entry.getValue());
+                    //this.reactionMap.get(entry.getKey()).put(chemType, entry.getValue());
                 }
             }
             count++;
@@ -171,8 +174,10 @@ public enum EpaManager {
 
     /**
      * Generalized parsing of classification semantics
+     *
      * @param node elements that build a semantic
      * @param type type of semantic (word, smiles, smarts, etc)
+     *
      * @return list of semantics defining a classifier
      */
     private ArrayList<Tuple> buildAttributes(Node node, String type) {
@@ -221,9 +226,10 @@ public enum EpaManager {
     }
 
     /**
-     * Takes the XML input and builds the reaction groups of the
-     * corresponding reactive groups.
+     * Takes the XML input and builds the reaction groups of the corresponding reactive groups.
+     *
      * @param node node of reaction groups
+     *
      * @return hashmap of reactions
      */
     private Map<ChemTypes, Reaction> buildReactionGroups(Node node) {
@@ -270,12 +276,11 @@ public enum EpaManager {
     }
 
     /**
-     * Test the mixing of a reaction,
-     * True: safe to mix
-     * False: unsafe to mix
+     * Test the mixing of a reaction, True: safe to mix False: unsafe to mix
      *
      * @param x category id of compound to mix
      * @param y category id of compound to mix
+     *
      * @return true on safe to mix, otherwise false
      */
     public boolean test(int x, int y) {
@@ -287,28 +292,17 @@ public enum EpaManager {
             // logger.trace(String.format("Testing for: %s, %s", x, y));
         }
 
-        if(this.reactionMap.containsKey(x)) {
-            // ease the caution reaction to be "safe"
-            // self-reactive and caution are rendered "safe"
-            // with the lenient flag
-            if(this.config.ignoreWarnings()) {
-                return !this.reactionMap.get(x).containsKey(y) ||
-                        (this.reactionMap.get(x).get(y).getConsequences().contains(Consequence.C) ||
-                                this.reactionMap.get(x).get(y).getConsequences().contains(Consequence.SR)) &&
-                                this.reactionMap.get(x).get(y).getConsequences().size() == 1;
-            } else {
-                return !this.reactionMap.get(x).containsKey(y) ||
-                        this.reactionMap.get(x).get(y).getConsequences().isEmpty();
-            }
-        } else {
-            return true;
+        try {
+            return validate(x, y);
+        } catch (CompatabilityException ce) {
+            return false;
         }
     }
 
     public boolean test(BaseCompound one, BaseCompound two) {
-        for(int x : (Set<Integer>) one.getReactiveGroups()) {
-            for(int y : (Set<Integer>) two.getReactiveGroups()) {
-                if(!test(x, y)) {
+        for (int x : (Set<Integer>) one.getReactiveGroups()) {
+            for (int y : (Set<Integer>) two.getReactiveGroups()) {
+                if (!test(x, y)) {
                     return false;
                 }
             }
@@ -321,24 +315,44 @@ public enum EpaManager {
      *
      * @param x category id of compound to mix
      * @param y category id of compound to mix
+     *
      * @return boolean or exception as to the validity of a reaction
      */
     public boolean validate(ChemTypes x, ChemTypes y) {
-        if(this.config.isDebug()) {
+        if (this.config.isDebug()) {
             // logger.trace(String.format("Testing for: %s, %s", x, y));
         }
 
-        if(this.reactionMap.containsKey(x)) {
-            if(this.reactionMap.get(x).containsKey(y)) {
-                StringBuilder message = new StringBuilder();
-                message.append("Combining: (").append(groupMap.get(x).groupId).append(") ")
-                        .append(groupMap.get(x).groupName)
-                        .append(" with: (").append(groupMap.get(y).groupId).append(") ")
-                        .append(groupMap.get(y).groupName)
-                        .append(" results in: ").append(this.reactionMap.get(x).get(y).toString());
-                logger.fatal(message.toString());
-                throw new CompatabilityException(message.toString());
+
+        boolean throwException = false;
+        if (this.reactionTable.get(x,y) != null) {
+            Reaction reaction = this.reactionTable.get(x, y);
+            // We are not ignoring warnings.
+            if (!config.ignoreWarnings()) {
+                if (!reaction.getConsequences().isEmpty()) {
+                    throwException = true;
+                }
+            } else {
+                // We are ignoring warnings.
+                Set<Consequence> consequences = new HashSet<>(reaction.getConsequences());
+                // We are ignoring warnings, so we can simply remove them from the set.
+                consequences.remove(Consequence.C);
+                // If there is anything left, we should throw an error
+                if (consequences.size() > 0) {
+                    throwException = true;
+                }
             }
+        }
+
+        if (throwException) {
+            StringBuilder message = new StringBuilder();
+            message.append("Combining: (").append(groupMap.get(x).groupId).append(") ")
+                    .append(groupMap.get(x).groupName)
+                    .append(" with: (").append(groupMap.get(y).groupId).append(") ")
+                    .append(groupMap.get(y).groupName)
+                    .append(" results in: ").append(this.reactionTable.get(x, y).toString());
+            logger.fatal(message.toString());
+            throw new CompatabilityException(message.toString());
         }
         return true;
     }
@@ -348,8 +362,6 @@ public enum EpaManager {
     }
 
     public boolean validate(BaseCompound one, BaseCompound two) {
-        //logger.trace("Testing: " + one.getName() + "\t and: " + two.getName());
-        //logger.trace("One: " + one.getReactiveGroups() + "\t Two: " + two.getReactiveGroups());
         for (int x : (Set<Integer>) one.getReactiveGroups()) {
             for (int y : (Set<Integer>) two.getReactiveGroups()) {
                 if (!validate(x, y)) {
@@ -363,34 +375,40 @@ public enum EpaManager {
     /**
      * Get the reaction of two reactive groups
      *
-     * @param x
-     * 		int, x coordinate on the matrix
-     * @param y
-     * 		int, y coordinate on the matrix
+     * @param x int, x coordinate on the matrix
+     * @param y int, y coordinate on the matrix
+     *
      * @return reaction object that details what could go wrong
      */
     public Reaction getReaction(int x, int y) {
-        if(this.reactionMap.containsKey(x)) {
-            return this.reactionMap.get(x).get(y);
+        if (this.reactionTable.containsRow(x)) {
+            return this.reactionTable.get(x, y);
         }
         return null;
     }
 
+    public Reaction getReaction(ChemTypes a, ChemTypes b) {
+        return this.getReaction(a.getValue(), b.getValue());
+    }
+
     /**
      * toString overwrite
+     *
      * @return string representation of object
      */
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for(Map.Entry<ChemTypes, Group> entry : groupMap.entrySet()) {
+        for (Map.Entry<ChemTypes, Group> entry : groupMap.entrySet()) {
             sb.append("Id: ").append(entry.getKey()).append("\n");
             sb.append(entry.getValue().toString());
         }
-        for(Map.Entry<ChemTypes, HashMap<ChemTypes, Reaction>> entry : this.reactionMap.entrySet()) {
-            sb.append("ID: ").append(entry.getKey());
+        Map<ChemTypes, Map<ChemTypes, Reaction>> map = reactionTable.rowMap();
+        for (ChemTypes row : map.keySet()) {
+            sb.append("ID: ").append(row);
             sb.append(" has the following reactions: ").append(System.getProperty("line.separator"));
-            for(Map.Entry<ChemTypes, Reaction> inner : entry.getValue().entrySet()) {
-                sb.append(inner.getKey()).append(":\t").append(inner.getValue().toString());
+            Map<ChemTypes, Reaction> tmp = map.get(row);
+            for (Map.Entry<ChemTypes, Reaction> pair : tmp.entrySet()) {
+                sb.append(pair.getKey()).append(":\t").append(pair.getValue().toString());
             }
             sb.append(System.getProperty("line.separator"));
             sb.append("==========").append(System.getProperty("line.separator"));
@@ -400,17 +418,20 @@ public enum EpaManager {
 
     private String printMatrix() {
         StringBuilder sb = new StringBuilder("\n");
-        for(Map.Entry<ChemTypes, HashMap<ChemTypes, Reaction>> outer : this.reactionMap.entrySet()) {
+        /*
+        for (Map.Entry<ChemTypes, HashMap<ChemTypes, Reaction>> outer : this.reactionMap.entrySet()) {
             sb.append(outer.getKey()).append("|\t");
-            for(Map.Entry<ChemTypes, Reaction> inner : outer.getValue().entrySet()) {
+            for (Map.Entry<ChemTypes, Reaction> inner : outer.getValue().entrySet()) {
                 sb.append(inner.getKey()).append("\t");
             }
             sb.append("\n");
         }
+        */
         return sb.toString();
     }
 
-    public void buildEPAMap() {}
+    public void buildEPAMap() {
+    }
 
     public Set<ChemTypes> getFromComboTable() {
         return new HashSet<>();
@@ -425,23 +446,43 @@ public enum EpaManager {
     }
 
     public Set<ChemTypes> lookUp(Set<ChemTypes> types) {
-        return types;
+        Set<ChemTypes> results = new HashSet<>();
+        for (ChemTypes t1 : types) {
+            for (ChemTypes t2 : types) {
+                results.addAll(lookUp(t1, t2));
+            }
+        }
+        return results;
     }
 
     public Set<ChemTypes> lookUp(ChemTypes a, ChemTypes b) {
-        Set<ChemTypes> result = new HashSet<>();
-        result.add(a);
-        result.add(b);
-        return result;
+        Set<ChemTypes> results = new HashSet<>();
+
+        int x = a.getValue();
+        int y = b.getValue();
+
+        if (x > y) {
+            int temp = x;
+            x = y;
+            y = temp;
+        }
+
+        if (this.reactionMatrix.get(x, y) != null) {
+            for (int t : this.reactionMatrix.get(x, y)) {
+                results.add(ChemTypes.getTypeFromId(t));
+            }
+        } else {
+            results.add(ChemTypes.getTypeFromId(x));
+            results.add(ChemTypes.getTypeFromId(y));
+        }
+
+        return results;
     }
 
 
-
     /**
-     * Type of classifiers available to the system.
-     * SMARTS is the most accurate and complete, but
-     * other options exists.
-     * SMARTS is the preferred method.
+     * Type of classifiers available to the system. SMARTS is the most accurate and complete, but
+     * other options exists. SMARTS is the preferred method.
      */
     public enum Type {
         ELEMENT, WORD, SMILES, SMARTS

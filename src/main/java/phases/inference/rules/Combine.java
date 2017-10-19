@@ -28,20 +28,4 @@ public class Combine extends NodeAnalyzer {
     public Rule gatherAllConstraints(InstructionNode node) {
         return this.mix.gatherAllConstraints(node);
     }
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        //return this.mix.gatherUseConstraints(input);
-        return this;
-    }
-
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        //return this.mix.gatherDefConstraints(input);
-        return this;
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        return this.mix.gatherConstraints(property);
-    }
 }

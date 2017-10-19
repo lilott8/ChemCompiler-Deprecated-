@@ -3,23 +3,21 @@ package phases.inference.rules;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.message.Message;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
-import phases.inference.satsolver.constraints.MatSMT;
-import phases.inference.satsolver.constraints.NumSMT;
-import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
-import phases.inference.satsolver.constraints.Constraint;
-import static phases.inference.satsolver.constraints.Constraint.ConstraintType;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Variable;
+import typesystem.epa.ChemTypes;
+import typesystem.identification.IdentifierFactory;
 
 /**
  * @created: 7/31/17
@@ -28,16 +26,19 @@ import static phases.inference.satsolver.constraints.Constraint.ConstraintType;
  */
 public abstract class Rule {
 
+    public enum InstructionType {
+        ASSIGN, DETECT, HEAT, BRANCH, MIX, SPLIT, OUTPUT
+    }
+
     protected InferenceType type;
 
     protected final Logger logger;
 
-    public final String CONST = "constant";
-
     protected InferenceConfig config = ConfigFactory.getConfig();
 
-    // This implicitly allows us to do union sets with types
-    protected Map<String, Constraint> constraints = new HashMap<>();
+    // Keep track of the instruction id to input/outputs
+    protected static Map<Integer, Instruction> instructions = new LinkedHashMap<>();
+    protected static Map<String, Variable> variables = new HashMap<>();
 
     protected Rule(InferenceType type) {
         this.type = type;
@@ -48,34 +49,29 @@ public abstract class Rule {
         logger = LogManager.getLogger(clazz);
     }
 
-    public Map<String, Constraint> getConstraints() {
-        return constraints;
-    }
-
     public InferenceType getType() {
         return type;
     }
 
-    protected void addConstraints(String key, Set<ChemTypes> value, ConstraintType type) {
-        for (ChemTypes t : value) {
-            this.addConstraint(key, t, type);
-        }
+    public Map<String, Variable> getVariables() {
+        return variables;
     }
 
-    protected void addConstraint(String key, ChemTypes value, ConstraintType type) {
-        if (!this.constraints.containsKey(key)) {
-            switch (type) {
-                default:
-                    constraints.put(key, new NumSMT(key, type));
-                    break;
-                case MIX:
-                case ASSIGN:
-                case HEAT:
-                    constraints.put(key, new MatSMT(key, type));
-                    break;
+    public Map<Integer, Instruction> getInstructions() {
+        return instructions;
+    }
+
+    protected static void addInstruction(Instruction i) {
+        instructions.put(i.id, i);
+    }
+
+    protected static void addVariable(Variable t) {
+        if (!variables.containsKey(t.getVarName())) {
+            variables.put(t.getVarName(), t);
+        } else {
+            if (variables.get(t.getVarName()).equals(t)) {
             }
         }
-        constraints.get(key).addConstraint(value);
     }
 
     public static boolean isNumeric(String value) {
@@ -100,9 +96,16 @@ public abstract class Rule {
         }
     }
 
+    protected Set<ChemTypes> getTypingConstraints(Variable input) {
+        if (variables.containsKey(input.getVarName())) {
+            return variables.get(input.getVarName()).getTypingConstraints();
+        } else {
+            return IdentifierFactory.getIdentifier().identifyCompoundForTypes(input.getVarName());
+        }
+    }
+
     public static String createHash(String input) {
         Logger log = LogManager.getLogger(Rule.class);
-        log.debug("creating hash for: " + input);
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             byte[] bytes = digest.digest(input.getBytes());
@@ -115,11 +118,9 @@ public abstract class Rule {
             if (Rule.isNumeric(Character.toString(sb.charAt(0)))) {
                 sb.insert(0, "a");
             }
-            log.debug("Hash of: " + input + ":\t " + sb.toString());
             return sb.toString();
         } catch(NoSuchAlgorithmException e) {
             input = "a" + input;
-            log.debug("Hash of: " + input + ":\t " + input);
             return input;
         }
     }

@@ -1,15 +1,18 @@
 package phases.inference.rules;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import compilation.datastructures.InstructionNode;
-import phases.inference.satsolver.constraints.Constraint.ConstraintType;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Term;
+import phases.inference.elements.Variable;
 import typesystem.epa.ChemTypes;
 import phases.inference.Inference.InferenceType;
 import substance.Property;
+import typesystem.epa.EpaManager;
+
+import static typesystem.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/27/17
@@ -27,66 +30,56 @@ public class Mix extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-        //logger.trace(node);
-        //logger.trace("Constraints: " + constraints);
-        // This is the input to the instruction
-        Set<ChemTypes> groups = new HashSet<>();
-        List<ChemTypes> groupsList = new ArrayList<>();
-        for(String in: node.getInputSymbols()) {
-            // We don't know what this is -- this case should never fire.
-            if (!this.constraints.containsKey(in)) {
-                logger.error("We shouldn't be identifying [" + in +  "] on input.");
-                //this.addConstraint(in, new GenericSMT(in))
-                for (ChemTypes i : this.identifier.identifyCompoundForTypes(in)) {
-                    this.addConstraint(in, i, ConstraintType.MIX);
-                    groups.add(i);
-                }
+
+        Instruction instruction = new Instruction(node.ID(), InstructionType.MIX);
+
+        Set<ChemTypes> groupings = new HashSet<>();
+
+        Variable input = null;
+        for (String in : node.get_use()) {
+            input = new Term(in);
+            // If we have seen this before, we can just pull the old types.
+            if (variables.containsKey(input.getVarName())) {
+                input.addTypingConstraints(variables.get(input.getVarName()).getTypingConstraints());
             } else {
-                groups.addAll(this.constraints.get(in).getConstraints());
+                // Otherwise we probably need to identify it.
+                input.addTypingConstraints(identifier.identifyCompoundForTypes(input.getVarName()));
+                logger.warn(input.getVarName() + " has no previous declarations...");
             }
-            // logger.trace("Constraints: " + this.constraints.get(in));
-            // logger.trace("-------------------------");
+            // Add the input to the instruction.
+            instruction.addInputVariable(input);
+            groupings.addAll(input.getTypingConstraints());
+            addVariable(input);
         }
-        // logger.trace("Groups: " + groups);
 
-        groupsList.addAll(groups);
-
-        // The output of the instruction.
-        for(String out : node.getOutputSymbols()) {
-            this.addConstraints(out, groups, ConstraintType.MIX);
-            combiner.combine(groupsList);
+        Variable output;
+        // If we have a def, we can get it.
+        if (!node.get_def().isEmpty()) {
+            // There will only ever be one def for a mix.
+            for (String out : node.get_def()) {
+                output = new Term(out);
+                output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
+                instruction.addOutputVariable(output);
+                addVariable(output);
+            }
+        } else {
+            // Otherwise, get the last use.
+            output = new Term(input.getVarName());
+            output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
+            instruction.addOutputVariable(output);
+            addVariable(output);
         }
 
         // Get the properties of the instruction if they exist
-        for (Property prop : node.Instruction().getProperties()) {
-            this.gatherConstraints(prop);
+        for (Property p : node.Instruction().getProperties()) {
+            Variable prop = new Term(Rule.createHash(p.toString()));
+            prop.addTypingConstraint(REAL);
+            instruction.addProperty(prop);
+            addVariable(prop);
         }
 
+        addInstruction(instruction);
         // logger.trace("=======================");
-        return this;
-    }
-
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        this.addConstraints(input, new HashSet<>(), ConstraintType.MIX);
-        return this;
-    }
-
-    /**
-     * This doesn't do anything because it is derived
-     * from the gatherUseConstraints.
-     * @param input
-     * @return
-     */
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        this.addConstraints(input, new HashSet<>(), ConstraintType.MIX);
-        return this;
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        this.addConstraint(Rule.createHash(property.toString()), ChemTypes.REAL, ConstraintType.NUMBER);
         return this;
     }
 }

@@ -40,14 +40,16 @@ public class NaiveIdentifier extends Identifier {
         for (Character c : name.toCharArray()) {
             total += c;
         }
-        types.add(ChemTypes.getTypeFromId(this.getModulo(total)));
+        //types.add(ChemTypes.getTypeFromId(this.getModulo(total)));
+        types.add(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
         return types;
     }
 
     @Override
     public Set<ChemTypes> identifyCompoundForTypes(long id) {
         Set<ChemTypes> types = new HashSet<>();
-        types.add(ChemTypes.getTypeFromId((this.getModulo(id))));
+        // types.add(ChemTypes.getTypeFromId((this.getModulo(id))));
+        types.add(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
         return types;
     }
 

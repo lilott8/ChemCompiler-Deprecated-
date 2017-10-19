@@ -20460,6 +20460,10 @@
         </classifiers>
         <reactivegroups>
             <reaction>
+                <id>99</id>
+                <outcome>C</outcome>
+            </reaction>
+            <reaction>
                 <id>3</id>
                 <outcome>C</outcome>
             </reaction>

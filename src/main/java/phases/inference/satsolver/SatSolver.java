@@ -5,7 +5,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-import phases.inference.satsolver.constraints.Constraint;
+import phases.inference.elements.Instruction;
+import phases.inference.elements.Variable;
+import phases.inference.satsolver.constraints.Composer;
 import phases.inference.satsolver.strategies.SolverStrategy;
 
 /**
@@ -28,8 +30,8 @@ public class SatSolver {
         return this;
     }
 
-    public boolean solveConstraints(Map<String, Constraint> constraints) {
-        return this.strategy.solveConstraints(constraints);
+    public boolean solveConstraints(Map<Integer, Instruction> instructions, Map<String, Variable> variables) {
+        return this.strategy.solveConstraints(instructions, variables);
     }
 
 }

@@ -29,7 +29,6 @@ public class HikariDB extends DatabaseConnector {
         hikariConfig.setConnectionTimeout(config.getTimeout());
         //hikariConfig.setDataSourceClassName(config.driverClass);
         // Ensure we have large enough pool size relative to the max threads.
-        logger.info(config.getConnectionString());
         this.dataSource = new HikariDataSource(hikariConfig);
     }
 

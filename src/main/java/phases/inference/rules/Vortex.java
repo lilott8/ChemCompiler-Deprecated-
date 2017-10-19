@@ -22,19 +22,4 @@ public class Vortex extends NodeAnalyzer {
     public Rule gatherAllConstraints(InstructionNode node) {
         return this.mix.gatherAllConstraints(node);
     }
-
-    @Override
-    public Rule gatherUseConstraints(String input) {
-        return this.mix.gatherUseConstraints(input);
-    }
-
-    @Override
-    public Rule gatherDefConstraints(String input) {
-        return this.mix.gatherDefConstraints(input);
-    }
-
-    @Override
-    public Rule gatherConstraints(Property property) {
-        return this.mix.gatherConstraints(property);
-    }
 }

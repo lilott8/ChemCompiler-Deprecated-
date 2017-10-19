@@ -37,7 +37,7 @@ public class DominatorTree extends DominatorTreeBase {
             for(int i = 1; i< __nodes.size();++i){
                 List<Integer> currentSet = __dominatorTable.get(__nodes.get(i));
                 List<Integer> newSet = super.DenominatorFormula(__nodes.get(i));
-                if( !super.checkEq(newSet, currentSet)) {
+                if (!checkEq(newSet, currentSet)) {
                     changed = true;
                     __dominatorTable.put(__nodes.get(i),newSet);
                 }
