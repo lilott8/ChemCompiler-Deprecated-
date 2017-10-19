@@ -404,7 +404,7 @@ public enum EpaManager {
         }
         Map<ChemTypes, Map<ChemTypes, Reaction>> map = reactionTable.rowMap();
         for (ChemTypes row : map.keySet()) {
-            sb.append("ID: ").append(row);
+            sb.append("getId: ").append(row);
             sb.append(" has the following reactions: ").append(System.getProperty("line.separator"));
             Map<ChemTypes, Reaction> tmp = map.get(row);
             for (Map.Entry<ChemTypes, Reaction> pair : tmp.entrySet()) {

@@ -40,5 +40,6 @@ public class Main {
         Compiler compiler = new Compiler(config);
         compiler.compile();
         compiler.runAllOps();
+        logger.debug(compiler.getControlFlow());
     }
 }

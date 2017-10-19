@@ -92,9 +92,9 @@ public class Inference implements Phase {
             // Iterate the instructions.
             for(InstructionNode node : block.getValue().getInstructions()) {
                 // If we have an instruction, see what we can infer.
-                if(node.Instruction() != null) {
+                if(node.getInstruction() != null) {
                     // This will give us the typing of all the constraints in the instruction.
-                    this.inferConstraints(StringUtils.upperCase(node.Instruction().getClassification()), node);
+                    this.inferConstraints(StringUtils.upperCase(node.getInstruction().getClassification()), node);
                 }
             }
         }
@@ -114,7 +114,7 @@ public class Inference implements Phase {
      * @param name
      *   Name of the instruction.
      * @param instruction
-     *   Instruction to be inferred.
+     *   getInstruction to be inferred.
      * @return
      *   A mapping of id to what was inferred.
      */

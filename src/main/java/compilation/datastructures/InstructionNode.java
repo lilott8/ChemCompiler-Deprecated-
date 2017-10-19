@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import executable.instructions.Instruction;
@@ -16,129 +17,102 @@ import substance.Property;
  */
 public class InstructionNode implements Serializable {
 
-    private Integer __ID;
-    private Instruction __instruction;
-    private Set<String> __dispenseSymbols;
-    protected ArrayList<String> __inputSymbols;
-    protected ArrayList<String> __outputSymbols;
+    private Integer id;
+    private Instruction instruction;
+    private Set<String> dispenseSymbols = new LinkedHashSet<>();
+    protected List<String> inputSymbols = new ArrayList<>();
+    protected List<String> outputSymbols = new ArrayList<>();
 
-    private LinkedHashSet<String> inSet;
-    private LinkedHashSet<String> outSet;
-    private LinkedHashSet<String> _def;
-    private LinkedHashSet<String> _use;
-    private LinkedHashSet<InstructionNode> predecessors;
-    private LinkedHashSet<InstructionNode> successors;
+    private Set<String> inSet = new LinkedHashSet<>();
+    private Set<String> outSet = new LinkedHashSet<>();
+    private Set<String> def = new LinkedHashSet<>();
+    private Set<String> use = new LinkedHashSet<>();
+    private Set<InstructionNode> predecessors = new LinkedHashSet<>();
+    private Set<InstructionNode> successors = new LinkedHashSet<>();
 
-    public LinkedHashSet<String> getInSet() { return inSet; }
-    public LinkedHashSet<String> getOutSet() { return outSet; }
-    public LinkedHashSet<String> get_def() { return _def; }
-    public LinkedHashSet<String> get_use() { return _use; }
-    public void set_def(LinkedHashSet<String> def) { _def = new LinkedHashSet<String>(def); }
-    public void set_use(LinkedHashSet<String> use) { _use = new LinkedHashSet<String>(use); }
-    public LinkedHashSet<InstructionNode> get_pred() { return predecessors; }
-    public LinkedHashSet<InstructionNode> get_succ() { return successors; }
-
-
-    private Boolean __leader;
+    public Set<String> getInSet() { return inSet; }
+    public Set<String> getOutSet() { return outSet; }
+    public Set<String> getDef() { return def; }
+    public Set<String> getUse() { return use; }
+    public void setDef(Set<String> def) { this.def = new LinkedHashSet<>(def); }
+    public void setUse(Set<String> use) { this.use = new LinkedHashSet<>(use); }
+    public Set<InstructionNode> getPred() { return predecessors; }
+    public Set<InstructionNode> getSucc() { return successors; }
+    private boolean leader = false;
 
     public InstructionNode(Integer id, Instruction instruction) {
-        predecessors = new LinkedHashSet<InstructionNode>();
-        successors = new LinkedHashSet<InstructionNode>();
-        inSet = new LinkedHashSet<String>();
-        outSet = new LinkedHashSet<String>();
-        __dispenseSymbols = new HashSet<String>();
-        __inputSymbols = new ArrayList<String>();
-        __outputSymbols = new ArrayList<String>();
-
-        __ID = id;
-        __instruction = instruction;
-
-        __leader = false;
-
-        StripInputsAndOutputs(instruction);
+        this.id = id;
+        this.instruction = instruction;
+        stripInputsAndOutputs(instruction);
     }
     public InstructionNode(Integer id, Instruction instruction, Boolean isLeader ) {
-        predecessors = new LinkedHashSet<InstructionNode>();
-        successors = new LinkedHashSet<InstructionNode>();
-        inSet = new LinkedHashSet<String>();
-        outSet = new LinkedHashSet<String>();
-        __dispenseSymbols = new HashSet<String>();
-        __inputSymbols = new ArrayList<String>();
-        __outputSymbols = new ArrayList<String>();
-
-        __ID = id;
-        __instruction = instruction;
-
-        __leader = isLeader;
-        StripInputsAndOutputs(instruction);
+        this.id = id;
+        this.instruction = instruction;
+        leader = isLeader;
+        stripInputsAndOutputs(instruction);
     }
 
-    public Integer ID() {
-        return __ID;
+    public Integer getId() {
+        return id;
     }
 
-    public Instruction Instruction() {
-        return __instruction;
+    public Instruction getInstruction() {
+        return instruction;
     }
     //public ChemicalInteraction getChemicalInteraction() {return __interaction; }
 
     //public void addChemicalInteraction(ChemicalInteraction ci) { __interaction = ci; }
-    public void setLeader(Boolean isleader) { __leader = isleader; }
+    public void setLeader(boolean isleader) { leader = isleader; }
 
-    public Boolean isLeader() { return __leader; }
+    public Boolean isLeader() { return leader; }
     public void addImplicitDispense(String symbol) {
-        this.__dispenseSymbols.add(symbol);
+        this.dispenseSymbols.add(symbol);
     }
 
     public void addTransferIn(String symbol) {
-        this.__inputSymbols.add(symbol);
+        this.inputSymbols.add(symbol);
     }
 
-    public ArrayList<String> getInputSymbols() { return __inputSymbols; }
-    public ArrayList<String> getOutputSymbols() { return __outputSymbols; }
-    public Set<String> getDispenseSymbols(){ return __dispenseSymbols; }
+    public List<String> getInputSymbols() { return inputSymbols; }
+    public List<String> getOutputSymbols() { return outputSymbols; }
+    public Set<String> getDispenseSymbols(){ return dispenseSymbols; }
     public String toString() {
         return this.toString("");
     }
     public String toString(String indentBuffer) {
         StringBuilder sb = new StringBuilder();
-        sb.append(indentBuffer).append(__ID.toString()).append(":\t");
+        sb.append(indentBuffer).append(id.toString()).append(":\t");
 
-        String ret = indentBuffer + __ID.toString() + ":\t";
-        for(String out: __outputSymbols) {
+        String ret = indentBuffer + id.toString() + ":\t";
+        for(String out: outputSymbols) {
             ret += out + " = ";
             sb.append(out).append(" = ");
         }
 
-        if(__instruction != null) {
-            ret += __instruction.getName() + " ";
-            sb.append(__instruction.getName());
+        if(instruction != null) {
+            ret += instruction.getName() + " ";
+            sb.append(instruction.getName());
         }
 
-        for(String input : __inputSymbols) {
+        for(String input : inputSymbols) {
             ret += " \"" + input + "\"";
         }
 
 
-        if(__instruction != null)
-            for(Property property : __instruction.getProperties())
+        if(instruction != null)
+            for(Property property : instruction.getProperties())
                 ret += ", " + property.toString();
 
         return  ret;
     }
 
 
-    private void StripInputsAndOutputs(Instruction instruction){
-        if(instruction == null)
+    private void stripInputsAndOutputs(Instruction instruction){
+        if(instruction == null) {
             return;
-
-        for(String inputSymbol : instruction.getInputs().keySet()){
-            __inputSymbols.add(inputSymbol);
         }
-
-        for(String outputSymbol : instruction.getOutputs().keySet()){
-            __outputSymbols.add(outputSymbol);
-        }
+        inputSymbols.addAll(instruction.getInputs().keySet());
+        outputSymbols.addAll(instruction.getOutputs().keySet());
     }
 
 }

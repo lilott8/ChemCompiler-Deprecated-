@@ -55,16 +55,16 @@ public abstract class NodeAnalyzer extends Rule {
         /*
          * Temp = Mix x with y for n
          *  ^def_use  |      |     |
-         *         get_use   |     |
-         *                get_use  |
+         *         getUse   |     |
+         *                getUse  |
          *                      property
          */
         /*
-        logger.debug("Id: " + instruction.ID());
-        logger.debug("Classification: " + instruction.Instruction().getClassification());
+        logger.debug("Id: " + instruction.getId());
+        logger.debug("Classification: " + instruction.getInstruction().getClassification());
         logger.debug("Input Symbols: " + instruction.getInputSymbols());
-        logger.debug("Properties: " + instruction.Instruction().getProperties());
-        logger.debug("Use: " + instruction.get_use());
+        logger.debug("Properties: " + instruction.getInstruction().getProperties());
+        logger.debug("Use: " + instruction.getUse());
         logger.debug("Def: " + instruction.get_def());
         logger.debug("Output Symbols: " + instruction.getOutputSymbols());
         logger.debug("toString(): " + instruction.toString());

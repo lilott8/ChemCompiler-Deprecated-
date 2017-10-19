@@ -32,7 +32,7 @@ public class Assign extends NodeAnalyzer {
              //logger.trace("Output: " + node.getOutputSymbols());
         }
 
-        Instruction instruction = new Instruction(node.ID(), InstructionType.ASSIGN);
+        Instruction instruction = new Instruction(node.getId(), InstructionType.ASSIGN);
 
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
@@ -40,7 +40,7 @@ public class Assign extends NodeAnalyzer {
          * New workings here.
          */
         Term output = null;
-        for (String s : node.get_def()) {
+        for (String s : node.getDef()) {
             output = new Term(s);
         }
 
@@ -63,7 +63,7 @@ public class Assign extends NodeAnalyzer {
                 output.addTypingConstraints(this.identifier.identifyCompoundForTypes(input.name));
             }
         } catch(NullPointerException e) {
-            logger.fatal("An assignment operation doesn't have a \"get_def()\"");
+            logger.fatal("An assignment operation doesn't have a \"getDef()\"");
         }
 
         // The input is superfluous in an assign for type inference.
@@ -74,7 +74,7 @@ public class Assign extends NodeAnalyzer {
         // addVariable(input);
         addVariable(output);
 
-        for (Property p : node.Instruction().getProperties()) {
+        for (Property p : node.getInstruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);

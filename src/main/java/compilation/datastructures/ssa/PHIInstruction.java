@@ -6,31 +6,30 @@ import compilation.datastructures.InstructionNode;
 
 public class PHIInstruction extends  InstructionNode{
 
-    private  String __oringinalSymbol;
+    private  String oringinalSymbol;
    // protected String __outputSymbol;
-    protected ArrayList<String> __joinedSymbols;
+    protected ArrayList<String> joinedSymbols = new ArrayList<>();
 
 
     public PHIInstruction(String symbol, Integer numJoined){
         super(-1,null);
-        __oringinalSymbol = symbol;
-        this.__outputSymbols.add(symbol);
+        oringinalSymbol = symbol;
+        this.outputSymbols.add(symbol);
        // this.__outputSymbol = symbol;
-        this.__joinedSymbols = new ArrayList<String>();
-        while(numJoined-- >0) {
-            this.__joinedSymbols.add(symbol);
-            this.__inputSymbols.add(symbol);
+        while(numJoined-- > 0) {
+            this.joinedSymbols.add(symbol);
+            this.inputSymbols.add(symbol);
         }
     }
 
-    public void InsertNodeAtIndex(Integer index, String symbol){
-        while (index >= __joinedSymbols.size()) {
-            __joinedSymbols.add("");
+    public void insertNodeAtIndex(Integer index, String symbol){
+        while (index >= joinedSymbols.size()) {
+            joinedSymbols.add("");
         }
-        __joinedSymbols.set(index,symbol);
+        joinedSymbols.set(index,symbol);
     }
 
-    public String getOriginalName() { return this.__oringinalSymbol; }
+    public String getOriginalName() { return this.oringinalSymbol; }
    // public void setPHIName(String symbol) { this.__outputSymbol = symbol; }
 
     public String toString(){
@@ -44,7 +43,7 @@ public class PHIInstruction extends  InstructionNode{
         for(String inputSymbol : this.getOutputSymbols())
             ret += inputSymbol;
         ret+= " = PHI(";
-        for(String joined : __joinedSymbols){
+        for(String joined : joinedSymbols){
             ret+= joined + " ";
         }
         ret+= ") ";

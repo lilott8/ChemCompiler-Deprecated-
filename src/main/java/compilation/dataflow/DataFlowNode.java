@@ -12,30 +12,28 @@ import compilation.datastructures.InstructionNode;
  * Created by chriscurtis on 10/19/16.
  */
 abstract public class DataFlowNode {
-    protected Integer __ID;
-    protected Set<String> __gen;
-    protected Set<String> __kill;
-    protected List<String> __out;
-    protected List<String> __in;
+    protected Integer id;
+    protected Set<String> gen;
+    protected Set<String> kill;
+    protected List<String> out;
+    protected List<String> in;
 
     public DataFlowNode(Integer id){
-        __ID = id;
-        __gen = null;
-        __kill = null;
-        __in = new ArrayList<String>();
-        __out = new ArrayList<String>();
+        this.id = id;
+        gen = null;
+        kill = null;
+        in = new ArrayList<>();
+        out = new ArrayList<>();
     }
     public DataFlowNode(BasicBlock bb) {
-        __gen = new HashSet<String>();
-        __kill = new HashSet<String>();
-        __in = new ArrayList<String>();
-        __out = new ArrayList<String>();
-        __ID = bb.ID();
-
+        gen = new HashSet<>();
+        kill = new HashSet<>();
+        in = new ArrayList<>();
+        out = new ArrayList<>();
+        id = bb.ID();
 
         for(InstructionNode i :bb.getInstructions()) {
-            for(String out: i.Instruction().getOutputs().keySet())
-                __gen.add(out);
+            gen.addAll(i.getInstruction().getOutputs().keySet());
         }
 
 
@@ -43,30 +41,30 @@ abstract public class DataFlowNode {
     }
     public String toString() {
         String ret = "";
-        if(__gen!= null && __gen.size()>0) {
+        if(gen != null && gen.size()>0) {
             ret += "Gen: ";
-            for (String item : __gen) {
+            for (String item : gen) {
                 ret += item + " ";
             }
             ret += '\n';
         }
-        if(__kill!= null && __kill.size()>0) {
+        if(kill != null && kill.size()>0) {
             ret += "Kill: ";
-            for (String item : __kill) {
+            for (String item : kill) {
                 ret += item + " ";
             }
             ret += '\n';
         }
-        if(__out!= null && __out.size()>0) {
+        if(out != null && out.size()>0) {
             ret += "Out: ";
-            for (String item : __out) {
+            for (String item : out) {
                 ret += item + " ";
             }
             ret += '\n';
         }
-        if(__in!= null && __in.size()>0) {
+        if(in != null && in.size()>0) {
             ret += "In: ";
-            for (String item : __in) {
+            for (String item : in) {
                 ret += item + " ";
             }
             ret += '\n';

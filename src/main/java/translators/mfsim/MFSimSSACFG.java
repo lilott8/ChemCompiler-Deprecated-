@@ -39,7 +39,7 @@ public class MFSimSSACFG{
         __conditionalGroups = new LinkedHashMap<Integer, List<BasicBlockEdge>>();
 
         for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()){
-            MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID, ((StaticSingleAssignment) controlFlowGraph).get__variableStack());
+            MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID, ((StaticSingleAssignment) controlFlowGraph).getVariableStack());
             __dags.put(bb.ID(), dag);
             logger.info(dag);
         }
@@ -52,8 +52,8 @@ public class MFSimSSACFG{
                 conditionalGroup = new ArrayList<BasicBlockEdge>();
             }
             conditionalGroup.add(edge);
-            ArrayList<InstructionNode> instructions = controlFlowGraph.getBasicBlock(edge.getSource()).getInstructions();
-            if (instructions.get(instructions.size()-1).Instruction() instanceof Output) {
+            List<InstructionNode> instructions = controlFlowGraph.getBasicBlock(edge.getSource()).getInstructions();
+            if (instructions.get(instructions.size()-1).getInstruction() instanceof Output) {
                 // do not add group
             }
             else

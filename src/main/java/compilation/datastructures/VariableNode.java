@@ -11,22 +11,22 @@ import variable.Variable;
 public class VariableNode implements Serializable {
     public enum VariableType {ROOT_DECLARATION,INSTRUCTION_DECLARATION}
 
-    private VariableType __declarationType;
-    private int __createdInOperation;
-    private Variable __variable;
+    private VariableType declarationType;
+    private int createdInOperation;
+    private Variable variable;
 
     public VariableNode(VariableType type, Variable variable) {
-        this.__declarationType = type;
-        this.__variable = variable;
-        this.__createdInOperation = -1;
+        this.declarationType = type;
+        this.variable = variable;
+        this.createdInOperation = -1;
     }
 
-    public Variable getVariable() { return __variable; }
+    public Variable getVariable() { return variable; }
 
-    public void setOperationID(int id) { __createdInOperation = id; }
-    public Boolean isRootDeclaration() { return __declarationType == VariableType.ROOT_DECLARATION; }
-    public Boolean isInstructionDeclaration() {return __declarationType == VariableType.INSTRUCTION_DECLARATION; }
+    public void setOperationID(int id) { createdInOperation = id; }
+    public Boolean isRootDeclaration() { return declarationType == VariableType.ROOT_DECLARATION; }
+    public Boolean isInstructionDeclaration() {return declarationType == VariableType.INSTRUCTION_DECLARATION; }
     public Boolean isRefererence() {
-        return __variable instanceof Reference;
+        return variable instanceof Reference;
     }
 }

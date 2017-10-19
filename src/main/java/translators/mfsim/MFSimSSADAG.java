@@ -52,7 +52,7 @@ public class MFSimSSADAG {
     private Map<Integer, ArrayList<MFSimSSATransferIn>> __transIn;
     private List<MFSimSSADispense> __dispense;
 
-    public MFSimSSADAG(BasicBlock bb, MFSimSSATranslator.IDGen parentsIDGen, HashMap<String, Stack<RenamedVariableNode>> variableStack){
+    public MFSimSSADAG(BasicBlock bb, MFSimSSATranslator.IDGen parentsIDGen, Map<String, Stack<RenamedVariableNode>> variableStack){
         __uniqueIDGen = parentsIDGen;
         __name = "DAG" + bb.ID().toString();
         __nodes = new LinkedHashMap <Integer, MFSimSSANode>();
@@ -69,7 +69,7 @@ public class MFSimSSADAG {
             for( Integer predecessorID : predecessorSet) {
                 if ( predecessorID != -2 ) {
                     MFSimSSATransferIn transIn = new MFSimSSATransferIn(__uniqueIDGen.getNextID(), transferInDroplet,transferInDroplet);
-                    //__nodes.put(predecessorID,transIn);
+                    //nodes.put(predecessorID,transIn);
                     if (__transIn.get(predecessorID) == null) {
                         __transIn.put(predecessorID, new ArrayList<MFSimSSATransferIn>());
                     }
@@ -97,7 +97,7 @@ public class MFSimSSADAG {
 
             MFSimSSANode n = null;
 
-            Instruction instruction = instructionNode.Instruction();
+            Instruction instruction = instructionNode.getInstruction();
 
             if (instruction != null) {
                 if (instruction instanceof Combine)
@@ -127,8 +127,8 @@ public class MFSimSSADAG {
             }
 
             for(String dispense : instructionNode.getDispenseSymbols()){
-                if(instructionNode.Instruction().getInputs().get(dispense) instanceof Instance
-                        && ((Instance) instructionNode.Instruction().getInputs().get(dispense)).getIsStationary())
+                if(instructionNode.getInstruction().getInputs().get(dispense) instanceof Instance
+                        && ((Instance) instructionNode.getInstruction().getInputs().get(dispense)).getIsStationary())
                     continue;
 
                 // get dispense amount
@@ -138,7 +138,7 @@ public class MFSimSSADAG {
                     if (variableStack.containsKey(input)) {
 //                        for (RenamedVariableNode renamedVariableNode : variableStack.get(input)) {
 //                            for (Integer i = 0; i < variableStack.get(input).size(); i++) {
-//                                if (renamedVariableNode.GetVariable(i).equals(dispense)) {
+//                                if (renamedVariableNode.getVariable(i).equals(dispense)) {
 
                                     if (instruction.getInputs().get(input) instanceof Instance) {
                                         if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
@@ -162,7 +162,7 @@ public class MFSimSSADAG {
                 __dispense.add(dis);
             }
             if (n != null)
-                __nodes.put(instructionNode.ID(),n);
+                __nodes.put(instructionNode.getId(),n);
 
 
         }
@@ -172,11 +172,11 @@ public class MFSimSSADAG {
             if (instr instanceof SigmaInstruction || instr instanceof PHIInstruction) {
                 //continue;
             }
-            else if (instr.Instruction().getInputs().containsKey(transferOutDroplet) && instr.Instruction().getInputs().get(transferOutDroplet) instanceof Instance &&
-                    ((Instance) instr.Instruction().getInputs().get(transferOutDroplet)).getIsStationary()) {
+            else if (instr.getInstruction().getInputs().containsKey(transferOutDroplet) && instr.getInstruction().getInputs().get(transferOutDroplet) instanceof Instance &&
+                    ((Instance) instr.getInstruction().getInputs().get(transferOutDroplet)).getIsStationary()) {
                 continue;
             }
-            else if (instr.Instruction() instanceof Output) {
+            else if (instr.getInstruction() instanceof Output) {
                 continue;
             }
             MFSimSSATransferOut transOut = new MFSimSSATransferOut(__uniqueIDGen.getNextID(), transferOutDroplet, transferOutDroplet);
@@ -190,8 +190,8 @@ public class MFSimSSADAG {
 //        Set<Integer> keystoRemove = new HashSet<Integer>();
 //        //add successor edges
 //        for(Integer toutPredKey : this.__transOut.keySet()){
-//            if(__nodes.containsKey(toutPredKey)) {
-//                __nodes.get(toutPredKey).addSuccessor(toutPredKey);
+//            if(nodes.containsKey(toutPredKey)) {
+//                nodes.get(toutPredKey).addSuccessor(toutPredKey);
 //            }
 //            else if(__transIn.containsKey(toutPredKey)){
 //                //__transIn.get(toutPredKey).get(toutPredKey);
@@ -229,12 +229,12 @@ public class MFSimSSADAG {
             for (MFSimSSATransferIn in : transIn) {
                 if (__nodes.size() > 0) {
                     for (InstructionNode instruction : bb.getInstructions()) {
-                        if (instruction.ID() < 0)
+                        if (instruction.getId() < 0)
                             continue;
-                        in.addSuccessor(__nodes.get(instruction.ID()).getID());
+                        in.addSuccessor(__nodes.get(instruction.getId()).getID());
                         break;
                     }
-                    //in.addSuccessor(__nodes.get(bb.getInstructions().get(0).ID()).getID());
+                    //in.addSuccessor(nodes.get(bb.getInstructions().get(0).getId()).getID());
                 }
                 else {
                     Integer succ = 0;
@@ -252,8 +252,8 @@ public class MFSimSSADAG {
                 if (__nodes.size() > 0) {
                     for (Integer instrIndex = bb.getInstructions().size()-1; ; --instrIndex) {
                         InstructionNode instruction = bb.getInstructions().get(instrIndex);
-                        if (instruction.ID() > 0) {
-                            __nodes.get(instruction.ID()).addSuccessor(out.getID());
+                        if (instruction.getId() > 0) {
+                            __nodes.get(instruction.getId()).addSuccessor(out.getID());
                             break;
                         }
                     }

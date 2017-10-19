@@ -14,9 +14,9 @@ public class MinimalStaticSingleAssignment extends StaticSingleAssignment {
     public MinimalStaticSingleAssignment(CFG controlFlowGraph){
         super(controlFlowGraph);
 
-        this.CreateBasicBlockSymbolDefinitionAndUseTables();
-        this.PlacePhiNodes();
-        this.RenameVariables();
+        this.createBasicBlockSymbolDefinitionAndUseTables();
+        this.placePhiNodes();
+        this.renameVariables();
     }
 
 

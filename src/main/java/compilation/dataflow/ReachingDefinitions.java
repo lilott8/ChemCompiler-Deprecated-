@@ -13,11 +13,10 @@ import compilation.datastructures.cfg.CFG;
  */
 public class ReachingDefinitions extends DataFlowAnalysis {
 
-    Map<Integer, ReachingDefinitionNode> __finalAnswer;
+    Map<Integer, ReachingDefinitionNode> finalAnswer;
 
     public ReachingDefinitions(CFG controlflowgraph) {
         super(controlflowgraph);
-
 
         Map<Integer, ReachingDefinitionNode> initialization = new HashMap<Integer, ReachingDefinitionNode>();
 
@@ -25,22 +24,22 @@ public class ReachingDefinitions extends DataFlowAnalysis {
             initialization.put(bb.ID(),new ReachingDefinitionNode(bb));
         }
 
-        Boolean changed = true;
+        boolean changed = true;
         while(changed) {
             changed = false;
            // Map<Integer, ReachingDefinitionNode> nextIteration = new HashMap<Integer, ReachingDefinitionNode>();
             for(ReachingDefinitionNode node : initialization.values()){
                 List<ReachingDefinitionNode> predecessors = new ArrayList<ReachingDefinitionNode>();
 
-                HashMap<Integer,List<Integer>> p = this.__predecesors;
-                if(p.containsKey(node.__ID))
-                    for (Integer predecesorID : p.get(node.__ID))
+                HashMap<Integer,List<Integer>> p = this.predecesors;
+                if(p.containsKey(node.id))
+                    for (Integer predecesorID : p.get(node.id))
                         predecessors.add(initialization.get(predecesorID));
 
                 ReachingDefinitionNode n = new ReachingDefinitionNode(node);
-                if(n.addIN(predecessors,this.__controlFlowGraph.getSymbolTable(), initialization))
+                if(n.addIn(predecessors,this.controlFlowGraph.getSymbolTable(), initialization))
                     changed = true;
-                initialization.put(n.__ID,n);
+                initialization.put(n.id,n);
             }
 
 //            initialization.clear();
@@ -55,15 +54,15 @@ public class ReachingDefinitions extends DataFlowAnalysis {
         }
 
 
-        __finalAnswer = initialization;
+        finalAnswer = initialization;
 
     }
 
     public String toString(){
         String ret = "";
-        for(Integer i : __finalAnswer.keySet()){
+        for(Integer i : finalAnswer.keySet()){
             ret += i + "\n";
-            ret += __finalAnswer.get(i).toString() +'\n';
+            ret += finalAnswer.get(i).toString() +'\n';
         }
         return ret;
     }

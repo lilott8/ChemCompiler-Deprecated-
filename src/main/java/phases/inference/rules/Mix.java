@@ -31,12 +31,12 @@ public class Mix extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        Instruction instruction = new Instruction(node.ID(), InstructionType.MIX);
+        Instruction instruction = new Instruction(node.getId(), InstructionType.MIX);
 
         Set<ChemTypes> groupings = new HashSet<>();
 
         Variable input = null;
-        for (String in : node.get_use()) {
+        for (String in : node.getUse()) {
             input = new Term(in);
             // If we have seen this before, we can just pull the old types.
             if (variables.containsKey(input.getVarName())) {
@@ -54,9 +54,9 @@ public class Mix extends NodeAnalyzer {
 
         Variable output;
         // If we have a def, we can get it.
-        if (!node.get_def().isEmpty()) {
+        if (!node.getDef().isEmpty()) {
             // There will only ever be one def for a mix.
-            for (String out : node.get_def()) {
+            for (String out : node.getDef()) {
                 output = new Term(out);
                 output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
                 instruction.addOutputVariable(output);
@@ -71,7 +71,7 @@ public class Mix extends NodeAnalyzer {
         }
 
         // Get the properties of the instruction if they exist
-        for (Property p : node.Instruction().getProperties()) {
+        for (Property p : node.getInstruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);

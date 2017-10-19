@@ -24,11 +24,11 @@ public class Detect extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        Instruction instruction = new Instruction(node.ID(), InstructionType.DETECT);
+        Instruction instruction = new Instruction(node.getId(), InstructionType.DETECT);
 
         // There can be only one input variable.
         Variable input = null;
-        for (String s : node.get_use()) {
+        for (String s : node.getUse()) {
             input = new Term(s);
             input.addTypingConstraints(getTypingConstraints(input));
             instruction.addInputVariable(input);
@@ -37,14 +37,14 @@ public class Detect extends NodeAnalyzer {
 
         // There can be only one output variable.
         Variable output = null;
-        for (String s : node.get_def()) {
+        for (String s : node.getDef()) {
             output = new Term(s);
             output.addTypingConstraint(REAL);
             instruction.addOutputVariable(output);
             addVariable(output);
         }
 
-        for (Property p : node.Instruction().getProperties()) {
+        for (Property p : node.getInstruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);

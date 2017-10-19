@@ -21,11 +21,11 @@ import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalTy
  * Created by chriscurtis on 9/28/16.
  */
 public class BasicBlockEdge implements Serializable {
-    private Integer __source;
-    private Integer __destination;
+    private Integer source;
+    private Integer destination;
 
 //this still needs to be created.
-    private String __condition;
+    private String condition;
     public enum ConditionalType {
         un{
             public String toString() {
@@ -98,22 +98,22 @@ public class BasicBlockEdge implements Serializable {
     public static Logger logger = LogManager.getLogger(BasicBlockEdge.class);
 
     public BasicBlockEdge(Integer source, Integer destination, String condition) {
-        __source = source;
-        __destination = destination;
-        __condition = condition;
+        this.source = source;
+        this.destination = destination;
+        this.condition = condition;
         this.id = source * destination;
         this.type = un;
         this.classification = "unknown";
-        this.conditional = new ConditionalNode(this.type, __condition);
+        this.conditional = new ConditionalNode(this.type, this.condition);
     }
 
     public BasicBlockEdge(Integer source, Integer destination, String expression, String type) {
-        __source = source;
-        __destination = destination;
-        __condition = evaluateCondition(expression, type);
+        this.source = source;
+        this.destination = destination;
+        condition = evaluateCondition(expression, type);
         this.id = source * destination;
         this.classification = StringUtils.lowerCase(type);
-        this.conditional = new ConditionalNode(this.type, __condition);
+        this.conditional = new ConditionalNode(this.type, condition);
     }
 
     private String evaluateCondition(String expression, String type) {
@@ -177,15 +177,15 @@ public class BasicBlockEdge implements Serializable {
         return this.toString("");
     }
     public String toString(String indentBuffer) {
-        return indentBuffer + __source.toString() + " -> " + __destination + " : " + evaluateBoolean(__condition) + "\t(" + getType() + ")";
+        return indentBuffer + source.toString() + " -> " + destination + " : " + evaluateBoolean(condition) + "\t(" + getType() + ")";
     }
 
     public String getClassification() {
         return this.classification;
     }
-    public Integer getSource() { return __source; }
-    public Integer getDestination() {return __destination; }
-    public String getCondition()  { return __condition; }
+    public Integer getSource() { return source; }
+    public Integer getDestination() {return destination; }
+    public String getCondition()  { return condition; }
 
     public ConditionalNode getConditional() {
         return this.conditional;

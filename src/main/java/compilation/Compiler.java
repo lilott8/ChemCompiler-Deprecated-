@@ -16,7 +16,6 @@ import config.ConfigFactory;
 import executable.Experiment;
 import manager.Benchtop;
 import parsing.BioScript.BenchtopParser;
-import phases.Phase;
 import phases.PhaseFacade;
 import shared.Facade;
 import translators.TranslatorFacade;
@@ -47,67 +46,26 @@ public class Compiler {
             logger.fatal("Exception: ", e);
         }
         this.benchtop = Benchtop.INSTANCE;
-        //this.initializeData();
-    }
-
-    @Deprecated
-    private void initializeData() {
-        //__IDGen = 0;
-
-        //__experimentControlFlowGraphs = new ArrayList<CFG>();
-        //__benchtopControlFlowGraph = new CFG();
-
     }
 
     public void compile() {
         try {
-            //TODO: When Incorporating BenchtopCFGs, It is necessary to handle inputs given at Global scope.
-            //for (String inputKey : benchtop.getInputs().keySet()) {
-            //   __benchtopControlFlowGraph.addResolution(inputKey, benchtop.getInputs().get(inputKey), true);
-            //__benchtopControlFlowGraph.addDefinition(inputKey, __benchtopControlFlowGraph.getID());
-            //}
             for (String experimentKey : this.benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
-                    this.controlFlow = CFGBuilder.BuildControlFlowGraph(experiment);
-                    //logger.info(this.controlFlow.toString());
-                    //minimumssa SSA = new minimumssa(controlFlow);
-                    //semiprunedssa SPSSA = new semiprunedssa(controlFlow);
+                    this.controlFlow = CFGBuilder.buildControlFlowGraph(experiment);
                     this.SSI = new StaticSingleInformation(this.controlFlow);
-                    //System.out.println(controlFlow);
-
                     //replaces basic blocks with dependancy sliced versions
                     for (BasicBlock bb : this.SSI.getBasicBlocks().values()) {
                         this.SSI.newBasicBlock(new DependencySlicedBasicBlock(bb, this.SSI));
                     }
 
-                    DependencySlicedBasicBlock.GetInOutSets(this.SSI);
-
-                    //logger.debug("\n" + SSA);
-                    //logger.debug("\n" + this.SSI);
-                    //logger.debug("\n" + SSI);
-
-                    //ProcessExperimentCFG(SPSSA);
-                    //__experimentControlFlowGraphs.add(controlFlow);
+                    DependencySlicedBasicBlock.getInOutSets(this.SSI);
                     __experimentControlFlowGraphs.add(this.SSI);
-                    //logger.debug(controlFlow);
-
-                    //TypeSystemTranslator trans = new TypeSystemTranslator(controlFlow);
-                    /*if (config.INSTANCE.translationsEnabled() && config.INSTANCE.translationEnabled(config.TRANSLATORS.TYPSYSTEM)) {
-                        config.INSTANCE.getTranslationByName(config.TRANSLATORS.TYPSYSTEM).runTranslation(this.SSI).toFile(config.INSTANCE.getOuptutDir() + "experiment.txt");
-                        //Translator trans = new TypeSystemTranslator().runTranslation(SSI);
-                        //trans.toFile("Experiment.txt");
-                    }*/
-
-                    //trans.toFile("Experiment3.txt");
-
-                    //TypeSystemTranslator input = TypeSystemTranslator.readFromFile("TestTransfer.txt");
-
-                    //logger.fatal(trans);
                 }
             }
-            //  logger.info(__variableTable);
         } catch (Exception e) {
             logger.fatal(e);
+            e.printStackTrace();
         }
 
         //runPhases();
@@ -121,7 +79,9 @@ public class Compiler {
 
     public void runPhases() {
         if (ConfigFactory.getConfig().phasesEnabled()) {
-            logger.info("Phases set to run: " + ConfigFactory.getConfig().getAllPhases());
+            if (ConfigFactory.getConfig().isDebug()) {
+                logger.info("Phases set to run: " + ConfigFactory.getConfig().getAllPhases());
+            }
             for (CFG experiment : this.__experimentControlFlowGraphs) {
                 Facade phase = new PhaseFacade(ConfigFactory.getConfig(), experiment);
                 phase.start();
@@ -131,7 +91,9 @@ public class Compiler {
 
     public void runTranslations() {
         if (ConfigFactory.getConfig().translationsEnabled()) {
-            logger.info("Translators are set to be run.");
+            if (ConfigFactory.getConfig().isDebug()) {
+                logger.info("Translators are set to be run.");
+            }
             for (CFG experiment : this.__experimentControlFlowGraphs) {
                 Facade translator = new TranslatorFacade(ConfigFactory.getConfig(), experiment);
                 translator.start();
