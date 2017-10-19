@@ -8,19 +8,19 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import compilation.datastructures.InstructionNode;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
-import compilation.datastructures.InstructionNode;
 import compilation.datastructures.ssa.StaticSingleAssignment;
+import executable.instructions.Output;
 import translators.mfsim.operationnode.MFSimSSANode;
 import translators.mfsim.operationnode.MFSimSSATransferIn;
 import translators.mfsim.operationnode.MFSimSSATransferOut;
-import executable.instructions.Output;
 
 /**
  * Created by chriscurtis on 10/28/16.
@@ -28,26 +28,26 @@ import executable.instructions.Output;
 public class MFSimSSACFG{
     private static final Logger logger = LogManager.getLogger(MFSimSSACFG.class);
 
-    private MFSimSSATranslator.IDGen __uniqueIDGen;
-    private HashMap<Integer, MFSimSSADAG> __dags;
-    private HashMap<Integer, List<BasicBlockEdge>> __conditionalGroups;
+    private MFSimSSATranslator.IDGen uniqueIDGen;
+    private Map<Integer, MFSimSSADAG> dags;
+    private Map<Integer, List<BasicBlockEdge>> conditionalGroups;
 
 
     public MFSimSSACFG(CFG controlFlowGraph, MFSimSSATranslator.IDGen uniqueID){
-        __uniqueIDGen = uniqueID;
-        __dags = new LinkedHashMap<Integer, MFSimSSADAG>();
-        __conditionalGroups = new LinkedHashMap<Integer, List<BasicBlockEdge>>();
+        uniqueIDGen = uniqueID;
+        dags = new LinkedHashMap<Integer, MFSimSSADAG>();
+        conditionalGroups = new LinkedHashMap<Integer, List<BasicBlockEdge>>();
 
         for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()){
             MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID, ((StaticSingleAssignment) controlFlowGraph).getVariableStack());
-            __dags.put(bb.ID(), dag);
+            dags.put(bb.ID(), dag);
             logger.info(dag);
         }
         for(BasicBlockEdge edge: controlFlowGraph.getBasicBlockEdges()){
             List<BasicBlockEdge> conditionalGroup;
 
-            if (__conditionalGroups.containsKey(edge.getSource())) {
-                conditionalGroup = __conditionalGroups.get(edge.getSource());
+            if (conditionalGroups.containsKey(edge.getSource())) {
+                conditionalGroup = conditionalGroups.get(edge.getSource());
             } else {
                 conditionalGroup = new ArrayList<BasicBlockEdge>();
             }
@@ -57,7 +57,7 @@ public class MFSimSSACFG{
                 // do not add group
             }
             else
-                __conditionalGroups.put(edge.getSource(), conditionalGroup);
+                conditionalGroups.put(edge.getSource(), conditionalGroup);
         }
 
     }
@@ -65,23 +65,23 @@ public class MFSimSSACFG{
     public String toString(String filename){
         String ret=  "NAME(" + filename + ")\n\n";
 
-        for(MFSimSSADAG dag: __dags.values()){
+        for (MFSimSSADAG dag : dags.values()) {
             if (!(dag.getNodes().size() == 0 && dag.getTransferInNode().size() == 0 && dag.getTransferOutNode().size() == 0))
                 ret += "DAG("+ dag.getName() + ")\n";
             else {
                 String index = dag.getName().substring(dag.getName().lastIndexOf('G')+1);
-                __conditionalGroups.remove(Integer.parseInt(index));
+                conditionalGroups.remove(Integer.parseInt(index));
             }
         }
         ret += "\n";
 
-        ret+= "NUMCGS(" + __conditionalGroups.size() + ")\n\n";
+        ret += "NUMCGS(" + conditionalGroups.size() + ")\n\n";
 
         int controlGroup = 0;
-        for(Integer sourceBasicBlockID : __conditionalGroups.keySet()){
-            MFSimSSADAG sourceBasicBlock = __dags.get(sourceBasicBlockID);
-            for(BasicBlockEdge edge : __conditionalGroups.get(sourceBasicBlockID)){
-                MFSimSSADAG destinationBasicBlock = __dags.get(edge.getDestination());
+        for (Integer sourceBasicBlockID : conditionalGroups.keySet()) {
+            MFSimSSADAG sourceBasicBlock = dags.get(sourceBasicBlockID);
+            for (BasicBlockEdge edge : conditionalGroups.get(sourceBasicBlockID)) {
+                MFSimSSADAG destinationBasicBlock = dags.get(edge.getDestination());
                 if(edge.getCondition() == "UNCONDITIONAL")
                     ret+="COND("+ controlGroup + ", 1, " + sourceBasicBlock.getName() + ", 1 ," + destinationBasicBlock.getName()+ ", " + getUnconditionalJump(sourceBasicBlock.getName());
                 else {
@@ -136,7 +136,7 @@ public class MFSimSSACFG{
             }
         }
 
-        for(MFSimSSADAG dag : this.__dags.values()){
+        for (MFSimSSADAG dag : this.dags.values()) {
             String dagFileName  = filename + "_" + dag.getName() + ".dag";
             String dagContents = dag.toString();
             try {
@@ -168,7 +168,7 @@ public class MFSimSSACFG{
     }
 
     private String resolveExpression(String destName, BasicBlockEdge edge, Integer bbID){
-        Integer expressionID = this.__uniqueIDGen.getNextID();
+        Integer expressionID = this.uniqueIDGen.getNextID();
         String ret = expressionID + ")\nEXP(" + expressionID ;
         if (edge.getType().toString().equals("repeat")) {
             ret += ", RUN_COUNT, LT, " + destName + ", " + edge.getCondition() + ")\n";
@@ -177,7 +177,7 @@ public class MFSimSSACFG{
 
         }
         else if (edge.getType().toString().equals("lte")){
-            MFSimSSADAG dag = __dags.get(bbID);
+            MFSimSSADAG dag = dags.get(bbID);
             Integer nodeID = 0;
             for (MFSimSSANode node : dag.getNodes().values()) {
                 nodeID = node.getID();
@@ -193,7 +193,7 @@ public class MFSimSSACFG{
 
     }
     private String getUnconditionalJump(String Source) {
-        Integer expressionID = this.__uniqueIDGen.getNextID();
+        Integer expressionID = this.uniqueIDGen.getNextID();
         String ret =  expressionID + ")\nEXP("+ expressionID +", TRUE, UNCOND, " + Source +")\n";
 
         return ret;

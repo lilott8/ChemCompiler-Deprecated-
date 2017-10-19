@@ -9,21 +9,23 @@ import org.apache.logging.log4j.Logger;
  */
 public class MFSimSSATransferIn extends MFSimSSANode{
     private static final Logger logger = LogManager.getLogger(MFSimSSATransferIn.class);
-    String __transferedSymbol;
+    String transferedSymbol;
 
     public MFSimSSATransferIn(Integer id, String name, String symbol) {
         super(id, OperationClassifier.TRANSFER_IN, name);
-        this.__transferedSymbol = symbol;
+        this.transferedSymbol = symbol;
     }
 
     public String toString() {
-        String ret = "NODE (" + this.__nodeID + ", " + this.__opType + ", "  + this.__nodeName + ")\n";
+        String ret = "NODE (" + this.nodeID + ", " + this.opType + ", " + this.nodeName + ")\n";
 
-        for (Integer successor : this.__successorIDs) {
-            ret += "EDGE (" + this.__nodeID + ", " + successor + ")\n";
+        for (Integer successor : this.successorIDs) {
+            ret += "EDGE (" + this.nodeID + ", " + successor + ")\n";
         }
         return ret;
     }
 
-    public String getTransferedSymbol() { return __transferedSymbol; }
+    public String getTransferedSymbol() {
+        return transferedSymbol;
+    }
 }

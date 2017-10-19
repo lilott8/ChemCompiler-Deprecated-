@@ -9,21 +9,21 @@ import org.apache.logging.log4j.Logger;
 public class MFSimSSADispense extends MFSimSSANode {
     public static final Logger logger = LogManager.getLogger(MFSimSSADispense.class);
 
-    private String __chemical;
-    private Integer __units;
+    private String chemical;
+    private Integer units;
 
     public MFSimSSADispense(Integer id, String name, String chemical, Integer amount) {
         super(id, OperationClassifier.DISPENSE, name);
-        __chemical = chemical;
-        __units = amount;
+        chemical = chemical;
+        units = amount;
 
     }
 
     public String toString() {
-        String ret = "NODE (" + this.__nodeID + ", " + this.__opType + ", " + this.__chemical + ", " + __units + ", " + this.__nodeName + ")\n";
+        String ret = "NODE (" + this.nodeID + ", " + this.opType + ", " + this.chemical + ", " + units + ", " + this.nodeName + ")\n";
 
-        for (Integer successor : this.__successorIDs) {
-            ret += "EDGE (" + this.__nodeID + ", " + successor + ")\n";
+        for (Integer successor : this.successorIDs) {
+            ret += "EDGE (" + this.nodeID + ", " + successor + ")\n";
         }
         return ret;
     }

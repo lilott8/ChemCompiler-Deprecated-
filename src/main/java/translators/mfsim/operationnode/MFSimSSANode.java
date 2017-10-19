@@ -51,24 +51,30 @@ public abstract class MFSimSSANode {
         }
     }
 
-    protected Integer __nodeID;
-    protected List<Integer> __successorIDs;
-    protected OperationClassifier __opType;
-    protected String __nodeName;
+    protected Integer nodeID;
+    protected List<Integer> successorIDs;
+    protected OperationClassifier opType;
+    protected String nodeName;
 
     public MFSimSSANode(Integer id, OperationClassifier type, String nodeName){
-        this.__nodeID = id;
-        this.__successorIDs = new ArrayList<Integer>();
-        this.__opType = type;
-        this.__nodeName = nodeName;
+        this.nodeID = id;
+        this.successorIDs = new ArrayList<Integer>();
+        this.opType = type;
+        this.nodeName = nodeName;
     }
 
     public void addSuccessor(Integer id){
-        __successorIDs.add( id);
+        successorIDs.add(id);
 
     }
-    public Integer getID() { return __nodeID; }
-    public String getName() { return __nodeName; }
+
+    public Integer getID() {
+        return nodeID;
+    }
+
+    public String getName() {
+        return nodeName;
+    }
 
     long getTime(Instruction node) {
         for (Property p : node.getProperties()) {

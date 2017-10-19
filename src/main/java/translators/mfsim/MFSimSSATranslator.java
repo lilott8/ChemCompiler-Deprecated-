@@ -14,28 +14,31 @@ public class MFSimSSATranslator implements Translator {
     private static final Logger logger = LogManager.getLogger(MFSimSSATranslator.class);
 
 
-    public class IDGen{
-        protected Integer __uniqueIDGen;
-
-        public IDGen(){
-            __uniqueIDGen = 0;
-        }
-
-        public Integer getNextID() { return __uniqueIDGen++; }
-
-    }
-    private IDGen __uniqueIDGen;
-    private MFSimSSACFG __controlFLow;
-
-    public MFSimSSATranslator() {}
-
+    private IDGen uniqueIDGen;
+    private MFSimSSACFG controlFLow;
     private MFSimSSATranslator(CFG controlFlowGraph){
-        __uniqueIDGen = new IDGen();
-        __controlFLow = new MFSimSSACFG(controlFlowGraph,__uniqueIDGen );
+        uniqueIDGen = new IDGen();
+        controlFLow = new MFSimSSACFG(controlFlowGraph, uniqueIDGen);
+    }
+
+    public MFSimSSATranslator() {
     }
 
     public void toFile(String output){
-        __controlFLow.toFile(output);
+        controlFLow.toFile(output);
+    }
+
+    public class IDGen {
+        protected Integer uniqueIDGen;
+
+        public IDGen() {
+            uniqueIDGen = 0;
+        }
+
+        public Integer getNextID() {
+            return uniqueIDGen++;
+        }
+
     }
 
     public Translator setConfig(TranslateConfig config) {

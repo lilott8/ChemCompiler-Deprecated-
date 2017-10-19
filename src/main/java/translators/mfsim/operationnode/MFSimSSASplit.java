@@ -10,21 +10,21 @@ import executable.instructions.Split;
  */
 public class MFSimSSASplit extends MFSimSSANode{
     public static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
-    private Integer __numOutput;
-    private Long __time;
+    private Integer numOutput;
+    private Long time;
 
     public MFSimSSASplit(Integer id, Split splitNode) {
         super(id, OperationClassifier.SPLIT, splitNode.getName());
-        __numOutput = splitNode.getInputs().size();
-        __time = getTime(splitNode);
+        numOutput = splitNode.getInputs().size();
+        time = getTime(splitNode);
 
     }
 
     public String toString() {
-        String ret = "NODE (" + this.__nodeID + ", " + this.__opType + ", " + this.__numOutput + ", " + __time + ", " + this.__nodeName + ")\n";
+        String ret = "NODE (" + this.nodeID + ", " + this.opType + ", " + this.numOutput + ", " + time + ", " + this.nodeName + ")\n";
 
-        for (Integer successor : this.__successorIDs) {
-            ret += "EDGE (" + this.__nodeID + ", " + successor + ")\n";
+        for (Integer successor : this.successorIDs) {
+            ret += "EDGE (" + this.nodeID + ", " + successor + ")\n";
         }
         return ret;
     }

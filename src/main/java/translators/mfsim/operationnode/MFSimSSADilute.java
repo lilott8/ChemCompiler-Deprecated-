@@ -10,20 +10,20 @@ import executable.instructions.Combine;
  */
 public class MFSimSSADilute extends MFSimSSANode{
     public static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
-    private Integer __numMix;
-    private Long __time;
+    private Integer numMix;
+    private Long time;
 
     public MFSimSSADilute(Integer id, Combine diluteNode) {
         super(id, OperationClassifier.DILUTE, diluteNode.getName());
-        __numMix = diluteNode.getInputs().size();
-        __time = getTime(diluteNode);
+        numMix = diluteNode.getInputs().size();
+        time = getTime(diluteNode);
     }
 
     public String toString() {
-        String ret = "NODE (" + this.__nodeID + ", " + this.__opType + ", " + this.__numMix + ", " + __time + ", " + this.__nodeName + ")\n";
+        String ret = "NODE (" + this.nodeID + ", " + this.opType + ", " + this.numMix + ", " + time + ", " + this.nodeName + ")\n";
 
-        for (Integer successor : this.__successorIDs) {
-            ret += "EDGE (" + this.__nodeID + ", " + successor + ")\n";
+        for (Integer successor : this.successorIDs) {
+            ret += "EDGE (" + this.nodeID + ", " + successor + ")\n";
         }
         return ret;
     }
