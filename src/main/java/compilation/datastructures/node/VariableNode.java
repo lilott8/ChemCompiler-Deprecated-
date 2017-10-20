@@ -1,4 +1,4 @@
-package compilation.datastructures;
+package compilation.datastructures.node;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import variable.Variable;
 /**
  * Created by chriscurtis on 10/12/16.
  */
-public class VariableNode implements Serializable {
+public class VariableNode implements Serializable, Node {
     public enum VariableType {ROOT_DECLARATION,INSTRUCTION_DECLARATION}
 
     private VariableType declarationType;

@@ -12,7 +12,7 @@ import compilation.datastructures.cfg.CFG;
 public class DominatorTree extends DominatorTreeBase {
 
     public DominatorTree(CFG controlFlowGraph) {
-        dominatorTable = new HashMap<Integer, List<Integer>>();
+        dominatorTable = new HashMap<>();
         directionalSet = controlFlowGraph.getPredecessorTable(); //set predecessors
         nodes = new ArrayList<Integer>();
 

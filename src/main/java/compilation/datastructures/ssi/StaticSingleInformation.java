@@ -1,5 +1,8 @@
 package compilation.datastructures.ssi;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +17,10 @@ import config.ConfigFactory;
 /**
  * Created by chriscurtis on 4/10/17.
  */
-public class StaticSingleInformation extends StaticSingleAssignment{
+public class StaticSingleInformation extends StaticSingleAssignment {
+
+    private static final Logger logger = LogManager.getLogger(StaticSingleInformation.class);
+
     private PostDominatorTree postDominatorTree;
     protected HashMap<String, HashSet<Integer>> sigmaPlacedAt;
 
@@ -31,19 +37,21 @@ public class StaticSingleInformation extends StaticSingleAssignment{
         Boolean changesMade = true;
         while (changesMade){
             changesMade = this.placePhiNodes();
-            if(this.PlaceSigmaNodes())
+            if (this.placeSigmaNodes())
                 changesMade = true;
         }
         this.renameVariables();
     }
 
-    protected Boolean PlaceSigmaNodes(){
-        return this.PlaceSigmaNodes(null);
+    protected Boolean placeSigmaNodes() {
+        return this.placeSigmaNodes(null);
     }
 
-    protected Boolean PlaceSigmaNodes(Set<String> symbols) {
+    protected Boolean placeSigmaNodes(Set<String> symbols) {
         Boolean changed = false;
         List<Integer> workList = new ArrayList<>();
+
+        logger.info(this.basicBlockSymbolDefinitionTable);
 
         for (String symbol : this.basicBlockSymbolDefinitionTable.keySet()) {
             if (symbols != null && !symbols.contains(symbol) || !this.basicBlockSymbolUseTable.containsKey(symbol)) {

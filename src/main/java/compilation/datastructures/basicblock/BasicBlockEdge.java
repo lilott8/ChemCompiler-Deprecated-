@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
 
-import compilation.datastructures.ConditionalNode;
+import compilation.datastructures.node.ConditionalNode;
 
 import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalType.eq;
 import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalType.gt;
@@ -183,8 +183,14 @@ public class BasicBlockEdge implements Serializable {
     public String getClassification() {
         return this.classification;
     }
-    public Integer getSource() { return source; }
-    public Integer getDestination() {return destination; }
+
+    public int getSource() {
+        return source;
+    }
+
+    public int getDestination() {
+        return destination;
+    }
     public String getCondition()  { return condition; }
 
     public ConditionalNode getConditional() {

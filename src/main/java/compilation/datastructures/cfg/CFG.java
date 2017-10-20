@@ -15,7 +15,7 @@ import java.util.Set;
 import chemicalInteractions.ChemicalResolution;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import compilation.symboltable.NestedSymbolTable;
 import executable.instructions.Instruction;
 import substance.Chemical;
@@ -29,36 +29,19 @@ import variable.Variable;
 public class CFG implements Serializable {
     public static final Logger logger = LogManager.getLogger(CFG.class);
 
+    //private UndirectedGraph<BasicBlock, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
 
-
-    protected LinkedHashMap<Integer, BasicBlock> basicBlocks;
+    protected Map<Integer, BasicBlock> basicBlocks = new LinkedHashMap<>();
     protected BasicBlock entry;
     protected BasicBlock exit;
     protected List<BasicBlockEdge> edges = new ArrayList<>();
     protected Map< Integer, Set<Integer>> basicBlockPredecessorSet = new HashMap<>();
     protected Map< Integer, Set<Integer>> basicBlockSuccessorSet = new HashMap<>();
+    protected NestedSymbolTable symbolTable = new NestedSymbolTable();
+    protected Integer uuid = 0;
+    protected Integer id = 1;
 
-    protected NestedSymbolTable symbolTable;
-
-    protected Integer uuid;
-    protected Integer id;
-
-    private void initializeData(){
-        basicBlocks = new LinkedHashMap<>();
-        edges = new ArrayList<>();
-        symbolTable = new NestedSymbolTable();
-
-        id = 0;
-        uuid = id++;
-    }
-
-
-    public CFG(){
-        initializeData();
-
-    }
     public CFG(CFG controlFlowGraph){
-//        initializeData();
         this.basicBlocks = controlFlowGraph.basicBlocks;
         this.edges = controlFlowGraph.edges;
         this.basicBlockPredecessorSet = controlFlowGraph.basicBlockPredecessorSet;
@@ -68,30 +51,28 @@ public class CFG implements Serializable {
         this.id = controlFlowGraph.id;
         this.entry = controlFlowGraph.entry;
         this.exit = controlFlowGraph.exit;
-
-
     }
+
+    public CFG() {
+    }
+
     public CFG(Integer id){
-        initializeData();
         this.id = id;
         uuid = this.id++;
     }
+
     public CFG(Integer id, NestedSymbolTable table){
-        initializeData();
         symbolTable = table;
         this.id = id;
         uuid = this.id++;
     }
 
-
-
     public Integer getID() { return id; }
 
     public Integer getNewID() { return uuid++;}
 
-
     private void addBasicBlock(BasicBlock block) {
-        basicBlocks.put(block.ID(), block);
+        basicBlocks.put(block.getId(), block);
     }
     public void setEntry(BasicBlock entry) { this.entry = entry; }
     public BasicBlock getEntry() { return entry; }
@@ -117,44 +98,42 @@ public class CFG implements Serializable {
         bb.addInstruction(node);
     }
 
-
-
     public void addEdge(BasicBlock source, BasicBlock destination) {
         this.addEdge(source,destination,"UNCONDITIONAL");
     }
 
     public void addEdge(BasicBlock source, BasicBlock destination, String condition) {
-        edges.add(new BasicBlockEdge(source.ID(),destination.ID(), condition));
+        edges.add(new BasicBlockEdge(source.getId(), destination.getId(), condition));
         this.addPredecessor(source,destination);
         this.addSuccessor(source,destination);
     }
 
     public void addEdge(BasicBlock source, BasicBlock destination, String condition, String name) {
-        edges.add(new BasicBlockEdge(source.ID(),destination.ID(), condition, name));
+        edges.add(new BasicBlockEdge(source.getId(), destination.getId(), condition, name));
         this.addPredecessor(source,destination);
         this.addSuccessor(source,destination);
     }
 
     private void addPredecessor(BasicBlock source, BasicBlock destination){
         Set predecessorSet;
-        if (basicBlockPredecessorSet.containsKey(destination.ID())){
-            predecessorSet = basicBlockPredecessorSet.get(destination.ID());
+        if (basicBlockPredecessorSet.containsKey(destination.getId())) {
+            predecessorSet = basicBlockPredecessorSet.get(destination.getId());
         }
         else
             predecessorSet = new HashSet();
-        predecessorSet.add(source.ID());
-        basicBlockPredecessorSet.put(destination.ID(),predecessorSet);
+        predecessorSet.add(source.getId());
+        basicBlockPredecessorSet.put(destination.getId(), predecessorSet);
     }
     private void addSuccessor(BasicBlock source, BasicBlock destination) {
         Set successorSet;
 
-        if (basicBlockSuccessorSet.containsKey(source.ID())){
-            successorSet = basicBlockSuccessorSet.get(source.ID());
+        if (basicBlockSuccessorSet.containsKey(source.getId())) {
+            successorSet = basicBlockSuccessorSet.get(source.getId());
         }
         else
             successorSet = new HashSet();
-        successorSet.add(destination.ID());
-        basicBlockSuccessorSet.put(source.ID(),successorSet);
+        successorSet.add(destination.getId());
+        basicBlockSuccessorSet.put(source.getId(), successorSet);
     }
 
     public void addResolution(String key, Variable variable, Boolean isGlobal){
@@ -199,7 +178,9 @@ public class CFG implements Serializable {
     public NestedSymbolTable getSymbolTable() { return symbolTable; }
     public void setSymbolTable(NestedSymbolTable table) { symbolTable = table; }
 
-    public LinkedHashMap<Integer, BasicBlock> getBasicBlocks() { return basicBlocks; }
+    public Map<Integer, BasicBlock> getBasicBlocks() {
+        return basicBlocks;
+    }
     public BasicBlock getBasicBlock(Integer id) {
         return this.basicBlocks.get(id);
     }
@@ -243,21 +224,6 @@ public class CFG implements Serializable {
 
         ret+="\n SYMBOL TABLE\n";
         ret+= symbolTable.toString();
-        return ret;
-    }
-
-    public String toJSONString(){
-        List<InstructionNode> instructions = new ArrayList<InstructionNode>();
-        Map<Integer, Set<Integer>> childern = new HashMap<Integer, Set<Integer>>();
-
-        for(BasicBlock bb : this.basicBlocks.values()){
-            for(InstructionNode node : bb.getInstructions()){
-                instructions.add(node);
-            }
-        }
-
-        String ret = "";
-
         return ret;
     }
 }

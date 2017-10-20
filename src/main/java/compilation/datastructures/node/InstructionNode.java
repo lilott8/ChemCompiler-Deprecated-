@@ -1,10 +1,9 @@
-package compilation.datastructures;
+package compilation.datastructures.node;
 
 //import chemicalInteractions.ChemicalInteraction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +14,7 @@ import substance.Property;
 /**
  * Created by chriscurtis on 9/28/16.
  */
-public class InstructionNode implements Serializable {
+public class InstructionNode implements Serializable, Node {
 
     private Integer id;
     private Instruction instruction;

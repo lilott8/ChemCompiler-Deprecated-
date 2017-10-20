@@ -6,9 +6,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import compilation.datastructures.CFGBuilder;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.DependencySlicedBasicBlock;
-import compilation.datastructures.CFGBuilder;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.ssi.StaticSingleInformation;
 import config.Config;
@@ -26,10 +26,10 @@ import translators.TranslatorFacade;
 public class Compiler {
     public static final Logger logger = LogManager.getLogger(Compiler.class);
 
-    private Integer __IDGen = 0;
+    private Integer idGen = 0;
 
-    private List<CFG> __experimentControlFlowGraphs = new ArrayList<>();
-    private CFG __benchtopControlFlowGraph = new CFG();
+    private List<CFG> experimentControlFlowGraphs = new ArrayList<>();
+    private CFG benchtopControlFlowGraph = new CFG();
 
     private Benchtop benchtop;
     private StaticSingleInformation SSI;
@@ -54,13 +54,14 @@ public class Compiler {
                 for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
                     this.controlFlow = CFGBuilder.buildControlFlowGraph(experiment);
                     this.SSI = new StaticSingleInformation(this.controlFlow);
+
                     //replaces basic blocks with dependancy sliced versions
                     for (BasicBlock bb : this.SSI.getBasicBlocks().values()) {
                         this.SSI.newBasicBlock(new DependencySlicedBasicBlock(bb, this.SSI));
                     }
 
                     DependencySlicedBasicBlock.getInOutSets(this.SSI);
-                    __experimentControlFlowGraphs.add(this.SSI);
+                    experimentControlFlowGraphs.add(this.SSI);
                 }
             }
         } catch (Exception e) {
@@ -82,7 +83,7 @@ public class Compiler {
             if (ConfigFactory.getConfig().isDebug()) {
                 logger.info("Phases set to run: " + ConfigFactory.getConfig().getAllPhases());
             }
-            for (CFG experiment : this.__experimentControlFlowGraphs) {
+            for (CFG experiment : this.experimentControlFlowGraphs) {
                 Facade phase = new PhaseFacade(ConfigFactory.getConfig(), experiment);
                 phase.start();
             }
@@ -94,7 +95,7 @@ public class Compiler {
             if (ConfigFactory.getConfig().isDebug()) {
                 logger.info("Translators are set to be run.");
             }
-            for (CFG experiment : this.__experimentControlFlowGraphs) {
+            for (CFG experiment : this.experimentControlFlowGraphs) {
                 Facade translator = new TranslatorFacade(ConfigFactory.getConfig(), experiment);
                 translator.start();
             }
@@ -109,6 +110,8 @@ public class Compiler {
         return this.controlFlow;
     }
 
-    public List<CFG> getExperiments() { return __experimentControlFlowGraphs; }
+    public List<CFG> getExperiments() {
+        return experimentControlFlowGraphs;
+    }
 
 }

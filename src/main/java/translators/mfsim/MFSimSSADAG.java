@@ -11,8 +11,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import compilation.datastructures.InstructionEdge;
-import compilation.datastructures.InstructionNode;
 import compilation.datastructures.basicblock.BasicBlock;
+import compilation.datastructures.node.InstructionNode;
 import compilation.datastructures.ssa.PHIInstruction;
 import compilation.datastructures.ssa.RenamedVariableNode;
 import compilation.datastructures.ssi.SigmaInstruction;
@@ -53,7 +53,7 @@ public class MFSimSSADAG {
 
     public MFSimSSADAG(BasicBlock bb, MFSimSSATranslator.IDGen parentsIDGen, Map<String, Stack<RenamedVariableNode>> variableStack){
         uniqueIdGen = parentsIDGen;
-        name = "DAG" + bb.ID().toString();
+        name = "DAG" + bb.getId().toString();
 
         for(String transferInDroplet: bb.getBasicBlockEntryTable().keySet()){
             if(bb.getSymbolTable().contains(transferInDroplet) && bb.getSymbolTable().get(transferInDroplet).IsStationary())

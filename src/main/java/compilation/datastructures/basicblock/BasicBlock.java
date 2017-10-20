@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import compilation.datastructures.InstructionEdge;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import compilation.datastructures.ssa.GlobalAssignment;
 import compilation.datastructures.ssa.PHIInstruction;
 import compilation.symboltable.NestedSymbolTable;
@@ -28,7 +28,7 @@ public class BasicBlock implements Serializable {
     private Set<String> killedSet = new HashSet<>();
 
     private NestedSymbolTable symbolTable;
-
+    public static final String NL = System.lineSeparator();
 
     private List<InstructionNode> instructions = new ArrayList<>();
     private List<InstructionEdge> edges = new ArrayList<>();
@@ -66,8 +66,8 @@ public class BasicBlock implements Serializable {
     }
 
 
-    public Boolean containsInstruction(Integer index) {
-        Boolean retVal = false;
+    public Boolean containsInstruction(int index) {
+        boolean retVal = false;
         for (InstructionNode instr : instructions) {
             if (instr.getId() == index) {
                 retVal = true;
@@ -175,8 +175,7 @@ public class BasicBlock implements Serializable {
             instructions.add(0, instruction);
         else if (instruction instanceof GlobalAssignment) {
             instructions.add(instruction);
-            for(String symbol :instruction.getInputSymbols())
-                this.definitions.add(symbol);
+            this.definitions.addAll(instruction.getInputSymbols());
         }
         else
             instructions.add(instruction);
@@ -199,7 +198,8 @@ public class BasicBlock implements Serializable {
     public Set<Integer> getBasicBlockEntryUsage(String symbol) { return this.basicBlockEntry.get(symbol); }
     public Map<String, Set<Integer>> getBasicBlockEntryTable() { return this.basicBlockEntry; }
     public Map<String, Set<Integer>> getBasicBlockExitTable() { return this.basicBlockExit; }
-    public Integer ID(){
+
+    public Integer getId() {
         return id;
     }
 
@@ -236,22 +236,27 @@ public class BasicBlock implements Serializable {
         return this.toString("");
     }
     public  String toString(String indentBuffer) {
-        String ret = indentBuffer + "Basic Block : " + id.toString() + '\n';
-
-        ret += indentBuffer + '\t' + "InstructionType: \n";
-        for(InstructionNode node : instructions)
-            ret += node.toString(indentBuffer+'\t'+'\t') +'\n';
-        ret += indentBuffer +'\t' + "Edges: \n";
-        for(InstructionEdge edge : edges)
-            ret += edge.toString(indentBuffer+'\t'+'\t') + '\n';
-
-        ret += indentBuffer + '\t' + "Definitions: "+'\n';
-        for(String definition: this.definitions){
-            ret +=indentBuffer + "\t\t" + definition + '\n';
+        StringBuffer sb = new StringBuffer();
+        sb.append(indentBuffer).append("Basic Block: ").append(id).append(NL);
+        sb.append(indentBuffer).append("\t Instruction Type: ").append(NL);
+        for (InstructionNode node : instructions) {
+            sb.append(node.toString(indentBuffer + "\t\t")).append(NL);
+        }
+        sb.append(indentBuffer).append("\t Edges: ").append(NL);
+        for (InstructionEdge edge : edges) {
+            sb.append(edge.toString(indentBuffer + "\t\t")).append(NL);
+        }
+        sb.append(indentBuffer).append("\t Definitions: ").append(NL);
+        for (String definition : this.definitions) {
+            sb.append(indentBuffer).append("\t\t").append(definition).append(NL);
+        }
+        sb.append(indentBuffer).append("\t Killed Set: ").append(NL);
+        for (String killed : this.killedSet) {
+            sb.append(indentBuffer).append("\t\t").append(killed).append(NL);
         }
         /*for(String definition: symbolTable.getDefinitionTable().keySet()){
             ret +=indentBuffer + "\t\t" + symbolTable.get(definition) + '\n';
         }*/
-        return ret;
+        return sb.toString();
     }
 }

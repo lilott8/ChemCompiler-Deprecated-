@@ -3,13 +3,13 @@ package phases.inference.rules;
 import java.util.HashSet;
 import java.util.Set;
 
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
+import phases.inference.Inference.InferenceType;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
-import typesystem.epa.ChemTypes;
-import phases.inference.Inference.InferenceType;
 import substance.Property;
+import typesystem.epa.ChemTypes;
 import typesystem.epa.EpaManager;
 
 import static typesystem.epa.ChemTypes.REAL;
@@ -36,6 +36,7 @@ public class Mix extends NodeAnalyzer {
         Set<ChemTypes> groupings = new HashSet<>();
 
         Variable input = null;
+        // Right hand side values (a = mix input with input)
         for (String in : node.getUse()) {
             input = new Term(in);
             // If we have seen this before, we can just pull the old types.

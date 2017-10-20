@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import chemicalInteractions.ChemicalResolution;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import config.ConfigFactory;
 import config.InferenceConfig;
 import shared.substances.BaseCompound;

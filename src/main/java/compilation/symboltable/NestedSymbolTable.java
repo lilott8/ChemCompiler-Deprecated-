@@ -12,33 +12,26 @@ import chemicalInteractions.ChemicalResolution;
  */
 public class NestedSymbolTable{
     // <renamed variable, full resolution>
-    protected Map<String, ChemicalResolution> symbols;
+    protected Map<String, ChemicalResolution> symbols = new HashMap<>();
     //renamed variable, bb.getID
-    protected Map<String,Integer> symbolDefinedIn;
-    protected Map<String,Integer> lastUsedIn;
+    protected Map<String, Integer> symbolDefinedIn = new HashMap<>();
+    protected Map<String, Integer> lastUsedIn = new HashMap<>();
 
     // oringial name, all renames
-    //TODO::
-    protected Map<String, List<String>> possibleRenames;
-    protected Map<String, String> pointsTo;
+    protected Map<String, List<String>> possibleRenames = new HashMap<>();
+    protected Map<String, String> pointsTo = new HashMap<>();
     private NestedSymbolTable parent;
     private Integer variableId;
 
 
     public void clear(){
-        symbolDefinedIn.clear();
         symbols.clear();
         lastUsedIn.clear();
     }
 
     public NestedSymbolTable() {
-        symbols = new HashMap<String, ChemicalResolution>();
-        symbolDefinedIn = new HashMap<String, Integer>();
-        possibleRenames = new HashMap<String, List<String>>();
-        pointsTo = new HashMap<String, String>();
         parent = null;
         variableId =0;
-        lastUsedIn = new HashMap<String, Integer>();
     }
 
     public void put(String key, ChemicalResolution resolution) {
@@ -55,7 +48,7 @@ public class NestedSymbolTable{
         if (possibleRenames.containsKey(original))
             renamedVariables = possibleRenames.get(original);
         else
-            renamedVariables = new ArrayList<String>();
+            renamedVariables = new ArrayList<>();
         renamedVariables.add(renamed);
 
         pointsTo.put(renamed,original);

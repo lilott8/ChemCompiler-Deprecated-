@@ -45,4 +45,12 @@ public class RenamedVariableNode {
     public Boolean canPop(){
         return ++popCount > renamedNodes.size();
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("id: ").append(originID).append("\t").append(this.renamedNodes);
+
+        return sb.toString();
+    }
 }

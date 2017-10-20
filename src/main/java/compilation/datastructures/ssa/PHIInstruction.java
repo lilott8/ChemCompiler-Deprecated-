@@ -2,7 +2,7 @@ package compilation.datastructures.ssa;
 
 import java.util.ArrayList;
 
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 
 public class PHIInstruction extends  InstructionNode{
 

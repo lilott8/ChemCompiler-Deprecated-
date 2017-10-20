@@ -1,0 +1,132 @@
+{
+  "EXPERIMENT": {
+    "NAME": "expectedFail",
+    "INPUTS": [
+      {
+        "VARIABLE_DECLARATION": {
+          "ID": "water",
+          "NAME": "water",
+          "TYPE": "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION": {
+          "ID": "oil",
+          "NAME": "oil",
+          "TYPE": "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION": {
+          "ID": "",
+          "NAME": "",
+          "TYPE": "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS": [
+      {
+        "OPERATION": {
+          "NAME": "VARIABLE_DECLARATION",
+          "ID": "3787558044117562155",
+          "CLASSIFICATION": "VARIABLE",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "water",
+                "VOLUME": {
+                  "VALUE": 100,
+                  "UNITS": "UL"
+                }
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "a",
+                "NAME": "a",
+                "TYPE": "CHEMICAL"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "NAME": "VARIABLE_DECLARATION",
+          "ID": "3787558044117571317",
+          "CLASSIFICATION": "VARIABLE",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "oil",
+                "VOLUME": {
+                  "VALUE": 100,
+                  "UNITS": "UL"
+                }
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "b",
+                "NAME": "b",
+                "TYPE": "CHEMICAL"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "NAME": "Mix",
+          "ID": "3787558044117572171",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "a"
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "b"
+              }
+            }
+          ],
+          "OUTPUTS": [
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "NAME": "Mix",
+          "ID": "3787558044117572541",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "a"
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "b"
+              }
+            }
+          ],
+          "OUTPUTS": [
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,9 +1,5 @@
 package compilation.datastructures;
 
-import org.jgrapht.UndirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.SimpleGraph;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +16,12 @@ import executable.instructions.Instruction;
  */
 public class CFGBuilder {
 
-    private UndirectedGraph<Instruction, DefaultEdge> controlFlowGraph = new SimpleGraph<Instruction, DefaultEdge>(DefaultEdge.class);
-
     private static BasicBlock insertExitNode(List<BasicBlock> exitNodes, CFG cfg){
         BasicBlock EXIT = cfg.newBasicBlock();
         for(BasicBlock bb : exitNodes)
             cfg.addEdge(bb, EXIT);
         return EXIT;
     }
-
-
     /*
         The insertion of ENTRY and EXIT nodes follow the data structure for the algorithms that are presented in Cytron et. al.
         "An efficient Method of Computing Static Single Assignment Form".
@@ -52,9 +44,6 @@ public class CFGBuilder {
         return controlFlowGraph;
     }
 
-    /*public static CFG buildControlFlowGraph(List<getInstruction> instructions)throws Exception{
-        return buildControlFlowGraph(0,instructions);
-    }*/
     public static CFG buildControlFlowGraph(Experiment experiment)throws Exception{
 
         List<Instruction> instructions = new ArrayList<>();
@@ -63,7 +52,7 @@ public class CFGBuilder {
                 instructions.add((Instruction) e);
             }
         }
-        CFG controlFlowGraph = buildControlFlowGraph(0,instructions);
+        CFG controlFlowGraph = buildControlFlowGraph(0, instructions);
 
         //Add definition of Global Input at Entry Node.
         for(String globalInput : experiment.getInputs().keySet()) {

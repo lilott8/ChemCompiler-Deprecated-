@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import compilation.datastructures.basicblock.BasicBlock;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 
 /**
  * Created by chriscurtis on 10/19/16.
@@ -30,7 +30,7 @@ abstract public class DataFlowNode {
         kill = new HashSet<>();
         in = new ArrayList<>();
         out = new ArrayList<>();
-        id = bb.ID();
+        id = bb.getId();
 
         for(InstructionNode i :bb.getInstructions()) {
             gen.addAll(i.getInstruction().getOutputs().keySet());

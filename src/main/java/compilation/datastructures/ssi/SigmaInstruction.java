@@ -1,6 +1,6 @@
 package compilation.datastructures.ssi;
 
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 
 /**
  * Created by chriscurtis on 4/12/17.

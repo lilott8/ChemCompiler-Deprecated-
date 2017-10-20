@@ -13,7 +13,7 @@ import java.util.Set;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import phases.Phase;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Variable;

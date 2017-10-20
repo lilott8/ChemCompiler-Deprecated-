@@ -21,7 +21,7 @@ public class ReachingDefinitions extends DataFlowAnalysis {
         Map<Integer, ReachingDefinitionNode> initialization = new HashMap<Integer, ReachingDefinitionNode>();
 
         for(BasicBlock bb: controlflowgraph.getBasicBlocks().values()){
-            initialization.put(bb.ID(),new ReachingDefinitionNode(bb));
+            initialization.put(bb.getId(), new ReachingDefinitionNode(bb));
         }
 
         boolean changed = true;

@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.cfg.CFG;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import compilation.datastructures.ssa.StaticSingleAssignment;
 
 /**

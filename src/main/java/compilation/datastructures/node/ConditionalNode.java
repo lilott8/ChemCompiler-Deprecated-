@@ -1,10 +1,8 @@
-package compilation.datastructures;
+package compilation.datastructures.node;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Arrays;
 
 import phases.inference.rules.Rule;
 
@@ -15,7 +13,7 @@ import static compilation.datastructures.basicblock.BasicBlockEdge.ConditionalTy
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class ConditionalNode {
+public class ConditionalNode implements Node {
 
     public static final Logger logger = LogManager.getLogger(ConditionalNode.class);
 

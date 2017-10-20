@@ -1,10 +1,10 @@
 package phases.inference.rules;
 
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
+import phases.inference.Inference.InferenceType;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
 import phases.inference.elements.Variable;
-import phases.inference.Inference.InferenceType;
 import substance.Property;
 
 import static typesystem.epa.ChemTypes.NAT;

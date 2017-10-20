@@ -18,12 +18,11 @@ import java.util.Map;
 import java.util.Set;
 
 import chemicalInteractions.ChemicalResolution;
+import compilation.datastructures.InstructionEdge;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.cfg.CFG;
-import compilation.datastructures.InstructionEdge;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import config.TranslateConfig;
-import translators.Translator;
 import executable.instructions.Combine;
 import executable.instructions.Detect;
 import executable.instructions.Heat;
@@ -31,6 +30,7 @@ import executable.instructions.Instruction;
 import executable.instructions.Output;
 import executable.instructions.Split;
 import executable.instructions.Store;
+import translators.Translator;
 
 /**
  * Created by chriscurtis on 10/26/16.

@@ -12,10 +12,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import compilation.datastructures.InstructionNode;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
+import compilation.datastructures.node.InstructionNode;
 import compilation.datastructures.ssa.StaticSingleAssignment;
 import executable.instructions.Output;
 import translators.mfsim.operationnode.MFSimSSANode;
@@ -40,7 +40,7 @@ public class MFSimSSACFG{
 
         for(BasicBlock bb : controlFlowGraph.getBasicBlocks().values()){
             MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID, ((StaticSingleAssignment) controlFlowGraph).getVariableStack());
-            dags.put(bb.ID(), dag);
+            dags.put(bb.getId(), dag);
             logger.info(dag);
         }
         for(BasicBlockEdge edge: controlFlowGraph.getBasicBlockEdges()){

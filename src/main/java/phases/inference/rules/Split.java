@@ -1,6 +1,6 @@
 package phases.inference.rules;
 
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
@@ -24,8 +24,6 @@ public class Split extends NodeAnalyzer {
 
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
-
-
         logger.info(node);
         logger.info(node.getInstruction());
         logger.info(node.getInstruction());
