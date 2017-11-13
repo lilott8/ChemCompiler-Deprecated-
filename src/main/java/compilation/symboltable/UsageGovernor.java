@@ -3,6 +3,7 @@ package compilation.symboltable;
 import java.util.HashSet;
 import java.util.Set;
 
+import config.ConfigFactory;
 import errors.UsageException;
 
 /**
@@ -21,7 +22,9 @@ public class UsageGovernor {
 
     public static void useVar(String name) {
         if (killedVariables.contains(name)) {
-            throw new UsageException(name + " has already been consumed.  It cannot be used again.");
+            if (ConfigFactory.getConfig().monitorResources()) {
+                throw new UsageException(name + " has already been consumed.  It cannot be used again.");
+            }
         } else {
             aliveVariables.remove(name);
             killedVariables.add(name);

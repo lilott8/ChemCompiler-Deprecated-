@@ -3,7 +3,6 @@ package typesystem.epa;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +13,6 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,8 +24,8 @@ import config.InferenceConfig;
 import errors.CompatabilityException;
 import io.file.read.FileReader;
 import io.file.read.SimpleReader;
-import shared.substances.BaseCompound;
 import shared.Tuple;
+import shared.substances.BaseCompound;
 
 /**
  * Responsible for managing all the groups which exist in the EPA Compatability Cheat Sheet. This is
@@ -344,6 +342,8 @@ public enum EpaManager {
             }
         }
 
+
+        throwException = false;
         if (throwException) {
             StringBuilder message = new StringBuilder();
             message.append("Combining: (").append(groupMap.get(x).groupId).append(") ")
@@ -351,7 +351,7 @@ public enum EpaManager {
                     .append(" with: (").append(groupMap.get(y).groupId).append(") ")
                     .append(groupMap.get(y).groupName)
                     .append(" results in: ").append(this.reactionTable.get(x, y).toString());
-            logger.fatal(message.toString());
+            //logger.fatal(message.toString());
             throw new CompatabilityException(message.toString());
         }
         return true;

@@ -62,4 +62,9 @@ public class TestConfig implements PhaseConfig {
     public int getNumberOfThreads() {
         return 0;
     }
+
+    @Override
+    public boolean monitorResources() {
+        return false;
+    }
 }

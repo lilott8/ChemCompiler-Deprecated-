@@ -51,7 +51,9 @@ public class StaticSingleInformation extends StaticSingleAssignment {
         Boolean changed = false;
         List<Integer> workList = new ArrayList<>();
 
-        logger.info(this.basicBlockSymbolDefinitionTable);
+        if (ConfigFactory.getConfig().isDebug()) {
+            //logger.info(this.basicBlockSymbolDefinitionTable);
+        }
 
         for (String symbol : this.basicBlockSymbolDefinitionTable.keySet()) {
             if (symbols != null && !symbols.contains(symbol) || !this.basicBlockSymbolUseTable.containsKey(symbol)) {
@@ -72,7 +74,7 @@ public class StaticSingleInformation extends StaticSingleAssignment {
                     if (!this.sigmaPlacedAt.containsKey(symbol) || !this.sigmaPlacedAt.get(symbol).contains(domFrontierBBID)) {
                         changed = true;
                         if (ConfigFactory.getConfig().isDebug()) {
-                            logger.debug("Adding Sigma node for:" + symbol + " at Basic Block:" + domFrontierBBID);
+                            //logger.debug("Adding Sigma node for:" + symbol + " at Basic Block:" + domFrontierBBID);
                         }
 
                         this.basicBlocks.get(domFrontierBBID).addInstruction(new SigmaInstruction(symbol, this.getSuccessors(domFrontierBBID).size()));

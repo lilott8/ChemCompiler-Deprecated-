@@ -6,7 +6,10 @@ import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +25,7 @@ import phases.inference.rules.InferenceRule;
 import phases.inference.rules.NodeAnalyzer;
 import phases.inference.satsolver.SatSolver;
 import phases.inference.satsolver.strategies.Z3Strategy;
+import shared.Delete;
 import shared.Tuple;
 import typesystem.epa.ChemTypes;
 
@@ -103,6 +107,8 @@ public class Inference implements Phase {
         for(BasicBlockEdge edge : this.controlFlowGraph.getBasicBlockEdges()) {
             this.inferConstraints(StringUtils.upperCase(edge.getClassification()), edge);
         }
+
+        printStatistics();
 
         // logger.info(this.instructions);
         // logger.debug(this.variables);
@@ -208,5 +214,34 @@ public class Inference implements Phase {
                 logger.warn(String.format("We cannot invoke that dark magic (%s)", clazz.getName()));
             }
         }
+    }
+
+    private void printStatistics() {
+        double average = 0;
+        int total = 0;
+        int max = 0;
+        int min = 100000;
+        List<Integer> medianContainer = new ArrayList<>();
+
+        for (Map.Entry<String, Variable> varEntry : this.variables.entrySet()) {
+            medianContainer.add(varEntry.getValue().getTypingConstraints().size());
+            total += varEntry.getValue().getTypingConstraints().size();
+            if (varEntry.getValue().getTypingConstraints().size() < min) {
+                min = varEntry.getValue().getTypingConstraints().size();
+            }
+            if (varEntry.getValue().getTypingConstraints().size() > max) {
+                max = varEntry.getValue().getTypingConstraints().size();
+            }
+        }
+
+        average = total / ((double) medianContainer.size());
+
+        Delete.writer.write(String.format("%d|%d|%d|%d|%.02f", min, max, total, findMedian(medianContainer), average));
+    }
+
+    private int findMedian(List<Integer> nums) {
+        Collections.sort(nums);
+        int middle = Math.floorDiv(nums.size(), 2);
+        return nums.get(middle);
     }
 }

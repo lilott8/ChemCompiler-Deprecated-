@@ -109,7 +109,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
     protected void renameVariables(){
         if(ConfigFactory.getConfig().isDebug()) {
-            logger.debug("Initial Symbols:");
+            //logger.debug("Initial Symbols:");
         }
 
         for(String symbol : basicBlockSymbolDefinitionTable.keySet()){
@@ -118,7 +118,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
             symbols.push(new RenamedVariableNode(symbol+"_0", 0) );
             if(ConfigFactory.getConfig().isDebug()) {
-                logger.debug("\t" + symbols.peek());
+                //logger.debug("\t" + symbols.peek());
             }
             variableStack.put(symbol, symbols);
         }
@@ -127,7 +127,7 @@ public abstract class StaticSingleAssignment extends CFG {
 
     protected void renameSearch(BasicBlock bb){
         if (ConfigFactory.getConfig().isDebug()) {
-            logger.debug("Processing Rename on: " + bb.getId());
+            // logger.debug("Processing Rename on: " + bb.getId());
         }
 
         ArrayList<String> oldLHS = new ArrayList<String>();
@@ -138,8 +138,9 @@ public abstract class StaticSingleAssignment extends CFG {
                 for(String symbol: instruction.getInstruction().getInputs().keySet())
                     symbols.add(symbol);
                 for(String symbol: symbols){
-                    if(DEBUGRHS)
-                        logger.debug("Changing RHS: " + symbol + " to " + variableStack.get(symbol).peek());
+                    if (ConfigFactory.getConfig().isDebug()) {
+                        // logger.debug("Changing RHS: " + symbol + " to " + variableStack.get(symbol).peek());
+                    }
                     int index  = instruction.getInputSymbols().indexOf(symbol);
                     instruction.getInputSymbols().set(index, variableStack.get(symbol).peek().getVariable(whichSucc(bb.getId(), variableStack.get(symbol).peek().getOriginID())));
 //                    instruction.getInstruction().getInputs().put(variableStack.get(symbol).peek(),instruction.getInstruction().getInputs().get(symbol));
@@ -154,17 +155,20 @@ public abstract class StaticSingleAssignment extends CFG {
                 Integer count = variableCount.get(oldSymbol);
                 Integer predecessorID = variableStack.get(oldSymbol).peek().getOriginID();
                 String newSymbol = getNewSymbol(variableStack.get(oldSymbol).peek().getVariable(whichSucc(bb.getId(), predecessorID)), count);
-                if(DEBUGLHS)
-                    logger.debug("Changing LHS: " +oldSymbol + " to " + newSymbol);
+                if (ConfigFactory.getConfig().isDebug()) {
+                    // logger.debug("Changing LHS: " + oldSymbol + " to " + newSymbol);
+                }
                 instruction.getOutputSymbols().set(i,newSymbol);
-                if(instruction instanceof SigmaInstruction)
+                if (instruction instanceof SigmaInstruction) {
                     newOutputSymbols.add(newSymbol);
-                else
+                } else {
                     variableStack.get(oldSymbol).push(new RenamedVariableNode(newSymbol, bb.getId()));
+                }
                 variableCount.put(oldSymbol,count+1);
             }
-            if(instruction instanceof SigmaInstruction)
+            if (instruction instanceof SigmaInstruction) {
                 variableStack.get(oldSymbol).push(new RenamedVariableNode(newOutputSymbols, bb.getId()));
+            }
         }
         if (this.getSuccessors(bb.getId()) != null) {
             for (Integer successorID : this.getSuccessors(bb.getId())) {
@@ -174,8 +178,9 @@ public abstract class StaticSingleAssignment extends CFG {
                 for (InstructionNode instructionNode : successor.getInstructions()) {
                     if (instructionNode instanceof PHIInstruction) {
                         String name = ((PHIInstruction) instructionNode).getOriginalName();
-                        if(DEBUGPHIINSERT)
-                            logger.debug("Inserting PHI: " +  variableStack.get(name).peek() + " at index: " + j);
+                        if (ConfigFactory.getConfig().isDebug()) {
+                            // logger.debug("Inserting PHI: " + variableStack.get(name).peek() + " at index: " + j);
+                        }
                         String PHIInputSymbol = variableStack.get(name).peek().getVariable(whichSucc(successorID, bb.getId()));
                         ((PHIInstruction) instructionNode).insertNodeAtIndex(j, PHIInputSymbol);
                     }
@@ -222,8 +227,9 @@ public abstract class StaticSingleAssignment extends CFG {
 
                     if (!this.phiPlacedAt.containsKey(symbol) || !this.phiPlacedAt.get(symbol).contains(domFrontierBBID)) {
                         changed = true;
-                        if (DEBUGPHI)
-                            logger.debug("Adding Phi node for:" + symbol + " at Basic Block:" + domFrontierBBID);
+                        if (ConfigFactory.getConfig().isDebug()) {
+                            // logger.debug("Adding Phi node for:" + symbol + " at Basic Block:" + domFrontierBBID);
+                        }
 
                         this.basicBlocks.get(domFrontierBBID).addInstruction(new PHIInstruction(symbol, this.getPredecessors(domFrontierBBID).size()));
 

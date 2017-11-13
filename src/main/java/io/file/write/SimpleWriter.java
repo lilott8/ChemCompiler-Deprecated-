@@ -36,12 +36,12 @@ public class SimpleWriter extends FileWriter {
 
     @Override
     public void push(String string) {
-        this.write(string);
+        super.write(string);
     }
 
     @Override
     public void sendDoneSignal() {
-        this.closeFile();
+        super.closeFile();
     }
 
     @Override

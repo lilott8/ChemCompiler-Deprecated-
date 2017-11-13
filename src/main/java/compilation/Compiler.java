@@ -81,7 +81,7 @@ public class Compiler {
     public void runPhases() {
         if (ConfigFactory.getConfig().phasesEnabled()) {
             if (ConfigFactory.getConfig().isDebug()) {
-                logger.info("Phases set to run: " + ConfigFactory.getConfig().getAllPhases());
+                // logger.info("Phases set to run: " + ConfigFactory.getConfig().getAllPhases());
             }
             for (CFG experiment : this.experimentControlFlowGraphs) {
                 Facade phase = new PhaseFacade(ConfigFactory.getConfig(), experiment);
@@ -93,7 +93,7 @@ public class Compiler {
     public void runTranslations() {
         if (ConfigFactory.getConfig().translationsEnabled()) {
             if (ConfigFactory.getConfig().isDebug()) {
-                logger.info("Translators are set to be run.");
+                // logger.info("Translators are set to be run.");
             }
             for (CFG experiment : this.experimentControlFlowGraphs) {
                 Facade translator = new TranslatorFacade(ConfigFactory.getConfig(), experiment);
@@ -113,5 +113,4 @@ public class Compiler {
     public List<CFG> getExperiments() {
         return experimentControlFlowGraphs;
     }
-
 }

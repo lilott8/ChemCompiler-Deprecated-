@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.Set;
 
 import phases.PhaseFacade;
-import translators.mfsim.MFSimSSATranslator;
 import translators.Translator;
+import translators.mfsim.MFSimSSATranslator;
 import translators.typesystem.TypeSystemTranslator;
 
 /**
@@ -138,6 +138,11 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
      * Number of threads to be used.
      */
     private int maxThreads = 1;
+    /**
+     * Should the compiler pay attention to the def/use chain And throw an error if a resource is
+     * attempted to be used in a mix/split after it's been used already.
+     */
+    private boolean monitorResources = true;
 
     /**
      * Build the config object from our command line This method must match that in the main.
@@ -184,6 +189,8 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
                 this.phases.add(PhaseFacade.PHASES.valueOf(StringUtils.upperCase(s)));
             }
         }
+
+        this.monitorResources = !cmd.hasOption("drm");
 
         // This is technically redundant, this is checked in the main.
         // Build the database config.
@@ -444,5 +451,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     @Override
     public int getNumberOfThreads() {
         return this.maxThreads;
+    }
+
+    @Override
+    public boolean monitorResources() {
+        return this.monitorResources;
     }
 }

@@ -15,4 +15,6 @@ public interface CommonConfig {
 
     boolean isDebug();
     int getNumberOfThreads();
+
+    boolean monitorResources();
 }
