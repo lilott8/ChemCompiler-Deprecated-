@@ -22,20 +22,13 @@
           "NAME" : "3",
           "TYPE" : "CHEMICAL"
         }
-      },
-      {
-        "VARIABLE_DECLARATION" : {
-          "ID" : "",
-          "NAME" : "",
-          "TYPE" : "CHEMICAL"
-        }
       }
     ],
     "INSTRUCTIONS" : [
       {
         "OPERATION" : {
           "NAME" : "VARIABLE_DECLARATION",
-          "ID" : "6650555848865913869",
+          "ID" : "7597473312637966736",
           "CLASSIFICATION" : "VARIABLE",
           "INPUTS" : [
             {
@@ -63,7 +56,7 @@
       {
         "OPERATION" : {
           "NAME" : "VARIABLE_DECLARATION",
-          "ID" : "6650555848865913873",
+          "ID" : "7597473312637966808",
           "CLASSIFICATION" : "VARIABLE",
           "INPUTS" : [
             {
@@ -91,7 +84,7 @@
       {
         "OPERATION" : {
           "NAME" : "VARIABLE_DECLARATION",
-          "ID" : "6650555848865913877",
+          "ID" : "7597473312637966911",
           "CLASSIFICATION" : "VARIABLE",
           "INPUTS" : [
             {
@@ -119,7 +112,7 @@
       {
         "OPERATION" : {
           "NAME" : "Mix",
-          "ID" : "6650555848865913907",
+          "ID" : "7597473312637967087",
           "CLASSIFICATION" : "MIX",
           "INPUTS" : [
             {
@@ -156,7 +149,7 @@
       {
         "OPERATION" : {
           "NAME" : "Mix",
-          "ID" : "6650555848865913912",
+          "ID" : "7597473312637967387",
           "CLASSIFICATION" : "MIX",
           "INPUTS" : [
             {
@@ -193,7 +186,7 @@
       {
         "OPERATION" : {
           "NAME" : "Mix",
-          "ID" : "6650555848865913930",
+          "ID" : "7597473312637967752",
           "CLASSIFICATION" : "MIX",
           "INPUTS" : [
             {

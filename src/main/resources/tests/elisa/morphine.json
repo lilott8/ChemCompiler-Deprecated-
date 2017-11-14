@@ -18,15 +18,15 @@
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "Distilled Water",
-          "NAME" : "Distilled Water",
+          "ID" : "O",
+          "NAME" : "O",
           "TYPE" : "CHEMICAL"
         }
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "TMB Substrate",
-          "NAME" : "TMB Substrate",
+          "ID" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C",
+          "NAME" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C",
           "TYPE" : "CHEMICAL"
         }
       },
@@ -139,7 +139,6 @@
               "STATIONARY" : {
                 "NAME" : "Morphine Enzyme"
               }
-
             },
             {
               "INPUT_TYPE" : "PROPERTY",
@@ -194,7 +193,7 @@
                     "INPUT_TYPE" : "VARIABLE",
                     "CHEMICAL" : {
                       "VARIABLE" : {
-                        "NAME" : "Distilled Water"
+                        "NAME" : "O"
                       },
                       "VOLUME" : {
                         "VALUE" : "350",
@@ -267,7 +266,7 @@
               "INPUT_TYPE" : "VARIABLE",
               "CHEMICAL" : {
                 "VARIABLE" : {
-                  "NAME" : "TMB Substrate"
+                  "NAME" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C"
                 },
                 "VOLUME" : {
                   "VALUE" : "100",
@@ -297,7 +296,6 @@
               "STATIONARY" : {
                 "NAME" : "Morphine Enzyme"
               }
-
             },
             {
               "INPUT_TYPE" : "PROPERTY",
@@ -329,7 +327,6 @@
               "STATIONARY" : {
                 "NAME" : "Morphine Enzyme"
               }
-
             },
             {
               "INPUT_TYPE" : "VARIABLE",

@@ -1,0 +1,90 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "AIHA2",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "[N+](=O)(O)[O-]",
+          "NAME" : "[N+](=O)(O)[O-]",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "CO",
+          "NAME" : "CO",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "O",
+          "NAME" : "O",
+          "TYPE" : "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "5782256354252366166",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "[N+](=O)(O)[O-]"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "O"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "a",
+                "TYPE" : "VARIABLE",
+                "NAME" : "a"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "5782256354252366340",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "CO"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "a"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "b",
+                "TYPE" : "VARIABLE",
+                "NAME" : "b"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -19,9 +19,16 @@
           "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
-              "VARIABLE" : {
-                "NAME" : "Water"
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Water"
+                },
+                "VOLUME" : {
+                  "VALUE" : "50",
+                  "UNITS" : "UL"
+                }
               }
+
             },
             {
               "INPUT_TYPE" : "PROPERTY",

@@ -4,22 +4,22 @@
     "INPUTS" : [
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "Ion Exchange Beads",
-          "NAME" : "Ion Exchange Beads",
+          "ID" : "C=CC1=CC=C(C=C1)S(=O)(=O)O",
+          "NAME" : "C=CC1=CC=C(C=C1)S(=O)(=O)O",
           "TYPE" : "CHEMICAL"
         }
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "Flouride Ions F-",
-          "NAME" : "Flouride Ions F-",
+          "ID" : "[F-]",
+          "NAME" : "[F-]",
           "TYPE" : "CHEMICAL"
         }
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "MeCN Solution",
-          "NAME" : "MeCN Solution",
+          "ID" : "CC#N",
+          "NAME" : "CC#N",
           "TYPE" : "CHEMICAL"
         }
       },
@@ -42,7 +42,7 @@
               "INPUT_TYPE" : "VARIABLE",
               "CHEMICAL" : {
                 "VARIABLE" : {
-                  "NAME" : "Ion Exchange Beads"
+                  "NAME" : "C=CC1=CC=C(C=C1)S(=O)(=O)O"
                 },
                 "VOLUME" : {
                   "VALUE" : "10",
@@ -55,7 +55,7 @@
               "INPUT_TYPE" : "VARIABLE",
               "CHEMICAL" : {
                 "VARIABLE" : {
-                  "NAME" : "Flouride Ions F-"
+                  "NAME" : "[F-]"
                 },
                 "VOLUME" : {
                   "VALUE" : "10",
@@ -192,7 +192,7 @@
               "INPUT_TYPE" : "VARIABLE",
               "CHEMICAL" : {
                 "VARIABLE" : {
-                  "NAME" : "MeCN Solution"
+                  "NAME" : "CC#N"
                 },
                 "VOLUME" : {
                   "VALUE" : "10",

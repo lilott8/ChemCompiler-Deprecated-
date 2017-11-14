@@ -1,0 +1,60 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "Fail1",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Cl",
+          "NAME" : "Cl",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "[N+](=O)(O)[O-]",
+          "NAME" : "[N+](=O)(O)[O-]",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "O",
+          "NAME" : "O",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "",
+          "NAME" : "",
+          "TYPE" : "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "6815034318908291459",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Cl"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "[N+](=O)(O)[O-]"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,377 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "Droplet Replenishment PCR",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "PCRMasterMix",
+          "NAME" : "PCRMasterMix",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "Template",
+          "NAME" : "Template",
+          "TYPE" : "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "VORTEX",
+          "ID" : "7456076596030068855",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "PCRMasterMix"
+                },
+                "VOLUME" : {
+                  "VALUE" : "50",
+                  "UNITS" : "UL"
+                }
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "CHEMICAL" : {
+                "VARIABLE" : {
+                  "NAME" : "Template"
+                },
+                "VOLUME" : {
+                  "VALUE" : "50",
+                  "UNITS" : "UL"
+                }
+              }
+
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "1",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "PCRMix",
+                "TYPE" : "VARIABLE",
+                "NAME" : "PCRMix"
+              }            }
+          ]
+        }
+      },
+      {
+        "OPERATION" :  {
+          "NAME" : "REPEAT",
+          "ID" : "7456076596031213038",
+          "CLASSIFICATION" : "CFG_LOOP",
+          "LOOP_NUM" : "50",
+          "OPERATIONS" : [
+            {
+              "OPERATION" : {
+                "NAME" : "HEAT",
+                "ID" : "7456076596031213058",
+                "CLASSIFICATION" : "HEAT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "VARIABLE" : {
+                      "NAME" : "PCRMix"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TEMPERATURE" : {
+                      "VALUE" : "95",
+                      "UNITS" : "CELSIUS"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "20",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "Weigh",
+                "ID" : "7456076596031213091",
+                "CLASSIFICATION" : "DETECT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "VARIABLE" : {
+                      "NAME" : "PCRMix"
+                    }                }
+                ],
+                "OUTPUTS" : [
+                  {
+                    "SENSOR_DECLARATION" : {
+                      "ID" : "volumeWight",
+                      "NAME" : "volumeWight",
+                      "TYPE" : "SENSOR"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "OPERATION" :  {
+                "NAME" :  "IF",
+                "ID" : "7456076596031213151",
+                "CLASSIFICATION" : "CFG_BRANCH",
+                "CONDITION" : "volumeWight <= 50ul",
+                "TRUE_BRANCH" : [
+                  {
+                    "OPERATION" : {
+                      "NAME" : "VORTEX",
+                      "ID" : "7456076596031214309",
+                      "CLASSIFICATION" : "MIX",
+                      "INPUTS" : [
+                        {
+                          "INPUT_TYPE" : "VARIABLE",
+                          "CHEMICAL" : {
+                            "VARIABLE" : {
+                              "NAME" : "PCRMasterMix"
+                            },
+                            "VOLUME" : {
+                              "VALUE" : "25",
+                              "UNITS" : "UL"
+                            }
+                          }
+
+                        },
+                        {
+                          "INPUT_TYPE" : "VARIABLE",
+                          "CHEMICAL" : {
+                            "VARIABLE" : {
+                              "NAME" : "Template"
+                            },
+                            "VOLUME" : {
+                              "VALUE" : "25",
+                              "UNITS" : "UL"
+                            }
+                          }
+
+                        },
+                        {
+                          "INPUT_TYPE" : "PROPERTY",
+                          "TIME" : {
+                            "VALUE" : "5",
+                            "UNITS" : "SECOND"
+                          }
+                        }
+                      ],
+                      "OUTPUTS" : [
+                        {
+                          "VARIABLE_DECLARATION" : {
+                            "ID" : "replacement",
+                            "TYPE" : "VARIABLE",
+                            "NAME" : "replacement"
+                          }                    }
+                      ]
+                    }
+                  },
+                  {
+                    "OPERATION" : {
+                      "NAME" : "HEAT",
+                      "ID" : "7456076596031673233",
+                      "CLASSIFICATION" : "HEAT",
+                      "INPUTS" : [
+                        {
+                          "INPUT_TYPE" : "VARIABLE",
+                          "VARIABLE" : {
+                            "NAME" : "replacement"
+                          }
+                        },
+                        {
+                          "INPUT_TYPE" : "PROPERTY",
+                          "TEMPERATURE" : {
+                            "VALUE" : "95",
+                            "UNITS" : "CELSIUS"
+                          }
+                        },
+                        {
+                          "INPUT_TYPE" : "PROPERTY",
+                          "TIME" : {
+                            "VALUE" : "45",
+                            "UNITS" : "SECOND"
+                          }
+                        }
+                      ],
+                      "OUTPUTS" : [
+                      ]
+                    }
+                  },
+                  {
+                    "OPERATION" : {
+                      "NAME" : "Mix",
+                      "ID" : "7456076596031673300",
+                      "CLASSIFICATION" : "MIX",
+                      "INPUTS" : [
+                        {
+                          "INPUT_TYPE" : "VARIABLE",
+                          "VARIABLE" : {
+                            "NAME" : "PCRMix"
+                          }
+                        },
+                        {
+                          "INPUT_TYPE" : "VARIABLE",
+                          "VARIABLE" : {
+                            "NAME" : "replacement"
+                          }
+                        },
+                        {
+                          "INPUT_TYPE" : "PROPERTY",
+                          "TIME" : {
+                            "VALUE" : "5",
+                            "UNITS" : "SECOND"
+                          }
+                        }
+                      ],
+                      "OUTPUTS" : [
+                        {
+                          "VARIABLE" : {
+                            "NAME" : "PCRMix"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "FALSE_BRANCH" : [
+                ],
+                "ELSEIF_BRANCH" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "HEAT",
+                "ID" : "7456076596031673477",
+                "CLASSIFICATION" : "HEAT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "VARIABLE" : {
+                      "NAME" : "PCRMix"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TEMPERATURE" : {
+                      "VALUE" : "68",
+                      "UNITS" : "CELSIUS"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "30",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            },
+            {
+              "OPERATION" : {
+                "NAME" : "HEAT",
+                "ID" : "7456076596031673758",
+                "CLASSIFICATION" : "HEAT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "VARIABLE" : {
+                      "NAME" : "PCRMix"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TEMPERATURE" : {
+                      "VALUE" : "95",
+                      "UNITS" : "CELSIUS"
+                    }
+                  },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "TIME" : {
+                      "VALUE" : "45",
+                      "UNITS" : "SECOND"
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "HEAT",
+          "ID" : "7456076596031674046",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "PCRMix"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "68",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "5",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Save",
+          "ID" : "7456076596031674273",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "PCRMix"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      }
+    ]
+  }
+}

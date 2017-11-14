@@ -58,13 +58,13 @@
       {
         "OPERATION" : {
           "NAME" : "SPLIT",
-          "ID" : "1294012199300641852",
+          "ID" : "7597473312639055162",
           "CLASSIFICATION" : "SPLIT",
           "INPUTS:" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "Ciprofloxacin-Conjugate"
+                "NAME" : "First Dilute"
               }
             },
             {
@@ -83,8 +83,6 @@
                 "NAME" : "First Dilute",
                 "TYPE" : "CHEMICAL",
                 "VOLUME" : {
-                  "VALUE" : "0",
-                  "UNITS" : "UL"
                 }
               }
             },
@@ -94,8 +92,6 @@
                 "NAME" : "Waste Droplet",
                 "TYPE" : "CHEMICAL",
                 "VOLUME" : {
-                  "VALUE" : "0",
-                  "UNITS" : "UL"
                 }
               }
             }
@@ -112,7 +108,8 @@
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
                 "NAME" : "Waste Droplet"
-              }            }
+              }
+            }
           ],
           "OUTPUTS" : [
           ]
@@ -151,13 +148,13 @@
       {
         "OPERATION" : {
           "NAME" : "SPLIT",
-          "ID" : "1294012199300642979",
+          "ID" : "7597473312639056535",
           "CLASSIFICATION" : "SPLIT",
           "INPUTS:" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "Ciprofloxacin-Conjugate"
+                "NAME" : "Second Dilute"
               }
             },
             {
@@ -176,8 +173,6 @@
                 "NAME" : "Second Dilute",
                 "TYPE" : "CHEMICAL",
                 "VOLUME" : {
-                  "VALUE" : "0",
-                  "UNITS" : "UL"
                 }
               }
             },
@@ -187,8 +182,6 @@
                 "NAME" : "Waste Droplet",
                 "TYPE" : "CHEMICAL",
                 "VOLUME" : {
-                  "VALUE" : "0",
-                  "UNITS" : "UL"
                 }
               }
             }
@@ -205,7 +198,8 @@
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
                 "NAME" : "Waste Droplet"
-              }            }
+              }
+            }
           ],
           "OUTPUTS" : [
           ]
@@ -244,13 +238,13 @@
       {
         "OPERATION" : {
           "NAME" : "SPLIT",
-          "ID" : "1294012199300644841",
+          "ID" : "7597473312639058362",
           "CLASSIFICATION" : "SPLIT",
           "INPUTS:" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "Ciprofloxacin-Conjugate"
+                "NAME" : "Third Dilute"
               }
             },
             {
@@ -269,8 +263,6 @@
                 "NAME" : "Third Dilute",
                 "TYPE" : "CHEMICAL",
                 "VOLUME" : {
-                  "VALUE" : "0",
-                  "UNITS" : "UL"
                 }
               }
             },
@@ -280,8 +272,6 @@
                 "NAME" : "Waste Droplet",
                 "TYPE" : "CHEMICAL",
                 "VOLUME" : {
-                  "VALUE" : "0",
-                  "UNITS" : "UL"
                 }
               }
             }
@@ -298,7 +288,8 @@
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
                 "NAME" : "Waste Droplet"
-              }            }
+              }
+            }
           ],
           "OUTPUTS" : [
           ]
@@ -337,13 +328,13 @@
       {
         "OPERATION" : {
           "NAME" : "SPLIT",
-          "ID" : "1294012199300646084",
+          "ID" : "7597473312639059112",
           "CLASSIFICATION" : "SPLIT",
           "INPUTS:" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "Ciprofloxacin-Conjugate"
+                "NAME" : "Fourth Dilute"
               }
             },
             {
@@ -362,8 +353,6 @@
                 "NAME" : "Fourth Dilute",
                 "TYPE" : "CHEMICAL",
                 "VOLUME" : {
-                  "VALUE" : "0",
-                  "UNITS" : "UL"
                 }
               }
             },
@@ -373,8 +362,6 @@
                 "NAME" : "Waste Droplet",
                 "TYPE" : "CHEMICAL",
                 "VOLUME" : {
-                  "VALUE" : "0",
-                  "UNITS" : "UL"
                 }
               }
             }
@@ -391,7 +378,8 @@
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
                 "NAME" : "Waste Droplet"
-              }            }
+              }
+            }
           ],
           "OUTPUTS" : [
           ]
@@ -430,13 +418,13 @@
       {
         "OPERATION" : {
           "NAME" : "SPLIT",
-          "ID" : "1294012199300648057",
+          "ID" : "7597473312639059910",
           "CLASSIFICATION" : "SPLIT",
           "INPUTS:" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "Ciprofloxacin-Conjugate"
+                "NAME" : "Final Dilute"
               }
             },
             {
@@ -455,8 +443,6 @@
                 "NAME" : "Final Dilute",
                 "TYPE" : "CHEMICAL",
                 "VOLUME" : {
-                  "VALUE" : "0",
-                  "UNITS" : "UL"
                 }
               }
             },
@@ -466,8 +452,6 @@
                 "NAME" : "Waste Droplet",
                 "TYPE" : "CHEMICAL",
                 "VOLUME" : {
-                  "VALUE" : "0",
-                  "UNITS" : "UL"
                 }
               }
             }
@@ -484,7 +468,8 @@
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
                 "NAME" : "Waste Droplet"
-              }            }
+              }
+            }
           ],
           "OUTPUTS" : [
           ]
@@ -500,7 +485,8 @@
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
                 "NAME" : "Final Dilute"
-              }            }
+              }
+            }
           ],
           "OUTPUTS" : [
           ]
