@@ -10,8 +10,8 @@ import java.util.Set;
 import io.file.read.FileReader;
 import io.file.read.SimpleReader;
 import io.file.write.FileWriter;
+import io.file.write.SimpleWriter;
 import shared.substances.ChemAxonCompound;
-import typesystem.epa.ChemTypes;
 
 /**
  * @created: 10/9/17
@@ -24,9 +24,10 @@ import typesystem.epa.ChemTypes;
 public class StatisticCombinator extends TableCombinator {
 
     private FileReader reader;
-    private FileWriter writer;
-    Map<Integer, Set<Long>> reactiveGroupsToDistinctChemicals = new HashMap<>();
+    public static final FileWriter writer = new SimpleWriter("stats.txt");
     private Map<Integer, Set<Long>> output = new HashMap<>();
+    //private FileWriter writer;
+    Map<Integer, Set<Long>> reactiveGroupsToDistinctChemicals = new HashMap<>();
 
     public StatisticCombinator(FileWriter handler) {
         super(handler);

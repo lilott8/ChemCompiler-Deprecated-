@@ -25,7 +25,7 @@ import phases.inference.rules.InferenceRule;
 import phases.inference.rules.NodeAnalyzer;
 import phases.inference.satsolver.SatSolver;
 import phases.inference.satsolver.strategies.Z3Strategy;
-import shared.Delete;
+import reactivetable.StatisticCombinator;
 import shared.Tuple;
 import typesystem.epa.ChemTypes;
 
@@ -236,7 +236,7 @@ public class Inference implements Phase {
 
         average = total / ((double) medianContainer.size());
 
-        Delete.writer.write(String.format("%d|%d|%d|%d|%.02f", min, max, total, findMedian(medianContainer), average));
+        StatisticCombinator.writer.write(String.format("%d|%d|%d|%d|%.02f", min, max, total, findMedian(medianContainer), average));
     }
 
     private int findMedian(List<Integer> nums) {

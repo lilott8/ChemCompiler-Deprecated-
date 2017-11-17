@@ -36,6 +36,9 @@ public class Compiler {
     private CFG controlFlow;
 
     public Compiler(Config config) {
+        Benchtop.INSTANCE.getExperiments().clear();
+        Benchtop.INSTANCE.getInputs().clear();
+        Benchtop.INSTANCE.getOutputs().clear();
         try {
             for(String file : config.getFilesForCompilation()) {
                 BenchtopParser.parse(file);

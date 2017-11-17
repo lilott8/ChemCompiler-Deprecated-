@@ -10,8 +10,7 @@ import cli.DBArgs;
 import compilation.Compiler;
 import config.Config;
 import config.ConfigFactory;
-import shared.Delete;
-import typesystem.epa.EpaManager;
+import reactivetable.StatisticCombinator;
 
 
 public class Main {
@@ -39,19 +38,19 @@ public class Main {
     public static void runner() throws Exception {
         List<String> compile = new ArrayList<>();
 
-        // Aquacore Tests.
+        // Aquacore Tests. (0-3)
         compile.add("src/main/resources/tests/aquacoreassays/glucose_detection.json");
         compile.add("src/main/resources/tests/aquacoreassays/image_probe_synth.json");
         compile.add("src/main/resources/tests/aquacoreassays/neurotransmitter_sensing.json");
         compile.add("src/main/resources/tests/aquacoreassays/pcr.json");
 
-        // Chemtrails Tests.
+        // Chemtrails Tests. (4-7)
         compile.add("src/main/resources/tests/chemtype/chemtype1.json");
         compile.add("src/main/resources/tests/chemtype/chemtype2.json");
         compile.add("src/main/resources/tests/chemtype/chemtype3.json");
         compile.add("src/main/resources/tests/chemtype/chemtype4.json");
 
-        // Contrived Tests.
+        // Contrived Tests. (8-14)
         compile.add("src/main/resources/tests/contrived/compileFail.json");
         compile.add("src/main/resources/tests/contrived/heat_op.json");
         compile.add("src/main/resources/tests/contrived/if_elif_else.json");
@@ -60,7 +59,7 @@ public class Main {
         compile.add("src/main/resources/tests/contrived/simple_mix.json");
         compile.add("src/main/resources/tests/contrived/split.json");
 
-        // Elisa Tests.
+        // Elisa Tests. (15-23)
         compile.add("src/main/resources/tests/elisa/broad_spectrum_opiate.json");
         compile.add("src/main/resources/tests/elisa/ciprofloxacin.json");
         compile.add("src/main/resources/tests/elisa/diazepam.json");
@@ -71,6 +70,7 @@ public class Main {
         compile.add("src/main/resources/tests/elisa/morphine.json");
         compile.add("src/main/resources/tests/elisa/oxycodone.json");
 
+        // Real world Tests. (24-33)
         compile.add("src/main/resources/tests/realworld/aiha1.json");
         compile.add("src/main/resources/tests/realworld/aiha2.json");
         compile.add("src/main/resources/tests/realworld/aiha3.json");
@@ -85,53 +85,58 @@ public class Main {
         CliWrapper cli;
         Compiler compiler;
 
-        // Delete.writer.write("inference stuff:");
-        // Delete.writer.write("min|max|total|median|average");
+        StatisticCombinator.writer.write("inference stuff:");
+        StatisticCombinator.writer.write("min|max|total|median|average");
 
-        Delete.writer.flush();
+        StatisticCombinator.writer.flush();
 
-        EpaManager.INSTANCE.initialize();
-
+        // EpaManager.INSTANCE.initialize();
+        String c;
         //0-34
-        // String c = compile.get(0);
-        // String c = compile.get(1);
-        // String c = compile.get(2);
-        // String c = compile.get(3);
-        // String c = compile.get(4);
-        // String c = compile.get(5);
-        // String c = compile.get(6);
-        // String c = compile.get(7);
-        // String c = compile.get(8);
-        // String c = compile.get(9);
-        // String c = compile.get(10);
-        // String c = compile.get(11);
-        // String c = compile.get(12);
-        // String c = compile.get(13);
-        // String c = compile.get(14);
-        // String c = compile.get(15);
-        // String c = compile.get(16);
-        // String c = compile.get(17);
-        // String c = compile.get(18);
-        // String c = compile.get(19);
-        // String c = compile.get(20);
-        // String c = compile.get(21);
-        // String c = compile.get(22);
-        // String c = compile.get(23);
-        // String c = compile.get(24);
-        // Start here when the new experiments are done
-        //String c = compile.get(25);
-         String c = compile.get(26);
-        // String c = compile.get(27);
-        // String c = compile.get(28);
-        // String c = compile.get(29);
-        // String c = compile.get(30);
-        // String c = compile.get(31);
-        // String c = compile.get(32);
-        // String c = compile.get(33);
-        // String c = compile.get(34);
+        // c = compile.get(0);
+        // c = compile.get(1);
+        // c = compile.get(2);
+        c = compile.get(3);
 
-        Delete.writer.push("=====================================");
-        Delete.writer.push(c);
+        // c = compile.get(4);
+        // c = compile.get(5);
+        // c = compile.get(6);
+        // c = compile.get(7);
+
+        // c = compile.get(8);
+        // c = compile.get(9);
+        // c = compile.get(10);
+        // c = compile.get(11);
+        // c = compile.get(12);
+        // c = compile.get(13);
+        // c = compile.get(14);
+
+        // Elisa Tests.
+        // c = compile.get(15);
+        // c = compile.get(16);
+        // c = compile.get(17);
+        // c = compile.get(18);
+        // c = compile.get(19);
+        // c = compile.get(20);
+        // c = compile.get(21);
+        // c = compile.get(22);
+        // c = compile.get(23);
+
+        // Real World Tests.
+        // c = compile.get(24);
+        // c = compile.get(25);
+        // c = compile.get(26);
+        // c = compile.get(27);
+        // c = compile.get(28);
+        // c = compile.get(29);
+        // c = compile.get(30);
+        // c = compile.get(31);
+        // c = compile.get(32);
+        // c = compile.get(33);
+
+        //for (String c : compile) {
+        StatisticCombinator.writer.push("=====================================");
+        StatisticCombinator.writer.push(c);
         long inferenceTime, compileTime, beginTime = 0;
         logger.info("Running: " + c);
         String args = String.format("-c %s -p inference " +
@@ -148,11 +153,12 @@ public class Main {
         compiler.runAllOps();
         inferenceTime = System.nanoTime() - beginTime;
 
-        Delete.writer.push("compile time: " + compileTime);
-        Delete.writer.push("inference time: " + inferenceTime);
+        StatisticCombinator.writer.push("compile time: " + compileTime);
+        StatisticCombinator.writer.push("inference time: " + inferenceTime);
 
-        Delete.writer.push("=====================================");
-        Delete.writer.flush();
-        Delete.writer.sendDoneSignal();
+        StatisticCombinator.writer.push("=====================================");
+        StatisticCombinator.writer.flush();
+        //}
+        StatisticCombinator.writer.sendDoneSignal();
     }
 }
