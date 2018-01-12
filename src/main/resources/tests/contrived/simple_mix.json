@@ -168,6 +168,48 @@
             }
           ]
         }
+      },
+      {
+        "OPERATION" :  {
+          "NAME" : "REPEAT",
+          "ID" : "5385954717057487814",
+          "CLASSIFICATION" : "CFG_LOOP",
+          "LOOP_NUM" : "2",
+          "OPERATIONS" : [
+            {
+              "OPERATION" : {
+                "NAME" : "Measure Fluorescence",
+                "ID" : "5385954717057494423",
+                "CLASSIFICATION" : "DETECT",
+                "INPUTS" : [
+                  {
+                    "INPUT_TYPE" : "VARIABLE",
+                    "VARIABLE" : {
+                      "NAME" : "mix2"
+                    }                },
+                  {
+                    "INPUT_TYPE" : "PROPERTY",
+                    "PROPERTY" : {
+                      "TIME" : {
+                        "VALUE" : "10",
+                        "UNITS" : "SECOND"
+                      }
+                    }
+                  }
+                ],
+                "OUTPUTS" : [
+                  {
+                    "SENSOR_DECLARATION" : {
+                      "ID" : "MySensor",
+                      "NAME" : "MySensor",
+                      "TYPE" : "SENSOR"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
       }
     ]
   }

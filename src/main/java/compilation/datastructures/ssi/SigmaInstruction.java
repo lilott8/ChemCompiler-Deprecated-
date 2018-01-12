@@ -1,21 +1,20 @@
 package compilation.datastructures.ssi;
 
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 
 /**
  * Created by chriscurtis on 4/12/17.
  */
 public class SigmaInstruction extends InstructionNode {
 
-    private String __oringinalSymbol;
-
+    private String originalSymbol;
 
     public SigmaInstruction(String symbol, Integer successors){
         super(-1,null);
-        __oringinalSymbol = symbol;
-        this.__inputSymbols.add(symbol);
+        originalSymbol = symbol;
+        this.inputSymbols.add(symbol);
         while(successors-- >0)
-            this.__outputSymbols.add(symbol);
+            this.outputSymbols.add(symbol);
     }
 
 
@@ -29,7 +28,7 @@ public class SigmaInstruction extends InstructionNode {
             ret += s + " ";
         }
 
-        ret+= "= SIGMA( " + this.getInputSymbols().get(0) + ")" + __oringinalSymbol;
+        ret+= "= SIGMA( " + this.getInputSymbols().get(0) + ")" + originalSymbol;
         return ret;
     }
 }

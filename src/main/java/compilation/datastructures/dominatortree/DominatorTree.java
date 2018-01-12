@@ -12,41 +12,40 @@ import compilation.datastructures.cfg.CFG;
 public class DominatorTree extends DominatorTreeBase {
 
     public DominatorTree(CFG controlFlowGraph) {
-
-        __dominatorTable = new HashMap<Integer, List<Integer>>();
-        __directionalSet = controlFlowGraph.getPredecessorTable(); //set predecessors
-        __nodes = new ArrayList<Integer>();
+        dominatorTable = new HashMap<>();
+        directionalSet = controlFlowGraph.getPredecessorTable(); //set predecessors
+        nodes = new ArrayList<Integer>();
 
         for (Integer bbID : controlFlowGraph.getBasicBlocks().keySet()) {
-            __nodes.add(bbID);
+            nodes.add(bbID);
         }
 
-        BuildTree();
+        buildTree();
     }
 
-    protected void BuildTree() {
+    protected void buildTree() {
         List<Integer> n_0 = new ArrayList<Integer>();
-        n_0.add(__nodes.get(0));
-        __dominatorTable.put(__nodes.get(0), n_0);
-        for(int i =1 ; i<__nodes.size(); ++i) {
-            __dominatorTable.put(__nodes.get(i),__nodes);
+        n_0.add(nodes.get(0));
+        dominatorTable.put(nodes.get(0), n_0);
+        for(int i = 1; i< nodes.size(); ++i) {
+            dominatorTable.put(nodes.get(i), nodes);
         }
         boolean changed;
         do {
             changed = false;
-            for(int i = 1; i< __nodes.size();++i){
-                List<Integer> currentSet = __dominatorTable.get(__nodes.get(i));
-                List<Integer> newSet = super.DenominatorFormula(__nodes.get(i));
+            for(int i = 1; i< nodes.size(); ++i){
+                List<Integer> currentSet = dominatorTable.get(nodes.get(i));
+                List<Integer> newSet = super.denominatorFormula(nodes.get(i));
                 if (!checkEq(newSet, currentSet)) {
                     changed = true;
-                    __dominatorTable.put(__nodes.get(i),newSet);
+                    dominatorTable.put(nodes.get(i),newSet);
                 }
             }
 
         }while(changed);
 
         generateImmediateDominators();
-        generateDominenceFrontier();
+        generateDominanceFrontier();
     }
 
 }

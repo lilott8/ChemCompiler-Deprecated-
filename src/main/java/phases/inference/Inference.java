@@ -6,14 +6,17 @@ import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import phases.Phase;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Variable;
@@ -22,6 +25,7 @@ import phases.inference.rules.InferenceRule;
 import phases.inference.rules.NodeAnalyzer;
 import phases.inference.satsolver.SatSolver;
 import phases.inference.satsolver.strategies.Z3Strategy;
+import reactivetable.StatisticCombinator;
 import shared.Tuple;
 import typesystem.epa.ChemTypes;
 
@@ -92,9 +96,9 @@ public class Inference implements Phase {
             // Iterate the instructions.
             for(InstructionNode node : block.getValue().getInstructions()) {
                 // If we have an instruction, see what we can infer.
-                if(node.Instruction() != null) {
+                if(node.getInstruction() != null) {
                     // This will give us the typing of all the constraints in the instruction.
-                    this.inferConstraints(StringUtils.upperCase(node.Instruction().getClassification()), node);
+                    this.inferConstraints(StringUtils.upperCase(node.getInstruction().getClassification()), node);
                 }
             }
         }
@@ -103,6 +107,8 @@ public class Inference implements Phase {
         for(BasicBlockEdge edge : this.controlFlowGraph.getBasicBlockEdges()) {
             this.inferConstraints(StringUtils.upperCase(edge.getClassification()), edge);
         }
+
+        printStatistics();
 
         // logger.info(this.instructions);
         // logger.debug(this.variables);
@@ -114,7 +120,7 @@ public class Inference implements Phase {
      * @param name
      *   Name of the instruction.
      * @param instruction
-     *   Instruction to be inferred.
+     *   getInstruction to be inferred.
      * @return
      *   A mapping of id to what was inferred.
      */
@@ -208,5 +214,34 @@ public class Inference implements Phase {
                 logger.warn(String.format("We cannot invoke that dark magic (%s)", clazz.getName()));
             }
         }
+    }
+
+    private void printStatistics() {
+        double average = 0;
+        int total = 0;
+        int max = 0;
+        int min = 100000;
+        List<Integer> medianContainer = new ArrayList<>();
+
+        for (Map.Entry<String, Variable> varEntry : this.variables.entrySet()) {
+            medianContainer.add(varEntry.getValue().getTypingConstraints().size());
+            total += varEntry.getValue().getTypingConstraints().size();
+            if (varEntry.getValue().getTypingConstraints().size() < min) {
+                min = varEntry.getValue().getTypingConstraints().size();
+            }
+            if (varEntry.getValue().getTypingConstraints().size() > max) {
+                max = varEntry.getValue().getTypingConstraints().size();
+            }
+        }
+
+        average = total / ((double) medianContainer.size());
+
+        StatisticCombinator.writer.write(String.format("%d|%d|%d|%d|%.02f", min, max, total, findMedian(medianContainer), average));
+    }
+
+    private int findMedian(List<Integer> nums) {
+        Collections.sort(nums);
+        int middle = Math.floorDiv(nums.size(), 2);
+        return nums.get(middle);
     }
 }

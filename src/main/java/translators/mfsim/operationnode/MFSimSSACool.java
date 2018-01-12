@@ -11,22 +11,22 @@ import executable.instructions.React;
  */
 public class MFSimSSACool extends MFSimSSANode {
     private static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
-    private Long __time;
+    private Long time;
 
     public MFSimSSACool(Integer id, React reactNode) {
         super(id, OperationClassifier.COOL, reactNode.getName());
-        __time = getTime(reactNode);
+        time = getTime(reactNode);
     }
 
     public MFSimSSACool(Integer id, Heat heatNode){
         super(id, OperationClassifier.COOL, heatNode.getName());
-        __time = getTime(heatNode);
+        time = getTime(heatNode);
     }
     public String toString() {
-        String ret = "NODE (" + this.__nodeID + ", " + this.__opType + ", " + __time + ", " + this.__nodeName + ")\n";
+        String ret = "NODE (" + this.nodeID + ", " + this.opType + ", " + time + ", " + this.nodeName + ")\n";
 
-        for (Integer successor : this.__successorIDs) {
-            ret += "EDGE (" + this.__nodeID + ", " + successor + ")\n";
+        for (Integer successor : this.successorIDs) {
+            ret += "EDGE (" + this.nodeID + ", " + successor + ")\n";
         }
         return ret;
     }

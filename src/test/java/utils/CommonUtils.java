@@ -1,20 +1,9 @@
 package utils;
 
-import com.sun.tools.javac.comp.Infer;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-
-import java.lang.reflect.Method;
 
 import cli.CliWrapper;
 import compilation.Compiler;
-import config.Config;
 import config.ConfigFactory;
 import phases.inference.Inference;
 
@@ -24,6 +13,7 @@ import phases.inference.Inference;
  * @project: ChemicalCompiler
  */
 public class CommonUtils {
+
     public static boolean runTest(String file) {
         String args = String.format("-c %s -p inference " +
                 "%s " +

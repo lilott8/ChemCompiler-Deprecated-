@@ -18,12 +18,11 @@ import java.util.Map;
 import java.util.Set;
 
 import chemicalInteractions.ChemicalResolution;
+import compilation.datastructures.InstructionEdge;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.cfg.CFG;
-import compilation.datastructures.InstructionEdge;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import config.TranslateConfig;
-import translators.Translator;
 import executable.instructions.Combine;
 import executable.instructions.Detect;
 import executable.instructions.Heat;
@@ -31,6 +30,7 @@ import executable.instructions.Instruction;
 import executable.instructions.Output;
 import executable.instructions.Split;
 import executable.instructions.Store;
+import translators.Translator;
 
 /**
  * Created by chriscurtis on 10/26/16.
@@ -82,7 +82,7 @@ public class TypeSystemTranslator implements Serializable, Translator {
         __instructions = new ArrayList<InstructionNode>();
         __children = new HashMap<Integer, Set<Integer>>();
         __table = new TypeSystemSymbolTable(controlFlowGraph);
-        // __controlFlowGraph = controlFlowGraph;
+        // controlFlowGraph = controlFlowGraph;
 
         for (BasicBlock bb : controlFlowGraph.getBasicBlocks().values()) {
             for (InstructionNode node : bb.getInstructions()) {
@@ -128,16 +128,16 @@ public class TypeSystemTranslator implements Serializable, Translator {
             JSON += "\t{\n";
             InstructionNode n = __instructions.get(i);
             JSON += "\t\t\"node\": {\n";
-            JSON += "\t\t\t\"id\": " + n.ID() + "," + "\n";
+            JSON += "\t\t\t\"id\": " + n.getId() + "," + "\n";
 
             JSON += "\t\t\t\"instruction\": {\n";
-            JSON += "\t\t\t\t\"operation\": \"" + operationType(n.Instruction()) + "\"\n";
+            JSON += "\t\t\t\t\"operation\": \"" + operationType(n.getInstruction()) + "\"\n";
             JSON += "\t\t\t},\n";
 
             JSON += "\t\t\t\"inputs\": {\n";
-            Integer maxSize = n.Instruction().getInputs().size();
+            Integer maxSize = n.getInstruction().getInputs().size();
             Integer aliasIndex = 0;
-            for (String alias : n.Instruction().getInputs().keySet()) {
+            for (String alias : n.getInstruction().getInputs().keySet()) {
                 if (aliasIndex != maxSize) {
                     JSON += "\t\t\t\t\"alias" + aliasIndex++ + "\" : \"" + alias + "\",\n";
 
@@ -150,12 +150,12 @@ public class TypeSystemTranslator implements Serializable, Translator {
             JSON += "\t\t\t\"edges\": [ \n";
 
             JSON += "\t\t\t\t";
-            if (__children.containsKey(n.ID())) {
-                for (Integer childIndex = 0; childIndex < __children.get(n.ID()).size(); ++childIndex) {
-                    if (childIndex != __children.get(n.ID()).size() - 1)
-                        JSON += __children.get(n.ID()).toArray()[childIndex] + ",";
+            if (__children.containsKey(n.getId())) {
+                for (Integer childIndex = 0; childIndex < __children.get(n.getId()).size(); ++childIndex) {
+                    if (childIndex != __children.get(n.getId()).size() - 1)
+                        JSON += __children.get(n.getId()).toArray()[childIndex] + ",";
                     else
-                        JSON += __children.get(n.ID()).toArray()[childIndex] + "\n";
+                        JSON += __children.get(n.getId()).toArray()[childIndex] + "\n";
                 }
             } else {
                 JSON += "-1\n";

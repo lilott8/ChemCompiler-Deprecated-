@@ -3,9 +3,8 @@ package phases.inference.rules;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import phases.inference.Inference;
-import substance.Property;
 
 /**
  * @created: 8/10/17

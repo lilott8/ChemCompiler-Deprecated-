@@ -84,7 +84,7 @@ public class Group {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("ID: ").append(this.groupId).append("\t").append("Name: ").append(this.groupName).append("\n");
+        sb.append("getId: ").append(this.groupId).append("\t").append("Name: ").append(this.groupName).append("\n");
         for (Map.Entry<EpaManager.Type, List<Tuple>> entry : this.attributes.entrySet()) {
             sb.append(entry.getKey().toString()).append("\n");
             for(Tuple a : entry.getValue()) {

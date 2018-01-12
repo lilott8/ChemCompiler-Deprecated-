@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import compilation.datastructures.InstructionEdge;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import compilation.datastructures.ssa.GlobalAssignment;
 import compilation.datastructures.ssa.PHIInstruction;
 import compilation.symboltable.NestedSymbolTable;
@@ -22,57 +22,54 @@ import executable.instructions.Split;
  * Created by chriscurtis on 9/29/16.
  */
 public class BasicBlock implements Serializable {
-    private HashMap<String, Set<Integer>> __basicBlockEntry;
-    private HashMap<String, Set<Integer>> __basicBlockExit;
-    private HashSet<String> __definitions;
-    private HashSet<String> __killedSet;
+    private Map<String, Set<Integer>> basicBlockEntry = new HashMap<>();
+    private Map<String, Set<Integer>> basicBlockExit = new HashMap<>();
+    private Set<String> definitions = new HashSet<>();
+    private Set<String> killedSet = new HashSet<>();
 
-    private NestedSymbolTable __symbolTable;
+    private NestedSymbolTable symbolTable;
+    public static final String NL = System.lineSeparator();
 
-
-    private ArrayList<InstructionNode> __instructions;
-    private ArrayList<InstructionEdge> __edges;
-    private Integer __ID;
+    private List<InstructionNode> instructions = new ArrayList<>();
+    private List<InstructionEdge> edges = new ArrayList<>();
+    private Integer id;
 
     public BasicBlock(Integer id, NestedSymbolTable table) {
-        __basicBlockEntry = new HashMap<String, Set<Integer>>();
-        __basicBlockExit = new HashMap<String, Set<Integer>>();
-        __symbolTable = table;
-        __definitions = new HashSet<String>();
-        __killedSet = new HashSet<String>();
-
-        __instructions = new ArrayList<InstructionNode>();
-        __edges = new ArrayList<InstructionEdge>();
-        __ID = id;
+        symbolTable = table;
+        this.id = id;
     }
 
     //copy constructor
     public BasicBlock(BasicBlock bb) {
-        __basicBlockEntry = bb.__basicBlockEntry;
-        __basicBlockExit = bb.__basicBlockExit;
-        __symbolTable = bb.__symbolTable;
-        __killedSet = bb.__killedSet;
-        __definitions = bb.__definitions;
-        __instructions = bb.__instructions;
-        __edges = bb.__edges;
-        __ID = bb.__ID;
+        basicBlockEntry = bb.basicBlockEntry;
+        basicBlockExit = bb.basicBlockExit;
+        symbolTable = bb.symbolTable;
+        killedSet = bb.killedSet;
+        definitions = bb.definitions;
+        instructions = bb.instructions;
+        edges = bb.edges;
+        id = bb.id;
     }
 
-    public void AddVariableDefinition(Instruction i){
-       if (! i.getOutputs().isEmpty()){
-           for(String definition : i.getOutputs().keySet())
-               this.__definitions.add(definition);
+    public void addVariableDefinition(Instruction i){
+       if (!i.getOutputs().isEmpty()) {
+           this.definitions.addAll(i.getOutputs().keySet());
        }
     }
 
-    public HashSet<String> getDefinitions() { return this.__definitions; }
-    public HashSet<String> getKilledSet() { return this.__killedSet; }
+    public Set<String> getDefinitions() {
+        return this.definitions;
+    }
+
+    public Set<String> getKilledSet() {
+        return this.killedSet;
+    }
 
 
-    public Boolean containsInstruction(Integer index) {
-        Boolean retVal = false;
-        for (InstructionNode instr : __instructions) {
-            if (instr.ID() == index) {
+    public Boolean containsInstruction(int index) {
+        boolean retVal = false;
+        for (InstructionNode instr : instructions) {
+            if (instr.getId() == index) {
                 retVal = true;
             }
         }
@@ -83,22 +80,19 @@ public class BasicBlock implements Serializable {
     public Boolean processPredecessors(List<BasicBlock> predecessors) {
         Boolean changed = false;
         for (BasicBlock bb : predecessors) {
-            for (String outgoingSymbol : bb.__basicBlockExit.keySet()) {
-                if (!this.__basicBlockEntry.containsKey(outgoingSymbol)) {
+            for (String outgoingSymbol : bb.basicBlockExit.keySet()) {
+                if (!this.basicBlockEntry.containsKey(outgoingSymbol)) {
                     //if the symbol does not exist yet add entire set from predecessor
                     changed = true;
                     Set<Integer> copySet = new HashSet<Integer>();
-                    for(Integer id: bb.__basicBlockExit.get(outgoingSymbol)){
-                        copySet.add(id);
-                    }
-
-                    this.__basicBlockEntry.put(outgoingSymbol, copySet);
+                    copySet.addAll(bb.basicBlockExit.get(outgoingSymbol));
+                    this.basicBlockEntry.put(outgoingSymbol, copySet);
                 } else {
-                    Set<Integer> UsageIDs = bb.__basicBlockExit.get(outgoingSymbol);
+                    Set<Integer> UsageIDs = bb.basicBlockExit.get(outgoingSymbol);
                     for (Integer usageID : UsageIDs) {
-                        if (!this.__basicBlockEntry.get(outgoingSymbol).contains(usageID)) {
+                        if (!this.basicBlockEntry.get(outgoingSymbol).contains(usageID)) {
                             changed = true;
-                            this.__basicBlockEntry.get(outgoingSymbol).add(usageID);
+                            this.basicBlockEntry.get(outgoingSymbol).add(usageID);
                         }
                     }
                 }
@@ -106,15 +100,15 @@ public class BasicBlock implements Serializable {
         }
 
         //Get the Definitions from Parent
-        NestedSymbolTable ancestorDefinitions = __symbolTable.getParent();
+        NestedSymbolTable ancestorDefinitions = symbolTable.getParent();
         while (ancestorDefinitions != null) {
             for (String key : ancestorDefinitions.getDefinitionTable().keySet()) {
-                if (!this.__basicBlockEntry.containsKey(key)) {
+                if (!this.basicBlockEntry.containsKey(key)) {
                     //if the symbol does not exist yet add entire set from predecessor
                     //changed = true;
                     Set<Integer> anscesotorSet = new HashSet<Integer>();
                     anscesotorSet.add(-2);
-                    this.__basicBlockEntry.put(key, anscesotorSet);
+                    this.basicBlockEntry.put(key, anscesotorSet);
                 }
             }
             ancestorDefinitions = ancestorDefinitions.getParent();
@@ -125,35 +119,35 @@ public class BasicBlock implements Serializable {
 
     public Boolean processOutput() {
         Boolean changed = false;
-        for (String symbol : this.__symbolTable.getUsagedTable().keySet()) {
+        for (String symbol : this.symbolTable.getUsagedTable().keySet()) {
             if(this.getSymbolTable().contains(symbol) && this.getSymbolTable().get(symbol).IsStationary())
                 continue;
-            Integer lastUsed = this.__symbolTable.lastUsedIn(symbol);
-            if (lastUsed != -1 && (!this.__basicBlockExit.containsKey(symbol))) {
+            Integer lastUsed = this.symbolTable.lastUsedIn(symbol);
+            if (lastUsed != -1 && (!this.basicBlockExit.containsKey(symbol))) {
                 changed = true;
                 Set<Integer> usageSet = new HashSet<Integer>();
                 usageSet.add(lastUsed);
-                this.__basicBlockExit.put(symbol, usageSet);
+                this.basicBlockExit.put(symbol, usageSet);
             }
         }
-        for (String definedSymbol : this.__symbolTable.getDefinitionTable().keySet()) {
+        for (String definedSymbol : this.symbolTable.getDefinitionTable().keySet()) {
             if(this.getSymbolTable().contains(definedSymbol) && this.getSymbolTable().get(definedSymbol).IsStationary())
                 continue;
-            if(this.__symbolTable.getUsagedTable().containsKey(definedSymbol) && this.getSymbolTable().getUsagedTable().get(definedSymbol)==-1)
+            if(this.symbolTable.getUsagedTable().containsKey(definedSymbol) && this.getSymbolTable().getUsagedTable().get(definedSymbol)==-1)
                 continue;
-            if (!this.__basicBlockExit.containsKey(definedSymbol)) {
+            if (!this.basicBlockExit.containsKey(definedSymbol)) {
                 changed = true;
                 Set<Integer> usageSet = new HashSet<Integer>();
-                usageSet.add(this.__symbolTable.getDefinitionID(definedSymbol));
-                this.__basicBlockExit.put(definedSymbol, usageSet);
+                usageSet.add(this.symbolTable.getDefinitionID(definedSymbol));
+                this.basicBlockExit.put(definedSymbol, usageSet);
             }
         }
-        for (String entrySymbol : this.__basicBlockEntry.keySet()) {
-            if (!this.__symbolTable.getUsagedTable().containsKey(entrySymbol)) { // if I havent used the declaration in basic block
-                if ((!this.__basicBlockEntry.get(entrySymbol).contains(-2))) { // if symbol isnt a global declaration
-                    if ((!this.__basicBlockExit.containsKey(entrySymbol)) || this.__basicBlockExit.get(entrySymbol).size() != this.__basicBlockEntry.get(entrySymbol).size()) {
+        for (String entrySymbol : this.basicBlockEntry.keySet()) {
+            if (!this.symbolTable.getUsagedTable().containsKey(entrySymbol)) { // if I havent used the declaration in basic block
+                if ((!this.basicBlockEntry.get(entrySymbol).contains(-2))) { // if symbol isnt a global declaration
+                    if ((!this.basicBlockExit.containsKey(entrySymbol)) || this.basicBlockExit.get(entrySymbol).size() != this.basicBlockEntry.get(entrySymbol).size()) {
                         changed = true;
-                        this.__basicBlockExit.put(entrySymbol, this.__basicBlockEntry.get(entrySymbol));
+                        this.basicBlockExit.put(entrySymbol, this.basicBlockEntry.get(entrySymbol));
                     }
                 }
             }
@@ -162,51 +156,51 @@ public class BasicBlock implements Serializable {
     }
 
     public void updateUsage(String symbol , InstructionNode node) {
-        if (node.Instruction() instanceof Combine ||
-                node.Instruction() instanceof Output ||
-                node.Instruction() instanceof Split) {
-            if(this.__symbolTable.contains(symbol) && this.__symbolTable.get(symbol).IsStationary())
-                this.__symbolTable.updateLastUsedIn(symbol, node.ID());
+        if (node.getInstruction() instanceof Combine ||
+                node.getInstruction() instanceof Output ||
+                node.getInstruction() instanceof Split) {
+            if(this.symbolTable.contains(symbol) && this.symbolTable.get(symbol).IsStationary())
+                this.symbolTable.updateLastUsedIn(symbol, node.getId());
             else
-                this.__symbolTable.updateLastUsedIn(symbol, -1);
+                this.symbolTable.updateLastUsedIn(symbol, -1);
         }
         else {
-            this.__symbolTable.updateLastUsedIn(symbol, node.ID());
+            this.symbolTable.updateLastUsedIn(symbol, node.getId());
         }
     }
 
 
     public void addInstruction(InstructionNode instruction) {
         if(instruction instanceof PHIInstruction)
-            __instructions.add(0, instruction);
+            instructions.add(0, instruction);
         else if (instruction instanceof GlobalAssignment) {
-            __instructions.add(instruction);
-            for(String symbol :instruction.getInputSymbols())
-                this.__definitions.add(symbol);
+            instructions.add(instruction);
+            this.definitions.addAll(instruction.getInputSymbols());
         }
         else
-            __instructions.add(instruction);
+            instructions.add(instruction);
     }
     public void addInstruction(int index, InstructionNode instruction) {
-        __instructions.add(index, instruction);
+        instructions.add(index, instruction);
     }
 
     public void addEdge(InstructionNode source, InstructionNode destination) {
-        this.addEdge(source.ID(),destination.ID());
+        this.addEdge(source.getId(),destination.getId());
     }
     public void addEdge(Integer source, Integer destination) {
-        __edges.add(new InstructionEdge(source,destination));
+        edges.add(new InstructionEdge(source,destination));
     }
 
-    public NestedSymbolTable getSymbolTable() { return __symbolTable; }
-    public ArrayList<InstructionNode> getInstructions() { return __instructions; }
-    public ArrayList<InstructionEdge> getEdges() {return __edges; }
-    public Boolean hasIncomingSymbol(String symbol) {return this.__basicBlockEntry.containsKey(symbol); }
-    public Set<Integer> getBasicBlockEntryUsage(String symbol) { return this.__basicBlockEntry.get(symbol); }
-    public Map<String, Set<Integer>> getBasicBlockEntryTable() { return this.__basicBlockEntry; }
-    public Map<String, Set<Integer>> getBasicBlockExitTable() { return this.__basicBlockExit; }
-    public Integer ID(){
-        return __ID;
+    public NestedSymbolTable getSymbolTable() { return symbolTable; }
+    public List<InstructionNode> getInstructions() { return instructions; }
+    public List<InstructionEdge> getEdges() {return edges; }
+    public Boolean hasIncomingSymbol(String symbol) {return this.basicBlockEntry.containsKey(symbol); }
+    public Set<Integer> getBasicBlockEntryUsage(String symbol) { return this.basicBlockEntry.get(symbol); }
+    public Map<String, Set<Integer>> getBasicBlockEntryTable() { return this.basicBlockEntry; }
+    public Map<String, Set<Integer>> getBasicBlockExitTable() { return this.basicBlockExit; }
+
+    public Integer getId() {
+        return id;
     }
 
 
@@ -215,18 +209,18 @@ public class BasicBlock implements Serializable {
         ret += this.toString();
 
         ret+="In:"+'\n';
-        for(String symbol: this.__basicBlockEntry.keySet()) {
+        for(String symbol: this.basicBlockEntry.keySet()) {
             ret += '\t' + symbol + ": ";
-            for(Integer usage: this.__basicBlockEntry.get(symbol)){
+            for(Integer usage: this.basicBlockEntry.get(symbol)){
                 ret += usage + " ";
             }
             ret += '\n';
         }
 
         ret += "Out: " + '\n';
-        for(String symbol: this.__basicBlockExit.keySet()){
+        for(String symbol: this.basicBlockExit.keySet()){
             ret += '\t' + symbol + ": ";
-            for(Integer usage: this.__basicBlockExit.get(symbol)) {
+            for(Integer usage: this.basicBlockExit.get(symbol)) {
                 ret += usage + " ";
             }
             ret += '\n';
@@ -242,22 +236,27 @@ public class BasicBlock implements Serializable {
         return this.toString("");
     }
     public  String toString(String indentBuffer) {
-        String ret = indentBuffer + "Basic Block : " + __ID.toString() + '\n';
-
-        ret += indentBuffer + '\t' + "InstructionType: \n";
-        for(InstructionNode node : __instructions)
-            ret += node.toString(indentBuffer+'\t'+'\t') +'\n';
-        ret += indentBuffer +'\t' + "Edges: \n";
-        for(InstructionEdge edge : __edges)
-            ret += edge.toString(indentBuffer+'\t'+'\t') + '\n';
-
-        ret += indentBuffer + '\t' + "Definitions: "+'\n';
-        for(String definition: this.__definitions){
-            ret +=indentBuffer + "\t\t" + definition + '\n';
+        StringBuffer sb = new StringBuffer();
+        sb.append(indentBuffer).append("Basic Block: ").append(id).append(NL);
+        sb.append(indentBuffer).append("\t Instruction Type: ").append(NL);
+        for (InstructionNode node : instructions) {
+            sb.append(node.toString(indentBuffer + "\t\t")).append(NL);
         }
-        /*for(String definition: __symbolTable.getDefinitionTable().keySet()){
-            ret +=indentBuffer + "\t\t" + __symbolTable.get(definition) + '\n';
+        sb.append(indentBuffer).append("\t Edges: ").append(NL);
+        for (InstructionEdge edge : edges) {
+            sb.append(edge.toString(indentBuffer + "\t\t")).append(NL);
+        }
+        sb.append(indentBuffer).append("\t Definitions: ").append(NL);
+        for (String definition : this.definitions) {
+            sb.append(indentBuffer).append("\t\t").append(definition).append(NL);
+        }
+        sb.append(indentBuffer).append("\t Killed Set: ").append(NL);
+        for (String killed : this.killedSet) {
+            sb.append(indentBuffer).append("\t\t").append(killed).append(NL);
+        }
+        /*for(String definition: symbolTable.getDefinitionTable().keySet()){
+            ret +=indentBuffer + "\t\t" + symbolTable.get(definition) + '\n';
         }*/
-        return ret;
+        return sb.toString();
     }
 }

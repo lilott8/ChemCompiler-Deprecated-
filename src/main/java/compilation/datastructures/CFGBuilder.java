@@ -16,71 +16,50 @@ import executable.instructions.Instruction;
  */
 public class CFGBuilder {
 
-
-
-    private static BasicBlock InsertExitNode(List<BasicBlock> exitNodes, CFG cfg){
+    private static BasicBlock insertExitNode(List<BasicBlock> exitNodes, CFG cfg){
         BasicBlock EXIT = cfg.newBasicBlock();
         for(BasicBlock bb : exitNodes)
             cfg.addEdge(bb, EXIT);
         return EXIT;
     }
-
-
     /*
         The insertion of ENTRY and EXIT nodes follow the data structure for the algorithms that are presented in Cytron et. al.
         "An efficient Method of Computing Static Single Assignment Form".
      */
-    private static CFG BuildControlFlowGraph(Integer id, List<Instruction> instructions) throws Exception{
+    private static CFG buildControlFlowGraph(Integer id, List<Instruction> instructions) throws Exception{
         CFG controlFlowGraph = new CFG();
 
         BasicBlock entryNode = controlFlowGraph.newBasicBlock();
-        controlFlowGraph.SetEntry(entryNode);
+        controlFlowGraph.setEntry(entryNode);
 
         BasicBlock startOfInstructions = controlFlowGraph.newBasicBlock();
         controlFlowGraph.addEdge(entryNode, startOfInstructions);
 
-        List <BasicBlock> danglingExitNodes = ProcessNestedInstructions(controlFlowGraph, startOfInstructions, instructions);
+        List<BasicBlock> danglingExitNodes = processNestedInstructions(controlFlowGraph, startOfInstructions, instructions);
 
-        BasicBlock exitNode = InsertExitNode(danglingExitNodes, controlFlowGraph);
+        BasicBlock exitNode = insertExitNode(danglingExitNodes, controlFlowGraph);
         controlFlowGraph.addEdge(entryNode, exitNode);
-        controlFlowGraph.SetExit(exitNode);
+        controlFlowGraph.setExit(exitNode);
 
-       // controlFlowGraph.addDominatorTree(new dominatortree(controlFlowGraph));
-
-
-      //  for (SSI.SSA.basicblock b : danglingLeaves) {
-      //      System.out.println(b.getID());
-      //  }
-
-        //ReachingDefinitions rdef = new ReachingDefinitions(controlFlowGraph);
-
-        //System.out.println(rdef);
-        //System.exit(-1);
-
-        //controlFlowGraph.renameVariables();
         return controlFlowGraph;
     }
 
-    /*public static CFG BuildControlFlowGraph(List<Instruction> instructions)throws Exception{
-        return BuildControlFlowGraph(0,instructions);
-    }*/
-    public static CFG BuildControlFlowGraph(Experiment experiment)throws Exception{
+    public static CFG buildControlFlowGraph(Experiment experiment)throws Exception{
 
-        List<Instruction> instructions = new ArrayList<Instruction>();
+        List<Instruction> instructions = new ArrayList<>();
         for(Executable e :experiment.getInstructions()){
-            if (e instanceof Instruction)
-                instructions.add((Instruction)e);
+            if (e instanceof Instruction) {
+                instructions.add((Instruction) e);
+            }
         }
-        CFG controlFlowGraph = BuildControlFlowGraph(0,instructions);
+        CFG controlFlowGraph = buildControlFlowGraph(0, instructions);
 
         //Add definition of Global Input at Entry Node.
         for(String globalInput : experiment.getInputs().keySet()) {
-            controlFlowGraph.GetEntry().getDefinitions().add(globalInput);
+            controlFlowGraph.getEntry().getDefinitions().add(globalInput);
         }
         return controlFlowGraph;
     }
-
-
     /*
      * Method; Process Branch
      *
@@ -88,26 +67,20 @@ public class CFGBuilder {
      *      The basic block(BB) passed in represents the BB that was being processed when the Branch is triggered.
      *
      */
-    private static List<BasicBlock> ProcessBranch( CFG controlFlowGraph, BasicBlock bb, Branch branch) throws Exception{
+    private static List<BasicBlock> processBranch(CFG controlFlowGraph, BasicBlock bb, Branch branch) throws Exception{
         List<BasicBlock> leaves = new ArrayList<BasicBlock>();
         if (branch != null) {
-//            controlFlowGraph.setSymbolTable(controlFlowGraph.getSymbolTable().nestTable());
             BasicBlock trueBranchEntryBasicBlock = controlFlowGraph.newBasicBlock();
             controlFlowGraph.addEdge(bb,trueBranchEntryBasicBlock, branch.getCondition(), branch.getName());
 
-            for(BasicBlock processedBasicBlock: ProcessNestedInstructions(controlFlowGraph, trueBranchEntryBasicBlock, branch.getTrueBranch())) {
-                leaves.add(processedBasicBlock);
-            }
-
+            leaves.addAll(processNestedInstructions(controlFlowGraph, trueBranchEntryBasicBlock, branch.getTrueBranch()));
 
             for(int instructionsIndex = 0; instructionsIndex < branch.getElseIfBranch().size(); ++instructionsIndex){
                 Instruction elseIfBranch = branch.getElseIfBranch().get(instructionsIndex);
-//            for(Instruction elseIfBranch : branch.getElseIfBranch()) {
                 BasicBlock elseIfBranchEntryBasicBlock = controlFlowGraph.newBasicBlock();
                 controlFlowGraph.addEdge(bb,elseIfBranchEntryBasicBlock);
 
-                List<BasicBlock> dangledLeaves = ProcessBranch(controlFlowGraph, elseIfBranchEntryBasicBlock, (Branch)elseIfBranch);
-
+                List<BasicBlock> dangledLeaves = processBranch(controlFlowGraph, elseIfBranchEntryBasicBlock, (Branch)elseIfBranch);
 
                 if( !branch.getElseBranch().isEmpty() || instructionsIndex < branch.getElseIfBranch().size()-1) {
                     for (int i = 0; i < dangledLeaves.size()-1; ++i) {
@@ -115,13 +88,8 @@ public class CFGBuilder {
                     }
                 }
                 else {
-                    for (int i = 0; i < dangledLeaves.size(); ++i) {
-                        leaves.add(dangledLeaves.get(i));
-                    }
+                    leaves.addAll(dangledLeaves);
                 }
-//                for(SSI.SSA.basicblock processedBasicBlock: dangledLeaves) {
-
- //               }
 
                 bb = elseIfBranchEntryBasicBlock;
             }
@@ -129,9 +97,7 @@ public class CFGBuilder {
                 BasicBlock elseBranchBasicBlock = controlFlowGraph.newBasicBlock();
                 controlFlowGraph.addEdge(bb, elseBranchBasicBlock);
 
-                for(BasicBlock processedBasicBlock: ProcessNestedInstructions(controlFlowGraph, elseBranchBasicBlock, branch.getElseBranch())) {
-                    leaves.add(processedBasicBlock);
-                }
+                leaves.addAll(processNestedInstructions(controlFlowGraph, elseBranchBasicBlock, branch.getElseBranch()));
             }
             if(branch.getElseBranch().isEmpty())
                 leaves.add(bb);
@@ -145,7 +111,7 @@ public class CFGBuilder {
       *      The basic block(BB) passed in represents the BB that was being processed when the Branch is triggered.
       *
       */
-    private static BasicBlock ProcessLoop(CFG controlFlowGraph, BasicBlock bb, Loop loop) throws Exception{
+    private static BasicBlock processLoop(CFG controlFlowGraph, BasicBlock bb, Loop loop) throws Exception{
 
         if (loop != null) {
             BasicBlock whileConditionEntry = controlFlowGraph.newBasicBlock();
@@ -154,7 +120,7 @@ public class CFGBuilder {
             controlFlowGraph.addEdge(bb,whileConditionEntry);
             controlFlowGraph.addEdge(whileConditionEntry,whileEntry,loop.getCondition(), loop.getName());
 
-            List<BasicBlock> loopLeaves = ProcessNestedInstructions(controlFlowGraph,whileEntry,loop.getTrueBranch());
+            List<BasicBlock> loopLeaves = processNestedInstructions(controlFlowGraph,whileEntry,loop.getTrueBranch());
 
             /*
              *  **NOTE** if While MUST EXIT from single location:
@@ -169,20 +135,19 @@ public class CFGBuilder {
             for(BasicBlock leaf: loopLeaves) {
                 controlFlowGraph.addEdge(leaf,whileConditionEntry);
             }
-
             return whileConditionEntry;
         }
         throw new Exception("Processing Null Exception");
     }
 
-    private static List<BasicBlock> ProcessNestedInstructions(CFG controlFlowGraph, BasicBlock bb, List<Instruction> instructionList) throws Exception {
+    private static List<BasicBlock> processNestedInstructions(CFG controlFlowGraph, BasicBlock bb, List<Instruction> instructionList) throws Exception {
 
         for (int instructionIndex = 0; instructionIndex < instructionList.size(); ++instructionIndex) {
             Instruction instruction = instructionList.get(instructionIndex);
-            bb.AddVariableDefinition(instruction);
+            bb.addVariableDefinition(instruction);
 
             if (instruction instanceof Branch) {
-                List<BasicBlock> branchLeaves = ProcessBranch(controlFlowGraph, bb, (Branch) instruction);
+                List<BasicBlock> branchLeaves = processBranch(controlFlowGraph, bb, (Branch) instruction);
 
                 if (instructionIndex < instructionList.size() - 1) {
                     BasicBlock postBranchBasicBlock = controlFlowGraph.newBasicBlock();
@@ -196,7 +161,7 @@ public class CFGBuilder {
                 }
 
             } else if (instruction instanceof Loop) {
-                BasicBlock loopEntry = ProcessLoop(controlFlowGraph, bb, (Loop) instruction);
+                BasicBlock loopEntry = processLoop(controlFlowGraph, bb, (Loop) instruction);
 
                 if (instructionIndex < instructionList.size() - 1) {
                     BasicBlock postLoopBasicBlock = controlFlowGraph.newBasicBlock();
@@ -210,21 +175,22 @@ public class CFGBuilder {
                     return loopTermination;
                 }
             } else {
-                if (instructionIndex == 0)
+                if (instructionIndex == 0) {
                     controlFlowGraph.insertInstructionNode(bb, instruction, true);
-                else
+                }
+                else {
                     controlFlowGraph.insertInstructionNode(bb, instruction, false);
-
+                }
 
                 if (instructionIndex == instructionList.size() - 1) {
-                    List<BasicBlock> listTermination = new ArrayList<BasicBlock>();
+                    List<BasicBlock> listTermination = new ArrayList<>();
                     listTermination.add(bb);
                     return listTermination;
                 }
             }
         }
 
-        List<BasicBlock> ret = new ArrayList<BasicBlock>();
+        List<BasicBlock> ret = new ArrayList<>();
         ret.add(bb);
         return ret;
     }

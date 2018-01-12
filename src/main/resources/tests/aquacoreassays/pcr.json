@@ -21,7 +21,7 @@
       {
         "OPERATION" : {
           "NAME" : "VARIABLE_DECLARATION",
-          "ID" : "1294012199300382656",
+          "ID" : "7597473312637949718",
           "CLASSIFICATION" : "VARIABLE",
           "INPUTS" : [
             {
@@ -119,6 +119,76 @@
         }
       },
       {
+        "OPERATION": {
+          "NAME": "Mix",
+          "ID": "689377168877303071",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "PCR Mixture"
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "Separation Medium"
+                },
+                "VOLUME": {
+                  "VALUE": "10",
+                  "UNITS": "UL"
+                }
+              }
+            }
+          ],
+          "OUTPUTS": [
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "NAME": "SPLIT",
+          "ID": "689377168877303423",
+          "CLASSIFICATION": "SPLIT",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "PCR Mixture"
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "PROPERTY": {
+                "TYPE": "SPLIT_NUM",
+                "VALUE": "2",
+                "UNITS": ""
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE": {
+                "ID": "PCR Mixture",
+                "NAME": "PCR Mixture",
+                "TYPE": "CHEMICAL",
+                "VOLUME": {
+                }
+              }
+            },
+            {
+              "VARIABLE": {
+                "ID": "Waste",
+                "NAME": "Waste",
+                "TYPE": "CHEMICAL",
+                "VOLUME": {
+                }
+              }
+            }
+          ]
+        }
       },
       {
         "OPERATION" : {
@@ -130,7 +200,8 @@
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
                 "NAME" : "PCR Mixture"
-              }            },
+              }
+            },
             {
               "INPUT_TYPE" : "PROPERTY",
               "PROPERTY" : {

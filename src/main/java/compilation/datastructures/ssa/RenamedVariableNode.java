@@ -2,6 +2,7 @@ package compilation.datastructures.ssa;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by chriscurtis on 4/25/17.
@@ -13,35 +14,43 @@ import java.util.ArrayList;
   * symbol to use.
   */
 public class RenamedVariableNode {
-    private ArrayList<String> __renamedNodes;
-    private Integer __originID;
-    private Integer __popCount;
+    private List<String> renamedNodes;
+    private Integer originID;
+    private Integer popCount;
 
-    public RenamedVariableNode( ArrayList<String> nodes, Integer id){
-        this.__renamedNodes = nodes;
-        this.__originID = id;
-        this.__popCount = 0;
+    public RenamedVariableNode(List<String> nodes, Integer id){
+        this.renamedNodes = nodes;
+        this.originID = id;
+        this.popCount = 0;
     }
     public RenamedVariableNode( String node, Integer id){
-        this.__renamedNodes = new ArrayList<String>();
-        this.__renamedNodes.add(node);
-        this.__originID = id;
-        this.__popCount = 0;
+        this.renamedNodes = new ArrayList<>();
+        this.renamedNodes.add(node);
+        this.originID = id;
+        this.popCount = 0;
 
     }
-    public Integer getOrginID() {return __originID; }
+    public Integer getOriginID() {return originID; }
 
-    public Integer size() { return __renamedNodes.size(); }
+    public Integer size() { return renamedNodes.size(); }
 
-    public String GetVariable(Integer NumSuccessor){
-        if(NumSuccessor == -1 )
-            return this.__renamedNodes.get(0);
-        if(__renamedNodes.size() > 1 && NumSuccessor < __renamedNodes.size())
-            return this.__renamedNodes.get(NumSuccessor);
-        return this.__renamedNodes.get(0);
+    public String getVariable(Integer numSuccessor){
+        if(numSuccessor == -1 )
+            return this.renamedNodes.get(0);
+        if(renamedNodes.size() > 1 && numSuccessor < renamedNodes.size())
+            return this.renamedNodes.get(numSuccessor);
+        return this.renamedNodes.get(0);
     }
 
-    public Boolean CanPop(){
-        return ++__popCount > __renamedNodes.size();
+    public Boolean canPop(){
+        return ++popCount > renamedNodes.size();
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("id: ").append(originID).append("\t").append(this.renamedNodes);
+
+        return sb.toString();
     }
 }

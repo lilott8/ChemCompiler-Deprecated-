@@ -11,22 +11,22 @@ import executable.instructions.Detect;
  */
 public class MFSimSSADetect extends MFSimSSANode{
     private static final Logger logger = LogManager.getLogger(MFSimSSADetect.class);
-    private Integer __numDetect;
-    private Long __time;
+    private Integer numDetect;
+    private Long time;
 
     public MFSimSSADetect(Integer id, Detect detectNode) {
         super(id, OperationClassifier.DETECT, detectNode.getName());
-        __numDetect = detectNode.getInputs().size();
+        numDetect = detectNode.getInputs().size();
 
-        __time = getTime(detectNode);
+        time = getTime(detectNode);
 
     }
 
     public String toString() {
-        String ret = "NODE (" + this.__nodeID + ", " + this.__opType + ", " + this.__numDetect + ", " + __time + ", " + this.__nodeName + ")\n";
+        String ret = "NODE (" + this.nodeID + ", " + this.opType + ", " + this.numDetect + ", " + time + ", " + this.nodeName + ")\n";
 
-        for (Integer successor : this.__successorIDs) {
-            ret += "EDGE (" + this.__nodeID + ", " + successor + ")\n";
+        for (Integer successor : this.successorIDs) {
+            ret += "EDGE (" + this.nodeID + ", " + successor + ")\n";
         }
         return ret;
     }

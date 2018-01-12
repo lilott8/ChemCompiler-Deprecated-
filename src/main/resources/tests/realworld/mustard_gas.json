@@ -1,0 +1,90 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "MustardGas",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "[O-]Cl.[O-]Cl.[Ca+2]",
+          "NAME" : "[O-]Cl.[O-]Cl.[Ca+2]",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "CC(=CCl)Cl",
+          "NAME" : "CC(=CCl)Cl",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "O",
+          "NAME" : "O",
+          "TYPE" : "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "5782256354252368132",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "[O-]Cl.[O-]Cl.[Ca+2]"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "O"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "a",
+                "TYPE" : "VARIABLE",
+                "NAME" : "a"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "5782256354252368399",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "CC(=CCl)Cl"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "a"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "b",
+                "TYPE" : "VARIABLE",
+                "NAME" : "b"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

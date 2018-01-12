@@ -170,7 +170,6 @@ public class Z3Strategy implements SolverStrategy {
             Status status = solver.check();
             if (status == Status.SATISFIABLE) {
                 if (ConfigFactory.getConfig().isDebug()) {
-                    logger.debug(solver.getModel().toString());
                     logger.trace("SAT!");
                 }
                 return true;

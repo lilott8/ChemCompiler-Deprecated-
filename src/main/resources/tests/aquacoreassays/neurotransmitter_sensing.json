@@ -77,18 +77,96 @@
         }
       },
       {
+        "OPERATION": {
+          "NAME": "Mix",
+          "ID": "689377168875521583",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "Mixture"
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "Electrophloresis Buffer"
+                },
+                "VOLUME": {
+                  "VALUE": "10",
+                  "UNITS": "UL"
+                }
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "Mixture",
+                "TYPE": "VARIABLE",
+                "NAME": "Mixture"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "NAME": "SPLIT",
+          "ID": "689377168875593586",
+          "CLASSIFICATION": "SPLIT",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "Mixture"
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "PROPERTY": {
+                "TYPE": "SPLIT_NUM",
+                "VALUE": "2",
+                "UNITS": ""
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE": {
+                "ID": "Mixture",
+                "NAME": "Mixture",
+                "TYPE": "CHEMICAL",
+                "VOLUME": {
+                }
+              }
+            },
+            {
+              "VARIABLE": {
+                "ID": "Waste",
+                "NAME": "Waste",
+                "TYPE": "CHEMICAL",
+                "VOLUME": {
+                }
+              }
+            }
+          ]
+        }
       },
       {
         "OPERATION" : {
           "NAME" : "Measure Fluorescence",
-          "ID" : "1294012199300641297",
+          "ID": "689377168875739930",
           "CLASSIFICATION" : "DETECT",
           "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
                 "NAME" : "Mixture"
-              }            },
+              }
+            },
             {
               "INPUT_TYPE" : "PROPERTY",
               "PROPERTY" : {

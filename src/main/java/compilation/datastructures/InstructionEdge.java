@@ -1,32 +1,34 @@
 package compilation.datastructures;
 
+import org.jgrapht.graph.DefaultEdge;
+
 import java.io.Serializable;
 
 /**
  * Created by chriscurtis on 9/28/16.
  */
-public class InstructionEdge implements Serializable {
-    private Integer __ID;
-    private Integer __source;
-    private Integer __destination;
+public class InstructionEdge extends DefaultEdge implements Serializable {
+    private Integer id;
+    private Integer source;
+    private Integer destination;
 
     public InstructionEdge(Integer source, Integer destination) {
-        __source = source;
-        __destination = destination;
-        __ID = source*destination;
+        this.source = source;
+        this.destination = destination;
+        id = source*destination;
     }
 
     public String toString() {
         return this.toString("");
     }
     public String toString(String indentBuffer) {
-        return indentBuffer + __source.toString() + "->" + __destination;
+        return indentBuffer + source.toString() + "->" + destination;
     }
 
-    public Integer getSource() { return __source; }
-    public Integer getDestination() { return __destination; }
+    public Integer getSource() { return source; }
+    public Integer getDestination() { return destination; }
     public Integer getId() {
-        return __ID;
+        return id;
     }
 
     @Override
@@ -36,8 +38,8 @@ public class InstructionEdge implements Serializable {
         if (!(obj instanceof InstructionEdge))
             return false;
         InstructionEdge other = (InstructionEdge) obj;
-        if (__source.equals(other.__source)) {
-            return __destination.equals(other.__destination);
+        if (source.equals(other.source)) {
+            return destination.equals(other.destination);
         }
         return false;
     }

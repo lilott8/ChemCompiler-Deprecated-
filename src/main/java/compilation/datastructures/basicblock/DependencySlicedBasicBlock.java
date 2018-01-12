@@ -1,59 +1,63 @@
 package compilation.datastructures.basicblock;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import compilation.datastructures.InstructionEdge;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import compilation.datastructures.ssa.PHIInstruction;
 import compilation.datastructures.ssa.StaticSingleAssignment;
 import compilation.datastructures.ssi.SigmaInstruction;
-
-import java.util.*;
+import compilation.symboltable.UsageGovernor;
 
 /**
  * Created by Tyson on 4/13/17.
  * Extends a basicblock with data dependence edges between instructions
  */
-public class DependencySlicedBasicBlock extends BasicBlock{
+public class DependencySlicedBasicBlock extends BasicBlock {
 
     public static final Logger logger = LogManager.getLogger(DependencySlicedBasicBlock.class);
+
+    private static Set<String> ruleNames = new HashSet<>();
 
     public DependencySlicedBasicBlock(BasicBlock bb, StaticSingleAssignment CFG) {
         //copy bb object
         super(bb);
 
         //don't care about entry/exit block dependencies
-        if (CFG.GetEntry() == bb) {
-            CFG.SetEntry(this);
+        if (CFG.getEntry() == bb) {
+            CFG.setEntry(this);
             return;
-        } else if (CFG.GetExit() == bb) {
-            CFG.SetExit(this);
+        } else if (CFG.getExit() == bb) {
+            CFG.setExit(this);
             return;
         }
 
         //process updates for data dependency edges
-        ArrayList<InstructionEdge> instructionEdges = new ArrayList<InstructionEdge>();
-        ArrayList<InstructionNode> instructions = new ArrayList<InstructionNode>();
+        List<InstructionEdge> instructionEdges = new ArrayList<>();
+        List<InstructionNode> instructions = new ArrayList<>();
         for (Integer index = 0; index < bb.getInstructions().size(); ++index) {
             InstructionNode instruction = bb.getInstructions().get(index);
             if (instruction instanceof PHIInstruction || instruction instanceof SigmaInstruction)
                 continue;
-            if (instruction.ID() != -1)
+            if (instruction.getId() != -1)
                 instructions.add(instruction);
-            ProcessInstructionOutput(instruction, instructionEdges, bb, index, CFG);
-            ProcessInstructionInput(instruction, instructionEdges, bb, index, CFG);
+            processInstructionOutput(instruction, instructionEdges, bb, index, CFG);
+            processInstructionInput(instruction, instructionEdges, bb, index, CFG);
         }
 
-
-
         // if A->B, A->C and B->C then A->C is redundant
-        RemoveRedundancies(instructionEdges, bb, CFG);
+        removeRedundancies(instructionEdges, bb, CFG);
         //ProcessTransfers(CFG);
 
         this.getEdges().clear();
@@ -63,22 +67,23 @@ public class DependencySlicedBasicBlock extends BasicBlock{
         if (instructions.size() > 0) {
             index = instructions.size()-1;
             for (String exitKey : instructions.get(index).getOutSet()) {
-                CFG.getBasicBlock(bb.ID()).getBasicBlockExitTable().put(exitKey, new HashSet<Integer>(instructions.get(index).ID()));
+                CFG.getBasicBlock(bb.getId()).getBasicBlockExitTable().put(exitKey, new HashSet<>(instructions.get(index).getId()));
             }
         }
 
-
-
+        ruleNames.add("combine");
+        ruleNames.add("mix");
+        ruleNames.add("split");
     }
 
-    public static void GetInOutSets(StaticSingleAssignment CFG) {
-        HashMap<BasicBlock, InstructionNode> firstInstructions = new LinkedHashMap<BasicBlock, InstructionNode>();
-        HashMap<BasicBlock, InstructionNode> lastInstructions = new LinkedHashMap<BasicBlock, InstructionNode>();
-        ArrayList<InstructionNode> instructions = new ArrayList<InstructionNode>();
+    public static void getInOutSets(StaticSingleAssignment CFG) {
+        Map<BasicBlock, InstructionNode> firstInstructions = new LinkedHashMap<BasicBlock, InstructionNode>();
+        Map<BasicBlock, InstructionNode> lastInstructions = new LinkedHashMap<BasicBlock, InstructionNode>();
+        List<InstructionNode> instructions = new ArrayList<InstructionNode>();
         Integer last = 0;
         for (BasicBlock bb : CFG.getBasicBlocks().values()) {
             instructions.addAll(bb.getInstructions());
-            last = bb.ID();
+            last = bb.getId();
         }
 
         for (BasicBlock bb : CFG.getBasicBlocks().values()) {
@@ -97,17 +102,11 @@ public class DependencySlicedBasicBlock extends BasicBlock{
                     break;
                 }
             }
-//            if (firstInstructions.get(bb) == null) {
-//                firstInstructions.put(bb, bb.getInstructions().get(0));
-//            }
-//            if (lastInstructions.get(bb) == null) {
-//                lastInstructions.put(bb, bb.getInstructions().get(bb.getInstructions().size()-1));
-//            }
         }
-        firstInstructions.remove(CFG.GetEntry());
-        firstInstructions.remove(CFG.GetExit());
-        lastInstructions.remove(CFG.GetExit());
-        lastInstructions.remove(CFG.GetEntry());
+        firstInstructions.remove(CFG.getEntry());
+        firstInstructions.remove(CFG.getExit());
+        lastInstructions.remove(CFG.getExit());
+        lastInstructions.remove(CFG.getEntry());
 
         //ephemeral instructions from entry node
         for (Integer i = 0; i < CFG.getBasicBlocks().get(0).getInstructions().size(); i++) {
@@ -126,24 +125,16 @@ public class DependencySlicedBasicBlock extends BasicBlock{
             }
         }
 
-
         for (Integer index = 0; index < instructions.size(); ++index) {
             InstructionNode instr = instructions.get(index);
             //if phi or sigma, remove from
-            if (instr instanceof PHIInstruction || instr instanceof SigmaInstruction) {
-                //continue;
-            }
             try {
-                ArrayList<LinkedHashSet<String>> def_use = new ArrayList<LinkedHashSet<String>>();
-                LinkedHashSet<String> _defs = new LinkedHashSet<String>();
-                LinkedHashSet<String> _uses = new LinkedHashSet<String>();
-                if (instr.Instruction() != null) {
-                    for (String def : instr.Instruction().getOutputs().keySet()) {
-                        _defs.add(def);
-                    }
-                    for (String use : instr.Instruction().getInputs().keySet()) {
-                        _uses.add(use);
-                    }
+                List<Set<String>> def_use = new ArrayList<>();
+                Set<String> _defs = new LinkedHashSet<>();
+                Set<String> _uses = new LinkedHashSet<>();
+                if (instr.getInstruction() != null) {
+                    _defs.addAll(instr.getInstruction().getOutputs().keySet());
+                    _uses.addAll(instr.getInstruction().getInputs().keySet());
                 }
                 else {
                     if (instr instanceof PHIInstruction) {
@@ -155,27 +146,37 @@ public class DependencySlicedBasicBlock extends BasicBlock{
                         _defs.add(instr.getInputSymbols().get(0));
                     }
                     else {
-                        logger.error("error");
+                        logger.error("Can't discern is this is a Phi or Sigma instruction.");
                     }
                 }
 
                 def_use.add(_defs);
                 def_use.add(_uses);
-                instr.set_def(def_use.remove(0));
-                instr.set_use(def_use.remove(0));
-                for (String var : instr.get_use()) {
-                    if (!CFG.GetEntry().getDefinitions().contains(var))
+                instr.setDef(def_use.remove(0));
+                instr.setUse(def_use.remove(0));
+                for (String var : instr.getUse()) {
+                    if (!CFG.getEntry().getDefinitions().contains(var))
                         instr.getInSet().add(var);
                 }
 
 
                 if (index != 0) {
-                    instr.get_pred().add(instructions.get(index - 1));
-                    instructions.get(index - 1).get_succ().add(instr);
+                    instr.getPred().add(instructions.get(index - 1));
+                    instructions.get(index - 1).getSucc().add(instr);
                 }
                 if (index <= instructions.size() - 2) {
-                    instr.get_succ().add(instructions.get(index + 1));
-                    instructions.get(index + 1).get_pred().add(instr);
+                    instr.getSucc().add(instructions.get(index + 1));
+                    instructions.get(index + 1).getPred().add(instr);
+                }
+
+                for (String s : instr.getDef()) {
+                    UsageGovernor.defVar(s);
+                }
+
+                for (String s : instr.getUse()) {
+                    if (ruleNames.contains(StringUtils.lowerCase(instr.getInstruction().getClassification()))) {
+                        UsageGovernor.useVar(s);
+                    }
                 }
 
             } catch (Exception e) {
@@ -193,7 +194,7 @@ public class DependencySlicedBasicBlock extends BasicBlock{
                 }
 
                 //OUT[n] = U {s in succ(n)} IN[s]
-                for (InstructionNode succ : instr.get_succ()) {
+                for (InstructionNode succ : instr.getSucc()) {
                     for (String var : succ.getInSet()) {
                         if (!(instr.getOutSet().contains(var))) {
                             instr.getOutSet().add(var);
@@ -203,18 +204,18 @@ public class DependencySlicedBasicBlock extends BasicBlock{
                 }
 
                 //IN[n] = USE[n] U (OUT[n] - DEF[n])
-                for (String var : instr.get_use()) {
+                for (String var : instr.getUse()) {
                     if (!(instr.getInSet().contains(var))) {
-                        if (!CFG.GetEntry().getDefinitions().contains(var)) {
+                        if (!CFG.getEntry().getDefinitions().contains(var)) {
                             instr.getInSet().add(var);
                             changed = true;
                         }
                     }
                 }
                 for (String var : instr.getOutSet()) {
-                    if (!(instr.get_def().contains(var))) {
+                    if (!(instr.getDef().contains(var))) {
                         if (!(instr.getInSet().contains(var))) {
-                            if (!CFG.GetEntry().getDefinitions().contains(var)) {
+                            if (!CFG.getEntry().getDefinitions().contains(var)) {
                                 instr.getInSet().add(var);
                                 changed = true;
                             }
@@ -228,8 +229,8 @@ public class DependencySlicedBasicBlock extends BasicBlock{
 
         //Get Dispense symbols
         for (InstructionNode instruction : instructions) {
-            for (String instructionInput : instruction.Instruction().getInputs().keySet()) {
-                if (CFG.GetEntry().getDefinitions().contains(instructionInput)) {
+            for (String instructionInput : instruction.getInstruction().getInputs().keySet()) {
+                if (CFG.getEntry().getDefinitions().contains(instructionInput)) {
                     instruction.addImplicitDispense(instructionInput);
                 }
             }
@@ -240,16 +241,16 @@ public class DependencySlicedBasicBlock extends BasicBlock{
             InstructionNode firstInstruction = firstInstructions.get(bb);
             InstructionNode lastInstruction = lastInstructions.get(bb);
 
-            if (bb == CFG.GetEntry() || bb == CFG.GetExit()) {
+            if (bb == CFG.getEntry() || bb == CFG.getExit()) {
                 continue;
             }
             //get transfer ins
             for (String in : firstInstruction.getInSet()) {
-                if (bb != null && bb != CFG.GetEntry() && bb != CFG.GetExit()) {
+                if (bb != null && bb != CFG.getEntry() && bb != CFG.getExit()) {
                     if (!bb.getBasicBlockEntryTable().containsKey(in)) {
                         bb.getBasicBlockEntryTable().put(in, new HashSet<Integer>());
                     }
-                    bb.getBasicBlockEntryTable().get(in).add(firstInstruction.ID());
+                    bb.getBasicBlockEntryTable().get(in).add(firstInstruction.getId());
                 }
             }
 
@@ -259,105 +260,54 @@ public class DependencySlicedBasicBlock extends BasicBlock{
                 } else {
                     //check Exit table for bb's leading to this bb, transfer in and out those variables
                     for (BasicBlockEdge edge : CFG.getBasicBlockEdges()) {
-                        if (edge.getDestination() == bb.ID()) {
+                        if (edge.getDestination() == bb.getId()) {
                             for (String var : CFG.getBasicBlock(edge.getSource()).getBasicBlockExitTable().keySet()) {
                                 if (!bb.getBasicBlockEntryTable().containsKey(var)) {
                                     bb.getBasicBlockEntryTable().put(var, new HashSet<Integer>());
                                 }
-                                bb.getBasicBlockEntryTable().get(var).add(firstInstruction.ID());
+                                bb.getBasicBlockEntryTable().get(var).add(firstInstruction.getId());
                                 if (!bb.getBasicBlockExitTable().containsKey(var)) {
                                     bb.getBasicBlockExitTable().put(var, new HashSet<Integer>());
                                 }
-                                bb.getBasicBlockExitTable().get(var).add(firstInstruction.ID());
+                                bb.getBasicBlockExitTable().get(var).add(firstInstruction.getId());
                             }
                         }
                     }
-                    //transfer in and out all phi and sigma inputs
- /*                   for (InstructionNode instr : bb.getInstructions()) {
-                        for (String in : instr.getInputSymbols()) {
-                            if (CFG.GetEntry().getDefinitions().contains(in)) {
-                                continue;
-                            }
-                            else {
-                                if (!bb.getBasicBlockEntryTable().containsKey(in)) {
-                                    bb.getBasicBlockEntryTable().put(in, new HashSet<Integer>());
-                                }
-                                bb.getBasicBlockEntryTable().get(in).add(firstInstruction.ID());
-                                if (!bb.getBasicBlockExitTable().containsKey(in)) {
-                                    bb.getBasicBlockExitTable().put(in, new HashSet<Integer>());
-                                }
-                                bb.getBasicBlockExitTable().get(in).add(firstInstruction.ID());
-                                break;
-                            }
-                        }
-                        if (!bb.getBasicBlockEntryTable().isEmpty()) {
-                            break;
-                        }
-                    }
-*/
                 }
             }
 
             //get transfer outs
             for (String out : lastInstruction.getOutSet()) {
-                if (bb != null && bb != CFG.GetEntry() && bb != CFG.GetExit()) {
+                if (bb != null && bb != CFG.getEntry() && bb != CFG.getExit()) {
                     if (!bb.getBasicBlockExitTable().containsKey(out)) {
-                        bb.getBasicBlockExitTable().put(out, new HashSet<Integer>());
+                        bb.getBasicBlockExitTable().put(out, new HashSet<>());
                     }
-                    bb.getBasicBlockExitTable().get(out).add(lastInstruction.ID());
+                    bb.getBasicBlockExitTable().get(out).add(lastInstruction.getId());
                 }
             }
-
-//            if (bb.getBasicBlockExitTable().isEmpty()) {
-//                if (lastInstruction.Instruction() instanceof Output) {
-//                    //do nothing
-//                } else {
-//                    //transfer in and out all phi and sigma inputs
-//                    for (InstructionNode instr : bb.getInstructions()) {
-//                        for (String out : instr.getOutputSymbols()) {
-//                            if (CFG.GetEntry().getDefinitions().contains(out)) {
-//                                continue;
-//                            }
-//                            else {
-//                                if (!bb.getBasicBlockExitTable().containsKey(out)) {
-//                                    bb.getBasicBlockExitTable().put(out, new HashSet<Integer>());
-//                                }
-//                                bb.getBasicBlockExitTable().get(out).add(lastInstruction.ID());
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-
-
-
         }
-
     }
 
-    private void ProcessInstructionInput(InstructionNode instruction, ArrayList<InstructionEdge> update, BasicBlock bb, Integer index, StaticSingleAssignment CFG) {
-
+    private void processInstructionInput(InstructionNode instruction, List<InstructionEdge> update, BasicBlock bb, Integer index, StaticSingleAssignment CFG) {
         // loop through all inputs (reads)
         for (String inputKey : instruction.getInputSymbols()) {
-
-
             for (Integer successorIndex=index+1; successorIndex < bb.getInstructions().size(); ++successorIndex) {
                 InstructionNode successor = bb.getInstructions().get(successorIndex);
                 //check if input is used by successor
-                if (successor.getInputSymbols().contains(inputKey) && successor.ID() != -1) {
+                if (successor.getInputSymbols().contains(inputKey) && successor.getId() != -1) {
                     // input of successor matches input of predecessor, RAR dependency
-                    update.add(new InstructionEdge(instruction.ID(), successor.ID()));
+                    update.add(new InstructionEdge(instruction.getId(), successor.getId()));
                 }
             }
         }
     }
 
-    private void ProcessInstructionOutput(InstructionNode instruction, ArrayList<InstructionEdge> update, BasicBlock bb, Integer index, StaticSingleAssignment CFG) {
+    private void processInstructionOutput(InstructionNode instruction, List<InstructionEdge> update, BasicBlock bb, Integer index, StaticSingleAssignment CFG) {
         // loop through all outputs (writes)
-        Set<Integer> exitTable = new HashSet<Integer>();
+        Set<Integer> exitTable = new HashSet<>();
 
         for (String outputKey : instruction.getOutputSymbols()) {
-            exitTable.add(instruction.ID());
+            exitTable.add(instruction.getId());
 
             // currently putting each instructions outputs into the exit table for the basic block,
             // not necesarily needed, only outputs from last instruction needed
@@ -366,9 +316,9 @@ public class DependencySlicedBasicBlock extends BasicBlock{
             for (Integer successorIndex=index+1; successorIndex < bb.getInstructions().size(); ++successorIndex) {
                 InstructionNode successor = bb.getInstructions().get(successorIndex);
                 //check if output is used by successor (read)
-                if (successor.getInputSymbols().contains(outputKey) && successor.ID() != -1) {
+                if (successor.getInputSymbols().contains(outputKey) && successor.getId() != -1) {
                     // input of successor matches output of predecessor, RAW dependency
-                    update.add(new InstructionEdge(instruction.ID(), successor.ID()));
+                    update.add(new InstructionEdge(instruction.getId(), successor.getId()));
                 }
             }
         }
@@ -376,8 +326,8 @@ public class DependencySlicedBasicBlock extends BasicBlock{
 
 
     //removes redundant transitive edges (A->B, A->{C, D, ...}, B->{C, D, ...} :: A->{C, D...} is redundant)
-    private void RemoveRedundancies(ArrayList<InstructionEdge> update, BasicBlock bb, StaticSingleAssignment CFG) {
-        LinkedHashMap<Integer, LinkedHashSet<Integer>> sourceDestsMap = new LinkedHashMap<Integer, LinkedHashSet<Integer>>();
+    private void removeRedundancies(List<InstructionEdge> update, BasicBlock bb, StaticSingleAssignment CFG) {
+        Map<Integer, Set<Integer>> sourceDestsMap = new LinkedHashMap<>();
 
         //populate hashmap
         for (InstructionEdge edge : update) {
@@ -392,11 +342,11 @@ public class DependencySlicedBasicBlock extends BasicBlock{
         //A->
         for (Integer source : sourceDestsMap.keySet()) {
             //{B, ...}
-            LinkedHashSet<Integer> dests = sourceDestsMap.get(source);
+            Set<Integer> dests = sourceDestsMap.get(source);
             //B->
             for (Integer dest : dests) {
                 //{C, ...}
-                LinkedHashSet<Integer> dest_dests = sourceDestsMap.get(dest);
+                Set<Integer> dest_dests = sourceDestsMap.get(dest);
                 if (dest_dests != null) {
                     for (Integer dest_dest : dest_dests) {
                         //check for redundancy

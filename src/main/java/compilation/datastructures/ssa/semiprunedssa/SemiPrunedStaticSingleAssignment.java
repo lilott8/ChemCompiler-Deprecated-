@@ -4,40 +4,38 @@ import java.util.HashSet;
 
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.cfg.CFG;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import compilation.datastructures.ssa.StaticSingleAssignment;
 
 /**
  * Created by chriscurtis on 3/24/17.
  */
 public class SemiPrunedStaticSingleAssignment extends StaticSingleAssignment {
-    private HashSet<String> __nonLocals;
+    private HashSet<String> nonLocals = new HashSet<>();
 
 
     public SemiPrunedStaticSingleAssignment(CFG controlFlow){
         super(controlFlow);
 
-        __nonLocals = new HashSet<String>();
-
-        this.CreateBasicBlockSymbolDefinitionAndUseTables();
-        this.CalculateNonLocalVariables();
-        this.PlacePhiNodes(this.__nonLocals);
-        this.RenameVariables();
+        this.createBasicBlockSymbolDefinitionAndUseTables();
+        this.calculateNonLocalVariables();
+        this.placePhiNodes(this.nonLocals);
+        this.renameVariables();
     }
 
 
 
-    private void CalculateNonLocalVariables(){
+    private void calculateNonLocalVariables(){
 
-        this.__nonLocals.clear();
+        this.nonLocals.clear();
 
-        for(BasicBlock bb : this.__basicBlocks.values()){
+        for(BasicBlock bb : this.basicBlocks.values()){
             bb.getKilledSet().clear();
 
             for(InstructionNode node : bb.getInstructions()) {
                 for (String symbol : node.getInputSymbols()){
                     if (!bb.getKilledSet().contains(symbol))
-                        this.__nonLocals.add(symbol);
+                        this.nonLocals.add(symbol);
                 }
 
                 for(String symbol: node.getOutputSymbols()){

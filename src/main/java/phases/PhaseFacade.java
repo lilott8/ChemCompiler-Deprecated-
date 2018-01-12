@@ -1,7 +1,5 @@
 package phases;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +28,7 @@ public class PhaseFacade implements Facade {
     }
 
     private PhaseConfig config;
-    private Map<PHASES, Phase> phases = new HashMap<PHASES, Phase>();
+    private Map<PHASES, Phase> phases = new HashMap<>();
     private CFG controlFlowGraph;
 
     public PhaseFacade(PhaseConfig config, CFG cfg) {

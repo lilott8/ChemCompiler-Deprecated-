@@ -13,14 +13,42 @@
     "INSTRUCTIONS" : [
       {
         "OPERATION" : {
+          "NAME" : "VARIABLE_DECLARATION",
+          "ID" : "7597473312637449419",
+          "CLASSIFICATION" : "VARIABLE",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Water",
+                "VOLUME" : {
+                  "VALUE" : "50",
+                  "UNITS" : "UL"
+                }
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "h2o",
+                "NAME" : "h2o",
+                "TYPE" : "CHEMICAL"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
           "NAME" : "HEAT",
-          "ID" : "2556094080817824885",
+          "ID" : "6036216746340493210",
           "CLASSIFICATION" : "HEAT",
           "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "Water"
+                "NAME" : "h2o"
               }
             },
             {
@@ -44,7 +72,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "Water"
+                "NAME" : "h2o"
               }            },
             {
               "INPUT_TYPE" : "PROPERTY",
@@ -83,7 +111,7 @@
                   {
                     "INPUT_TYPE" : "VARIABLE",
                     "VARIABLE" : {
-                      "NAME" : "Water"
+                      "NAME" : "h2o"
                     }
                   },
                   {
@@ -109,7 +137,7 @@
                   {
                     "INPUT_TYPE" : "VARIABLE",
                     "VARIABLE" : {
-                      "NAME" : "Water"
+                      "NAME" : "h2o"
                     }
                   },
                   {

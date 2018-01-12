@@ -12,113 +12,106 @@ import chemicalInteractions.ChemicalResolution;
  */
 public class NestedSymbolTable{
     // <renamed variable, full resolution>
-    protected HashMap<String, ChemicalResolution> __symbols;
+    protected Map<String, ChemicalResolution> symbols = new HashMap<>();
     //renamed variable, bb.getID
-    protected HashMap<String,Integer> __symbolDefinedIn;
-    protected HashMap<String,Integer> __lastUsedIn;
+    protected Map<String, Integer> symbolDefinedIn = new HashMap<>();
+    protected Map<String, Integer> lastUsedIn = new HashMap<>();
 
     // oringial name, all renames
-    //TODO::
-    protected HashMap<String, List<String>> __possibleRenames;
-    protected HashMap<String, String> __pointsTo;
-    private NestedSymbolTable __parent;
-    private Integer __varaibleID;
+    protected Map<String, List<String>> possibleRenames = new HashMap<>();
+    protected Map<String, String> pointsTo = new HashMap<>();
+    private NestedSymbolTable parent;
+    private Integer variableId;
 
 
     public void clear(){
-        __symbolDefinedIn.clear();
-        __symbols.clear();
-        __lastUsedIn.clear();
+        symbols.clear();
+        lastUsedIn.clear();
     }
 
     public NestedSymbolTable() {
-        __symbols = new HashMap<String, ChemicalResolution>();
-        __symbolDefinedIn = new HashMap<String, Integer>();
-        __possibleRenames = new HashMap<String, List<String>>();
-        __pointsTo = new HashMap<String, String>();
-        __parent = null;
-        __varaibleID  =0;
-        __lastUsedIn = new HashMap<String, Integer>();
+        parent = null;
+        variableId =0;
     }
 
     public void put(String key, ChemicalResolution resolution) {
-        __symbols.put(key,resolution);
+        symbols.put(key,resolution);
     }
 
     public void put(String key, ChemicalResolution resolution, Integer basicBlockID) {
-        __symbols.put(key,resolution);
-        __symbolDefinedIn.put(key,basicBlockID);
+        symbols.put(key,resolution);
+        symbolDefinedIn.put(key,basicBlockID);
     }
 
     public void addRenamedVariable(String original, String renamed) {
         List<String> renamedVariables;
-        if (__possibleRenames.containsKey(original))
-            renamedVariables = __possibleRenames.get(original);
+        if (possibleRenames.containsKey(original))
+            renamedVariables = possibleRenames.get(original);
         else
-            renamedVariables = new ArrayList<String>();
+            renamedVariables = new ArrayList<>();
         renamedVariables.add(renamed);
 
-        __pointsTo.put(renamed,original);
-        __possibleRenames.put(original,renamedVariables);
+        pointsTo.put(renamed,original);
+        possibleRenames.put(original,renamedVariables);
     }
 
-    public void setParent( NestedSymbolTable parent) { __parent = parent; }
-    public HashMap<String,String> getPointsTo() { return __pointsTo; }
-    public List<String> getRenamedVariables(String s) { return __possibleRenames.get(s); }
+    public void setParent( NestedSymbolTable parent) { this.parent = parent; }
+    public Map<String,String> getPointsTo() { return pointsTo; }
+    public List<String> getRenamedVariables(String s) { return possibleRenames.get(s); }
 
 
-    public HashMap<String, ChemicalResolution> getTable() { return __symbols; }
+    public Map<String, ChemicalResolution> getTable() { return symbols; }
 
     public ChemicalResolution get(String key){
-        if (__symbols.containsKey(key))
-            return __symbols.get(key);
-        if (__parent!=null )
-            return  __parent.get(key);
+        if (symbols.containsKey(key))
+            return symbols.get(key);
+        if (parent !=null )
+            return  parent.get(key);
         return null;
     }
 
     public Boolean contains(String substance){
-        if (__symbols.containsKey(substance))
+        if (symbols.containsKey(substance))
             return true;
-        if (__parent!= null)
-            return __parent.contains(substance);
+        if (parent != null)
+            return parent.contains(substance);
 
         return false;
     }
 
-    public void MarkSymbolInvalid(String symbol) { __parent.MarkMySymbolInvalid();}
+    public void MarkSymbolInvalid(String symbol) { parent.MarkMySymbolInvalid();}
     protected void MarkMySymbolInvalid() {}
     public void updateLastUsedIn(String symbol, Integer id){
-        this.__lastUsedIn.put(symbol,id);
+        this.lastUsedIn.put(symbol,id);
     }
     public Integer lastUsedIn (String symbol) {
-        return this.__lastUsedIn.get(symbol);
+        return this.lastUsedIn.get(symbol);
     }
-    public Map<String, Integer> getUsagedTable() { return this.__lastUsedIn;}
-    public void clearUsageTable() { __lastUsedIn.clear(); }
-    public Integer getDefinitionID(String s) { return __symbolDefinedIn.get(s);}
-    public Map<String,Integer> getDefinitionTable() { return __symbolDefinedIn; }
+    public Map<String, Integer> getUsagedTable() { return this.lastUsedIn;}
+    public void clearUsageTable() { lastUsedIn.clear(); }
+    public Integer getDefinitionID(String s) { return symbolDefinedIn.get(s);}
+    public Map<String,Integer> getDefinitionTable() { return symbolDefinedIn; }
 
     public void addDefinition(String key, Integer opID) {
-        this.__symbolDefinedIn.put(key,opID);
+        this.symbolDefinedIn.put(key,opID);
     }
 
     public String getUniqueVariableName(){
-        return "v" + (++__varaibleID).toString();
+        return "v" + (++variableId).toString();
     }
-    public NestedSymbolTable getParent() { return __parent; }
+    public NestedSymbolTable getParent() { return parent; }
     public String toString(){
         return this.toString("");
     }
     public String toString(String indentBuffer){
         String ret = "";
-        if(__parent!= null)
-            ret+= __parent.toString();
-        if(__possibleRenames!=null && __possibleRenames.size()>0) {
+        if(parent != null)
+            ret+= parent.toString();
+        if(possibleRenames !=null && possibleRenames.size()>0) {
             ret += "Renamed Variables: \n";
-            for(String key: __possibleRenames.keySet()) {
+            for(String key: possibleRenames.keySet()) {
                 ret += "\t" + key + ": ";
-                for(String rename: __possibleRenames.get(key)){
+                for(String rename: possibleRenames.get(key)){
                     ret+= rename + " ";
                 }
             }
@@ -126,9 +119,9 @@ public class NestedSymbolTable{
 
 
         }
-        if(__symbols!= null && __symbols.size()>0) {
+        if(symbols != null && symbols.size()>0) {
             ret += "Symbols: \n";
-            for (ChemicalResolution resolution : __symbols.values()) {
+            for (ChemicalResolution resolution : symbols.values()) {
                 ret += resolution.toString() + '\n';
             }
         }

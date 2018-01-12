@@ -1,81 +1,81 @@
 {
-  "EXPERIMENT": {
-    "NAME": "SplitTest",
-    "INPUTS": [
+  "EXPERIMENT" : {
+    "NAME" : "SplitTest",
+    "INPUTS" : [
       {
-        "VARIABLE_DECLARATION": {
-          "ID": "source",
-          "NAME": "source",
-          "TYPE": "CHEMICAL"
+        "VARIABLE_DECLARATION" : {
+          "ID" : "source",
+          "NAME" : "source",
+          "TYPE" : "CHEMICAL"
         }
       }
     ],
-    "INSTRUCTIONS": [
+    "INSTRUCTIONS" : [
       {
-        "OPERATION": {
-          "NAME": "VARIABLE_DECLARATION",
-          "ID": "1395611445351132018",
-          "CLASSIFICATION": "VARIABLE",
-          "INPUTS": [
+        "OPERATION" : {
+          "NAME" : "VARIABLE_DECLARATION",
+          "ID" : "7597473312637970016",
+          "CLASSIFICATION" : "VARIABLE",
+          "INPUTS" : [
             {
-              "INPUT_TYPE": "VARIABLE",
-              "VARIABLE": {
-                "NAME": "source",
-                "VOLUME": {
-                  "VALUE": "10",
-                  "UNITS": "UL"
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "source",
+                "VOLUME" : {
+                  "VALUE" : "10",
+                  "UNITS" : "UL"
                 }
               }
             }
           ],
-          "OUTPUTS": [
+          "OUTPUTS" : [
             {
-              "VARIABLE_DECLARATION": {
-                "ID": "splitMe",
-                "NAME": "splitMe",
-                "TYPE": "CHEMICAL"
+              "VARIABLE_DECLARATION" : {
+                "ID" : "splitMe",
+                "NAME" : "splitMe",
+                "TYPE" : "CHEMICAL"
               }
             }
           ]
         }
       },
       {
-        "OPERATION": {
-          "NAME": "SPLIT",
-          "ID": "1395611445351132090",
-          "CLASSIFICATION": "SPLIT",
-          "INPUTS:": [
+        "OPERATION" : {
+          "NAME" : "SPLIT",
+          "ID" : "7597473312638247554",
+          "CLASSIFICATION" : "SPLIT",
+          "INPUTS:" : [
             {
-              "INPUT_TYPE": "VARIABLE",
-              "VARIABLE": {
-                "NAME": "splitMe"
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "splitMe"
               }
             },
             {
-              "INPUT_TYPE": "PROPERTY",
-              "PROPERTY": {
-                "TYPE": "SPLIT_NUM",
-                "VALUE": "2",
-                "UNITS": ""
+              "INPUT_TYPE" : "PROPERTY",
+              "PROPERTY" : {
+                "TYPE" : "SPLIT_NUM",
+                "VALUE" : "2",
+                "UNITS" : ""
               }
             }
           ],
-          "OUTPUTS": [
+          "OUTPUTS" : [
             {
-              "VARIABLE": {
-                "ID": "dest1",
-                "NAME": "dest1",
-                "TYPE": "CHEMICAL",
-                "VOLUME": {
+              "VARIABLE" : {
+                "ID" : "dest1",
+                "NAME" : "dest1",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
                 }
               }
             },
             {
-              "VARIABLE": {
-                "ID": "dest2",
-                "NAME": "dest2",
-                "TYPE": "CHEMICAL",
-                "VOLUME": {
+              "VARIABLE" : {
+                "ID" : "dest2",
+                "NAME" : "dest2",
+                "TYPE" : "CHEMICAL",
+                "VOLUME" : {
                 }
               }
             }

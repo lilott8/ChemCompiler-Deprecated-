@@ -1,0 +1,90 @@
+{
+  "EXPERIMENT" : {
+    "NAME" : "Fail3",
+    "INPUTS" : [
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "C1=CC=C(C=C1)C(C(=O)C2=CC=CC=C2)O",
+          "NAME" : "C1=CC=C(C=C1)C(C(=O)C2=CC=CC=C2)O",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "C(=O)(N)N",
+          "NAME" : "C(=O)(N)N",
+          "TYPE" : "CHEMICAL"
+        }
+      },
+      {
+        "VARIABLE_DECLARATION" : {
+          "ID" : "C=O",
+          "NAME" : "C=O",
+          "TYPE" : "CHEMICAL"
+        }
+      }
+    ],
+    "INSTRUCTIONS" : [
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "5782256354252367284",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "C1=CC=C(C=C1)C(C(=O)C2=CC=CC=C2)O"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "C(=O)(N)N"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "a",
+                "TYPE" : "VARIABLE",
+                "NAME" : "a"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "5782256354252367578",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "a"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "C=O"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "b",
+                "TYPE" : "VARIABLE",
+                "NAME" : "b"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 package phases.inference.rules;
 
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import phases.inference.Inference.InferenceType;
 import phases.inference.elements.Instruction;
 import phases.inference.elements.Term;
@@ -24,11 +24,11 @@ public class Heat extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        Instruction instruction = new Instruction(node.ID(), InstructionType.HEAT);
+        Instruction instruction = new Instruction(node.getId(), InstructionType.HEAT);
 
         Variable input = null;
         // There is only ever one input.
-        for (String s : node.get_use()) {
+        for (String s : node.getUse()) {
             input = new Term(s);
             input.addTypingConstraints(getTypingConstraints(input));
             instruction.addInputVariable(input);
@@ -40,7 +40,7 @@ public class Heat extends NodeAnalyzer {
         instruction.addOutputVariable(output);
         addVariable(output);
 
-        for (Property p : node.Instruction().getProperties()) {
+        for (Property p : node.getInstruction().getProperties()) {
             Variable prop = new Term(Rule.createHash(p.toString()));
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);

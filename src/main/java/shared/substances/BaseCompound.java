@@ -59,7 +59,7 @@ public abstract class BaseCompound<T> {
     }
 
     /**
-     * Gets the ID of the compound
+     * Gets the getId of the compound
      * @return the pubchem id
      */
     public long getId() {
@@ -96,7 +96,7 @@ public abstract class BaseCompound<T> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("ID: ").append(id).append("\t").append("Name: ").append(name);
+        sb.append("getId: ").append(id).append("\t").append("Name: ").append(name);
         sb.append(System.lineSeparator());
         sb.append(reactiveGroups);
         sb.append(System.lineSeparator());

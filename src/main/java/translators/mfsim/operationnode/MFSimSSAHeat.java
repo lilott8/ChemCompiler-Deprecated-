@@ -10,16 +10,16 @@ import executable.instructions.Heat;
  */
 public class MFSimSSAHeat extends MFSimSSANode {
     private static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
-    private Long __time;
+    private Long time;
     public MFSimSSAHeat(Integer id, Heat heatNode){
         super(id, OperationClassifier.HEAT, heatNode.getName());
-        __time = getTime(heatNode);
+        time = getTime(heatNode);
     }
     public String toString() {
-        String ret = "NODE (" + this.__nodeID + ", " + this.__opType +  ", " + __time + ", " + this.__nodeName + ")\n";
+        String ret = "NODE (" + this.nodeID + ", " + this.opType + ", " + time + ", " + this.nodeName + ")\n";
 
-        for (Integer successor : this.__successorIDs) {
-            ret += "EDGE (" + this.__nodeID + ", " + successor + ")\n";
+        for (Integer successor : this.successorIDs) {
+            ret += "EDGE (" + this.nodeID + ", " + successor + ")\n";
         }
         return ret;
     }

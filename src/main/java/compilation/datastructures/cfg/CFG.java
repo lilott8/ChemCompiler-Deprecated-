@@ -15,7 +15,7 @@ import java.util.Set;
 import chemicalInteractions.ChemicalResolution;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import compilation.symboltable.NestedSymbolTable;
 import executable.instructions.Instruction;
 import substance.Chemical;
@@ -29,91 +29,67 @@ import variable.Variable;
 public class CFG implements Serializable {
     public static final Logger logger = LogManager.getLogger(CFG.class);
 
+    //private UndirectedGraph<BasicBlock, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
 
+    protected Map<Integer, BasicBlock> basicBlocks = new LinkedHashMap<>();
+    protected BasicBlock entry;
+    protected BasicBlock exit;
+    protected List<BasicBlockEdge> edges = new ArrayList<>();
+    protected Map< Integer, Set<Integer>> basicBlockPredecessorSet = new HashMap<>();
+    protected Map< Integer, Set<Integer>> basicBlockSuccessorSet = new HashMap<>();
+    protected NestedSymbolTable symbolTable = new NestedSymbolTable();
+    protected Integer uuid = 0;
+    protected Integer id = 1;
 
-    protected LinkedHashMap<Integer, BasicBlock> __basicBlocks;
-    protected BasicBlock __entry;
-    protected BasicBlock __exit;
-    protected ArrayList<BasicBlockEdge> __edges;
-    protected HashMap< Integer, Set<Integer>> __basicBlockPredecessorSet;
-    protected HashMap< Integer, Set<Integer>> __basicBlockSuccessorSet;
-
-    protected NestedSymbolTable __symbolTable;
-
-    protected Integer __UniqueIDs;
-    protected Integer __ID;
-
-    private void initializeData(){
-        __basicBlocks = new LinkedHashMap<Integer, BasicBlock>();
-        __edges = new ArrayList<BasicBlockEdge>();
-        __symbolTable = new NestedSymbolTable();
-
-        __ID = 0;
-        __UniqueIDs = __ID++;
-
-
-        __basicBlockPredecessorSet = new HashMap<Integer, Set<Integer>>();
-        __basicBlockSuccessorSet = new HashMap<Integer, Set<Integer>>();
-
-    }
-
-
-    public CFG(){
-        initializeData();
-
-    }
     public CFG(CFG controlFlowGraph){
-//        initializeData();
-        this.__basicBlocks = controlFlowGraph.__basicBlocks;
-        this.__edges = controlFlowGraph.__edges;
-        this.__basicBlockPredecessorSet = controlFlowGraph.__basicBlockPredecessorSet;
-        this.__basicBlockSuccessorSet = controlFlowGraph.__basicBlockSuccessorSet;
-        this.__symbolTable = controlFlowGraph.__symbolTable;
-        this.__UniqueIDs = controlFlowGraph.__UniqueIDs;
-        this.__ID = controlFlowGraph.__ID;
-        this.__entry = controlFlowGraph.__entry;
-        this.__exit = controlFlowGraph.__exit;
-
-
+        this.basicBlocks = controlFlowGraph.basicBlocks;
+        this.edges = controlFlowGraph.edges;
+        this.basicBlockPredecessorSet = controlFlowGraph.basicBlockPredecessorSet;
+        this.basicBlockSuccessorSet = controlFlowGraph.basicBlockSuccessorSet;
+        this.symbolTable = controlFlowGraph.symbolTable;
+        this.uuid = controlFlowGraph.uuid;
+        this.id = controlFlowGraph.id;
+        this.entry = controlFlowGraph.entry;
+        this.exit = controlFlowGraph.exit;
     }
+
+    public CFG() {
+    }
+
     public CFG(Integer id){
-        initializeData();
-        __ID = id;
-        __UniqueIDs = __ID++;
+        this.id = id;
+        uuid = this.id++;
     }
+
     public CFG(Integer id, NestedSymbolTable table){
-        initializeData();
-        __symbolTable = table;
-        __ID = id;
-        __UniqueIDs = __ID++;
+        symbolTable = table;
+        this.id = id;
+        uuid = this.id++;
     }
 
+    public Integer getID() { return id; }
 
+    public Integer getNewID() { return uuid++;}
 
-    public Integer getID() { return __ID; }
-
-    public Integer getNewID() { return __UniqueIDs++;}
-
-
-    private void AddBasicBlock(BasicBlock block) {
-        __basicBlocks.put(block.ID(), block);
+    private void addBasicBlock(BasicBlock block) {
+        basicBlocks.put(block.getId(), block);
     }
-    public void SetEntry(BasicBlock entry) { this.__entry = entry; }
-    public BasicBlock GetEntry() { return __entry; }
-    public void SetExit(BasicBlock exit) { this.__exit = exit; }
-    public BasicBlock GetExit() { return __exit; }
+    public void setEntry(BasicBlock entry) { this.entry = entry; }
+    public BasicBlock getEntry() { return entry; }
+    public void setExit(BasicBlock exit) { this.exit = exit; }
+    public BasicBlock getExit() { return exit; }
 
     public BasicBlock newBasicBlock() {
         NestedSymbolTable newTable = new NestedSymbolTable();
-        newTable.setParent(__symbolTable);
+        newTable.setParent(symbolTable);
         BasicBlock ret = new BasicBlock(this.getNewID(), newTable);
-        this.AddBasicBlock(ret);
+        this.addBasicBlock(ret);
 
         return ret;
     }
 
     public void newBasicBlock(BasicBlock bb) {
-        this.AddBasicBlock(bb);
+        this.addBasicBlock(bb);
     }
 
 
@@ -122,62 +98,56 @@ public class CFG implements Serializable {
         bb.addInstruction(node);
     }
 
-
-
     public void addEdge(BasicBlock source, BasicBlock destination) {
         this.addEdge(source,destination,"UNCONDITIONAL");
     }
 
     public void addEdge(BasicBlock source, BasicBlock destination, String condition) {
-        __edges.add(new BasicBlockEdge(source.ID(),destination.ID(), condition));
+        edges.add(new BasicBlockEdge(source.getId(), destination.getId(), condition));
         this.addPredecessor(source,destination);
         this.addSuccessor(source,destination);
     }
 
     public void addEdge(BasicBlock source, BasicBlock destination, String condition, String name) {
-        __edges.add(new BasicBlockEdge(source.ID(),destination.ID(), condition, name));
+        edges.add(new BasicBlockEdge(source.getId(), destination.getId(), condition, name));
         this.addPredecessor(source,destination);
         this.addSuccessor(source,destination);
     }
 
     private void addPredecessor(BasicBlock source, BasicBlock destination){
         Set predecessorSet;
-        if (__basicBlockPredecessorSet.containsKey(destination.ID())){
-            predecessorSet = __basicBlockPredecessorSet.get(destination.ID());
+        if (basicBlockPredecessorSet.containsKey(destination.getId())) {
+            predecessorSet = basicBlockPredecessorSet.get(destination.getId());
         }
         else
             predecessorSet = new HashSet();
-        predecessorSet.add(source.ID());
-        __basicBlockPredecessorSet.put(destination.ID(),predecessorSet);
+        predecessorSet.add(source.getId());
+        basicBlockPredecessorSet.put(destination.getId(), predecessorSet);
     }
     private void addSuccessor(BasicBlock source, BasicBlock destination) {
         Set successorSet;
 
-        if (__basicBlockSuccessorSet.containsKey(source.ID())){
-            successorSet = __basicBlockSuccessorSet.get(source.ID());
+        if (basicBlockSuccessorSet.containsKey(source.getId())) {
+            successorSet = basicBlockSuccessorSet.get(source.getId());
         }
         else
             successorSet = new HashSet();
-        successorSet.add(destination.ID());
-        __basicBlockSuccessorSet.put(source.ID(),successorSet);
+        successorSet.add(destination.getId());
+        basicBlockSuccessorSet.put(source.getId(), successorSet);
     }
 
-
-
-
-
     public void addResolution(String key, Variable variable, Boolean isGlobal){
-        ChemicalResolution resolution = ResolveVariable(variable);
+        ChemicalResolution resolution = resolveVariable(variable);
         resolution.setisGlobal(isGlobal);
         if (variable instanceof Instance) {
             resolution.setIsStationary(((Instance)variable).getIsStationary());
         }
-        __symbolTable.put(key,resolution);
+        symbolTable.put(key,resolution);
     }
 
-    public ChemicalResolution ResolveVariable(Variable variable) {
-        if(__symbolTable.contains(variable.getID()))
-            return __symbolTable.get(variable.getID());
+    public ChemicalResolution resolveVariable(Variable variable) {
+        if(symbolTable.contains(variable.getID()))
+            return symbolTable.get(variable.getID());
 
         ChemicalResolution resolution = new ChemicalResolution(variable.getName());
         if(variable instanceof Instance) {
@@ -186,34 +156,36 @@ public class CFG implements Serializable {
         }
 
         // for(Substance v : variable.getSubstance().values()) {
-        //     resolution.addReference(ResolveSubstance(v));
+        //     resolution.addReference(resolveSubstance(v));
         // }
         return resolution;
     }
 
-    private ChemicalResolution ResolveSubstance(Substance substance){
-        if(__symbolTable.contains(substance.getName()))
-            return __symbolTable.get(substance.getName());
+    private ChemicalResolution resolveSubstance(Substance substance){
+        if(symbolTable.contains(substance.getName()))
+            return symbolTable.get(substance.getName());
 
         ChemicalResolution resolution = new ChemicalResolution(substance.getName());
         resolution.setIsLiteral(true);
         for(Chemical c: substance.getChemicals().values())
             resolution.addLiteral(c);
 
-        __symbolTable.put(substance.getName(),resolution);
+        symbolTable.put(substance.getName(),resolution);
         return resolution;
     }
 
 
-    public NestedSymbolTable getSymbolTable() { return __symbolTable; }
-    public void setSymbolTable(NestedSymbolTable table) { __symbolTable = table; }
+    public NestedSymbolTable getSymbolTable() { return symbolTable; }
+    public void setSymbolTable(NestedSymbolTable table) { symbolTable = table; }
 
-    public LinkedHashMap<Integer, BasicBlock> getBasicBlocks() { return __basicBlocks; }
+    public Map<Integer, BasicBlock> getBasicBlocks() {
+        return basicBlocks;
+    }
     public BasicBlock getBasicBlock(Integer id) {
-        return this.__basicBlocks.get(id);
+        return this.basicBlocks.get(id);
     }
     public BasicBlock getBasicBlockByInstructionID(Integer id) {
-        for (BasicBlock bb: __basicBlocks.values()) {
+        for (BasicBlock bb: basicBlocks.values()) {
             if (bb.containsInstruction(id)) {
                 return bb;
             }
@@ -221,20 +193,20 @@ public class CFG implements Serializable {
         return null;
     }
 
-    public List<BasicBlockEdge> getBasicBlockEdges() { return __edges; }
-    public HashMap< Integer, Set<Integer>> getPredecessorTable() { return this.__basicBlockPredecessorSet; }
+    public List<BasicBlockEdge> getBasicBlockEdges() { return edges; }
+    public Map< Integer, Set<Integer>> getPredecessorTable() { return this.basicBlockPredecessorSet; }
     public Set<Integer> getPredecessors(Integer basicBlockID) {
-        return __basicBlockPredecessorSet.get(basicBlockID);
+        return basicBlockPredecessorSet.get(basicBlockID);
     }
     public Boolean hasPredecessors(Integer basicBlockID) {
-        return __basicBlockPredecessorSet.containsKey(basicBlockID);
+        return basicBlockPredecessorSet.containsKey(basicBlockID);
     }
 
     public Set<Integer> getSuccessors(Integer basicBlockID) {
-        return __basicBlockSuccessorSet.get(basicBlockID);
+        return basicBlockSuccessorSet.get(basicBlockID);
     }
 
-    public HashMap< Integer, Set<Integer>>  getSuccessorTable() { return __basicBlockSuccessorSet; }
+    public Map< Integer, Set<Integer>>  getSuccessorTable() { return basicBlockSuccessorSet; }
 
     public String toString(){
         return this.toString("");
@@ -242,32 +214,16 @@ public class CFG implements Serializable {
 
     public String toString(String indentBuffer){
         String ret = indentBuffer + "CFG: \n";
-        for(BasicBlock bb: this.__basicBlocks.values()) {
+        for(BasicBlock bb: this.basicBlocks.values()) {
             ret += bb.toString(indentBuffer+'\t') + '\n';
         }
         ret +=indentBuffer + "CFG Edges: \n";
-        for(BasicBlockEdge edge: __edges) {
+        for(BasicBlockEdge edge: edges) {
             ret += edge.toString(indentBuffer+'\t') + '\n';
         }
 
         ret+="\n SYMBOL TABLE\n";
-        ret+=__symbolTable.toString();
-        return ret;
-    }
-
-    public String toJSONString(){
-        List<InstructionNode> instructions = new ArrayList<InstructionNode>();
-        Map<Integer, Set<Integer>> childern = new HashMap<Integer, Set<Integer>>();
-
-        for(BasicBlock bb : this.__basicBlocks.values()){
-            for(InstructionNode node : bb.getInstructions()){
-                instructions.add(node);
-            }
-        }
-
-
-        String ret = "";
-
+        ret+= symbolTable.toString();
         return ret;
     }
 }

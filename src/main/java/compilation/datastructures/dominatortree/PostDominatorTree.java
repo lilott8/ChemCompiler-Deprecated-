@@ -13,56 +13,54 @@ public class PostDominatorTree extends DominatorTreeBase {
 
     public PostDominatorTree(CFG controlFlowGraph){
 
-        __dominatorTable = new HashMap<Integer, List<Integer>>();
+        dominatorTable = new HashMap<>();
 
-        __directionalSet = controlFlowGraph.getSuccessorTable(); //set successors
+        directionalSet = controlFlowGraph.getSuccessorTable(); //set successors
 
-        __nodes = new ArrayList<Integer>();
+        nodes = new ArrayList<>();
 
         //this needs to the Exit Node to be the LAST Node.
-        //The Exit node will have the largest ID
+        //The Exit node will have the largest getId
 
         Integer maxID=-1;
         for (Integer bbID : controlFlowGraph.getBasicBlocks().keySet()) {
             if(maxID < bbID){
                 maxID = bbID;
             }
-            __nodes.add(bbID);
+            nodes.add(bbID);
         }
         //move max to end of list.
-        __nodes.remove(__nodes.indexOf(maxID));
-        __nodes.add(maxID);
+        nodes.remove(nodes.indexOf(maxID));
+        nodes.add(maxID);
 
-        BuildTree();
+        buildTree();
     }
 
-    protected void BuildTree() {
-        List<Integer> n_n = new ArrayList<Integer>();
+    protected void buildTree() {
+        List<Integer> n_n = new ArrayList<>();
 
+        n_n.add(nodes.get(nodes.size()-1));
+        dominatorTable.put(nodes.get(nodes.size()-1), n_n);
 
-
-        n_n.add(__nodes.get(__nodes.size()-1));
-        __dominatorTable.put(__nodes.get(__nodes.size()-1), n_n);
-
-        for(int i = __nodes.size()-2 ; i>=0; --i) {
-            __dominatorTable.put(__nodes.get(i),__nodes);
+        for(int i = nodes.size()-2; i>=0; --i) {
+            dominatorTable.put(nodes.get(i), nodes);
         }
         boolean changed;
         do {
             changed = false;
-            for(int i = __nodes.size()-2; i>=0 ;--i){
-                List<Integer> currentSet = __dominatorTable.get(__nodes.get(i));
-                List<Integer> newSet = super.DenominatorFormula(__nodes.get(i));
+            for(int i = nodes.size()-2; i>=0 ; --i){
+                List<Integer> currentSet = dominatorTable.get(nodes.get(i));
+                List<Integer> newSet = super.denominatorFormula(nodes.get(i));
                 if (!checkEq(newSet, currentSet)) {
                     changed = true;
-                    __dominatorTable.put(__nodes.get(i),newSet);
+                    dominatorTable.put(nodes.get(i),newSet);
                 }
             }
 
         }while(changed);
 
         generateImmediateDominators();
-        generateDominenceFrontier();
+        generateDominanceFrontier();
     }
 
 }

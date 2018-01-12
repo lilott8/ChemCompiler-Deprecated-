@@ -12,13 +12,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import config.Config;
 import config.ConfigFactory;
-import errors.ChemTrailsException;
 import errors.ConfigurationException;
 
 /**
@@ -35,7 +33,6 @@ public class CliWrapper {
     }
 
     public void parseCommandLine(String... args) {
-        checkForChemAxon();
         try {
             this.cmd = this.parser.parse(this.buildOptions(), args);
             this.initializeEnvironment(this.cmd);
@@ -59,7 +56,7 @@ public class CliWrapper {
         }
 
         // If we have a translator we must also have output.
-        if ((cmd.hasOption("translate") && !cmd.hasOption("output")) || cmd.hasOption("output") && !cmd.hasOption("translate")) {
+        if ((cmd.hasOption("translate") && !cmd.hasOption("output"))) {
             throw new ConfigurationException("If you provide a translation or an output, the other must accompany.");
         }
 
@@ -75,8 +72,12 @@ public class CliWrapper {
         Config config = ConfigFactory.buildConfig(cmd);
 
         // add any initializing statements derived from the command line here.
-        if(config.getFilesForCompilation().size() == 0) {
+        if (config.getFilesForCompilation().size() == 0) {
             throw new ConfigurationException("We have no valid files for input");
+        }
+
+        if (config.checkForChemAxon()) {
+            checkForChemAxon();
         }
     }
 
@@ -162,7 +163,8 @@ public class CliWrapper {
                 .argName("simulate").build());
 
         // Enforcement level
-        desc = "Ignores warnings.  Default is to error on warnings.";
+        desc = "Ignores warnings.  Default is to error on warnings.\n" +
+                "Usage: -i";
         options.addOption(Option.builder("i").longOpt("ignore")
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
                 .argName("ignore").build());
@@ -194,6 +196,14 @@ public class CliWrapper {
         options.addOption(Option.builder("smarts").longOpt("smarts")
                 .desc(desc).type(Integer.class).hasArg().required(false)
                 .argName("smarts").build());
+
+        // Ignore chemical usage monitoring
+        desc = "Disable resource monitoring, i.e. ignore a mix using " +
+                "the same chemical.\n" +
+                "Usage: -drm";
+        options.addOption(Option.builder("drm").longOpt("drm")
+                .desc(desc).type(String.class).required(false)
+                .argName("drm").build());
 
         // Database name
         desc = "Database name.\n" +
@@ -235,6 +245,11 @@ public class CliWrapper {
                 " Usage: -dbextras [extra url get options]";
         options.addOption(Option.builder("dbextras").longOpt("dbextras")
                 .desc(desc).hasArg().argName("dbextras").build());
+
+        desc = "Disable ChemAxon check.\n" +
+                " Usage: -nca";
+        options.addOption(Option.builder("nca")
+                .longOpt("nochemaxon").desc(desc).argName("nochemaxon").build());
 
         return options;
     }

@@ -11,21 +11,18 @@ import java.util.List;
 import java.util.Map;
 
 import chemicalInteractions.ChemicalResolution;
-import compilation.datastructures.InstructionNode;
+import compilation.datastructures.node.InstructionNode;
 import config.ConfigFactory;
 import config.InferenceConfig;
 import shared.substances.BaseCompound;
 import translators.typesystem.TypeSystemTranslator;
 import typesystem.classification.Classifier;
 import typesystem.classification.ClassifierFactory;
-import typesystem.classification.NaiveClassifier;
 import typesystem.combinator.Combiner;
 import typesystem.combinator.CombinerFactory;
-import typesystem.combinator.NaiveCombiner;
 import typesystem.epa.EpaManager;
 import typesystem.identification.Identifier;
 import typesystem.identification.IdentifierFactory;
-import typesystem.identification.NaiveIdentifier;
 import variable.Variable;
 
 /**
@@ -85,13 +82,13 @@ public class TypeSystem {
             String output = "";
             // this will only ever have one element.  Thus we get it and use it for the output
             // variable to cache what
-            for (Map.Entry<String, Variable> o : i.Instruction().getOutputs().entrySet()) {
+            for (Map.Entry<String, Variable> o : i.getInstruction().getOutputs().entrySet()) {
                 output = o.getKey();
             }
             if (!instructionInputs.containsKey(output)) {
                 instructionInputs.put(output, new ArrayList<String>());
             }
-            for (Map.Entry<String, Variable> in : i.Instruction().getInputs().entrySet()) {
+            for (Map.Entry<String, Variable> in : i.getInstruction().getInputs().entrySet()) {
                 for (ChemicalResolution cr : this.translator.getTable().getResolution(in.getKey()).getReferences()) {
                     if (cr.IsLiteral() && !this.instructionInputs.containsKey(cr.getName())) {
                         resolvedVariables.put(in.getKey(), this.identifier.identifyCompound(cr.getName()));
@@ -101,7 +98,7 @@ public class TypeSystem {
             }
         }
         //logger.info(this.translator.toString());
-        logger.trace("Instruction Inputs: " + instructionInputs);
+        logger.trace("getInstruction Inputs: " + instructionInputs);
         logger.trace("Resolved Variables: " + resolvedVariables);
     }
 

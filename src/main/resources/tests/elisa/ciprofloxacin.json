@@ -18,15 +18,15 @@
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "Distilled Water",
-          "NAME" : "Distilled Water",
+          "ID" : "O",
+          "NAME" : "O",
           "TYPE" : "CHEMICAL"
         }
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "TMB Substrate",
-          "NAME" : "TMB Substrate",
+          "ID" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C",
+          "NAME" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C",
           "TYPE" : "CHEMICAL"
         }
       },
@@ -39,8 +39,8 @@
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "Ciprofloxacin Enzyme",
-          "NAME" : "Ciprofloxacin Enzyme",
+          "ID" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O",
+          "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O",
           "TYPE" : "STATIONARY"
         }
       }
@@ -67,7 +67,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "STATIONARY" : {
-                "NAME" : "Ciprofloxacin Enzyme"
+                "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
               }
             }
           ],
@@ -96,7 +96,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "STATIONARY" : {
-                "NAME" : "Ciprofloxacin Enzyme"
+                "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
               }
             }
           ],
@@ -113,7 +113,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "STATIONARY" : {
-                "NAME" : "Ciprofloxacin Enzyme"
+                "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
               }
             },
             {
@@ -137,9 +137,8 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "STATIONARY" : {
-                "NAME" : "Ciprofloxacin Enzyme"
+                "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
               }
-
             },
             {
               "INPUT_TYPE" : "PROPERTY",
@@ -169,7 +168,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "STATIONARY" : {
-                "NAME" : "Ciprofloxacin Enzyme"
+                "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
               }
             }
           ],
@@ -194,7 +193,7 @@
                     "INPUT_TYPE" : "VARIABLE",
                     "CHEMICAL" : {
                       "VARIABLE" : {
-                        "NAME" : "Distilled Water"
+                        "NAME" : "O"
                       },
                       "VOLUME" : {
                         "VALUE" : "250",
@@ -205,7 +204,7 @@
                   {
                     "INPUT_TYPE" : "VARIABLE",
                     "STATIONARY" : {
-                      "NAME" : "Ciprofloxacin Enzyme"
+                      "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
                     }
                   }
                 ],
@@ -222,7 +221,7 @@
                   {
                     "INPUT_TYPE" : "VARIABLE",
                     "STATIONARY" : {
-                      "NAME" : "Ciprofloxacin Enzyme"
+                      "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
                     }
                   },
                   {
@@ -246,7 +245,7 @@
                   {
                     "INPUT_TYPE" : "VARIABLE",
                     "STATIONARY" : {
-                      "NAME" : "Ciprofloxacin Enzyme"
+                      "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
                     }
                   }
                 ],
@@ -267,7 +266,7 @@
               "INPUT_TYPE" : "VARIABLE",
               "CHEMICAL" : {
                 "VARIABLE" : {
-                  "NAME" : "TMB Substrate"
+                  "NAME" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C"
                 },
                 "VOLUME" : {
                   "VALUE" : "50",
@@ -278,7 +277,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "STATIONARY" : {
-                "NAME" : "Ciprofloxacin Enzyme"
+                "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
               }
             }
           ],
@@ -295,9 +294,8 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "STATIONARY" : {
-                "NAME" : "Ciprofloxacin Enzyme"
+                "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
               }
-
             },
             {
               "INPUT_TYPE" : "PROPERTY",
@@ -327,9 +325,8 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "STATIONARY" : {
-                "NAME" : "Ciprofloxacin Enzyme"
+                "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
               }
-
             },
             {
               "INPUT_TYPE" : "VARIABLE",
@@ -365,7 +362,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "STATIONARY" : {
-                "NAME" : "Ciprofloxacin Enzyme"
+                "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
               }
             },
             {
@@ -398,7 +395,7 @@
             {
               "INPUT_TYPE" : "VARIABLE",
               "STATIONARY" : {
-                "NAME" : "Ciprofloxacin Enzyme"
+                "NAME" : "C1CC1N2C=C(C(=O)C3=CC(=C(C=C32)N4CCNCC4)F)C(=O)O"
               }
             }
           ],
