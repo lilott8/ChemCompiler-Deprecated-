@@ -143,6 +143,11 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
      * attempted to be used in a mix/split after it's been used already.
      */
     private boolean monitorResources = true;
+    /**
+     * Should the system verify that ChemAxon is installed.
+     * DEFAULT: true
+     */
+    private boolean checkForChemAxon = true;
 
     /**
      * Build the config object from our command line This method must match that in the main.
@@ -251,6 +256,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
 
         if (cmd.hasOption("matrix")) {
             this.reactiveMatrix = cmd.getOptionValue("matrix");
+        }
+
+        if (cmd.hasOption("nochemaxon")) {
+            this.checkForChemAxon = false;
         }
     }
 
@@ -456,5 +465,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     @Override
     public boolean monitorResources() {
         return this.monitorResources;
+    }
+
+    @Override
+    public boolean checkForChemAxon() {
+        return this.checkForChemAxon;
     }
 }

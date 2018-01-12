@@ -33,7 +33,6 @@ public class CliWrapper {
     }
 
     public void parseCommandLine(String... args) {
-        checkForChemAxon();
         try {
             this.cmd = this.parser.parse(this.buildOptions(), args);
             this.initializeEnvironment(this.cmd);
@@ -73,8 +72,12 @@ public class CliWrapper {
         Config config = ConfigFactory.buildConfig(cmd);
 
         // add any initializing statements derived from the command line here.
-        if(config.getFilesForCompilation().size() == 0) {
+        if (config.getFilesForCompilation().size() == 0) {
             throw new ConfigurationException("We have no valid files for input");
+        }
+
+        if (config.checkForChemAxon()) {
+            checkForChemAxon();
         }
     }
 
@@ -242,6 +245,11 @@ public class CliWrapper {
                 " Usage: -dbextras [extra url get options]";
         options.addOption(Option.builder("dbextras").longOpt("dbextras")
                 .desc(desc).hasArg().argName("dbextras").build());
+
+        desc = "Disable ChemAxon check.\n" +
+                " Usage: -nca";
+        options.addOption(Option.builder("nca")
+                .longOpt("nochemaxon").desc(desc).argName("nochemaxon").build());
 
         return options;
     }

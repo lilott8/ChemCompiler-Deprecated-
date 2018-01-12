@@ -12,6 +12,7 @@ public interface CommonConfig {
     String getOutputDir();
     boolean clean();
     List<String> getFilesForCompilation();
+    boolean checkForChemAxon();
 
     boolean isDebug();
     int getNumberOfThreads();
