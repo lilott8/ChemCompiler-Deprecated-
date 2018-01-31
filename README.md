@@ -36,4 +36,10 @@ The basic command line usage:
  
 *if using a translator, you must provide an output directory.
 
+
+###Definitions
+
+A phase is a clearly defined process in which the compiler will run.  These are discrete and independent, e.g., `Parsing`, `Data Flow Analysis`.
+
+A step is a number of actions a phase may take to complete.  Within the `Parsing` phase, the parser handles `lexical analysis`, `type inference`, `I.R. transformation`, etc.
  
