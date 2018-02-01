@@ -73,7 +73,6 @@ public class CliWrapper {
 
         // add any initializing statements derived from the command line here.
         if (config.getFilesForCompilation().size() == 0) {
-            logger.info(cmd.getOptionValue("compile"));
             throw new ConfigurationException("We have no valid file(s) for input");
         }
 
