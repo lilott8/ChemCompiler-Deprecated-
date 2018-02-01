@@ -7,15 +7,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import chemaxon.stat.Common;
 import config.CommonConfig;
-import config.Config;
 import config.ConfigFactory;
 import parser.parsing.BSParser;
 import parser.parsing.ParseException;
 import shared.Phase;
 import shared.Step;
-import shared.Strategy;
 
 /**
  * @created: 11/29/17

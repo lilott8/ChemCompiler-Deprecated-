@@ -3,38 +3,37 @@
 //
 
 package parser.ast;
-import parser.visitor.*;
+
+import parser.visitor.GJNoArguVisitor;
+import parser.visitor.GJVisitor;
+import parser.visitor.GJVoidVisitor;
+import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> <STATIONARY>
- * f1 -> Identifier()
+ * f0 -> ( <STATIONARY> Identifier() )*
  */
 public class Stationary implements Node {
-   public NodeToken f0;
-   public Identifier f1;
+    public NodeListOptional f0;
 
-   public Stationary(NodeToken n0, Identifier n1) {
-      f0 = n0;
-      f1 = n1;
-   }
+    public Stationary(NodeListOptional n0) {
+        f0 = n0;
+    }
 
-   public Stationary(Identifier n0) {
-      f0 = new NodeToken("stationary");
-      f1 = n0;
-   }
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
 
-   public void accept(Visitor v) {
-      v.visit(this);
-   }
-   public <R,A> R accept(GJVisitor<R,A> v, A argu) {
-      return v.visit(this,argu);
-   }
-   public <R> R accept(GJNoArguVisitor<R> v) {
-      return v.visit(this);
-   }
-   public <A> void accept(GJVoidVisitor<A> v, A argu) {
-      v.visit(this,argu);
-   }
+    public <R, A> R accept(GJVisitor<R, A> v, A argu) {
+        return v.visit(this, argu);
+    }
+
+    public <R> R accept(GJNoArguVisitor<R> v) {
+        return v.visit(this);
+    }
+
+    public <A> void accept(GJVoidVisitor<A> v, A argu) {
+        v.visit(this, argu);
+    }
 }
 

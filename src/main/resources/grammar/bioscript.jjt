@@ -157,13 +157,13 @@ void BSProgram() :
 void Stationary() :
 {}
 {
-    <STATIONARY> Identifier()
+    (<STATIONARY> Identifier())*
 }
 
 void Manifest() :
 {}
 {
-    <MANIFEST> Identifier()
+    (<MANIFEST> Identifier())*
 }
 
 void Statement() :

@@ -3,21 +3,31 @@
 //
 
 package parser.ast;
-import parser.visitor.*;
+
+import parser.visitor.GJNoArguVisitor;
+import parser.visitor.GJVisitor;
+import parser.visitor.GJVoidVisitor;
+import parser.visitor.Visitor;
 
 /**
  * The interface which NodeList, NodeListOptional, and NodeSequence
  * implement.
  */
 public interface NodeListInterface extends Node {
-   public void addNode(Node n);
-   public Node elementAt(int i);
-   public java.util.Enumeration<Node> elements();
-   public int size();
+    void addNode(Node n);
 
-   public void accept(Visitor v);
-   public <R,A> R accept(GJVisitor<R,A> v, A argu);
-   public <R> R accept(GJNoArguVisitor<R> v);
-   public <A> void accept(GJVoidVisitor<A> v, A argu);
+    Node elementAt(int i);
+
+    java.util.Enumeration<Node> elements();
+
+    int size();
+
+    void accept(Visitor v);
+
+    <R, A> R accept(GJVisitor<R, A> v, A argu);
+
+    <R> R accept(GJNoArguVisitor<R> v);
+
+    <A> void accept(GJVoidVisitor<A> v, A argu);
 }
 

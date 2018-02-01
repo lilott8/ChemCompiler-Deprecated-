@@ -3,7 +3,11 @@
 //
 
 package parser.ast;
-import parser.visitor.*;
+
+import parser.visitor.GJNoArguVisitor;
+import parser.visitor.GJVisitor;
+import parser.visitor.GJVoidVisitor;
+import parser.visitor.Visitor;
 
 /**
  * Grammar production:
@@ -14,39 +18,42 @@ import parser.visitor.*;
  * f4 -> <EOF>
  */
 public class BSProgram implements Node {
-   public Stationary f0;
-   public Manifest f1;
-   public NodeToken f2;
-   public Instruction f3;
-   public NodeToken f4;
+    public Stationary f0;
+    public Manifest f1;
+    public NodeToken f2;
+    public Instruction f3;
+    public NodeToken f4;
 
-   public BSProgram(Stationary n0, Manifest n1, NodeToken n2, Instruction n3, NodeToken n4) {
-      f0 = n0;
-      f1 = n1;
-      f2 = n2;
-      f3 = n3;
-      f4 = n4;
-   }
+    public BSProgram(Stationary n0, Manifest n1, NodeToken n2, Instruction n3, NodeToken n4) {
+        f0 = n0;
+        f1 = n1;
+        f2 = n2;
+        f3 = n3;
+        f4 = n4;
+    }
 
-   public BSProgram(Stationary n0, Manifest n1, Instruction n2) {
-      f0 = n0;
-      f1 = n1;
-      f2 = new NodeToken("instructions");
-      f3 = n2;
-      f4 = new NodeToken("");
-   }
+    public BSProgram(Stationary n0, Manifest n1, Instruction n2) {
+        f0 = n0;
+        f1 = n1;
+        f2 = new NodeToken("instructions");
+        f3 = n2;
+        f4 = new NodeToken("");
+    }
 
-   public void accept(Visitor v) {
-      v.visit(this);
-   }
-   public <R,A> R accept(GJVisitor<R,A> v, A argu) {
-      return v.visit(this,argu);
-   }
-   public <R> R accept(GJNoArguVisitor<R> v) {
-      return v.visit(this);
-   }
-   public <A> void accept(GJVoidVisitor<A> v, A argu) {
-      v.visit(this,argu);
-   }
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
+
+    public <R, A> R accept(GJVisitor<R, A> v, A argu) {
+        return v.visit(this, argu);
+    }
+
+    public <R> R accept(GJNoArguVisitor<R> v) {
+        return v.visit(this);
+    }
+
+    public <A> void accept(GJVoidVisitor<A> v, A argu) {
+        v.visit(this, argu);
+    }
 }
 
