@@ -55,6 +55,8 @@ TOKEN :
 |   <REAL: "real">
 |   <NAT: "nat">
 |   <MAT: "mat">
+|   <MODULE: "module">
+|   <ARRAY: "array">
 }
 
 
@@ -147,6 +149,7 @@ TOKEN : /* IDENTIFIERS */
 void BSProgram() :
 {}
 {
+    Module()
     Stationary()
     Manifest()
     <INSTRUCTIONS>
@@ -157,13 +160,19 @@ void BSProgram() :
 void Stationary() :
 {}
 {
-    (<STATIONARY> Identifier())*
+    (<STATIONARY> (TypingList())* Identifier())*
 }
 
 void Manifest() :
 {}
 {
-    (<MANIFEST> Identifier())*
+    (<MANIFEST> (TypingList())* Identifier())+
+}
+
+void Module() :
+{}
+{
+    (<MODULE> Identifier())*
 }
 
 void Statement() :

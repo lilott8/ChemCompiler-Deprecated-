@@ -13,12 +13,12 @@ import parser.visitor.Visitor;
  * The interface which all syntax tree classes must implement.
  */
 public interface Node extends java.io.Serializable {
-    void accept(Visitor v);
+    public void accept(Visitor v);
 
-    <R, A> R accept(GJVisitor<R, A> v, A argu);
+    public <R, A> R accept(GJVisitor<R, A> v, A argu);
 
-    <R> R accept(GJNoArguVisitor<R> v);
+    public <R> R accept(GJNoArguVisitor<R> v);
 
-    <A> void accept(GJVoidVisitor<A> v, A argu);
+    public <A> void accept(GJVoidVisitor<A> v, A argu);
 }
 

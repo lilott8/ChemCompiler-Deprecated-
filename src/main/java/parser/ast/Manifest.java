@@ -11,12 +11,12 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> ( <MANIFEST> Identifier() )*
+ * f0 -> ( <MANIFEST> ( TypingList() )* Identifier() )+
  */
 public class Manifest implements Node {
-    public NodeListOptional f0;
+    public NodeList f0;
 
-    public Manifest(NodeListOptional n0) {
+    public Manifest(NodeList n0) {
         f0 = n0;
     }
 

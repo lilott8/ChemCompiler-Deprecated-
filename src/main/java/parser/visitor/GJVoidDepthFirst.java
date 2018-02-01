@@ -31,6 +31,7 @@ import parser.ast.Manifest;
 import parser.ast.MatLiteral;
 import parser.ast.MinusExpression;
 import parser.ast.MixStatement;
+import parser.ast.Module;
 import parser.ast.NatLiteral;
 import parser.ast.Node;
 import parser.ast.NodeList;
@@ -103,11 +104,12 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
     //
 
     /**
-     * f0 -> Stationary()
-     * f1 -> Manifest()
-     * f2 -> <INSTRUCTIONS>
-     * f3 -> Instruction()
-     * f4 -> <EOF>
+     * f0 -> Module()
+     * f1 -> Stationary()
+     * f2 -> Manifest()
+     * f3 -> <INSTRUCTIONS>
+     * f4 -> Instruction()
+     * f5 -> <EOF>
      */
     public void visit(BSProgram n, A argu) {
         n.f0.accept(this, argu);
@@ -115,19 +117,27 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
         n.f2.accept(this, argu);
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
+        n.f5.accept(this, argu);
     }
 
     /**
-     * f0 -> ( <STATIONARY> Identifier() )*
+     * f0 -> ( <STATIONARY> ( TypingList() )* Identifier() )*
      */
     public void visit(Stationary n, A argu) {
         n.f0.accept(this, argu);
     }
 
     /**
-     * f0 -> ( <MANIFEST> Identifier() )*
+     * f0 -> ( <MANIFEST> ( TypingList() )* Identifier() )+
      */
     public void visit(Manifest n, A argu) {
+        n.f0.accept(this, argu);
+    }
+
+    /**
+     * f0 -> ( <MODULE> Identifier() )*
+     */
+    public void visit(Module n, A argu) {
         n.f0.accept(this, argu);
     }
 

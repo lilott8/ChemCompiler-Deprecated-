@@ -31,6 +31,7 @@ import parser.ast.Manifest;
 import parser.ast.MatLiteral;
 import parser.ast.MinusExpression;
 import parser.ast.MixStatement;
+import parser.ast.Module;
 import parser.ast.NatLiteral;
 import parser.ast.Node;
 import parser.ast.NodeList;
@@ -93,11 +94,12 @@ public class DepthFirstVisitor implements Visitor {
     //
 
     /**
-     * f0 -> Stationary()
-     * f1 -> Manifest()
-     * f2 -> <INSTRUCTIONS>
-     * f3 -> Instruction()
-     * f4 -> <EOF>
+     * f0 -> Module()
+     * f1 -> Stationary()
+     * f2 -> Manifest()
+     * f3 -> <INSTRUCTIONS>
+     * f4 -> Instruction()
+     * f5 -> <EOF>
      */
     public void visit(BSProgram n) {
         n.f0.accept(this);
@@ -105,19 +107,27 @@ public class DepthFirstVisitor implements Visitor {
         n.f2.accept(this);
         n.f3.accept(this);
         n.f4.accept(this);
+        n.f5.accept(this);
     }
 
     /**
-     * f0 -> ( <STATIONARY> Identifier() )*
+     * f0 -> ( <STATIONARY> ( TypingList() )* Identifier() )*
      */
     public void visit(Stationary n) {
         n.f0.accept(this);
     }
 
     /**
-     * f0 -> ( <MANIFEST> Identifier() )*
+     * f0 -> ( <MANIFEST> ( TypingList() )* Identifier() )+
      */
     public void visit(Manifest n) {
+        n.f0.accept(this);
+    }
+
+    /**
+     * f0 -> ( <MODULE> Identifier() )*
+     */
+    public void visit(Module n) {
         n.f0.accept(this);
     }
 

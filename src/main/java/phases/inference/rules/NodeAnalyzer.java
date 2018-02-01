@@ -1,6 +1,5 @@
 package phases.inference.rules;
 
-
 import java.util.List;
 
 import compilation.datastructures.node.InstructionNode;

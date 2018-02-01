@@ -29,6 +29,7 @@ import parser.ast.Manifest;
 import parser.ast.MatLiteral;
 import parser.ast.MinusExpression;
 import parser.ast.MixStatement;
+import parser.ast.Module;
 import parser.ast.NatLiteral;
 import parser.ast.NodeList;
 import parser.ast.NodeListOptional;
@@ -63,45 +64,51 @@ public interface Visitor {
     // void Auto class visitors
     //
 
-    void visit(NodeList n);
+    public void visit(NodeList n);
 
-    void visit(NodeListOptional n);
+    public void visit(NodeListOptional n);
 
-    void visit(NodeOptional n);
+    public void visit(NodeOptional n);
 
-    void visit(NodeSequence n);
+    public void visit(NodeSequence n);
 
-    void visit(NodeToken n);
+    public void visit(NodeToken n);
 
     //
     // User-generated visitor methods below
     //
 
     /**
-     * f0 -> Stationary()
-     * f1 -> Manifest()
-     * f2 -> <INSTRUCTIONS>
-     * f3 -> Instruction()
-     * f4 -> <EOF>
+     * f0 -> Module()
+     * f1 -> Stationary()
+     * f2 -> Manifest()
+     * f3 -> <INSTRUCTIONS>
+     * f4 -> Instruction()
+     * f5 -> <EOF>
      */
-    void visit(BSProgram n);
+    public void visit(BSProgram n);
 
     /**
-     * f0 -> ( <STATIONARY> Identifier() )*
+     * f0 -> ( <STATIONARY> ( TypingList() )* Identifier() )*
      */
-    void visit(Stationary n);
+    public void visit(Stationary n);
 
     /**
-     * f0 -> ( <MANIFEST> Identifier() )*
+     * f0 -> ( <MANIFEST> ( TypingList() )* Identifier() )+
      */
-    void visit(Manifest n);
+    public void visit(Manifest n);
+
+    /**
+     * f0 -> ( <MODULE> Identifier() )*
+     */
+    public void visit(Module n);
 
     /**
      * f0 -> Instruction()
      * | BranchStatement()
      * | WhileStatement()
      */
-    void visit(Statement n);
+    public void visit(Statement n);
 
     /**
      * f0 -> MixStatement()
@@ -112,7 +119,7 @@ public interface Visitor {
      * | RepeatStatement()
      * | AssignmentStatement()
      */
-    void visit(Instruction n);
+    public void visit(Instruction n);
 
     /**
      * f0 -> <FUNCTION>
@@ -125,43 +132,43 @@ public interface Visitor {
      * f7 -> Statement()
      * f8 -> <LBRACE>
      */
-    void visit(Function n);
+    public void visit(Function n);
 
     /**
      * f0 -> Type()
      * f1 -> ( TypingRest() )*
      */
-    void visit(TypingList n);
+    public void visit(TypingList n);
 
     /**
      * f0 -> <COMMA>
      * f1 -> Type()
      */
-    void visit(TypingRest n);
+    public void visit(TypingRest n);
 
     /**
      * f0 -> FormalParameter()
      * f1 -> ( FormalParameterRest() )*
      */
-    void visit(FormalParameterList n);
+    public void visit(FormalParameterList n);
 
     /**
      * f0 -> TypingList()
      * f1 -> Identifier()
      */
-    void visit(FormalParameter n);
+    public void visit(FormalParameter n);
 
     /**
      * f0 -> <COMMA>
      * f1 -> FormalParameter()
      */
-    void visit(FormalParameterRest n);
+    public void visit(FormalParameterRest n);
 
     /**
      * f0 -> <MIX> PrimaryExpression() <WITH> PrimaryExpression()
      * | <FOR> IntegerLiteral()
      */
-    void visit(MixStatement n);
+    public void visit(MixStatement n);
 
     /**
      * f0 -> <SPLIT>
@@ -169,30 +176,30 @@ public interface Visitor {
      * f2 -> <INTO>
      * f3 -> PrimaryExpression()
      */
-    void visit(SplitStatement n);
+    public void visit(SplitStatement n);
 
     /**
      * f0 -> <DRAIN>
      * f1 -> PrimaryExpression()
      */
-    void visit(DrainStatement n);
+    public void visit(DrainStatement n);
 
     /**
      * f0 -> <HEAT> PrimaryExpression() <AT> IntegerLiteral()
      * | <FOR> IntegerLiteral()
      */
-    void visit(HeatStatement n);
+    public void visit(HeatStatement n);
 
     /**
      * f0 -> <DETECT> Identifier() <ON> PrimaryExpression()
      * | <FOR> <INTEGER_LITERAL>
      */
-    void visit(DetectStatement n);
+    public void visit(DetectStatement n);
 
     /**
      * f0 -> WhileStatement()
      */
-    void visit(RepeatStatement n);
+    public void visit(RepeatStatement n);
 
     /**
      * f0 -> ( TypingList() )*
@@ -200,21 +207,21 @@ public interface Visitor {
      * f2 -> <ASSIGN>
      * f3 -> Expression()
      */
-    void visit(AssignmentStatement n);
+    public void visit(AssignmentStatement n);
 
     /**
      * f0 -> MatLiteral()
      * | NatLiteral()
      * | RealLiteral()
      */
-    void visit(Type n);
+    public void visit(Type n);
 
     /**
      * f0 -> <IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
      * | <ELSE_IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
      * | <ELSE> <LBRACE> Statement() <RBRACE>
      */
-    void visit(BranchStatement n);
+    public void visit(BranchStatement n);
 
     /**
      * f0 -> <REPEAT>
@@ -224,7 +231,7 @@ public interface Visitor {
      * f4 -> Statement()
      * f5 -> <RBRACE>
      */
-    void visit(WhileStatement n);
+    public void visit(WhileStatement n);
 
     /**
      * f0 -> IntegerLiteral()
@@ -233,42 +240,42 @@ public interface Visitor {
      * | Identifier()
      * | ParenthesisExpression()
      */
-    void visit(PrimaryExpression n);
+    public void visit(PrimaryExpression n);
 
     /**
      * f0 -> <INTEGER_LITERAL>
      */
-    void visit(IntegerLiteral n);
+    public void visit(IntegerLiteral n);
 
     /**
      * f0 -> <NAT>
      */
-    void visit(NatLiteral n);
+    public void visit(NatLiteral n);
 
     /**
      * f0 -> <MAT>
      */
-    void visit(MatLiteral n);
+    public void visit(MatLiteral n);
 
     /**
      * f0 -> <REAL>
      */
-    void visit(RealLiteral n);
+    public void visit(RealLiteral n);
 
     /**
      * f0 -> <TRUE>
      */
-    void visit(TrueLiteral n);
+    public void visit(TrueLiteral n);
 
     /**
      * f0 -> <FALSE>
      */
-    void visit(FalseLiteral n);
+    public void visit(FalseLiteral n);
 
     /**
      * f0 -> <IDENTIFIER>
      */
-    void visit(Identifier n);
+    public void visit(Identifier n);
 
     /**
      * f0 -> AndExpression()
@@ -284,97 +291,97 @@ public interface Visitor {
      * | TimesExpression()
      * | PrimaryExpression()
      */
-    void visit(Expression n);
+    public void visit(Expression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <AND>
      * f2 -> PrimaryExpression()
      */
-    void visit(AndExpression n);
+    public void visit(AndExpression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <LESSTHAN>
      * f2 -> PrimaryExpression()
      */
-    void visit(LessThanExpression n);
+    public void visit(LessThanExpression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <LESSTHANEQUAL>
      * f2 -> PrimaryExpression()
      */
-    void visit(LessThanEqualExpression n);
+    public void visit(LessThanEqualExpression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <GREATERTHAN>
      * f2 -> PrimaryExpression()
      */
-    void visit(GreaterThanExpression n);
+    public void visit(GreaterThanExpression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <GREATERTHANEQUAL>
      * f2 -> PrimaryExpression()
      */
-    void visit(GreaterThanEqualExpression n);
+    public void visit(GreaterThanEqualExpression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <NOTEQUAL>
      * f2 -> PrimaryExpression()
      */
-    void visit(NotEqualExpression n);
+    public void visit(NotEqualExpression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <OR>
      * f2 -> PrimaryExpression()
      */
-    void visit(EqualityExpression n);
+    public void visit(EqualityExpression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <LESSTHAN>
      * f2 -> PrimaryExpression()
      */
-    void visit(OrExpression n);
+    public void visit(OrExpression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <ADD>
      * f2 -> PrimaryExpression()
      */
-    void visit(PlusExpression n);
+    public void visit(PlusExpression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <MINUS>
      * f2 -> PrimaryExpression()
      */
-    void visit(MinusExpression n);
+    public void visit(MinusExpression n);
 
     /**
      * f0 -> PrimaryExpression()
      * f1 -> <MULTIPLY>
      * f2 -> PrimaryExpression()
      */
-    void visit(TimesExpression n);
+    public void visit(TimesExpression n);
 
     /**
      * f0 -> <BANG>
      * f1 -> Expression()
      */
-    void visit(NotExpression n);
+    public void visit(NotExpression n);
 
     /**
      * f0 -> <LPAREN>
      * f1 -> Expression()
      * f2 -> <RPAREN>
      */
-    void visit(ParenthesisExpression n);
+    public void visit(ParenthesisExpression n);
 
 }
 

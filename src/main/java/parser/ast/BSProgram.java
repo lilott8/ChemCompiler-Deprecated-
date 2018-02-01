@@ -11,33 +11,37 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> Stationary()
- * f1 -> Manifest()
- * f2 -> <INSTRUCTIONS>
- * f3 -> Instruction()
- * f4 -> <EOF>
+ * f0 -> Module()
+ * f1 -> Stationary()
+ * f2 -> Manifest()
+ * f3 -> <INSTRUCTIONS>
+ * f4 -> Instruction()
+ * f5 -> <EOF>
  */
 public class BSProgram implements Node {
-    public Stationary f0;
-    public Manifest f1;
-    public NodeToken f2;
-    public Instruction f3;
-    public NodeToken f4;
+    public Module f0;
+    public Stationary f1;
+    public Manifest f2;
+    public NodeToken f3;
+    public Instruction f4;
+    public NodeToken f5;
 
-    public BSProgram(Stationary n0, Manifest n1, NodeToken n2, Instruction n3, NodeToken n4) {
+    public BSProgram(Module n0, Stationary n1, Manifest n2, NodeToken n3, Instruction n4, NodeToken n5) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
         f3 = n3;
         f4 = n4;
+        f5 = n5;
     }
 
-    public BSProgram(Stationary n0, Manifest n1, Instruction n2) {
+    public BSProgram(Module n0, Stationary n1, Manifest n2, Instruction n3) {
         f0 = n0;
         f1 = n1;
-        f2 = new NodeToken("instructions");
-        f3 = n2;
-        f4 = new NodeToken("");
+        f2 = n2;
+        f3 = new NodeToken("instructions");
+        f4 = n3;
+        f5 = new NodeToken("");
     }
 
     public void accept(Visitor v) {

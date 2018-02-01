@@ -1,0 +1,8 @@
+manifest chemical1
+manifest chemical2
+
+instructions
+
+a = mix chemical1 with chemical2
+b = mix a with chemical2 for 30
+c = mix b with x

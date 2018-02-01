@@ -27,8 +27,10 @@ import parser.ast.Manifest;
 import parser.ast.MatLiteral;
 import parser.ast.MinusExpression;
 import parser.ast.MixStatement;
+import parser.ast.Module;
 import parser.ast.NatLiteral;
 import parser.ast.NodeChoice;
+import parser.ast.NodeList;
 import parser.ast.NodeListOptional;
 import parser.ast.NodeOptional;
 import parser.ast.NodeSequence;
@@ -62,7 +64,7 @@ public class BSParser implements BSParserConstants {
         jj_la1_init_1();
     }
 
-    final private int[] jj_la1 = new int[16];
+    final private int[] jj_la1 = new int[19];
     final private JJCalls[] jj_2_rtns = new JJCalls[15];
     final private LookaheadSuccess jj_ls = new LookaheadSuccess();
     /**
@@ -112,7 +114,7 @@ public class BSParser implements BSParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 16; i++) jj_la1[i] = -1;
+        for (int i = 0; i < 19; i++) jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
@@ -125,7 +127,7 @@ public class BSParser implements BSParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 16; i++) jj_la1[i] = -1;
+        for (int i = 0; i < 19; i++) jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
@@ -137,39 +139,41 @@ public class BSParser implements BSParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 16; i++) jj_la1[i] = -1;
+        for (int i = 0; i < 19; i++) jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
     private static void jj_la1_init_0() {
-        jj_la1_0 = new int[]{0x20000, 0x40000, 0x70037c0, 0x7003780, 0x7000000, 0x0, 0x0, 0x0, 0x440, 0x200, 0x1400, 0x7000000, 0x7000000, 0x1c000, 0x8000000, 0x8000000,};
+        jj_la1_0 = new int[]{0x20000, 0x7000000, 0x7000000, 0x40000, 0x8000000, 0x70037c0, 0x7003780, 0x7000000, 0x0, 0x0, 0x0, 0x440, 0x200, 0x1400, 0x7000000, 0x7000000, 0x1c000, 0x20000000, 0x20000000,};
     }
 
     private static void jj_la1_init_1() {
-        jj_la1_1 = new int[]{0x0, 0x0, 0x400000, 0x400000, 0x0, 0x80000, 0x40000, 0x40000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x630000, 0x630000,};
+        jj_la1_1 = new int[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x1000000, 0x1000000, 0x0, 0x200000, 0x100000, 0x100000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x18c0000, 0x18c0000,};
     }
 
     final public BSProgram BSProgram() throws ParseException {
         trace_call("BSProgram");
         try {
-            Stationary n0;
-            Manifest n1;
-            NodeToken n2;
-            Token n3;
-            Instruction n4;
-            NodeToken n5;
-            Token n6;
-            n0 = Stationary();
-            n1 = Manifest();
-            n3 = jj_consume_token(INSTRUCTIONS);
-            n2 = JTBToolkit.makeNodeToken(n3);
-            n4 = Instruction();
-            n6 = jj_consume_token(0);
-            n6.beginColumn++;
-            n6.endColumn++;
-            n5 = JTBToolkit.makeNodeToken(n6);
+            Module n0;
+            Stationary n1;
+            Manifest n2;
+            NodeToken n3;
+            Token n4;
+            Instruction n5;
+            NodeToken n6;
+            Token n7;
+            n0 = Module();
+            n1 = Stationary();
+            n2 = Manifest();
+            n4 = jj_consume_token(INSTRUCTIONS);
+            n3 = JTBToolkit.makeNodeToken(n4);
+            n5 = Instruction();
+            n7 = jj_consume_token(0);
+            n7.beginColumn++;
+            n7.endColumn++;
+            n6 = JTBToolkit.makeNodeToken(n7);
             {
-                if ("" != null) return new BSProgram(n0, n1, n2, n4, n5);
+                if ("" != null) return new BSProgram(n0, n1, n2, n3, n5, n6);
             }
             throw new Error("Missing return statement in function");
         } finally {
@@ -184,23 +188,45 @@ public class BSParser implements BSParserConstants {
             NodeSequence n1;
             NodeToken n2;
             Token n3;
-            Identifier n4;
+            NodeListOptional n4;
+            TypingList n5;
+            Identifier n6;
             label_1:
             while (true) {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
                     case STATIONARY: {
+                        ;
                         break;
                     }
                     default:
                         jj_la1[0] = jj_gen;
                         break label_1;
                 }
-                n1 = new NodeSequence(2);
+                n4 = new NodeListOptional();
+                n1 = new NodeSequence(3);
                 n3 = jj_consume_token(STATIONARY);
                 n2 = JTBToolkit.makeNodeToken(n3);
                 n1.addNode(n2);
-                n4 = Identifier();
+                label_2:
+                while (true) {
+                    switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+                        case REAL:
+                        case NAT:
+                        case MAT: {
+                            ;
+                            break;
+                        }
+                        default:
+                            jj_la1[1] = jj_gen;
+                            break label_2;
+                    }
+                    n5 = TypingList();
+                    n4.addNode(n5);
+                }
+                n4.nodes.trimToSize();
                 n1.addNode(n4);
+                n6 = Identifier();
+                n1.addNode(n6);
                 n0.addNode(n1);
             }
             n0.nodes.trimToSize();
@@ -216,28 +242,50 @@ public class BSParser implements BSParserConstants {
     final public Manifest Manifest() throws ParseException {
         trace_call("Manifest");
         try {
-            NodeListOptional n0 = new NodeListOptional();
+            NodeList n0 = new NodeList();
             NodeSequence n1;
             NodeToken n2;
             Token n3;
-            Identifier n4;
-            label_2:
+            NodeListOptional n4;
+            TypingList n5;
+            Identifier n6;
+            label_3:
             while (true) {
-                switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                    case MANIFEST: {
-                        break;
-                    }
-                    default:
-                        jj_la1[1] = jj_gen;
-                        break label_2;
-                }
-                n1 = new NodeSequence(2);
+                n4 = new NodeListOptional();
+                n1 = new NodeSequence(3);
                 n3 = jj_consume_token(MANIFEST);
                 n2 = JTBToolkit.makeNodeToken(n3);
                 n1.addNode(n2);
-                n4 = Identifier();
+                label_4:
+                while (true) {
+                    switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+                        case REAL:
+                        case NAT:
+                        case MAT: {
+                            ;
+                            break;
+                        }
+                        default:
+                            jj_la1[2] = jj_gen;
+                            break label_4;
+                    }
+                    n5 = TypingList();
+                    n4.addNode(n5);
+                }
+                n4.nodes.trimToSize();
                 n1.addNode(n4);
+                n6 = Identifier();
+                n1.addNode(n6);
                 n0.addNode(n1);
+                switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+                    case MANIFEST: {
+                        ;
+                        break;
+                    }
+                    default:
+                        jj_la1[3] = jj_gen;
+                        break label_3;
+                }
             }
             n0.nodes.trimToSize();
             {
@@ -246,6 +294,43 @@ public class BSParser implements BSParserConstants {
             throw new Error("Missing return statement in function");
         } finally {
             trace_return("Manifest");
+        }
+    }
+
+    final public Module Module() throws ParseException {
+        trace_call("Module");
+        try {
+            NodeListOptional n0 = new NodeListOptional();
+            NodeSequence n1;
+            NodeToken n2;
+            Token n3;
+            Identifier n4;
+            label_5:
+            while (true) {
+                switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+                    case MODULE: {
+                        ;
+                        break;
+                    }
+                    default:
+                        jj_la1[4] = jj_gen;
+                        break label_5;
+                }
+                n1 = new NodeSequence(2);
+                n3 = jj_consume_token(MODULE);
+                n2 = JTBToolkit.makeNodeToken(n3);
+                n1.addNode(n2);
+                n4 = Identifier();
+                n1.addNode(n4);
+                n0.addNode(n1);
+            }
+            n0.nodes.trimToSize();
+            {
+                if ("" != null) return new Module(n0);
+            }
+            throw new Error("Missing return statement in function");
+        } finally {
+            trace_return("Module");
         }
     }
 
@@ -273,7 +358,7 @@ public class BSParser implements BSParserConstants {
                     break;
                 }
                 default:
-                    jj_la1[2] = jj_gen;
+                    jj_la1[5] = jj_gen;
                     if (jj_2_1(2147483647)) {
                         n2 = BranchStatement();
                         n0 = new NodeChoice(n2, 1);
@@ -345,7 +430,7 @@ public class BSParser implements BSParserConstants {
                         break;
                     }
                     default:
-                        jj_la1[3] = jj_gen;
+                        jj_la1[6] = jj_gen;
                         jj_consume_token(-1);
                         throw new ParseException();
                 }
@@ -396,17 +481,18 @@ public class BSParser implements BSParserConstants {
                     n11 = jj_consume_token(COLON);
                     n10 = JTBToolkit.makeNodeToken(n11);
                     n9.addNode(n10);
-                    label_3:
+                    label_6:
                     while (true) {
                         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
                             case REAL:
                             case NAT:
                             case MAT: {
+                                ;
                                 break;
                             }
                             default:
-                                jj_la1[4] = jj_gen;
-                                break label_3;
+                                jj_la1[7] = jj_gen;
+                                break label_6;
                         }
                         n13 = TypingList();
                         n12.addNode(n13);
@@ -417,7 +503,8 @@ public class BSParser implements BSParserConstants {
                     break;
                 }
                 default:
-                    jj_la1[5] = jj_gen;
+                    jj_la1[8] = jj_gen;
+                    ;
             }
             n15 = jj_consume_token(LBRACE);
             n14 = JTBToolkit.makeNodeToken(n15);
@@ -440,15 +527,16 @@ public class BSParser implements BSParserConstants {
             NodeListOptional n1 = new NodeListOptional();
             TypingRest n2;
             n0 = Type();
-            label_4:
+            label_7:
             while (true) {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
                     case COMMA: {
+                        ;
                         break;
                     }
                     default:
-                        jj_la1[6] = jj_gen;
-                        break label_4;
+                        jj_la1[9] = jj_gen;
+                        break label_7;
                 }
                 n2 = TypingRest();
                 n1.addNode(n2);
@@ -488,15 +576,16 @@ public class BSParser implements BSParserConstants {
             NodeListOptional n1 = new NodeListOptional();
             FormalParameterRest n2;
             n0 = FormalParameter();
-            label_5:
+            label_8:
             while (true) {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
                     case COMMA: {
+                        ;
                         break;
                     }
                     default:
-                        jj_la1[7] = jj_gen;
-                        break label_5;
+                        jj_la1[10] = jj_gen;
+                        break label_8;
                 }
                 n2 = FormalParameterRest();
                 n1.addNode(n2);
@@ -587,7 +676,7 @@ public class BSParser implements BSParserConstants {
                     break;
                 }
                 default:
-                    jj_la1[8] = jj_gen;
+                    jj_la1[11] = jj_gen;
                     jj_consume_token(-1);
                     throw new ParseException();
             }
@@ -674,7 +763,7 @@ public class BSParser implements BSParserConstants {
                     break;
                 }
                 default:
-                    jj_la1[9] = jj_gen;
+                    jj_la1[12] = jj_gen;
                     if (jj_2_4(2147483647)) {
                         n8 = new NodeSequence(3);
                         n10 = jj_consume_token(FOR);
@@ -741,7 +830,7 @@ public class BSParser implements BSParserConstants {
                     break;
                 }
                 default:
-                    jj_la1[10] = jj_gen;
+                    jj_la1[13] = jj_gen;
                     jj_consume_token(-1);
                     throw new ParseException();
             }
@@ -777,17 +866,18 @@ public class BSParser implements BSParserConstants {
             NodeToken n3;
             Token n4;
             Expression n5;
-            label_6:
+            label_9:
             while (true) {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
                     case REAL:
                     case NAT:
                     case MAT: {
+                        ;
                         break;
                     }
                     default:
-                        jj_la1[11] = jj_gen;
-                        break label_6;
+                        jj_la1[14] = jj_gen;
+                        break label_9;
                 }
                 n1 = TypingList();
                 n0.addNode(n1);
@@ -830,7 +920,7 @@ public class BSParser implements BSParserConstants {
                     break;
                 }
                 default:
-                    jj_la1[12] = jj_gen;
+                    jj_la1[15] = jj_gen;
                     jj_consume_token(-1);
                     throw new ParseException();
             }
@@ -947,7 +1037,7 @@ public class BSParser implements BSParserConstants {
                     break;
                 }
                 default:
-                    jj_la1[13] = jj_gen;
+                    jj_la1[16] = jj_gen;
                     jj_consume_token(-1);
                     throw new ParseException();
             }
@@ -1028,7 +1118,7 @@ public class BSParser implements BSParserConstants {
                     break;
                 }
                 default:
-                    jj_la1[14] = jj_gen;
+                    jj_la1[17] = jj_gen;
                     jj_consume_token(-1);
                     throw new ParseException();
             }
@@ -1214,7 +1304,7 @@ public class BSParser implements BSParserConstants {
                         break;
                     }
                     default:
-                        jj_la1[15] = jj_gen;
+                        jj_la1[18] = jj_gen;
                         jj_consume_token(-1);
                         throw new ParseException();
                 }
@@ -1668,228 +1758,13 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_40() {
-        if (!jj_rescan) trace_call("LessThanExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
-            if (!jj_rescan) trace_return("LessThanExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        if (jj_scan_token(LESSTHAN)) {
-            if (!jj_rescan) trace_return("LessThanExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        if (jj_3R_9()) {
-            if (!jj_rescan) trace_return("LessThanExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        {
-            if (!jj_rescan) trace_return("LessThanExpression(LOOKAHEAD SUCCEEDED)");
-            return false;
-        }
-    }
-
-    private boolean jj_3R_17() {
-        return jj_3R_23();
-    }
-
-    private boolean jj_3R_16() {
-        return jj_3R_22();
-    }
-
-    private boolean jj_3R_23() {
-        if (!jj_rescan) trace_call("ParenthesisExpression(LOOKING AHEAD...)");
-        if (jj_scan_token(LPAREN)) {
-            if (!jj_rescan) trace_return("ParenthesisExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        if (jj_3R_18()) {
-            if (!jj_rescan) trace_return("ParenthesisExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        if (jj_scan_token(RPAREN)) {
-            if (!jj_rescan) trace_return("ParenthesisExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        {
-            if (!jj_rescan) trace_return("ParenthesisExpression(LOOKAHEAD SUCCEEDED)");
-            return false;
-        }
-    }
-
-    private boolean jj_3R_15() {
-        return jj_3R_21();
-    }
-
-    private boolean jj_3R_64() {
-        if (!jj_rescan) trace_call("RepeatStatement(LOOKING AHEAD...)");
-        if (jj_3R_51()) {
-            if (!jj_rescan) trace_return("RepeatStatement(LOOKAHEAD FAILED)");
-            return true;
-        }
-        {
-            if (!jj_rescan) trace_return("RepeatStatement(LOOKAHEAD SUCCEEDED)");
-            return false;
-        }
-    }
-
-    private boolean jj_3R_14() {
-        return jj_3R_20();
-    }
-
-    private boolean jj_3R_13() {
-        return jj_3R_8();
-    }
-
-    private boolean jj_3R_39() {
-        if (!jj_rescan) trace_call("AndExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
-            if (!jj_rescan) trace_return("AndExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        if (jj_scan_token(AND)) {
-            if (!jj_rescan) trace_return("AndExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        if (jj_3R_9()) {
-            if (!jj_rescan) trace_return("AndExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        {
-            if (!jj_rescan) trace_return("AndExpression(LOOKAHEAD SUCCEEDED)");
-            return false;
-        }
-    }
-
-    private boolean jj_3R_9() {
-        if (!jj_rescan) trace_call("PrimaryExpression(LOOKING AHEAD...)");
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_13()) {
-            jj_scanpos = xsp;
-            if (jj_3R_14()) {
-                jj_scanpos = xsp;
-                if (jj_3R_15()) {
-                    jj_scanpos = xsp;
-                    if (jj_3R_16()) {
-                        jj_scanpos = xsp;
-                        if (jj_3R_17()) {
-                            if (!jj_rescan) trace_return("PrimaryExpression(LOOKAHEAD FAILED)");
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        {
-            if (!jj_rescan) trace_return("PrimaryExpression(LOOKAHEAD SUCCEEDED)");
-            return false;
-        }
-    }
-
-    private boolean jj_3R_71() {
-        if (jj_scan_token(FOR)) return true;
-        return jj_scan_token(INTEGER_LITERAL);
-    }
-
-    private boolean jj_3_15() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(MULTIPLY);
-    }
-
-    private boolean jj_3_14() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(MINUS);
-    }
-
-    private boolean jj_3R_35() {
-        return jj_3R_9();
-    }
-
-    private boolean jj_3_13() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(ADD);
-    }
-
-    private boolean jj_3R_70() {
-        if (jj_scan_token(DETECT)) return true;
-        if (jj_3R_22()) return true;
-        if (jj_scan_token(ON)) return true;
-        return jj_3R_9();
-    }
-
-    private boolean jj_3R_34() {
-        return jj_3R_49();
-    }
-
-    private boolean jj_3_12() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(OR);
-    }
-
-    private boolean jj_3R_49() {
-        if (!jj_rescan) trace_call("TimesExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
-            if (!jj_rescan) trace_return("TimesExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        if (jj_scan_token(MULTIPLY)) {
-            if (!jj_rescan) trace_return("TimesExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        if (jj_3R_9()) {
-            if (!jj_rescan) trace_return("TimesExpression(LOOKAHEAD FAILED)");
-            return true;
-        }
-        {
-            if (!jj_rescan) trace_return("TimesExpression(LOOKAHEAD SUCCEEDED)");
-            return false;
-        }
-    }
-
-    private boolean jj_3R_79() {
-        if (!jj_rescan) trace_call("TypingRest(LOOKING AHEAD...)");
-        if (jj_scan_token(COMMA)) {
-            if (!jj_rescan) trace_return("TypingRest(LOOKAHEAD FAILED)");
-            return true;
-        }
-        if (jj_3R_74()) {
-            if (!jj_rescan) trace_return("TypingRest(LOOKAHEAD FAILED)");
-            return true;
-        }
-        {
-            if (!jj_rescan) trace_return("TypingRest(LOOKAHEAD SUCCEEDED)");
-            return false;
-        }
-    }
-
-    private boolean jj_3R_63() {
-        if (!jj_rescan) trace_call("DetectStatement(LOOKING AHEAD...)");
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_70()) {
-            jj_scanpos = xsp;
-            if (jj_3R_71()) {
-                if (!jj_rescan) trace_return("DetectStatement(LOOKAHEAD FAILED)");
-                return true;
-            }
-        }
-        {
-            if (!jj_rescan) trace_return("DetectStatement(LOOKAHEAD SUCCEEDED)");
-            return false;
-        }
-    }
-
-    private boolean jj_3R_33() {
-        return jj_3R_48();
-    }
-
-    private boolean jj_3R_51() {
+    private boolean jj_3R_54() {
         if (!jj_rescan) trace_call("WhileStatement(LOOKING AHEAD...)");
         if (jj_scan_token(REPEAT)) {
             if (!jj_rescan) trace_return("WhileStatement(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_8()) {
+        if (jj_3R_11()) {
             if (!jj_rescan) trace_return("WhileStatement(LOOKAHEAD FAILED)");
             return true;
         }
@@ -1901,7 +1776,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("WhileStatement(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_19()) {
+        if (jj_3R_22()) {
             if (!jj_rescan) trace_return("WhileStatement(LOOKAHEAD FAILED)");
             return true;
         }
@@ -1916,48 +1791,57 @@ public class BSParser implements BSParserConstants {
     }
 
     private boolean jj_3_11() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(EQUALITY);
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(EQUALITY)) return true;
+        return false;
     }
 
-    private boolean jj_3R_32() {
-        return jj_3R_47();
+    private boolean jj_3R_35() {
+        if (jj_3R_50()) return true;
+        return false;
     }
 
     private boolean jj_3_10() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(NOTEQUAL);
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(NOTEQUAL)) return true;
+        return false;
     }
 
-    private boolean jj_3R_31() {
-        return jj_3R_46();
+    private boolean jj_3R_34() {
+        if (jj_3R_49()) return true;
+        return false;
     }
 
     private boolean jj_3_9() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(GREATERTHANEQUAL);
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(GREATERTHANEQUAL)) return true;
+        return false;
     }
 
-    private boolean jj_3R_30() {
-        return jj_3R_45();
+    private boolean jj_3R_33() {
+        if (jj_3R_48()) return true;
+        return false;
     }
 
-    private boolean jj_3R_75() {
-        return jj_3R_79();
+    private boolean jj_3R_78() {
+        if (jj_3R_82()) return true;
+        return false;
     }
 
     private boolean jj_3_8() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(GREATERTHAN);
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(GREATERTHAN)) return true;
+        return false;
     }
 
-    private boolean jj_3R_29() {
-        return jj_3R_44();
+    private boolean jj_3R_32() {
+        if (jj_3R_47()) return true;
+        return false;
     }
 
-    private boolean jj_3R_48() {
+    private boolean jj_3R_51() {
         if (!jj_rescan) trace_call("MinusExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("MinusExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -1965,7 +1849,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("MinusExpression(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("MinusExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -1977,24 +1861,26 @@ public class BSParser implements BSParserConstants {
 
     private boolean jj_3_4() {
         if (jj_scan_token(FOR)) return true;
-        return jj_scan_token(INTEGER_LITERAL);
+        if (jj_scan_token(INTEGER_LITERAL)) return true;
+        return false;
     }
 
     private boolean jj_3_7() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(LESSTHANEQUAL);
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(LESSTHANEQUAL)) return true;
+        return false;
     }
 
-    private boolean jj_3R_73() {
+    private boolean jj_3R_76() {
         if (!jj_rescan) trace_call("TypingList(LOOKING AHEAD...)");
-        if (jj_3R_74()) {
+        if (jj_3R_77()) {
             if (!jj_rescan) trace_return("TypingList(LOOKAHEAD FAILED)");
             return true;
         }
         Token xsp;
         while (true) {
             xsp = jj_scanpos;
-            if (jj_3R_75()) {
+            if (jj_3R_78()) {
                 jj_scanpos = xsp;
                 break;
             }
@@ -2005,47 +1891,55 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_28() {
-        return jj_3R_43();
+    private boolean jj_3R_31() {
+        if (jj_3R_46()) return true;
+        return false;
     }
 
     private boolean jj_3_6() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(LESSTHAN);
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(LESSTHAN)) return true;
+        return false;
     }
 
-    private boolean jj_3R_27() {
-        return jj_3R_42();
+    private boolean jj_3R_30() {
+        if (jj_3R_45()) return true;
+        return false;
     }
 
     private boolean jj_3_5() {
-        if (jj_3R_9()) return true;
-        return jj_scan_token(AND);
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(AND)) return true;
+        return false;
     }
 
-    private boolean jj_3R_69() {
+    private boolean jj_3R_72() {
         if (jj_scan_token(FOR)) return true;
-        return jj_3R_8();
+        if (jj_3R_11()) return true;
+        return false;
     }
 
-    private boolean jj_3R_26() {
-        return jj_3R_41();
+    private boolean jj_3R_29() {
+        if (jj_3R_44()) return true;
+        return false;
     }
 
-    private boolean jj_3R_12() {
+    private boolean jj_3R_15() {
         if (jj_scan_token(ELSE)) return true;
         if (jj_scan_token(LBRACE)) return true;
-        if (jj_3R_19()) return true;
-        return jj_scan_token(RBRACE);
+        if (jj_3R_22()) return true;
+        if (jj_scan_token(RBRACE)) return true;
+        return false;
     }
 
-    private boolean jj_3R_25() {
-        return jj_3R_40();
+    private boolean jj_3R_28() {
+        if (jj_3R_43()) return true;
+        return false;
     }
 
-    private boolean jj_3R_47() {
+    private boolean jj_3R_50() {
         if (!jj_rescan) trace_call("PlusExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("PlusExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2053,7 +1947,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("PlusExpression(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("PlusExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2063,44 +1957,46 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_24() {
-        return jj_3R_39();
+    private boolean jj_3R_27() {
+        if (jj_3R_42()) return true;
+        return false;
     }
 
-    private boolean jj_3R_68() {
+    private boolean jj_3R_71() {
         if (jj_scan_token(HEAT)) return true;
-        if (jj_3R_9()) return true;
+        if (jj_3R_12()) return true;
         if (jj_scan_token(AT)) return true;
-        return jj_3R_8();
+        if (jj_3R_11()) return true;
+        return false;
     }
 
-    private boolean jj_3R_18() {
+    private boolean jj_3R_21() {
         if (!jj_rescan) trace_call("Expression(LOOKING AHEAD...)");
         Token xsp;
         xsp = jj_scanpos;
-        if (jj_3R_24()) {
+        if (jj_3R_27()) {
             jj_scanpos = xsp;
-            if (jj_3R_25()) {
+            if (jj_3R_28()) {
                 jj_scanpos = xsp;
-                if (jj_3R_26()) {
+                if (jj_3R_29()) {
                     jj_scanpos = xsp;
-                    if (jj_3R_27()) {
+                    if (jj_3R_30()) {
                         jj_scanpos = xsp;
-                        if (jj_3R_28()) {
+                        if (jj_3R_31()) {
                             jj_scanpos = xsp;
-                            if (jj_3R_29()) {
+                            if (jj_3R_32()) {
                                 jj_scanpos = xsp;
-                                if (jj_3R_30()) {
+                                if (jj_3R_33()) {
                                     jj_scanpos = xsp;
-                                    if (jj_3R_31()) {
+                                    if (jj_3R_34()) {
                                         jj_scanpos = xsp;
-                                        if (jj_3R_32()) {
+                                        if (jj_3R_35()) {
                                             jj_scanpos = xsp;
-                                            if (jj_3R_33()) {
+                                            if (jj_3R_36()) {
                                                 jj_scanpos = xsp;
-                                                if (jj_3R_34()) {
+                                                if (jj_3R_37()) {
                                                     jj_scanpos = xsp;
-                                                    if (jj_3R_35()) {
+                                                    if (jj_3R_38()) {
                                                         if (!jj_rescan)
                                                             trace_return("Expression(LOOKAHEAD FAILED)");
                                                         return true;
@@ -2122,13 +2018,13 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_62() {
+    private boolean jj_3R_65() {
         if (!jj_rescan) trace_call("HeatStatement(LOOKING AHEAD...)");
         Token xsp;
         xsp = jj_scanpos;
-        if (jj_3R_68()) {
+        if (jj_3R_71()) {
             jj_scanpos = xsp;
-            if (jj_3R_69()) {
+            if (jj_3R_72()) {
                 if (!jj_rescan) trace_return("HeatStatement(LOOKAHEAD FAILED)");
                 return true;
             }
@@ -2139,19 +2035,20 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_11() {
+    private boolean jj_3R_14() {
         if (jj_scan_token(ELSE_IF)) return true;
         if (jj_scan_token(LPAREN)) return true;
-        if (jj_3R_18()) return true;
+        if (jj_3R_21()) return true;
         if (jj_scan_token(RPAREN)) return true;
         if (jj_scan_token(LBRACE)) return true;
-        if (jj_3R_19()) return true;
-        return jj_scan_token(RBRACE);
+        if (jj_3R_22()) return true;
+        if (jj_scan_token(RBRACE)) return true;
+        return false;
     }
 
-    private boolean jj_3R_46() {
+    private boolean jj_3R_49() {
         if (!jj_rescan) trace_call("OrExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("OrExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2159,7 +2056,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("OrExpression(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("OrExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2169,17 +2066,18 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_10() {
+    private boolean jj_3R_13() {
         if (jj_scan_token(IF)) return true;
         if (jj_scan_token(LPAREN)) return true;
-        if (jj_3R_18()) return true;
+        if (jj_3R_21()) return true;
         if (jj_scan_token(RPAREN)) return true;
         if (jj_scan_token(LBRACE)) return true;
-        if (jj_3R_19()) return true;
-        return jj_scan_token(RBRACE);
+        if (jj_3R_22()) return true;
+        if (jj_scan_token(RBRACE)) return true;
+        return false;
     }
 
-    private boolean jj_3R_22() {
+    private boolean jj_3R_25() {
         if (!jj_rescan) trace_call("Identifier(LOOKING AHEAD...)");
         if (jj_scan_token(IDENTIFIER)) {
             if (!jj_rescan) trace_return("Identifier(LOOKAHEAD FAILED)");
@@ -2191,13 +2089,13 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_61() {
+    private boolean jj_3R_64() {
         if (!jj_rescan) trace_call("DrainStatement(LOOKING AHEAD...)");
         if (jj_scan_token(DRAIN)) {
             if (!jj_rescan) trace_return("DrainStatement(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("DrainStatement(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2207,15 +2105,15 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_7() {
+    private boolean jj_3R_10() {
         if (!jj_rescan) trace_call("BranchStatement(LOOKING AHEAD...)");
         Token xsp;
         xsp = jj_scanpos;
-        if (jj_3R_10()) {
+        if (jj_3R_13()) {
             jj_scanpos = xsp;
-            if (jj_3R_11()) {
+            if (jj_3R_14()) {
                 jj_scanpos = xsp;
-                if (jj_3R_12()) {
+                if (jj_3R_15()) {
                     if (!jj_rescan) trace_return("BranchStatement(LOOKAHEAD FAILED)");
                     return true;
                 }
@@ -2227,9 +2125,9 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_45() {
+    private boolean jj_3R_48() {
         if (!jj_rescan) trace_call("EqualityExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("EqualityExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2237,7 +2135,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("EqualityExpression(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("EqualityExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2247,7 +2145,7 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_21() {
+    private boolean jj_3R_24() {
         if (!jj_rescan) trace_call("FalseLiteral(LOOKING AHEAD...)");
         if (jj_scan_token(FALSE)) {
             if (!jj_rescan) trace_return("FalseLiteral(LOOKAHEAD FAILED)");
@@ -2259,17 +2157,18 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_58() {
-        return jj_3R_65();
+    private boolean jj_3R_61() {
+        if (jj_3R_68()) return true;
+        return false;
     }
 
-    private boolean jj_3R_60() {
+    private boolean jj_3R_63() {
         if (!jj_rescan) trace_call("SplitStatement(LOOKING AHEAD...)");
         if (jj_scan_token(SPLIT)) {
             if (!jj_rescan) trace_return("SplitStatement(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("SplitStatement(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2277,7 +2176,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("SplitStatement(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("SplitStatement(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2287,9 +2186,9 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_44() {
+    private boolean jj_3R_47() {
         if (!jj_rescan) trace_call("NotEqualExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("NotEqualExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2297,7 +2196,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("NotEqualExpression(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("NotEqualExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2307,15 +2206,17 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_57() {
-        return jj_3R_64();
+    private boolean jj_3R_60() {
+        if (jj_3R_67()) return true;
+        return false;
     }
 
-    private boolean jj_3R_56() {
-        return jj_3R_63();
+    private boolean jj_3R_59() {
+        if (jj_3R_66()) return true;
+        return false;
     }
 
-    private boolean jj_3R_20() {
+    private boolean jj_3R_23() {
         if (!jj_rescan) trace_call("TrueLiteral(LOOKING AHEAD...)");
         if (jj_scan_token(TRUE)) {
             if (!jj_rescan) trace_return("TrueLiteral(LOOKAHEAD FAILED)");
@@ -2329,28 +2230,28 @@ public class BSParser implements BSParserConstants {
 
     private boolean jj_3_3() {
         if (jj_scan_token(MIX)) return true;
-        return jj_3R_9();
+        if (jj_3R_12()) return true;
+        return false;
     }
 
-    private boolean jj_3R_55() {
-        return jj_3R_62();
+    private boolean jj_3R_58() {
+        if (jj_3R_65()) return true;
+        return false;
     }
 
-    private boolean jj_3R_54() {
-        return jj_3R_61();
+    private boolean jj_3R_57() {
+        if (jj_3R_64()) return true;
+        return false;
     }
 
-    private boolean jj_3R_53() {
-        return jj_3R_60();
+    private boolean jj_3R_56() {
+        if (jj_3R_63()) return true;
+        return false;
     }
 
-    private boolean jj_3R_52() {
-        return jj_3R_59();
-    }
-
-    private boolean jj_3R_43() {
+    private boolean jj_3R_46() {
         if (!jj_rescan) trace_call("GreaterThanEqualExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("GreaterThanEqualExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2358,7 +2259,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("GreaterThanEqualExpression(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("GreaterThanEqualExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2368,7 +2269,12 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_82() {
+    private boolean jj_3R_55() {
+        if (jj_3R_62()) return true;
+        return false;
+    }
+
+    private boolean jj_3R_85() {
         if (!jj_rescan) trace_call("RealLiteral(LOOKING AHEAD...)");
         if (jj_scan_token(REAL)) {
             if (!jj_rescan) trace_return("RealLiteral(LOOKAHEAD FAILED)");
@@ -2380,28 +2286,29 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_67() {
+    private boolean jj_3R_70() {
         if (jj_scan_token(FOR)) return true;
-        return jj_3R_8();
+        if (jj_3R_11()) return true;
+        return false;
     }
 
-    private boolean jj_3R_50() {
+    private boolean jj_3R_53() {
         if (!jj_rescan) trace_call("Instruction(LOOKING AHEAD...)");
         Token xsp;
         xsp = jj_scanpos;
-        if (jj_3R_52()) {
+        if (jj_3R_55()) {
             jj_scanpos = xsp;
-            if (jj_3R_53()) {
+            if (jj_3R_56()) {
                 jj_scanpos = xsp;
-                if (jj_3R_54()) {
+                if (jj_3R_57()) {
                     jj_scanpos = xsp;
-                    if (jj_3R_55()) {
+                    if (jj_3R_58()) {
                         jj_scanpos = xsp;
-                        if (jj_3R_56()) {
+                        if (jj_3R_59()) {
                             jj_scanpos = xsp;
-                            if (jj_3R_57()) {
+                            if (jj_3R_60()) {
                                 jj_scanpos = xsp;
-                                if (jj_3R_58()) {
+                                if (jj_3R_61()) {
                                     if (!jj_rescan) trace_return("Instruction(LOOKAHEAD FAILED)");
                                     return true;
                                 }
@@ -2417,27 +2324,31 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_78() {
-        return jj_3R_82();
+    private boolean jj_3R_81() {
+        if (jj_3R_85()) return true;
+        return false;
     }
 
     private boolean jj_3_2() {
         if (jj_scan_token(REPEAT)) return true;
-        return jj_3R_8();
-    }
-
-    private boolean jj_3R_77() {
-        return jj_3R_81();
-    }
-
-    private boolean jj_3R_66() {
-        if (jj_scan_token(MIX)) return true;
-        if (jj_3R_9()) return true;
-        if (jj_scan_token(WITH)) return true;
-        return jj_3R_9();
+        if (jj_3R_11()) return true;
+        return false;
     }
 
     private boolean jj_3R_80() {
+        if (jj_3R_84()) return true;
+        return false;
+    }
+
+    private boolean jj_3R_69() {
+        if (jj_scan_token(MIX)) return true;
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(WITH)) return true;
+        if (jj_3R_12()) return true;
+        return false;
+    }
+
+    private boolean jj_3R_83() {
         if (!jj_rescan) trace_call("MatLiteral(LOOKING AHEAD...)");
         if (jj_scan_token(MAT)) {
             if (!jj_rescan) trace_return("MatLiteral(LOOKAHEAD FAILED)");
@@ -2449,17 +2360,19 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_76() {
-        return jj_3R_80();
+    private boolean jj_3R_79() {
+        if (jj_3R_83()) return true;
+        return false;
     }
 
     private boolean jj_3_1() {
-        return jj_3R_7();
+        if (jj_3R_10()) return true;
+        return false;
     }
 
-    private boolean jj_3R_42() {
+    private boolean jj_3R_45() {
         if (!jj_rescan) trace_call("GreaterThanExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("GreaterThanExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2467,7 +2380,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("GreaterThanExpression(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("GreaterThanExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2477,13 +2390,13 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_59() {
+    private boolean jj_3R_62() {
         if (!jj_rescan) trace_call("MixStatement(LOOKING AHEAD...)");
         Token xsp;
         xsp = jj_scanpos;
-        if (jj_3R_66()) {
+        if (jj_3R_69()) {
             jj_scanpos = xsp;
-            if (jj_3R_67()) {
+            if (jj_3R_70()) {
                 if (!jj_rescan) trace_return("MixStatement(LOOKAHEAD FAILED)");
                 return true;
             }
@@ -2494,15 +2407,15 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_74() {
+    private boolean jj_3R_77() {
         if (!jj_rescan) trace_call("Type(LOOKING AHEAD...)");
         Token xsp;
         xsp = jj_scanpos;
-        if (jj_3R_76()) {
+        if (jj_3R_79()) {
             jj_scanpos = xsp;
-            if (jj_3R_77()) {
+            if (jj_3R_80()) {
                 jj_scanpos = xsp;
-                if (jj_3R_78()) {
+                if (jj_3R_81()) {
                     if (!jj_rescan) trace_return("Type(LOOKAHEAD FAILED)");
                     return true;
                 }
@@ -2514,15 +2427,17 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_38() {
-        return jj_3R_51();
+    private boolean jj_3R_41() {
+        if (jj_3R_54()) return true;
+        return false;
     }
 
-    private boolean jj_3R_37() {
-        return jj_3R_7();
+    private boolean jj_3R_40() {
+        if (jj_3R_10()) return true;
+        return false;
     }
 
-    private boolean jj_3R_81() {
+    private boolean jj_3R_84() {
         if (!jj_rescan) trace_call("NatLiteral(LOOKING AHEAD...)");
         if (jj_scan_token(NAT)) {
             if (!jj_rescan) trace_return("NatLiteral(LOOKAHEAD FAILED)");
@@ -2534,19 +2449,20 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_36() {
-        return jj_3R_50();
+    private boolean jj_3R_39() {
+        if (jj_3R_53()) return true;
+        return false;
     }
 
-    private boolean jj_3R_19() {
+    private boolean jj_3R_22() {
         if (!jj_rescan) trace_call("Statement(LOOKING AHEAD...)");
         Token xsp;
         xsp = jj_scanpos;
-        if (jj_3R_36()) {
+        if (jj_3R_39()) {
             jj_scanpos = xsp;
-            if (jj_3R_37()) {
+            if (jj_3R_40()) {
                 jj_scanpos = xsp;
-                if (jj_3R_38()) {
+                if (jj_3R_41()) {
                     if (!jj_rescan) trace_return("Statement(LOOKAHEAD FAILED)");
                     return true;
                 }
@@ -2558,9 +2474,9 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_41() {
+    private boolean jj_3R_44() {
         if (!jj_rescan) trace_call("LessThanEqualExpression(LOOKING AHEAD...)");
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("LessThanEqualExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2568,7 +2484,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("LessThanEqualExpression(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_9()) {
+        if (jj_3R_12()) {
             if (!jj_rescan) trace_return("LessThanEqualExpression(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2578,11 +2494,12 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_72() {
-        return jj_3R_73();
+    private boolean jj_3R_75() {
+        if (jj_3R_76()) return true;
+        return false;
     }
 
-    private boolean jj_3R_8() {
+    private boolean jj_3R_11() {
         if (!jj_rescan) trace_call("IntegerLiteral(LOOKING AHEAD...)");
         if (jj_scan_token(INTEGER_LITERAL)) {
             if (!jj_rescan) trace_return("IntegerLiteral(LOOKAHEAD FAILED)");
@@ -2594,17 +2511,17 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_65() {
+    private boolean jj_3R_68() {
         if (!jj_rescan) trace_call("AssignmentStatement(LOOKING AHEAD...)");
         Token xsp;
         while (true) {
             xsp = jj_scanpos;
-            if (jj_3R_72()) {
+            if (jj_3R_75()) {
                 jj_scanpos = xsp;
                 break;
             }
         }
-        if (jj_3R_22()) {
+        if (jj_3R_25()) {
             if (!jj_rescan) trace_return("AssignmentStatement(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2612,7 +2529,7 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("AssignmentStatement(LOOKAHEAD FAILED)");
             return true;
         }
-        if (jj_3R_18()) {
+        if (jj_3R_21()) {
             if (!jj_rescan) trace_return("AssignmentStatement(LOOKAHEAD FAILED)");
             return true;
         }
@@ -2620,6 +2537,235 @@ public class BSParser implements BSParserConstants {
             if (!jj_rescan) trace_return("AssignmentStatement(LOOKAHEAD SUCCEEDED)");
             return false;
         }
+    }
+
+    private boolean jj_3R_43() {
+        if (!jj_rescan) trace_call("LessThanExpression(LOOKING AHEAD...)");
+        if (jj_3R_12()) {
+            if (!jj_rescan) trace_return("LessThanExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        if (jj_scan_token(LESSTHAN)) {
+            if (!jj_rescan) trace_return("LessThanExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        if (jj_3R_12()) {
+            if (!jj_rescan) trace_return("LessThanExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        {
+            if (!jj_rescan) trace_return("LessThanExpression(LOOKAHEAD SUCCEEDED)");
+            return false;
+        }
+    }
+
+    private boolean jj_3R_20() {
+        if (jj_3R_26()) return true;
+        return false;
+    }
+
+    private boolean jj_3R_19() {
+        if (jj_3R_25()) return true;
+        return false;
+    }
+
+    private boolean jj_3R_26() {
+        if (!jj_rescan) trace_call("ParenthesisExpression(LOOKING AHEAD...)");
+        if (jj_scan_token(LPAREN)) {
+            if (!jj_rescan) trace_return("ParenthesisExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        if (jj_3R_21()) {
+            if (!jj_rescan) trace_return("ParenthesisExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        if (jj_scan_token(RPAREN)) {
+            if (!jj_rescan) trace_return("ParenthesisExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        {
+            if (!jj_rescan) trace_return("ParenthesisExpression(LOOKAHEAD SUCCEEDED)");
+            return false;
+        }
+    }
+
+    private boolean jj_3R_18() {
+        if (jj_3R_24()) return true;
+        return false;
+    }
+
+    private boolean jj_3R_67() {
+        if (!jj_rescan) trace_call("RepeatStatement(LOOKING AHEAD...)");
+        if (jj_3R_54()) {
+            if (!jj_rescan) trace_return("RepeatStatement(LOOKAHEAD FAILED)");
+            return true;
+        }
+        {
+            if (!jj_rescan) trace_return("RepeatStatement(LOOKAHEAD SUCCEEDED)");
+            return false;
+        }
+    }
+
+    private boolean jj_3R_17() {
+        if (jj_3R_23()) return true;
+        return false;
+    }
+
+    private boolean jj_3R_16() {
+        if (jj_3R_11()) return true;
+        return false;
+    }
+
+    private boolean jj_3R_42() {
+        if (!jj_rescan) trace_call("AndExpression(LOOKING AHEAD...)");
+        if (jj_3R_12()) {
+            if (!jj_rescan) trace_return("AndExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        if (jj_scan_token(AND)) {
+            if (!jj_rescan) trace_return("AndExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        if (jj_3R_12()) {
+            if (!jj_rescan) trace_return("AndExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        {
+            if (!jj_rescan) trace_return("AndExpression(LOOKAHEAD SUCCEEDED)");
+            return false;
+        }
+    }
+
+    private boolean jj_3R_12() {
+        if (!jj_rescan) trace_call("PrimaryExpression(LOOKING AHEAD...)");
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_16()) {
+            jj_scanpos = xsp;
+            if (jj_3R_17()) {
+                jj_scanpos = xsp;
+                if (jj_3R_18()) {
+                    jj_scanpos = xsp;
+                    if (jj_3R_19()) {
+                        jj_scanpos = xsp;
+                        if (jj_3R_20()) {
+                            if (!jj_rescan) trace_return("PrimaryExpression(LOOKAHEAD FAILED)");
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        {
+            if (!jj_rescan) trace_return("PrimaryExpression(LOOKAHEAD SUCCEEDED)");
+            return false;
+        }
+    }
+
+    private boolean jj_3R_74() {
+        if (jj_scan_token(FOR)) return true;
+        if (jj_scan_token(INTEGER_LITERAL)) return true;
+        return false;
+    }
+
+    private boolean jj_3_15() {
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(MULTIPLY)) return true;
+        return false;
+    }
+
+    private boolean jj_3_14() {
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(MINUS)) return true;
+        return false;
+    }
+
+    private boolean jj_3R_38() {
+        if (jj_3R_12()) return true;
+        return false;
+    }
+
+    private boolean jj_3_13() {
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(ADD)) return true;
+        return false;
+    }
+
+    private boolean jj_3R_73() {
+        if (jj_scan_token(DETECT)) return true;
+        if (jj_3R_25()) return true;
+        if (jj_scan_token(ON)) return true;
+        if (jj_3R_12()) return true;
+        return false;
+    }
+
+    private boolean jj_3R_37() {
+        if (jj_3R_52()) return true;
+        return false;
+    }
+
+    private boolean jj_3_12() {
+        if (jj_3R_12()) return true;
+        if (jj_scan_token(OR)) return true;
+        return false;
+    }
+
+    private boolean jj_3R_52() {
+        if (!jj_rescan) trace_call("TimesExpression(LOOKING AHEAD...)");
+        if (jj_3R_12()) {
+            if (!jj_rescan) trace_return("TimesExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        if (jj_scan_token(MULTIPLY)) {
+            if (!jj_rescan) trace_return("TimesExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        if (jj_3R_12()) {
+            if (!jj_rescan) trace_return("TimesExpression(LOOKAHEAD FAILED)");
+            return true;
+        }
+        {
+            if (!jj_rescan) trace_return("TimesExpression(LOOKAHEAD SUCCEEDED)");
+            return false;
+        }
+    }
+
+    private boolean jj_3R_82() {
+        if (!jj_rescan) trace_call("TypingRest(LOOKING AHEAD...)");
+        if (jj_scan_token(COMMA)) {
+            if (!jj_rescan) trace_return("TypingRest(LOOKAHEAD FAILED)");
+            return true;
+        }
+        if (jj_3R_77()) {
+            if (!jj_rescan) trace_return("TypingRest(LOOKAHEAD FAILED)");
+            return true;
+        }
+        {
+            if (!jj_rescan) trace_return("TypingRest(LOOKAHEAD SUCCEEDED)");
+            return false;
+        }
+    }
+
+    private boolean jj_3R_66() {
+        if (!jj_rescan) trace_call("DetectStatement(LOOKING AHEAD...)");
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_73()) {
+            jj_scanpos = xsp;
+            if (jj_3R_74()) {
+                if (!jj_rescan) trace_return("DetectStatement(LOOKAHEAD FAILED)");
+                return true;
+            }
+        }
+        {
+            if (!jj_rescan) trace_return("DetectStatement(LOOKAHEAD SUCCEEDED)");
+            return false;
+        }
+    }
+
+    private boolean jj_3R_36() {
+        if (jj_3R_51()) return true;
+        return false;
     }
 
     /**
@@ -2642,7 +2788,7 @@ public class BSParser implements BSParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 16; i++) jj_la1[i] = -1;
+        for (int i = 0; i < 19; i++) jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
@@ -2655,7 +2801,7 @@ public class BSParser implements BSParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 16; i++) jj_la1[i] = -1;
+        for (int i = 0; i < 19; i++) jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
@@ -2667,7 +2813,7 @@ public class BSParser implements BSParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 16; i++) jj_la1[i] = -1;
+        for (int i = 0; i < 19; i++) jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
@@ -2785,12 +2931,12 @@ public class BSParser implements BSParserConstants {
      */
     public ParseException generateParseException() {
         jj_expentries.clear();
-        boolean[] la1tokens = new boolean[57];
+        boolean[] la1tokens = new boolean[59];
         if (jj_kind >= 0) {
             la1tokens[jj_kind] = true;
             jj_kind = -1;
         }
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 19; i++) {
             if (jj_la1[i] == jj_gen) {
                 for (int j = 0; j < 32; j++) {
                     if ((jj_la1_0[i] & (1 << j)) != 0) {
@@ -2802,7 +2948,7 @@ public class BSParser implements BSParserConstants {
                 }
             }
         }
-        for (int i = 0; i < 57; i++) {
+        for (int i = 0; i < 59; i++) {
             if (la1tokens[i]) {
                 jj_expentry = new int[1];
                 jj_expentry[0] = i;

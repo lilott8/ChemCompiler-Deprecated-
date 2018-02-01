@@ -31,6 +31,7 @@ import parser.ast.Manifest;
 import parser.ast.MatLiteral;
 import parser.ast.MinusExpression;
 import parser.ast.MixStatement;
+import parser.ast.Module;
 import parser.ast.NatLiteral;
 import parser.ast.Node;
 import parser.ast.NodeList;
@@ -113,11 +114,12 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
     //
 
     /**
-     * f0 -> Stationary()
-     * f1 -> Manifest()
-     * f2 -> <INSTRUCTIONS>
-     * f3 -> Instruction()
-     * f4 -> <EOF>
+     * f0 -> Module()
+     * f1 -> Stationary()
+     * f2 -> Manifest()
+     * f3 -> <INSTRUCTIONS>
+     * f4 -> Instruction()
+     * f5 -> <EOF>
      */
     public R visit(BSProgram n) {
         R _ret = null;
@@ -126,11 +128,12 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
         n.f2.accept(this);
         n.f3.accept(this);
         n.f4.accept(this);
+        n.f5.accept(this);
         return _ret;
     }
 
     /**
-     * f0 -> ( <STATIONARY> Identifier() )*
+     * f0 -> ( <STATIONARY> ( TypingList() )* Identifier() )*
      */
     public R visit(Stationary n) {
         R _ret = null;
@@ -139,9 +142,18 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
     }
 
     /**
-     * f0 -> ( <MANIFEST> Identifier() )*
+     * f0 -> ( <MANIFEST> ( TypingList() )* Identifier() )+
      */
     public R visit(Manifest n) {
+        R _ret = null;
+        n.f0.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> ( <MODULE> Identifier() )*
+     */
+    public R visit(Module n) {
         R _ret = null;
         n.f0.accept(this);
         return _ret;

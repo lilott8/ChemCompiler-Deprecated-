@@ -31,6 +31,7 @@ import parser.ast.Manifest;
 import parser.ast.MatLiteral;
 import parser.ast.MinusExpression;
 import parser.ast.MixStatement;
+import parser.ast.Module;
 import parser.ast.NatLiteral;
 import parser.ast.Node;
 import parser.ast.NodeList;
@@ -113,11 +114,12 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
     //
 
     /**
-     * f0 -> Stationary()
-     * f1 -> Manifest()
-     * f2 -> <INSTRUCTIONS>
-     * f3 -> Instruction()
-     * f4 -> <EOF>
+     * f0 -> Module()
+     * f1 -> Stationary()
+     * f2 -> Manifest()
+     * f3 -> <INSTRUCTIONS>
+     * f4 -> Instruction()
+     * f5 -> <EOF>
      */
     public R visit(BSProgram n, A argu) {
         R _ret = null;
@@ -126,11 +128,12 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
         n.f2.accept(this, argu);
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
+        n.f5.accept(this, argu);
         return _ret;
     }
 
     /**
-     * f0 -> ( <STATIONARY> Identifier() )*
+     * f0 -> ( <STATIONARY> ( TypingList() )* Identifier() )*
      */
     public R visit(Stationary n, A argu) {
         R _ret = null;
@@ -139,9 +142,18 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
     }
 
     /**
-     * f0 -> ( <MANIFEST> Identifier() )*
+     * f0 -> ( <MANIFEST> ( TypingList() )* Identifier() )+
      */
     public R visit(Manifest n, A argu) {
+        R _ret = null;
+        n.f0.accept(this, argu);
+        return _ret;
+    }
+
+    /**
+     * f0 -> ( <MODULE> Identifier() )*
+     */
+    public R visit(Module n, A argu) {
         R _ret = null;
         n.f0.accept(this, argu);
         return _ret;

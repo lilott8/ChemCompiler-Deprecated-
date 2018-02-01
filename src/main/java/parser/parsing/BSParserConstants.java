@@ -99,123 +99,131 @@ public interface BSParserConstants {
     /**
      * RegularExpression Id.
      */
-    int LPAREN = 27;
+    int MODULE = 27;
     /**
      * RegularExpression Id.
      */
-    int RPAREN = 28;
+    int ARRAY = 28;
     /**
      * RegularExpression Id.
      */
-    int LBRACKET = 29;
+    int LPAREN = 29;
     /**
      * RegularExpression Id.
      */
-    int RBRACKET = 30;
+    int RPAREN = 30;
     /**
      * RegularExpression Id.
      */
-    int LBRACE = 31;
+    int LBRACKET = 31;
     /**
      * RegularExpression Id.
      */
-    int RBRACE = 32;
+    int RBRACKET = 32;
     /**
      * RegularExpression Id.
      */
-    int DOT = 33;
+    int LBRACE = 33;
     /**
      * RegularExpression Id.
      */
-    int ADD = 34;
+    int RBRACE = 34;
     /**
      * RegularExpression Id.
      */
-    int AND = 35;
+    int DOT = 35;
     /**
      * RegularExpression Id.
      */
-    int ASSIGN = 36;
+    int ADD = 36;
     /**
      * RegularExpression Id.
      */
-    int BANG = 37;
+    int AND = 37;
     /**
      * RegularExpression Id.
      */
-    int NOTEQUAL = 38;
+    int ASSIGN = 38;
     /**
      * RegularExpression Id.
      */
-    int LESSTHAN = 39;
+    int BANG = 39;
     /**
      * RegularExpression Id.
      */
-    int LESSTHANEQUAL = 40;
+    int NOTEQUAL = 40;
     /**
      * RegularExpression Id.
      */
-    int GREATERTHAN = 41;
+    int LESSTHAN = 41;
     /**
      * RegularExpression Id.
      */
-    int GREATERTHANEQUAL = 42;
+    int LESSTHANEQUAL = 42;
     /**
      * RegularExpression Id.
      */
-    int EQUALITY = 43;
+    int GREATERTHAN = 43;
     /**
      * RegularExpression Id.
      */
-    int MINUS = 44;
+    int GREATERTHANEQUAL = 44;
     /**
      * RegularExpression Id.
      */
-    int MULTIPLY = 45;
+    int EQUALITY = 45;
     /**
      * RegularExpression Id.
      */
-    int OR = 46;
+    int MINUS = 46;
     /**
      * RegularExpression Id.
      */
-    int INSTRUCTIONS = 47;
+    int MULTIPLY = 47;
     /**
      * RegularExpression Id.
      */
-    int TRUE = 48;
+    int OR = 48;
     /**
      * RegularExpression Id.
      */
-    int FALSE = 49;
+    int INSTRUCTIONS = 49;
     /**
      * RegularExpression Id.
      */
-    int COMMA = 50;
+    int TRUE = 50;
     /**
      * RegularExpression Id.
      */
-    int COLON = 51;
+    int FALSE = 51;
     /**
      * RegularExpression Id.
      */
-    int INT_SCALAR = 52;
+    int COMMA = 52;
     /**
      * RegularExpression Id.
      */
-    int INTEGER_LITERAL = 53;
+    int COLON = 53;
     /**
      * RegularExpression Id.
      */
-    int IDENTIFIER = 54;
+    int INT_SCALAR = 54;
     /**
      * RegularExpression Id.
      */
-    int LETTER = 55;
+    int INTEGER_LITERAL = 55;
     /**
      * RegularExpression Id.
      */
-    int DIGIT = 56;
+    int IDENTIFIER = 56;
+    /**
+     * RegularExpression Id.
+     */
+    int LETTER = 57;
+    /**
+     * RegularExpression Id.
+     */
+    int DIGIT = 58;
 
     /**
      * Lexical state.
@@ -253,6 +261,8 @@ public interface BSParserConstants {
             "\"real\"",
             "\"nat\"",
             "\"mat\"",
+            "\"module\"",
+            "\"array\"",
             "\"(\"",
             "\")\"",
             "\"[\"",

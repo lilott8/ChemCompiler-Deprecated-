@@ -3,6 +3,7 @@ package parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import parser.ast.BSProgram;
 import shared.Step;
 
 /**

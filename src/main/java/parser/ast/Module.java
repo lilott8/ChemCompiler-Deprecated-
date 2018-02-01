@@ -11,12 +11,12 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> ( <STATIONARY> ( TypingList() )* Identifier() )*
+ * f0 -> ( <MODULE> Identifier() )*
  */
-public class Stationary implements Node {
+public class Module implements Node {
     public NodeListOptional f0;
 
-    public Stationary(NodeListOptional n0) {
+    public Module(NodeListOptional n0) {
         f0 = n0;
     }
 
