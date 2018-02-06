@@ -9,12 +9,12 @@ import shared.Step;
 /**
  * @created: 11/30/17
  * @since: 0.1
- * @project: MiniComplier
+ * @project: ChemicalCompiler
  */
-public class BSTypeChecker implements Step {
+public class BSTypeChecker extends TypeChecker implements Step {
 
     public static final Logger logger = LogManager.getLogger(BSTypeChecker.class);
-    BSProgram program;
+    private BSProgram program;
 
     public BSTypeChecker(BSProgram program) {
         this.program = program;
@@ -22,22 +22,11 @@ public class BSTypeChecker implements Step {
 
     @Override
     public String getName() {
-        return "BioScript Type Checker Strategy";
+        return "BSTypeChecker";
     }
 
     @Override
     public Step run() {
-        this.buildSymbolTable();
-        this.runTypecheck();
         return this;
-    }
-
-
-    private void buildSymbolTable() {
-
-    }
-
-    private void runTypecheck() {
-        logger.info("We are assuming all MJ programs are correctly typed right now.");
     }
 }

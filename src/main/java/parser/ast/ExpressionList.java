@@ -11,29 +11,16 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> ( TypingList() )*
- * f1 -> Identifier()
- * f2 -> <ASSIGN>
- * f3 -> Expression()
+ * f0 -> Expression()
+ * f1 -> ( ExpressionRest() )*
  */
-public class AssignmentStatement implements Node {
-    public NodeListOptional f0;
-    public Identifier f1;
-    public NodeToken f2;
-    public Expression f3;
+public class ExpressionList implements Node {
+    public Expression f0;
+    public NodeListOptional f1;
 
-    public AssignmentStatement(NodeListOptional n0, Identifier n1, NodeToken n2, Expression n3) {
+    public ExpressionList(Expression n0, NodeListOptional n1) {
         f0 = n0;
         f1 = n1;
-        f2 = n2;
-        f3 = n3;
-    }
-
-    public AssignmentStatement(NodeListOptional n0, Identifier n1, Expression n2) {
-        f0 = n0;
-        f1 = n1;
-        f2 = new NodeToken("=");
-        f3 = n2;
     }
 
     public void accept(Visitor v) {

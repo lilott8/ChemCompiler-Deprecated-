@@ -18,10 +18,10 @@ public class BSParserTokenManager implements BSParserConstants {
             "\163\164\141\164\151\157\156\141\162\171", "\155\141\156\151\146\145\163\164", "\164\151\155\145\163",
             "\167\151\164\150", "\157\156", "\151\156\164\157", "\146\165\156\143\164\151\157\156",
             "\162\145\141\154", "\156\141\164", "\155\141\164", "\155\157\144\165\154\145",
-            "\141\162\162\141\171", "\50", "\51", "\133", "\135", "\173", "\175", "\56", "\53", "\46\46", "\75",
-            "\41", "\41\75", "\74", "\74\75", "\76", "\76\75", "\75\75", "\55", "\52",
-            "\174\174", "\151\156\163\164\162\165\143\164\151\157\156\163", "\164\162\165\145",
-            "\146\141\154\163\145", "\54", "\72", null, null, null, null, null,};
+            "\141\162\162\141\171", "\162\145\164\165\162\156", "\50", "\51", "\133", "\135", "\173", "\175",
+            "\56", "\53", "\46\46", "\75", "\41", "\41\75", "\74", "\74\75", "\76", "\76\75",
+            "\75\75", "\55", "\52", "\174\174", "\151\156\163\164\162\165\143\164\151\157\156\163",
+            "\164\162\165\145", "\146\141\154\163\145", "\54", "\72", null, null, null, null,};
     /**
      * Lexer state names.
      */
@@ -35,18 +35,16 @@ public class BSParserTokenManager implements BSParserConstants {
                     {0, 2, 3,},
                     {0, 2, 3,},
                     {4},
-                    {5},
             },
 
     };
     protected static final int[][] kindForState = {
             {
+                    55,
+                    55,
+                    55,
                     56,
-                    56,
-                    54,
-                    54,
-                    54,
-                    55,}
+                    56,}
     };
     static final long[] jjbitVec0 = {
             0x1ff00000fffffffeL, 0xffffffffffffc000L, 0xffffffffL, 0x600000000000000L
@@ -66,27 +64,6 @@ public class BSParserTokenManager implements BSParserConstants {
     static final long[] jjbitVec6 = {
             0x3fffffffffffL, 0x0L, 0x0L, 0x0L
     };
-    static final long[] jjbitVec7 = {
-            0x1600L, 0x0L, 0x0L, 0x0L
-    };
-    static final long[] jjbitVec8 = {
-            0x0L, 0xffc000000000L, 0x0L, 0xffc000000000L
-    };
-    static final long[] jjbitVec9 = {
-            0x0L, 0x3ff00000000L, 0x0L, 0x3ff000000000000L
-    };
-    static final long[] jjbitVec10 = {
-            0x0L, 0xffc000000000L, 0x0L, 0xff8000000000L
-    };
-    static final long[] jjbitVec11 = {
-            0x0L, 0xffc000000000L, 0x0L, 0x0L
-    };
-    static final long[] jjbitVec12 = {
-            0x0L, 0x3ff0000L, 0x0L, 0x3ff0000L
-    };
-    static final long[] jjbitVec13 = {
-            0x0L, 0x3ffL, 0x0L, 0x0L
-    };
     static final int[] jjnextStates = {
     };
     static final long[] jjtoToken = {
@@ -95,8 +72,8 @@ public class BSParserTokenManager implements BSParserConstants {
     static final long[] jjtoSkip = {
             0x3eL,
     };
-    private final int[] jjrounds = new int[6];
-    private final int[] jjstateSet = new int[2 * 6];
+    private final int[] jjrounds = new int[5];
+    private final int[] jjstateSet = new int[2 * 5];
     /**
      * Debug output.
      */
@@ -149,28 +126,6 @@ public class BSParserTokenManager implements BSParserConstants {
         }
     }
 
-    private static final boolean jjCanMove_1(int hiByte, int i1, int i2, long l1, long l2) {
-        switch (hiByte) {
-            case 6:
-                return ((jjbitVec9[i2] & l2) != 0L);
-            case 11:
-                return ((jjbitVec10[i2] & l2) != 0L);
-            case 13:
-                return ((jjbitVec11[i2] & l2) != 0L);
-            case 14:
-                return ((jjbitVec12[i2] & l2) != 0L);
-            case 16:
-                return ((jjbitVec13[i2] & l2) != 0L);
-            default:
-                if ((jjbitVec7[i1] & l1) != 0L)
-                    if ((jjbitVec8[i2] & l2) == 0L)
-                        return false;
-                    else
-                        return true;
-                return false;
-        }
-    }
-
     /**
      * Set debug output.
      */
@@ -182,95 +137,95 @@ public class BSParserTokenManager implements BSParserConstants {
         debugStream.println("   No more string literal token matches are possible.");
         switch (pos) {
             case 0:
-                if ((active0 & 0xe00001fffffc0L) != 0L) {
+                if ((active0 & 0x1c00003fffffc0L) != 0L) {
                     jjmatchedKind = 56;
-                    return 1;
+                    return 4;
                 }
                 return -1;
             case 1:
                 if ((active0 & 0x204800L) != 0L)
-                    return 1;
-                if ((active0 & 0xe00001fdfb7c0L) != 0L) {
+                    return 4;
+                if ((active0 & 0x1c00003fdfb7c0L) != 0L) {
                     jjmatchedKind = 56;
                     jjmatchedPos = 1;
-                    return 1;
+                    return 4;
                 }
                 return -1;
             case 2:
                 if ((active0 & 0x6000440L) != 0L)
-                    return 1;
-                if ((active0 & 0xe000019dfb380L) != 0L) {
+                    return 4;
+                if ((active0 & 0x1c000039dfb380L) != 0L) {
                     jjmatchedKind = 56;
                     jjmatchedPos = 2;
-                    return 1;
+                    return 4;
                 }
                 return -1;
             case 3:
-                if ((active0 & 0x4000001518200L) != 0L)
-                    return 1;
-                if ((active0 & 0xa0000188e3180L) != 0L) {
+                if ((active0 & 0x8000001518200L) != 0L)
+                    return 4;
+                if ((active0 & 0x140000388e3180L) != 0L) {
                     if (jjmatchedPos != 3) {
                         jjmatchedKind = 56;
                         jjmatchedPos = 3;
                     }
-                    return 1;
+                    return 4;
                 }
                 return -1;
             case 4:
-                if ((active0 & 0x2000008863000L) != 0L) {
+                if ((active0 & 0x10000010080180L) != 0L)
+                    return 4;
+                if ((active0 & 0x4000028863000L) != 0L) {
                     jjmatchedKind = 56;
                     jjmatchedPos = 4;
-                    return 1;
+                    return 4;
                 }
-                if ((active0 & 0x8000010080180L) != 0L)
-                    return 1;
                 return -1;
             case 5:
-                if ((active0 & 0x2000000860000L) != 0L) {
+                if ((active0 & 0x28003000L) != 0L)
+                    return 4;
+                if ((active0 & 0x4000000860000L) != 0L) {
                     jjmatchedKind = 56;
                     jjmatchedPos = 5;
-                    return 1;
+                    return 4;
                 }
-                if ((active0 & 0x8003000L) != 0L)
-                    return 1;
                 return -1;
             case 6:
-                if ((active0 & 0x2000000860000L) != 0L) {
+                if ((active0 & 0x4000000860000L) != 0L) {
                     jjmatchedKind = 56;
                     jjmatchedPos = 6;
-                    return 1;
+                    return 4;
                 }
                 return -1;
             case 7:
-                if ((active0 & 0x2000000020000L) != 0L) {
+                if ((active0 & 0x840000L) != 0L)
+                    return 4;
+                if ((active0 & 0x4000000020000L) != 0L) {
                     jjmatchedKind = 56;
                     jjmatchedPos = 7;
-                    return 1;
+                    return 4;
                 }
-                if ((active0 & 0x840000L) != 0L)
-                    return 1;
                 return -1;
             case 8:
-                if ((active0 & 0x2000000020000L) != 0L) {
+                if ((active0 & 0x4000000020000L) != 0L) {
                     jjmatchedKind = 56;
                     jjmatchedPos = 8;
-                    return 1;
+                    return 4;
                 }
                 return -1;
             case 9:
-                if ((active0 & 0x2000000000000L) != 0L) {
+                if ((active0 & 0x4000000000000L) != 0L) {
                     jjmatchedKind = 56;
                     jjmatchedPos = 9;
-                    return 1;
+                    return 4;
                 }
                 if ((active0 & 0x20000L) != 0L)
-                    return 1;
+                    return 4;
                 return -1;
             case 10:
-                if ((active0 & 0x2000000000000L) != 0L) {
+                if ((active0 & 0x4000000000000L) != 0L) {
                     jjmatchedKind = 56;
                     jjmatchedPos = 10;
-                    return 1;
+                    return 4;
                 }
                 return -1;
             default:
@@ -293,39 +248,39 @@ public class BSParserTokenManager implements BSParserConstants {
     private int jjMoveStringLiteralDfa0_0() {
         switch (curChar) {
             case 33:
-                jjmatchedKind = 39;
-                return jjMoveStringLiteralDfa1_0(0x10000000000L);
+                jjmatchedKind = 40;
+                return jjMoveStringLiteralDfa1_0(0x20000000000L);
             case 38:
-                return jjMoveStringLiteralDfa1_0(0x2000000000L);
+                return jjMoveStringLiteralDfa1_0(0x4000000000L);
             case 40:
-                return jjStopAtPos(0, 29);
-            case 41:
                 return jjStopAtPos(0, 30);
-            case 42:
-                return jjStopAtPos(0, 47);
-            case 43:
-                return jjStopAtPos(0, 36);
-            case 44:
-                return jjStopAtPos(0, 52);
-            case 45:
-                return jjStopAtPos(0, 46);
-            case 46:
-                return jjStopAtPos(0, 35);
-            case 58:
-                return jjStopAtPos(0, 53);
-            case 60:
-                jjmatchedKind = 41;
-                return jjMoveStringLiteralDfa1_0(0x40000000000L);
-            case 61:
-                jjmatchedKind = 38;
-                return jjMoveStringLiteralDfa1_0(0x200000000000L);
-            case 62:
-                jjmatchedKind = 43;
-                return jjMoveStringLiteralDfa1_0(0x100000000000L);
-            case 91:
+            case 41:
                 return jjStopAtPos(0, 31);
-            case 93:
+            case 42:
+                return jjStopAtPos(0, 48);
+            case 43:
+                return jjStopAtPos(0, 37);
+            case 44:
+                return jjStopAtPos(0, 53);
+            case 45:
+                return jjStopAtPos(0, 47);
+            case 46:
+                return jjStopAtPos(0, 36);
+            case 58:
+                return jjStopAtPos(0, 54);
+            case 60:
+                jjmatchedKind = 42;
+                return jjMoveStringLiteralDfa1_0(0x80000000000L);
+            case 61:
+                jjmatchedKind = 39;
+                return jjMoveStringLiteralDfa1_0(0x400000000000L);
+            case 62:
+                jjmatchedKind = 44;
+                return jjMoveStringLiteralDfa1_0(0x200000000000L);
+            case 91:
                 return jjStopAtPos(0, 32);
+            case 93:
+                return jjStopAtPos(0, 33);
             case 97:
                 return jjMoveStringLiteralDfa1_0(0x10000800L);
             case 100:
@@ -333,11 +288,11 @@ public class BSParserTokenManager implements BSParserConstants {
             case 101:
                 return jjMoveStringLiteralDfa1_0(0x18000L);
             case 102:
-                return jjMoveStringLiteralDfa1_0(0x8000000800400L);
+                return jjMoveStringLiteralDfa1_0(0x10000000800400L);
             case 104:
                 return jjMoveStringLiteralDfa1_0(0x200L);
             case 105:
-                return jjMoveStringLiteralDfa1_0(0x2000000404000L);
+                return jjMoveStringLiteralDfa1_0(0x4000000404000L);
             case 109:
                 return jjMoveStringLiteralDfa1_0(0xc040040L);
             case 110:
@@ -345,19 +300,19 @@ public class BSParserTokenManager implements BSParserConstants {
             case 111:
                 return jjMoveStringLiteralDfa1_0(0x200000L);
             case 114:
-                return jjMoveStringLiteralDfa1_0(0x1002000L);
+                return jjMoveStringLiteralDfa1_0(0x21002000L);
             case 115:
                 return jjMoveStringLiteralDfa1_0(0x20080L);
             case 116:
-                return jjMoveStringLiteralDfa1_0(0x4000000080000L);
+                return jjMoveStringLiteralDfa1_0(0x8000000080000L);
             case 119:
                 return jjMoveStringLiteralDfa1_0(0x100000L);
             case 123:
-                return jjStopAtPos(0, 33);
-            case 124:
-                return jjMoveStringLiteralDfa1_0(0x1000000000000L);
-            case 125:
                 return jjStopAtPos(0, 34);
+            case 124:
+                return jjMoveStringLiteralDfa1_0(0x2000000000000L);
+            case 125:
+                return jjStopAtPos(0, 35);
             default:
                 debugStream.println("   No string literal matches possible.");
                 return jjMoveNfa_0(0, 0);
@@ -381,26 +336,26 @@ public class BSParserTokenManager implements BSParserConstants {
         debugStream.println("Current character : " + TokenMgrError.addEscapes(String.valueOf(curChar)) + " (" + (int) curChar + ") at line " + input_stream.getEndLine() + " column " + input_stream.getEndColumn());
         switch (curChar) {
             case 38:
-                if ((active0 & 0x2000000000L) != 0L)
-                    return jjStopAtPos(1, 37);
+                if ((active0 & 0x4000000000L) != 0L)
+                    return jjStopAtPos(1, 38);
                 break;
             case 61:
-                if ((active0 & 0x10000000000L) != 0L)
-                    return jjStopAtPos(1, 40);
-                else if ((active0 & 0x40000000000L) != 0L)
-                    return jjStopAtPos(1, 42);
-                else if ((active0 & 0x100000000000L) != 0L)
-                    return jjStopAtPos(1, 44);
+                if ((active0 & 0x20000000000L) != 0L)
+                    return jjStopAtPos(1, 41);
+                else if ((active0 & 0x80000000000L) != 0L)
+                    return jjStopAtPos(1, 43);
                 else if ((active0 & 0x200000000000L) != 0L)
                     return jjStopAtPos(1, 45);
+                else if ((active0 & 0x400000000000L) != 0L)
+                    return jjStopAtPos(1, 46);
                 break;
             case 97:
-                return jjMoveStringLiteralDfa2_0(active0, 0x8000006040000L);
+                return jjMoveStringLiteralDfa2_0(active0, 0x10000006040000L);
             case 101:
-                return jjMoveStringLiteralDfa2_0(active0, 0x1003200L);
+                return jjMoveStringLiteralDfa2_0(active0, 0x21003200L);
             case 102:
                 if ((active0 & 0x4000L) != 0L)
-                    return jjStartNfaWithStates_0(1, 14, 1);
+                    return jjStartNfaWithStates_0(1, 14, 4);
                 break;
             case 105:
                 return jjMoveStringLiteralDfa2_0(active0, 0x180040L);
@@ -408,23 +363,23 @@ public class BSParserTokenManager implements BSParserConstants {
                 return jjMoveStringLiteralDfa2_0(active0, 0x18000L);
             case 110:
                 if ((active0 & 0x200000L) != 0L)
-                    return jjStartNfaWithStates_0(1, 21, 1);
-                return jjMoveStringLiteralDfa2_0(active0, 0x2000000400000L);
+                    return jjStartNfaWithStates_0(1, 21, 4);
+                return jjMoveStringLiteralDfa2_0(active0, 0x4000000400000L);
             case 111:
                 return jjMoveStringLiteralDfa2_0(active0, 0x8000400L);
             case 112:
                 return jjMoveStringLiteralDfa2_0(active0, 0x80L);
             case 114:
-                return jjMoveStringLiteralDfa2_0(active0, 0x4000010000100L);
+                return jjMoveStringLiteralDfa2_0(active0, 0x8000010000100L);
             case 116:
                 if ((active0 & 0x800L) != 0L)
-                    return jjStartNfaWithStates_0(1, 11, 1);
+                    return jjStartNfaWithStates_0(1, 11, 4);
                 return jjMoveStringLiteralDfa2_0(active0, 0x20000L);
             case 117:
                 return jjMoveStringLiteralDfa2_0(active0, 0x800000L);
             case 124:
-                if ((active0 & 0x1000000000000L) != 0L)
-                    return jjStopAtPos(1, 48);
+                if ((active0 & 0x2000000000000L) != 0L)
+                    return jjStopAtPos(1, 49);
                 break;
             default:
                 debugStream.println("   No string literal matches possible.");
@@ -456,7 +411,7 @@ public class BSParserTokenManager implements BSParserConstants {
             case 100:
                 return jjMoveStringLiteralDfa3_0(active0, 0x8000000L);
             case 108:
-                return jjMoveStringLiteralDfa3_0(active0, 0x8000000000080L);
+                return jjMoveStringLiteralDfa3_0(active0, 0x10000000000080L);
             case 109:
                 return jjMoveStringLiteralDfa3_0(active0, 0x80000L);
             case 110:
@@ -465,21 +420,21 @@ public class BSParserTokenManager implements BSParserConstants {
                 return jjMoveStringLiteralDfa3_0(active0, 0x2000L);
             case 114:
                 if ((active0 & 0x400L) != 0L)
-                    return jjStartNfaWithStates_0(2, 10, 1);
+                    return jjStartNfaWithStates_0(2, 10, 4);
                 return jjMoveStringLiteralDfa3_0(active0, 0x10000000L);
             case 115:
-                return jjMoveStringLiteralDfa3_0(active0, 0x2000000018000L);
+                return jjMoveStringLiteralDfa3_0(active0, 0x4000000018000L);
             case 116:
                 if ((active0 & 0x2000000L) != 0L)
-                    return jjStartNfaWithStates_0(2, 25, 1);
+                    return jjStartNfaWithStates_0(2, 25, 4);
                 else if ((active0 & 0x4000000L) != 0L)
-                    return jjStartNfaWithStates_0(2, 26, 1);
-                return jjMoveStringLiteralDfa3_0(active0, 0x501000L);
+                    return jjStartNfaWithStates_0(2, 26, 4);
+                return jjMoveStringLiteralDfa3_0(active0, 0x20501000L);
             case 117:
-                return jjMoveStringLiteralDfa3_0(active0, 0x4000000000000L);
+                return jjMoveStringLiteralDfa3_0(active0, 0x8000000000000L);
             case 120:
                 if ((active0 & 0x40L) != 0L)
-                    return jjStartNfaWithStates_0(2, 6, 1);
+                    return jjStartNfaWithStates_0(2, 6, 4);
                 break;
             default:
                 debugStream.println("   No string literal matches possible.");
@@ -514,31 +469,31 @@ public class BSParserTokenManager implements BSParserConstants {
                 if ((active0 & 0x10000L) != 0L) {
                     jjmatchedKind = 16;
                     jjmatchedPos = 3;
-                } else if ((active0 & 0x4000000000000L) != 0L)
-                    return jjStartNfaWithStates_0(3, 50, 1);
+                } else if ((active0 & 0x8000000000000L) != 0L)
+                    return jjStartNfaWithStates_0(3, 51, 4);
                 return jjMoveStringLiteralDfa4_0(active0, 0x8b000L);
             case 104:
                 if ((active0 & 0x100000L) != 0L)
-                    return jjStartNfaWithStates_0(3, 20, 1);
+                    return jjStartNfaWithStates_0(3, 20, 4);
                 break;
             case 105:
                 return jjMoveStringLiteralDfa4_0(active0, 0x40180L);
             case 108:
                 if ((active0 & 0x1000000L) != 0L)
-                    return jjStartNfaWithStates_0(3, 24, 1);
+                    return jjStartNfaWithStates_0(3, 24, 4);
                 break;
             case 111:
                 if ((active0 & 0x400000L) != 0L)
-                    return jjStartNfaWithStates_0(3, 22, 1);
+                    return jjStartNfaWithStates_0(3, 22, 4);
                 break;
             case 115:
-                return jjMoveStringLiteralDfa4_0(active0, 0x8000000000000L);
+                return jjMoveStringLiteralDfa4_0(active0, 0x10000000000000L);
             case 116:
                 if ((active0 & 0x200L) != 0L)
-                    return jjStartNfaWithStates_0(3, 9, 1);
-                return jjMoveStringLiteralDfa4_0(active0, 0x2000000020000L);
+                    return jjStartNfaWithStates_0(3, 9, 4);
+                return jjMoveStringLiteralDfa4_0(active0, 0x4000000020000L);
             case 117:
-                return jjMoveStringLiteralDfa4_0(active0, 0x8000000L);
+                return jjMoveStringLiteralDfa4_0(active0, 0x28000000L);
             default:
                 debugStream.println("   No string literal matches possible.");
                 break;
@@ -571,8 +526,8 @@ public class BSParserTokenManager implements BSParserConstants {
             case 99:
                 return jjMoveStringLiteralDfa5_0(active0, 0x1000L);
             case 101:
-                if ((active0 & 0x8000000000000L) != 0L)
-                    return jjStartNfaWithStates_0(4, 51, 1);
+                if ((active0 & 0x10000000000000L) != 0L)
+                    return jjStartNfaWithStates_0(4, 52, 4);
                 break;
             case 102:
                 return jjMoveStringLiteralDfa5_0(active0, 0x40000L);
@@ -582,21 +537,21 @@ public class BSParserTokenManager implements BSParserConstants {
                 return jjMoveStringLiteralDfa5_0(active0, 0x8000000L);
             case 110:
                 if ((active0 & 0x100L) != 0L)
-                    return jjStartNfaWithStates_0(4, 8, 1);
+                    return jjStartNfaWithStates_0(4, 8, 4);
                 break;
             case 114:
-                return jjMoveStringLiteralDfa5_0(active0, 0x2000000000000L);
+                return jjMoveStringLiteralDfa5_0(active0, 0x4000020000000L);
             case 115:
                 if ((active0 & 0x80000L) != 0L)
-                    return jjStartNfaWithStates_0(4, 19, 1);
+                    return jjStartNfaWithStates_0(4, 19, 4);
                 break;
             case 116:
                 if ((active0 & 0x80L) != 0L)
-                    return jjStartNfaWithStates_0(4, 7, 1);
+                    return jjStartNfaWithStates_0(4, 7, 4);
                 return jjMoveStringLiteralDfa5_0(active0, 0x800000L);
             case 121:
                 if ((active0 & 0x10000000L) != 0L)
-                    return jjStartNfaWithStates_0(4, 28, 1);
+                    return jjStartNfaWithStates_0(4, 28, 4);
                 break;
             default:
                 debugStream.println("   No string literal matches possible.");
@@ -625,20 +580,24 @@ public class BSParserTokenManager implements BSParserConstants {
         switch (curChar) {
             case 101:
                 if ((active0 & 0x8000000L) != 0L)
-                    return jjStartNfaWithStates_0(5, 27, 1);
+                    return jjStartNfaWithStates_0(5, 27, 4);
                 return jjMoveStringLiteralDfa6_0(active0, 0x40000L);
             case 105:
                 return jjMoveStringLiteralDfa6_0(active0, 0x808000L);
+            case 110:
+                if ((active0 & 0x20000000L) != 0L)
+                    return jjStartNfaWithStates_0(5, 29, 4);
+                break;
             case 111:
                 return jjMoveStringLiteralDfa6_0(active0, 0x20000L);
             case 116:
                 if ((active0 & 0x1000L) != 0L)
-                    return jjStartNfaWithStates_0(5, 12, 1);
+                    return jjStartNfaWithStates_0(5, 12, 4);
                 else if ((active0 & 0x2000L) != 0L)
-                    return jjStartNfaWithStates_0(5, 13, 1);
+                    return jjStartNfaWithStates_0(5, 13, 4);
                 break;
             case 117:
-                return jjMoveStringLiteralDfa6_0(active0, 0x2000000000000L);
+                return jjMoveStringLiteralDfa6_0(active0, 0x4000000000000L);
             default:
                 debugStream.println("   No string literal matches possible.");
                 break;
@@ -665,7 +624,7 @@ public class BSParserTokenManager implements BSParserConstants {
         debugStream.println("Current character : " + TokenMgrError.addEscapes(String.valueOf(curChar)) + " (" + (int) curChar + ") at line " + input_stream.getEndLine() + " column " + input_stream.getEndColumn());
         switch (curChar) {
             case 99:
-                return jjMoveStringLiteralDfa7_0(active0, 0x2000000000000L);
+                return jjMoveStringLiteralDfa7_0(active0, 0x4000000000000L);
             case 102:
                 if ((active0 & 0x8000L) != 0L)
                     return jjStopAtPos(6, 15);
@@ -705,12 +664,12 @@ public class BSParserTokenManager implements BSParserConstants {
                 return jjMoveStringLiteralDfa8_0(active0, 0x20000L);
             case 110:
                 if ((active0 & 0x800000L) != 0L)
-                    return jjStartNfaWithStates_0(7, 23, 1);
+                    return jjStartNfaWithStates_0(7, 23, 4);
                 break;
             case 116:
                 if ((active0 & 0x40000L) != 0L)
-                    return jjStartNfaWithStates_0(7, 18, 1);
-                return jjMoveStringLiteralDfa8_0(active0, 0x2000000000000L);
+                    return jjStartNfaWithStates_0(7, 18, 4);
+                return jjMoveStringLiteralDfa8_0(active0, 0x4000000000000L);
             default:
                 debugStream.println("   No string literal matches possible.");
                 break;
@@ -737,7 +696,7 @@ public class BSParserTokenManager implements BSParserConstants {
         debugStream.println("Current character : " + TokenMgrError.addEscapes(String.valueOf(curChar)) + " (" + (int) curChar + ") at line " + input_stream.getEndLine() + " column " + input_stream.getEndColumn());
         switch (curChar) {
             case 105:
-                return jjMoveStringLiteralDfa9_0(active0, 0x2000000000000L);
+                return jjMoveStringLiteralDfa9_0(active0, 0x4000000000000L);
             case 114:
                 return jjMoveStringLiteralDfa9_0(active0, 0x20000L);
             default:
@@ -766,10 +725,10 @@ public class BSParserTokenManager implements BSParserConstants {
         debugStream.println("Current character : " + TokenMgrError.addEscapes(String.valueOf(curChar)) + " (" + (int) curChar + ") at line " + input_stream.getEndLine() + " column " + input_stream.getEndColumn());
         switch (curChar) {
             case 111:
-                return jjMoveStringLiteralDfa10_0(active0, 0x2000000000000L);
+                return jjMoveStringLiteralDfa10_0(active0, 0x4000000000000L);
             case 121:
                 if ((active0 & 0x20000L) != 0L)
-                    return jjStartNfaWithStates_0(9, 17, 1);
+                    return jjStartNfaWithStates_0(9, 17, 4);
                 break;
             default:
                 debugStream.println("   No string literal matches possible.");
@@ -797,7 +756,7 @@ public class BSParserTokenManager implements BSParserConstants {
         debugStream.println("Current character : " + TokenMgrError.addEscapes(String.valueOf(curChar)) + " (" + (int) curChar + ") at line " + input_stream.getEndLine() + " column " + input_stream.getEndColumn());
         switch (curChar) {
             case 110:
-                return jjMoveStringLiteralDfa11_0(active0, 0x2000000000000L);
+                return jjMoveStringLiteralDfa11_0(active0, 0x4000000000000L);
             default:
                 debugStream.println("   No string literal matches possible.");
                 break;
@@ -824,8 +783,8 @@ public class BSParserTokenManager implements BSParserConstants {
         debugStream.println("Current character : " + TokenMgrError.addEscapes(String.valueOf(curChar)) + " (" + (int) curChar + ") at line " + input_stream.getEndLine() + " column " + input_stream.getEndColumn());
         switch (curChar) {
             case 115:
-                if ((active0 & 0x2000000000000L) != 0L)
-                    return jjStartNfaWithStates_0(11, 49, 1);
+                if ((active0 & 0x4000000000000L) != 0L)
+                    return jjStartNfaWithStates_0(11, 50, 4);
                 break;
             default:
                 debugStream.println("   No string literal matches possible.");
@@ -850,7 +809,7 @@ public class BSParserTokenManager implements BSParserConstants {
 
     private int jjMoveNfa_0(int startState, int curPos) {
         int startsAt = 0;
-        jjnewStateCnt = 6;
+        jjnewStateCnt = 5;
         int i = 1;
         jjstateSet[0] = startState;
         debugStream.println("   Starting NFA to match one of : " + jjKindsForStateVector(curLexState, jjstateSet, 0, 1));
@@ -865,60 +824,51 @@ public class BSParserTokenManager implements BSParserConstants {
                     switch (jjstateSet[--i]) {
                         case 0:
                             if ((0x3fe000000000000L & l) != 0L) {
-                                if (kind > 54)
-                                    kind = 54;
+                                if (kind > 55)
+                                    kind = 55;
                                 {
-                                    jjCheckNAddTwoStates(4, 5);
+                                    jjCheckNAdd(1);
                                 }
-                            } else if (curChar == 48) {
-                                if (kind > 54)
-                                    kind = 54;
                             } else if (curChar == 36) {
                                 if (kind > 56)
                                     kind = 56;
                                 {
-                                    jjCheckNAdd(1);
+                                    jjCheckNAdd(4);
                                 }
+                            } else if (curChar == 48) {
+                                if (kind > 55)
+                                    kind = 55;
                             }
                             break;
                         case 1:
-                            if ((0x3ff001000000000L & l) == 0L)
-                                break;
-                            if (kind > 56)
-                                kind = 56;
-                        {
-                            jjCheckNAdd(1);
-                        }
-                        break;
-                        case 2:
-                            if (curChar == 48 && kind > 54)
-                                kind = 54;
-                            break;
-                        case 3:
-                            if ((0x3fe000000000000L & l) == 0L)
-                                break;
-                            if (kind > 54)
-                                kind = 54;
-                        {
-                            jjCheckNAddTwoStates(4, 5);
-                        }
-                        break;
-                        case 4:
-                            if ((0x3ff000000000000L & l) == 0L)
-                                break;
-                            if (kind > 54)
-                                kind = 54;
-                        {
-                            jjCheckNAdd(4);
-                        }
-                        break;
-                        case 5:
                             if ((0x3ff000000000000L & l) == 0L)
                                 break;
                             if (kind > 55)
                                 kind = 55;
                         {
-                            jjCheckNAdd(5);
+                            jjCheckNAdd(1);
+                        }
+                        break;
+                        case 2:
+                            if (curChar == 48 && kind > 55)
+                                kind = 55;
+                            break;
+                        case 3:
+                            if (curChar != 36)
+                                break;
+                            if (kind > 56)
+                                kind = 56;
+                        {
+                            jjCheckNAdd(4);
+                        }
+                        break;
+                        case 4:
+                            if ((0x3ff001000000000L & l) == 0L)
+                                break;
+                            if (kind > 56)
+                                kind = 56;
+                        {
+                            jjCheckNAdd(4);
                         }
                         break;
                         default:
@@ -930,13 +880,13 @@ public class BSParserTokenManager implements BSParserConstants {
                 do {
                     switch (jjstateSet[--i]) {
                         case 0:
-                        case 1:
+                        case 4:
                             if ((0x7fffffe87fffffeL & l) == 0L)
                                 break;
                             if (kind > 56)
                                 kind = 56;
                         {
-                            jjCheckNAdd(1);
+                            jjCheckNAdd(4);
                         }
                         break;
                         default:
@@ -952,22 +902,15 @@ public class BSParserTokenManager implements BSParserConstants {
                 do {
                     switch (jjstateSet[--i]) {
                         case 0:
-                        case 1:
+                        case 4:
                             if (!jjCanMove_0(hiByte, i1, i2, l1, l2))
                                 break;
                             if (kind > 56)
                                 kind = 56;
                         {
-                            jjCheckNAdd(1);
+                            jjCheckNAdd(4);
                         }
                         break;
-                        case 4:
-                            if (!jjCanMove_1(hiByte, i1, i2, l1, l2))
-                                break;
-                            if (kind > 54)
-                                kind = 54;
-                            jjstateSet[jjnewStateCnt++] = 4;
-                            break;
                         default:
                             if (i1 == 0 || l1 == 0 || i2 == 0 || l2 == 0) break;
                             else break;
@@ -982,7 +925,7 @@ public class BSParserTokenManager implements BSParserConstants {
             ++curPos;
             if (jjmatchedKind != 0 && jjmatchedKind != 0x7fffffff)
                 debugStream.println("   Currently matched the first " + (jjmatchedPos + 1) + " characters as a " + tokenImage[jjmatchedKind] + " token.");
-            if ((i = jjnewStateCnt) == (startsAt = 6 - (jjnewStateCnt = startsAt)))
+            if ((i = jjnewStateCnt) == (startsAt = 5 - (jjnewStateCnt = startsAt)))
                 return curPos;
             debugStream.println("   Possible kinds of longer matches : " + jjKindsForStateVector(curLexState, jjstateSet, startsAt, i));
             try {
@@ -1159,7 +1102,7 @@ public class BSParserTokenManager implements BSParserConstants {
     private void ReInitRounds() {
         int i;
         jjround = 0x80000001;
-        for (i = 6; i-- > 0; )
+        for (i = 5; i-- > 0; )
             jjrounds[i] = 0x80000000;
     }
 

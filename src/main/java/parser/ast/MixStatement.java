@@ -11,14 +11,33 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> <MIX> PrimaryExpression() <WITH> PrimaryExpression()
- * | <FOR> IntegerLiteral()
+ * f0 -> <MIX>
+ * f1 -> PrimaryExpression()
+ * f2 -> <WITH>
+ * f3 -> PrimaryExpression()
+ * f4 -> ( <FOR> IntegerLiteral() )?
  */
 public class MixStatement implements Node {
-    public NodeChoice f0;
+    public NodeToken f0;
+    public PrimaryExpression f1;
+    public NodeToken f2;
+    public PrimaryExpression f3;
+    public NodeOptional f4;
 
-    public MixStatement(NodeChoice n0) {
+    public MixStatement(NodeToken n0, PrimaryExpression n1, NodeToken n2, PrimaryExpression n3, NodeOptional n4) {
         f0 = n0;
+        f1 = n1;
+        f2 = n2;
+        f3 = n3;
+        f4 = n4;
+    }
+
+    public MixStatement(PrimaryExpression n0, PrimaryExpression n1, NodeOptional n2) {
+        f0 = new NodeToken("mix");
+        f1 = n0;
+        f2 = new NodeToken("with");
+        f3 = n1;
+        f4 = n2;
     }
 
     public void accept(Visitor v) {

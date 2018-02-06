@@ -4,7 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import compilation.datastructures.CFGBuilder;
 import compilation.datastructures.basicblock.BasicBlock;
@@ -15,9 +17,11 @@ import config.Config;
 import config.ConfigFactory;
 import executable.Experiment;
 import manager.Benchtop;
+import parser.BioScriptParser;
 import parsing.BioScript.BenchtopParser;
 import phases.PhaseFacade;
 import shared.Facade;
+import shared.Phase;
 import translators.TranslatorFacade;
 
 /**
@@ -35,24 +39,28 @@ public class Compiler {
     private StaticSingleInformation SSI;
     private CFG controlFlow;
 
+    private Map<String, List<Phase>> phases = new HashMap<>();
+
     public Compiler(Config config) {
-        Benchtop.INSTANCE.getExperiments().clear();
-        Benchtop.INSTANCE.getInputs().clear();
-        Benchtop.INSTANCE.getOutputs().clear();
-        try {
-            for(String file : config.getFilesForCompilation()) {
-                BenchtopParser.parse(file);
-            }
+        for (String file : config.getFilesForCompilation()) {
+            this.phases.put(file, new ArrayList<>());
+            this.phases.get(file).add(new BioScriptParser(file));
+            //this.phases.get(file).add(new IRConverter());
+            //this.phases.get(file).add(new DataFlow());
         }
-        catch (Exception e) {
-            logger.fatal(e.getMessage());
-            logger.fatal("Exception: ", e);
-        }
-        this.benchtop = Benchtop.INSTANCE;
     }
 
     public void compile() {
-        try {
+
+        for (Map.Entry<String, List<Phase>> entry : this.phases.entrySet()) {
+            logger.info(entry.getKey());
+            for (Phase phase : entry.getValue()) {
+                logger.info("Running: " + phase.getName());
+                phase.run();
+            }
+        }
+
+        /*try {
             for (String experimentKey : this.benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
                     this.controlFlow = CFGBuilder.buildControlFlowGraph(experiment);
@@ -74,6 +82,7 @@ public class Compiler {
 
         //runPhases();
         //runTranslations();
+        */
     }
 
     public void runAllOps() {

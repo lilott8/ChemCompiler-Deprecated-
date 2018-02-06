@@ -11,7 +11,7 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> ( <MANIFEST> ( TypingList() )* Identifier() )+
+ * f0 -> ( <MANIFEST> ( Type() )? PrimaryExpression() )+
  */
 public class Manifest implements Node {
     public NodeList f0;

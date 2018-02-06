@@ -11,19 +11,25 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> MixStatement()
- * | SplitStatement()
- * | DrainStatement()
- * | HeatStatement()
- * | DetectStatement()
- * | RepeatStatement()
- * | AssignmentStatement()
+ * f0 -> ( ( TypingList() )* Identifier() )?
+ * f1 -> <ASSIGN>
+ * f2 -> Expression()
  */
-public class Instruction implements Node {
-    public NodeChoice f0;
+public class AssignmentInstruction implements Node {
+    public NodeOptional f0;
+    public NodeToken f1;
+    public Expression f2;
 
-    public Instruction(NodeChoice n0) {
+    public AssignmentInstruction(NodeOptional n0, NodeToken n1, Expression n2) {
         f0 = n0;
+        f1 = n1;
+        f2 = n2;
+    }
+
+    public AssignmentInstruction(NodeOptional n0, Expression n1) {
+        f0 = n0;
+        f1 = new NodeToken("=");
+        f2 = n1;
     }
 
     public void accept(Visitor v) {

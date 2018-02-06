@@ -14,7 +14,7 @@ options {
 
 
 PARSER_BEGIN(BSParser)
-  package bioscript.parser;
+  package parser;
   public class BSParser {}
 PARSER_END(BSParser)
 
@@ -57,6 +57,7 @@ TOKEN :
 |   <MAT: "mat">
 |   <MODULE: "module">
 |   <ARRAY: "array">
+|   <RETURN: "return">
 }
 
 
@@ -91,13 +92,6 @@ TOKEN : {
 
 
 /* IDENTIFIERS */
-TOKEN :
-{
-    //<IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>|"_")*>
-    <INT_SCALAR: "0" | (["1"-"9"](<DIGIT>)*)>
-    //|   <LETTER: ["a"-"z"] | ["A"-"Z"]>
-    //|   <DIGIT: ["0"-"9"]>
-}
 TOKEN : /* LITERALS */
 {
   <INTEGER_LITERAL: ( ["1"-"9"] (["0"-"9"])* | "0" ) >
@@ -153,20 +147,8 @@ void BSProgram() :
     Stationary()
     Manifest()
     <INSTRUCTIONS>
-    Instruction()
+    (Sequence())+
     <EOF>
-}
-
-void Stationary() :
-{}
-{
-    (<STATIONARY> (TypingList())* Identifier())*
-}
-
-void Manifest() :
-{}
-{
-    (<MANIFEST> (TypingList())* Identifier())+
 }
 
 void Module() :
@@ -175,41 +157,65 @@ void Module() :
     (<MODULE> Identifier())*
 }
 
+void Stationary() :
+{}
+{
+    (<STATIONARY> (Type())? PrimaryExpression())*
+}
+
+void Manifest() :
+{}
+{
+    (<MANIFEST> (Type())? PrimaryExpression())+
+}
+
+void Sequence() :
+{}
+{
+    Function()
+    |   Statement()
+}
+
 void Statement() :
 {}
 {
-    Instruction()
-    |   LOOKAHEAD(BranchStatement())
-            BranchStatement()
-    |   LOOKAHEAD(<REPEAT> IntegerLiteral())
-            WhileStatement()
+    LOOKAHEAD(AssignmentInstruction())
+    AssignmentInstruction()
+    |   BranchStatement()
+    |   RepeatStatement()
+    |   HeatStatement()
+    |   DrainStatement()
+    |   FunctionInvoke()
 }
 
-void Instruction() :
+void AssignmentInstruction() :
 {}
 {
-    LOOKAHEAD(<MIX> PrimaryExpression())
-    MixStatement()
-    |   SplitStatement()
-    |   DrainStatement()
-    |   HeatStatement()
-    |   DetectStatement()
-    |   RepeatStatement()
-    |   AssignmentStatement()
+    ((TypingList())* Identifier())? <ASSIGN> Expression()
 }
 
 void Function() :
 {}
 {
-    <FUNCTION> Identifier() <LPAREN> FormalParameterList() <RPAREN> (<COLON> (TypingList())*)? <LBRACE>
-        Statement()
-    <LBRACE>
+    <FUNCTION> Identifier() <LPAREN> (FormalParameterList())* <RPAREN> (<COLON> TypingList())? <LBRACE>
+        (Statement())*
+        (<RETURN> Expression())?
+    <RBRACE>
 }
 
 void TypingList() :
 {}
 {
     Type() ( TypingRest() )*
+}
+
+void Type() :
+{}
+{
+    LOOKAHEAD(3)
+    MatLiteral()
+    |   NatLiteral()
+    |   RealLiteral()
 }
 
 void TypingRest() :
@@ -227,7 +233,7 @@ void FormalParameterList() :
 void FormalParameter() :
 {}
 {
-    TypingList() Identifier()
+    (TypingList())* Identifier()
 }
 
 void FormalParameterRest() :
@@ -239,14 +245,13 @@ void FormalParameterRest() :
 void MixStatement() :
 {}
 {
-    <MIX> PrimaryExpression() <WITH> PrimaryExpression()
-    |   <FOR> IntegerLiteral()
+    <MIX> PrimaryExpression() <WITH> PrimaryExpression() (<FOR> IntegerLiteral())?
 }
 
 void SplitStatement() :
 {}
 {
-    <SPLIT> PrimaryExpression() <INTO> PrimaryExpression()
+    <SPLIT> PrimaryExpression() <INTO> IntegerLiteral()
 }
 
 void DrainStatement() :
@@ -259,36 +264,20 @@ void HeatStatement() :
 {}
 {
     <HEAT> PrimaryExpression() <AT> IntegerLiteral()
-    |   LOOKAHEAD(<FOR> <INTEGER_LITERAL>)
-            <FOR> IntegerLiteral()
+    (<FOR> IntegerLiteral())?
 }
 
 void DetectStatement() :
 {}
 {
-    <DETECT> Identifier() <ON> PrimaryExpression()
-    |   <FOR> <INTEGER_LITERAL>
+    <DETECT> PrimaryExpression() <ON> PrimaryExpression()
+    (<FOR> IntegerLiteral())?
 }
 
 void RepeatStatement() :
 {}
 {
-    WhileStatement()
-}
-
-
-void AssignmentStatement() :
-{}
-{
-  (TypingList())* Identifier() <ASSIGN> Expression()
-}
-
-void Type() :
-{}
-{
-    MatLiteral()
-    |   NatLiteral()
-    |   RealLiteral()
+    <REPEAT> IntegerLiteral() <TIMES> <LBRACE> Statement() <RBRACE>
 }
 
 void BranchStatement() :
@@ -299,16 +288,70 @@ void BranchStatement() :
     | <ELSE> <LBRACE> Statement() <RBRACE>
 }
 
-void WhileStatement() :
+void Expression() :
 {}
 {
-    <REPEAT> IntegerLiteral() <TIMES> <LBRACE> Statement() <RBRACE>
+
+    LOOKAHEAD( PrimaryExpression() <AND> )
+            AndExpression()
+    |   LOOKAHEAD( PrimaryExpression() <LESSTHAN> )
+            LessThanExpression()
+    |   LOOKAHEAD( PrimaryExpression() <LESSTHANEQUAL> )
+            LessThanEqualExpression()
+    |   LOOKAHEAD( PrimaryExpression() <GREATERTHAN> )
+            GreaterThanExpression()
+    |   LOOKAHEAD( PrimaryExpression() <GREATERTHANEQUAL> )
+            GreaterThanEqualExpression()
+    |   LOOKAHEAD( PrimaryExpression() <NOTEQUAL> )
+            NotEqualExpression()
+    |   LOOKAHEAD( PrimaryExpression() <EQUALITY> )
+            EqualityExpression()
+    |   LOOKAHEAD( PrimaryExpression() <OR> )
+            OrExpression()
+    |   LOOKAHEAD( PrimaryExpression() <ADD> )
+            PlusExpression()
+    |   LOOKAHEAD( PrimaryExpression() <MINUS> )
+            MinusExpression()
+    |   LOOKAHEAD( PrimaryExpression() <MULTIPLY> )
+            TimesExpression()
+    |   LOOKAHEAD( PrimaryExpression() <LPAREN>)
+            FunctionInvoke()
+    |   PrimaryExpression()
+    |   InstructionAssignment()
+
 }
 
+void FunctionInvoke() :
+{}
+{
+  Identifier()<LPAREN> ( ExpressionList() )? <RPAREN>
+}
+
+void ExpressionList() :
+{}
+{
+  Expression() ( ExpressionRest() )*
+}
+
+void ExpressionRest() :
+{}
+{
+  <COMMA> Expression()
+}
+
+void InstructionAssignment() :
+{}
+{
+    MixStatement()
+    |   DetectStatement()
+    |   SplitStatement()
+    |   FunctionInvoke()
+}
 
 void PrimaryExpression() :
 {}
 {
+    LOOKAHEAD(2)
     IntegerLiteral()
     |   TrueLiteral()
     |   FalseLiteral()
@@ -356,34 +399,6 @@ void Identifier() :
 {}
 {
   <IDENTIFIER>
-}
-
-void Expression() :
-{}
-{
-    LOOKAHEAD( PrimaryExpression() <AND> )
-    AndExpression()
-    |   LOOKAHEAD( PrimaryExpression() <LESSTHAN> )
-            LessThanExpression()
-    |   LOOKAHEAD( PrimaryExpression() <LESSTHANEQUAL> )
-            LessThanEqualExpression()
-    |   LOOKAHEAD( PrimaryExpression() <GREATERTHAN> )
-            GreaterThanExpression()
-    |   LOOKAHEAD( PrimaryExpression() <GREATERTHANEQUAL> )
-            GreaterThanEqualExpression()
-    |   LOOKAHEAD( PrimaryExpression() <NOTEQUAL> )
-            NotEqualExpression()
-    |   LOOKAHEAD( PrimaryExpression() <EQUALITY> )
-            EqualityExpression()
-    |   LOOKAHEAD( PrimaryExpression() <OR> )
-            OrExpression()
-    |   LOOKAHEAD( PrimaryExpression() <ADD> )
-            PlusExpression()
-    |   LOOKAHEAD( PrimaryExpression() <MINUS> )
-            MinusExpression()
-    |   LOOKAHEAD( PrimaryExpression() <MULTIPLY> )
-            TimesExpression()
-    |   PrimaryExpression()
 }
 
 void AndExpression() :

@@ -11,14 +11,14 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> TypingList()
+ * f0 -> ( TypingList() )*
  * f1 -> Identifier()
  */
 public class FormalParameter implements Node {
-    public TypingList f0;
+    public NodeListOptional f0;
     public Identifier f1;
 
-    public FormalParameter(TypingList n0, Identifier n1) {
+    public FormalParameter(NodeListOptional n0, Identifier n1) {
         f0 = n0;
         f1 = n1;
     }

@@ -22,7 +22,9 @@ import parser.visitor.Visitor;
  * | PlusExpression()
  * | MinusExpression()
  * | TimesExpression()
+ * | FunctionInvoke()
  * | PrimaryExpression()
+ * | InstructionAssignment()
  */
 public class Expression implements Node {
     public NodeChoice f0;

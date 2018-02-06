@@ -14,25 +14,27 @@ import parser.visitor.Visitor;
  * f0 -> <FUNCTION>
  * f1 -> Identifier()
  * f2 -> <LPAREN>
- * f3 -> FormalParameterList()
+ * f3 -> ( FormalParameterList() )*
  * f4 -> <RPAREN>
- * f5 -> ( <COLON> ( TypingList() )* )?
+ * f5 -> ( <COLON> TypingList() )?
  * f6 -> <LBRACE>
- * f7 -> Statement()
- * f8 -> <LBRACE>
+ * f7 -> ( Statement() )*
+ * f8 -> ( <RETURN> Expression() )?
+ * f9 -> <RBRACE>
  */
 public class Function implements Node {
     public NodeToken f0;
     public Identifier f1;
     public NodeToken f2;
-    public FormalParameterList f3;
+    public NodeListOptional f3;
     public NodeToken f4;
     public NodeOptional f5;
     public NodeToken f6;
-    public Statement f7;
-    public NodeToken f8;
+    public NodeListOptional f7;
+    public NodeOptional f8;
+    public NodeToken f9;
 
-    public Function(NodeToken n0, Identifier n1, NodeToken n2, FormalParameterList n3, NodeToken n4, NodeOptional n5, NodeToken n6, Statement n7, NodeToken n8) {
+    public Function(NodeToken n0, Identifier n1, NodeToken n2, NodeListOptional n3, NodeToken n4, NodeOptional n5, NodeToken n6, NodeListOptional n7, NodeOptional n8, NodeToken n9) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
@@ -42,9 +44,10 @@ public class Function implements Node {
         f6 = n6;
         f7 = n7;
         f8 = n8;
+        f9 = n9;
     }
 
-    public Function(Identifier n0, FormalParameterList n1, NodeOptional n2, Statement n3) {
+    public Function(Identifier n0, NodeListOptional n1, NodeOptional n2, NodeListOptional n3, NodeOptional n4) {
         f0 = new NodeToken("function");
         f1 = n0;
         f2 = new NodeToken("(");
@@ -53,7 +56,8 @@ public class Function implements Node {
         f5 = n2;
         f6 = new NodeToken("{");
         f7 = n3;
-        f8 = new NodeToken("{");
+        f8 = n4;
+        f9 = new NodeToken("}");
     }
 
     public void accept(Visitor v) {

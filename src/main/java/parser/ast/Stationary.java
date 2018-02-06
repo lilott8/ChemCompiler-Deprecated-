@@ -11,7 +11,7 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> ( <STATIONARY> ( TypingList() )* Identifier() )*
+ * f0 -> ( <STATIONARY> ( Type() )? PrimaryExpression() )*
  */
 public class Stationary implements Node {
     public NodeListOptional f0;

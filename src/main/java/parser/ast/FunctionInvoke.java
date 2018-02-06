@@ -11,29 +11,29 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> <SPLIT>
- * f1 -> PrimaryExpression()
- * f2 -> <INTO>
- * f3 -> IntegerLiteral()
+ * f0 -> Identifier()
+ * f1 -> <LPAREN>
+ * f2 -> ( ExpressionList() )?
+ * f3 -> <RPAREN>
  */
-public class SplitStatement implements Node {
-    public NodeToken f0;
-    public PrimaryExpression f1;
-    public NodeToken f2;
-    public IntegerLiteral f3;
+public class FunctionInvoke implements Node {
+    public Identifier f0;
+    public NodeToken f1;
+    public NodeOptional f2;
+    public NodeToken f3;
 
-    public SplitStatement(NodeToken n0, PrimaryExpression n1, NodeToken n2, IntegerLiteral n3) {
+    public FunctionInvoke(Identifier n0, NodeToken n1, NodeOptional n2, NodeToken n3) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
         f3 = n3;
     }
 
-    public SplitStatement(PrimaryExpression n0, IntegerLiteral n1) {
-        f0 = new NodeToken("split");
-        f1 = n0;
-        f2 = new NodeToken("into");
-        f3 = n1;
+    public FunctionInvoke(Identifier n0, NodeOptional n1) {
+        f0 = n0;
+        f1 = new NodeToken("(");
+        f2 = n1;
+        f3 = new NodeToken(")");
     }
 
     public void accept(Visitor v) {
