@@ -1,0 +1,480 @@
+/*
+The grammar file definition:
+    https://javacc.org/javaccgrm
+*/
+
+options {
+    STATIC = false;
+    DEBUG_PARSER = true;
+    DEBUG_LOOKAHEAD = true;
+    DEBUG_TOKEN_MANAGER = true;
+    ERROR_REPORTING = true;
+    JAVA_UNICODE_ESCAPE = true;
+}
+
+
+PARSER_BEGIN(BSParser)
+  package parser;
+  public class BSParser {}
+PARSER_END(BSParser)
+
+
+/* WHITE SPACE */
+
+SKIP:
+{
+    " "
+|   "\t"
+|   "\n"
+|   "\r"
+|   "\f"
+}
+
+/* KEYWORDS */
+
+TOKEN :
+{
+    <MIX: "mix">
+|   <SPLIT: "split">
+|   <DRAIN: "drain">
+|   <HEAT: "heat">
+|   <FOR: "for">
+|   <AT: "at">
+|   <DETECT: "detect">
+|   <REPEAT: "repeat">
+|   <IF: "if">
+|   <ELSE_IF: "else if" >
+|   <ELSE: "else">
+|   <STATIONARY: "stationary">
+|   <MANIFEST: "manifest">
+|   <TIMES: "times" >
+|   <WITH: "with">
+|   <ON: "on">
+|   <INTO: "into">
+|   <FUNCTION: "function">
+|   <REAL: "real">
+|   <NAT: "nat">
+|   <MAT: "mat">
+|   <MODULE: "module">
+|   <ARRAY: "array">
+|   <RETURN: "return">
+}
+
+
+/* ARRAYS, AND OPERATORS */
+TOKEN : {
+    <LPAREN: "(">
+|   <RPAREN: ")">
+|   <LBRACKET: "[">
+|   <RBRACKET: "]">
+|   <LBRACE: "{">
+|   <RBRACE: "}">
+|   <DOT: ".">
+|   <ADD: "+">
+|   <AND: "&&">
+|   <ASSIGN: "=">
+|   <BANG: "!">
+|   <NOTEQUAL: "!=">
+|   <LESSTHAN: "<">
+|   <LESSTHANEQUAL: "<=">
+|   <GREATERTHAN: ">">
+|   <GREATERTHANEQUAL: ">=">
+|   <EQUALITY: "==">
+|   <MINUS: "-">
+|   <MULTIPLY: "*">
+|   <OR: "||">
+|   <INSTRUCTIONS: "instructions">
+|   <TRUE: "true">
+|   <FALSE: "false">
+|   <COMMA: ",">
+|   <COLON: ":">
+}
+
+
+/* IDENTIFIERS */
+TOKEN : /* LITERALS */
+{
+  <INTEGER_LITERAL: ( ["1"-"9"] (["0"-"9"])* | "0" ) >
+}
+
+TOKEN : /* IDENTIFIERS */
+{
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)* >
+|
+  < #LETTER:
+      [
+       "\u0024",
+       "\u0041"-"\u005a",
+       "\u005f",
+       "\u0061"-"\u007a",
+       "\u00c0"-"\u00d6",
+       "\u00d8"-"\u00f6",
+       "\u00f8"-"\u00ff",
+       "\u0100"-"\u1fff",
+       "\u3040"-"\u318f",
+       "\u3300"-"\u337f",
+       "\u3400"-"\u3d2d",
+       "\u4e00"-"\u9fff",
+       "\uf900"-"\ufaff"
+      ]
+  >
+|
+  < #DIGIT:
+      [
+       "\u0030"-"\u0039",
+       "\u0660"-"\u0669",
+       "\u06f0"-"\u06f9",
+       "\u0966"-"\u096f",
+       "\u09e6"-"\u09ef",
+       "\u0a66"-"\u0a6f",
+       "\u0ae6"-"\u0aef",
+       "\u0b66"-"\u0b6f",
+       "\u0be7"-"\u0bef",
+       "\u0c66"-"\u0c6f",
+       "\u0ce6"-"\u0cef",
+       "\u0d66"-"\u0d6f",
+       "\u0e50"-"\u0e59",
+       "\u0ed0"-"\u0ed9",
+       "\u1040"-"\u1049"
+      ]
+  >
+}
+
+void BSProgram() :
+{}
+{
+    Module()
+    Stationary()
+    Manifest()
+    <INSTRUCTIONS>
+    (Sequence())+
+    <EOF>
+}
+
+void Module() :
+{}
+{
+    (<MODULE> Identifier())*
+}
+
+void Stationary() :
+{}
+{
+    (<STATIONARY> (Type())? PrimaryExpression())*
+}
+
+void Manifest() :
+{}
+{
+    (<MANIFEST> (Type())? PrimaryExpression())+
+}
+
+void Sequence() :
+{}
+{
+    Function()
+    |   Statement()
+}
+
+void Statement() :
+{}
+{
+    LOOKAHEAD(AssignmentInstruction())
+    AssignmentInstruction()
+    |   BranchStatement()
+    |   RepeatStatement()
+    |   HeatStatement()
+    |   DrainStatement()
+    |   FunctionInvoke()
+}
+
+void AssignmentInstruction() :
+{}
+{
+    ((TypingList())* Identifier())? <ASSIGN> Expression()
+}
+
+void Function() :
+{}
+{
+    <FUNCTION> Identifier() <LPAREN> (FormalParameterList())* <RPAREN> (<COLON> TypingList())? <LBRACE>
+        (Statement())*
+        (<RETURN> Expression())?
+    <RBRACE>
+}
+
+void TypingList() :
+{}
+{
+    Type() ( TypingRest() )*
+}
+
+void Type() :
+{}
+{
+    LOOKAHEAD(3)
+    MatLiteral()
+    |   NatLiteral()
+    |   RealLiteral()
+}
+
+void TypingRest() :
+{}
+{
+    <COMMA> Type()
+}
+
+void FormalParameterList() :
+{}
+{
+    FormalParameter() ( FormalParameterRest() )*
+}
+
+void FormalParameter() :
+{}
+{
+    (TypingList())* Identifier()
+}
+
+void FormalParameterRest() :
+{}
+{
+    <COMMA> FormalParameter()
+}
+
+void MixStatement() :
+{}
+{
+    <MIX> PrimaryExpression() <WITH> PrimaryExpression() (<FOR> IntegerLiteral())?
+}
+
+void SplitStatement() :
+{}
+{
+    <SPLIT> PrimaryExpression() <INTO> IntegerLiteral()
+}
+
+void DrainStatement() :
+{}
+{
+    <DRAIN> PrimaryExpression()
+}
+
+void HeatStatement() :
+{}
+{
+    <HEAT> PrimaryExpression() <AT> IntegerLiteral()
+    (<FOR> IntegerLiteral())?
+}
+
+void DetectStatement() :
+{}
+{
+    <DETECT> PrimaryExpression() <ON> PrimaryExpression()
+    (<FOR> IntegerLiteral())?
+}
+
+void RepeatStatement() :
+{}
+{
+    <REPEAT> IntegerLiteral() <TIMES> <LBRACE> Statement() <RBRACE>
+}
+
+void BranchStatement() :
+{}
+{
+    <IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
+    | <ELSE_IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
+    | <ELSE> <LBRACE> Statement() <RBRACE>
+}
+
+void Expression() :
+{}
+{
+
+    LOOKAHEAD( PrimaryExpression() <AND> )
+            AndExpression()
+    |   LOOKAHEAD( PrimaryExpression() <LESSTHAN> )
+            LessThanExpression()
+    |   LOOKAHEAD( PrimaryExpression() <LESSTHANEQUAL> )
+            LessThanEqualExpression()
+    |   LOOKAHEAD( PrimaryExpression() <GREATERTHAN> )
+            GreaterThanExpression()
+    |   LOOKAHEAD( PrimaryExpression() <GREATERTHANEQUAL> )
+            GreaterThanEqualExpression()
+    |   LOOKAHEAD( PrimaryExpression() <NOTEQUAL> )
+            NotEqualExpression()
+    |   LOOKAHEAD( PrimaryExpression() <EQUALITY> )
+            EqualityExpression()
+    |   LOOKAHEAD( PrimaryExpression() <OR> )
+            OrExpression()
+    |   LOOKAHEAD( PrimaryExpression() <ADD> )
+            PlusExpression()
+    |   LOOKAHEAD( PrimaryExpression() <MINUS> )
+            MinusExpression()
+    |   LOOKAHEAD( PrimaryExpression() <MULTIPLY> )
+            TimesExpression()
+    |   LOOKAHEAD( PrimaryExpression() <LPAREN>)
+            FunctionInvoke()
+    |   PrimaryExpression()
+    |   InstructionAssignment()
+
+}
+
+void FunctionInvoke() :
+{}
+{
+  Identifier()<LPAREN> ( ExpressionList() )? <RPAREN>
+}
+
+void ExpressionList() :
+{}
+{
+  Expression() ( ExpressionRest() )*
+}
+
+void ExpressionRest() :
+{}
+{
+  <COMMA> Expression()
+}
+
+void InstructionAssignment() :
+{}
+{
+    MixStatement()
+    |   DetectStatement()
+    |   SplitStatement()
+    |   FunctionInvoke()
+}
+
+void PrimaryExpression() :
+{}
+{
+    LOOKAHEAD(2)
+    IntegerLiteral()
+    |   TrueLiteral()
+    |   FalseLiteral()
+    |   Identifier()
+    |   ParenthesisExpression()
+}
+
+void IntegerLiteral() :
+{}
+{
+  <INTEGER_LITERAL>
+}
+
+void NatLiteral() :
+{}
+{
+    <NAT>
+}
+
+void MatLiteral() :
+{}
+{
+    <MAT>
+}
+
+void RealLiteral() :
+{}
+{
+    <REAL>
+}
+
+void TrueLiteral() :
+{}
+{
+  <TRUE>
+}
+
+void FalseLiteral() :
+{}
+{
+  <FALSE>
+}
+
+void Identifier() :
+{}
+{
+  <IDENTIFIER>
+}
+
+void AndExpression() :
+{}
+{
+  PrimaryExpression() <AND> PrimaryExpression()
+}
+
+void LessThanExpression() :
+{}
+{
+  PrimaryExpression() <LESSTHAN> PrimaryExpression()
+}
+
+void LessThanEqualExpression() :
+{}
+{
+  PrimaryExpression() <LESSTHANEQUAL> PrimaryExpression()
+}
+
+void GreaterThanExpression() :
+{}
+{
+  PrimaryExpression() <GREATERTHAN> PrimaryExpression()
+}
+
+void GreaterThanEqualExpression() :
+{}
+{
+  PrimaryExpression() <GREATERTHANEQUAL> PrimaryExpression()
+}
+
+void NotEqualExpression() :
+{}
+{
+  PrimaryExpression() <NOTEQUAL> PrimaryExpression()
+}
+
+void EqualityExpression() :
+{}
+{
+  PrimaryExpression() <OR> PrimaryExpression()
+}
+
+void OrExpression() :
+{}
+{
+  PrimaryExpression() <LESSTHAN> PrimaryExpression()
+}
+
+void PlusExpression() :
+{}
+{
+  PrimaryExpression() <ADD> PrimaryExpression()
+}
+
+void MinusExpression() :
+{}
+{
+  PrimaryExpression() <MINUS> PrimaryExpression()
+}
+
+void TimesExpression() :
+{}
+{
+  PrimaryExpression() <MULTIPLY> PrimaryExpression()
+}
+
+void NotExpression() :
+{}
+{
+  <BANG> Expression()
+}
+
+void ParenthesisExpression() :
+{}
+{
+  <LPAREN> Expression() <RPAREN>
+}

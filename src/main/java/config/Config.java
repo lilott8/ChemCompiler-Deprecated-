@@ -125,7 +125,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     /**
      * Where is the location of the reactive matrix.
      */
-    private String reactiveMatrix = "src/main/resources/reactive_matrix.txt";
+    private String reactiveMatrix = "src/main/resources/abstract-interpretation.txt";
     /**
      * Use 3rd party chemistry software to simulate mixes.
      */

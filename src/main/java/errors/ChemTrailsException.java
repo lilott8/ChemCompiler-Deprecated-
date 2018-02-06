@@ -6,10 +6,10 @@ package errors;
 public class ChemTrailsException extends RuntimeException {
 
     public ChemTrailsException(String message) {
-
+        super(message);
     }
 
     public ChemTrailsException(String message, Exception e) {
-
+        super(message, e);
     }
 }

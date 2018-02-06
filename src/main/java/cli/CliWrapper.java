@@ -73,7 +73,7 @@ public class CliWrapper {
 
         // add any initializing statements derived from the command line here.
         if (config.getFilesForCompilation().size() == 0) {
-            throw new ConfigurationException("We have no valid files for input");
+            throw new ConfigurationException("We have no valid file(s) for input");
         }
 
         if (config.checkForChemAxon()) {

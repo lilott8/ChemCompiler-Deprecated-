@@ -28,11 +28,11 @@ public class Main {
         }
 
         // Run compilation.
-        //Compiler compiler = new Compiler(config);
-        //compiler.compile();
+        Compiler compiler = new Compiler(config);
+        compiler.compile();
         //compiler.runAllOps();
         //logger.debug(compiler.getControlFlow());
-        runner();
+        // runner();
     }
 
     public static void runner() throws Exception {

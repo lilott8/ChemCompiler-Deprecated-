@@ -67,4 +67,9 @@ public class TestConfig implements PhaseConfig {
     public boolean monitorResources() {
         return false;
     }
+
+    @Override
+    public boolean checkForChemAxon() {
+        return true;
+    }
 }
