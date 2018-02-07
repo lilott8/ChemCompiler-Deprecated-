@@ -8,7 +8,7 @@ instructions
 function doThis(mat chem) : mat {
     a = mix chemical1 with chemical2
     b = mix a with chemical2 for 30
-    b = detect something on somethingelse
+    c = detect something on somethingelse
 }
 
 function doThis2(mat chem, mat chem3, chem4) {
@@ -18,9 +18,9 @@ function doThis2(mat chem, mat chem3, chem4) {
 
 doThis(a)
 
-a = doThis(a)
+aa = doThis(a)
 
-a = mix chemical1 with chemical2
+aaa = mix chemical1 with chemical2
 
 if (1 < 2) {
     a= mix b with c
