@@ -3,35 +3,35 @@ package parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import sun.awt.Symbol;
-
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import parser.ast.AssignmentInstruction;
-import parser.ast.BSProgram;
 import parser.ast.BranchStatement;
+import parser.ast.DetectStatement;
+import parser.ast.DrainStatement;
 import parser.ast.FalseLiteral;
 import parser.ast.Function;
+import parser.ast.HeatStatement;
 import parser.ast.Identifier;
-import parser.ast.IntegerLiteral;
 import parser.ast.Manifest;
 import parser.ast.MatLiteral;
+import parser.ast.MixStatement;
 import parser.ast.NatLiteral;
 import parser.ast.RealLiteral;
 import parser.ast.RepeatStatement;
-import parser.ast.Sequence;
-import parser.ast.Statement;
+import parser.ast.SplitStatement;
 import parser.ast.Stationary;
 import parser.ast.TrueLiteral;
-import parser.ast.Type;
 import parser.visitor.GJNoArguDepthFirst;
-import phases.inference.rules.Var;
 import shared.Step;
+import symboltable.Branch;
+import symboltable.Loop;
 import symboltable.Method;
-import symboltable.Scope;
+import symboltable.Symbol;
+import symboltable.SymbolTable;
 import symboltable.Variable;
 import typesystem.epa.ChemTypes;
 
@@ -40,24 +40,26 @@ import typesystem.epa.ChemTypes;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements Step, SymbolTable {
+public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
 
     public static final Logger logger = LogManager.getLogger(BSSymbolTable.class);
 
-    private Map<Scope, Map<String, Variable>> symbolTable = new HashMap<>();
+    private SymbolTable symbolTable = new SymbolTable();
 
     private int scopeId = 0;
+    private int integerId = 0;
 
-    private Scope scope = new Scope();
-    private Variable variable;
-    private boolean inAssignment = false;
-    private boolean inFunction = false;
-    private Method method;
+    //private String scope = DEFAULT_SCOPE;
+    // private Variable variable;
     private String name;
-    private Set<ChemTypes> type = new HashSet<>();
+    private Set<ChemTypes> types = new HashSet<>();
+    private List<Symbol> arguments = new ArrayList<>();
+    private static final String REPEAT = "REPEAT";
+    private static final String BRANCH = "BRANCH";
+    private static final String INTEGER = "INTEGER";
+
 
     public BSSymbolTable() {
-
     }
 
     @Override
@@ -71,52 +73,60 @@ public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements St
     }
 
     /**
-     * f0 -> Function()
-     * | Statement()
+     * f0 -> <STATIONARY>
+     * f1 -> ( TypingList() )?
+     * f2 -> PrimaryExpression()
      */
     @Override
-    public SymbolTable visit(Sequence n) {
-        // Create the default scoping
-        this.scope = new Scope();
-        return super.visit(n);
-    }
-
-    /**
-     * f0 -> ( ( TypingList() )* Identifier() )?
-     * f1 -> <ASSIGN>
-     * f2 -> Expression()
-     */
-    @Override
-    public SymbolTable visit(AssignmentInstruction n) {
-        super.visit(n.f0);
-        // Enumerate the types, if any.
+    public Step visit(Stationary n) {
+        // super.visit(n);
+        // Get the types.
         n.f1.accept(this);
+        // Get the identifier.
+        n.f2.accept(this);
+        // Anything in this section is always default scope.
+        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.types.clear();
+        return null;
+    }
 
-        this.variable = new Variable(this.name, this.scope, this.type);
-        this.addToScope(this.variable);
+    /**
+     * f0 -> <MANIFEST>
+     * f1 -> ( TypingList() )?
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public Step visit(Manifest n) {
+        // super.visit(n);
+        // Get the types.
+        n.f1.accept(this);
+        // Get the identifier.
+        n.f2.accept(this);
+        // build the variable now
+        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.types.clear();
+        return null;
+    }
 
+    /**
+     * f0 -> ( TypingList() )*
+     * f1 -> Identifier()
+     * f2 -> <ASSIGN>
+     * f3 -> Expression()
+     */
+    @Override
+    public Step visit(AssignmentInstruction n) {
+        // super.visit(n.f0);
+        // Enumerate the types, if any.
+        n.f0.accept(this);
+        // Set the identifier.
+        n.f1.accept(this);
+        // Add the variable to our scope.
+        this.symbolTable.addLocal(new Variable(this.name, this.types));
         // Clear the set, we are done with it.
-        this.type.clear();
-        return null;
-    }
-
-    /**
-     * f0 -> ( <STATIONARY> ( Type() )? PrimaryExpression() )*
-     */
-    @Override
-    public SymbolTable visit(Stationary n) {
-        super.visit(n);
-        n.f0.accept(this);
-        return null;
-    }
-
-    /**
-     * f0 -> ( <MANIFEST> ( Type() )? PrimaryExpression() )+
-     */
-    @Override
-    public SymbolTable visit(Manifest n) {
-        super.visit(n);
-        n.f0.accept(this);
+        this.types.clear();
+        // Go get the rest of the expression(s).
+        n.f3.accept(this);
         return null;
     }
 
@@ -133,14 +143,26 @@ public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements St
      * f9 -> <RBRACE>
      */
     @Override
-    public SymbolTable visit(Function n) {
-        super.visit(n);
+    public Step visit(Function n) {
+        // super.visit(n);
         // Get the name of the method.
         n.f1.accept(this);
-        // Get the type of this method.
+        // Start a new scope.
+        this.symbolTable.newScope(this.name);
+        // Get the parameters of this method
+        n.f3.accept(this);
+        this.symbolTable.addLocals(this.arguments);
+        // Get the types of this method.
         n.f5.accept(this);
-        // TODO: Get the parameters of this method
-        this.scope = new Scope(this.name);
+        Method symbol = new Method(this.name, this.types);
+        // Get the list of statements.
+        n.f7.accept(this);
+        //symbol.addParameters(this.arguments);
+        this.symbolTable.addLocal(symbol);
+        // Get the return statement (Currently ignored).
+        n.f8.accept(this);
+        // Return back to previous scoping.
+        this.symbolTable.endScope();
         return null;
     }
 
@@ -153,9 +175,17 @@ public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements St
      * f5 -> <RBRACE>
      */
     @Override
-    public SymbolTable visit(RepeatStatement n) {
-        this.scope = new Scope("scope_repeat_" + scopeId++);
-        return super.visit(n);
+    public Step visit(RepeatStatement n) {
+        // super.visit(n);
+        // Start a new scope.
+        String name = String.format("%s_%d", REPEAT, scopeId++);
+        this.symbolTable.newScope(name);
+        Loop symbol = new Loop(name, new HashSet<>());
+        this.symbolTable.addLocal(symbol);
+        n.f4.accept(this);
+        // Return back to old scoping.
+        this.symbolTable.endScope();
+        return null;
     }
 
     /**
@@ -164,20 +194,111 @@ public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements St
      * | <ELSE> <LBRACE> Statement() <RBRACE>
      */
     @Override
-    public SymbolTable visit(BranchStatement n) {
-        super.visit(n);
-        // This is naive right now.
-        this.scope = new Scope("scope_branch_" + scopeId++);
+    public Step visit(BranchStatement n) {
+        // Start a new scope.
+        String name = String.format("%s_%d", BRANCH, scopeId++);
+        this.symbolTable.newScope(name);
+        Branch symbol = new Branch(name, new HashSet<>());
+        this.symbolTable.addLocal(symbol);
+        n.f0.accept(this);
+        // Return back to old scoping.
+        this.symbolTable.endScope();
         return null;
     }
 
     /**
-     * f0 -> <INTEGER_LITERAL>
+     * f0 -> <MIX>
+     * f1 -> PrimaryExpression()
+     * f2 -> <WITH>
+     * f3 -> PrimaryExpression()
+     * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public SymbolTable visit(IntegerLiteral n) {
-        super.visit(n);
-        this.type.add(ChemTypes.NAT);
+    public Step visit(MixStatement n) {
+        n.f1.accept(this);
+        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.types.clear();
+        n.f3.accept(this);
+        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.types.clear();
+        if (n.f4.present()) {
+            n.f4.accept(this);
+            this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+            this.types.clear();
+        }
+        return null;
+    }
+
+    /**
+     * f0 -> <SPLIT>
+     * f1 -> PrimaryExpression()
+     * f2 -> <INTO>
+     * f3 -> IntegerLiteral()
+     */
+    @Override
+    public Step visit(SplitStatement n) {
+        return super.visit(n);
+    }
+
+    /**
+     * f0 -> <DRAIN>
+     * f1 -> PrimaryExpression()
+     */
+    @Override
+    public Step visit(DrainStatement n) {
+        //super.visit(n);
+        n.f1.accept(this);
+        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.types.clear();
+        return null;
+    }
+
+    /**
+     * f0 -> <HEAT>
+     * f1 -> PrimaryExpression()
+     * f2 -> <AT>
+     * f3 -> IntegerLiteral()
+     * f4 -> ( <FOR> IntegerLiteral() )?
+     */
+    @Override
+    public Step visit(HeatStatement n) {
+        // super.visit(n);
+
+        n.f1.accept(this);
+        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.types.clear();
+        n.f3.accept(this);
+        this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+        this.types.clear();
+        if (n.f4.present()) {
+            n.f4.accept(this);
+            this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+            this.types.clear();
+        }
+        return null;
+    }
+
+    /**
+     * f0 -> <DETECT>
+     * f1 -> PrimaryExpression()
+     * f2 -> <ON>
+     * f3 -> PrimaryExpression()
+     * f4 -> ( <FOR> IntegerLiteral() )?
+     */
+    @Override
+    public Step visit(DetectStatement n) {
+        // super.visit(n);
+        n.f1.accept(this);
+        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.types.clear();
+        n.f3.accept(this);
+        this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+        this.types.clear();
+        if (n.f4.present()) {
+            n.f4.accept(this);
+            this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+            this.types.clear();
+        }
         return null;
     }
 
@@ -185,9 +306,9 @@ public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements St
      * f0 -> <NAT>
      */
     @Override
-    public SymbolTable visit(NatLiteral n) {
-        super.visit(n);
-        this.type.add(ChemTypes.NAT);
+    public Step visit(NatLiteral n) {
+        // super.visit(n);
+        this.types.add(ChemTypes.NAT);
         return null;
     }
 
@@ -195,9 +316,9 @@ public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements St
      * f0 -> <MAT>
      */
     @Override
-    public SymbolTable visit(MatLiteral n) {
-        super.visit(n);
-        this.type.add(ChemTypes.MAT);
+    public Step visit(MatLiteral n) {
+        // super.visit(n);
+        this.types.add(ChemTypes.MAT);
         return null;
     }
 
@@ -205,9 +326,9 @@ public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements St
      * f0 -> <REAL>
      */
     @Override
-    public SymbolTable visit(RealLiteral n) {
-        super.visit(n);
-        this.type.add(ChemTypes.REAL);
+    public Step visit(RealLiteral n) {
+        // super.visit(n);
+        this.types.add(ChemTypes.REAL);
         return null;
     }
 
@@ -215,9 +336,9 @@ public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements St
      * f0 -> <TRUE>
      */
     @Override
-    public SymbolTable visit(TrueLiteral n) {
-        super.visit(n);
-        this.type.add(ChemTypes.BOOL);
+    public Step visit(TrueLiteral n) {
+        // super.visit(n);
+        this.types.add(ChemTypes.BOOL);
         return null;
     }
 
@@ -225,9 +346,9 @@ public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements St
      * f0 -> <FALSE>
      */
     @Override
-    public SymbolTable visit(FalseLiteral n) {
+    public Step visit(FalseLiteral n) {
         //super.visit(n);
-        this.type.add(ChemTypes.BOOL);
+        this.types.add(ChemTypes.BOOL);
         return null;
     }
 
@@ -235,35 +356,16 @@ public class BSSymbolTable extends GJNoArguDepthFirst<SymbolTable> implements St
      * f0 -> <IDENTIFIER>
      */
     @Override
-    public SymbolTable visit(Identifier n) {
+    public Step visit(Identifier n) {
         this.name = n.f0.toString();
         return null;
     }
 
-    private void addToScope(Variable v) {
-        if (!this.symbolTable.containsKey(this.scope)) {
-            this.symbolTable.put(this.scope, new HashMap<>());
-        }
-
-        this.symbolTable.get(this.scope).put(v.getName(), v);
-    }
-
-
-    public Map<Scope, Map<String, Variable>> getSymbolTable() {
+    public SymbolTable getSymbolTable() {
         return this.symbolTable;
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        for (Map.Entry<Scope, Map<String, Variable>> entry : this.symbolTable.entrySet()) {
-            sb.append("Scope: ").append(entry.getKey()).append(System.lineSeparator());
-            for (Map.Entry<String, Variable> vars : entry.getValue().entrySet()) {
-                sb.append("\t").append(vars.getValue()).append(System.lineSeparator());
-            }
-            sb.append("==============").append(System.lineSeparator());
-        }
-
-        return sb.toString();
+        return this.symbolTable.toString();
     }
 }

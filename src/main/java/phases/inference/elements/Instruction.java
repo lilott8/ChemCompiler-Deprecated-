@@ -55,7 +55,7 @@ public class Instruction {
         StringBuilder sb = new StringBuilder();
 
         sb.append("===================").append(System.lineSeparator());
-        sb.append("getId: ").append(this.id).append("\tType: ").append(this.type).append(System.lineSeparator());
+        sb.append("getId: ").append(this.id).append("\tVisibility: ").append(this.type).append(System.lineSeparator());
         sb.append("Inputs: ").append(this.input).append(System.lineSeparator());
         sb.append("Outputs: ").append(this.output).append(System.lineSeparator());
         sb.append("===================").append(System.lineSeparator());

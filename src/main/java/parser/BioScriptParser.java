@@ -51,7 +51,7 @@ public class BioScriptParser implements Phase {
                 if (!this.config.ignoreWarnings()) {
                     program.accept(this.typeChecker);
                 } else {
-                    logger.warn("Type checking is set to ignore warnings.");
+                    logger.warn("Visibility checking is set to ignore warnings.");
                 }
             } catch (ParseException e) {
                 logger.error(e);

@@ -85,6 +85,7 @@ public enum ChemTypes {
     MAT(130),
     CONST(131),
     BOOL(132),
+    NULL(-1),
     FALSE(-1);
 
     private static Map<Integer, ChemTypes> integerChemTypesMap = new HashMap<>();

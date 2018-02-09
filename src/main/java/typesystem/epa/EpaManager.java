@@ -481,7 +481,7 @@ public enum EpaManager {
 
 
     /**
-     * Type of classifiers available to the system. SMARTS is the most accurate and complete, but
+     * Visibility of classifiers available to the system. SMARTS is the most accurate and complete, but
      * other options exists. SMARTS is the preferred method.
      */
     public enum Type {

@@ -1,5 +1,9 @@
 package symboltable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.HashSet;
 import java.util.Set;
 
 import typesystem.epa.ChemTypes;
@@ -9,35 +13,17 @@ import typesystem.epa.ChemTypes;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Variable {
+public class Variable extends Symbol {
 
-    private String name;
-    private Scope scope;
-    private Set<ChemTypes> type;
-
-    public Variable(String name, Scope Scope, Set<ChemTypes> type) {
-        this.scope = scope;
-        this.name = name;
-        this.type = type;
-    }
-
-    public Scope getScope() {
-        return this.scope;
+    public Variable(String name, Set<ChemTypes> type) {
+       super(name, type);
     }
 
     public String getName() {
         return this.name;
     }
 
-    public Set<ChemTypes> getType() {
-        return this.type;
-    }
-
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("Scope: ").append(this.scope).append("\tName: ").append(this.name).append("\t type(s): ").append(type);
-
-        return sb.toString();
+        return super.toString();
     }
 }
