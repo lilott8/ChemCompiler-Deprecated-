@@ -13,6 +13,9 @@ import parser.ast.BranchStatement;
 import parser.ast.DetectStatement;
 import parser.ast.DrainStatement;
 import parser.ast.FalseLiteral;
+import parser.ast.FormalParameter;
+import parser.ast.FormalParameterList;
+import parser.ast.FormalParameterRest;
 import parser.ast.Function;
 import parser.ast.HeatStatement;
 import parser.ast.Identifier;
@@ -145,24 +148,52 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     @Override
     public Step visit(Function n) {
         // super.visit(n);
+
         // Get the name of the method.
         n.f1.accept(this);
         // Start a new scope.
         this.symbolTable.newScope(this.name);
+        Method symbol = new Method(this.name);
+
         // Get the parameters of this method
         n.f3.accept(this);
-        this.symbolTable.addLocals(this.arguments);
+        //this.symbolTable.addLocals(this.arguments);
+        symbol.addParameters(this.arguments);
+        this.arguments.clear();
+
         // Get the types of this method.
         n.f5.accept(this);
-        Method symbol = new Method(this.name, this.types);
+        symbol.addReturnTypes(this.types);
+        this.types.clear();
+
         // Get the list of statements.
         n.f7.accept(this);
-        //symbol.addParameters(this.arguments);
         this.symbolTable.addLocal(symbol);
+
         // Get the return statement (Currently ignored).
         n.f8.accept(this);
+
         // Return back to previous scoping.
         this.symbolTable.endScope();
+        return null;
+    }
+
+    /**
+     * f0 -> ( TypingList() )*
+     * f1 -> Identifier()
+     */
+    @Override
+    public Step visit(FormalParameter n) {
+        // super.visit(n);
+        // Go fetch the typing list
+        n.f0.accept(this);
+        // Go fetch the name
+        n.f1.accept(this);
+        // save the record.
+        Variable v = new Variable(this.name, this.types);
+        this.arguments.add(v);
+        this.symbolTable.addLocal(v);
+        this.types.clear();
         return null;
     }
 
@@ -237,7 +268,13 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      */
     @Override
     public Step visit(SplitStatement n) {
-        return super.visit(n);
+        //super.visit(n);
+        n.f1.accept(this);
+        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.types.clear();
+        n.f3.accept(this);
+        this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+        return null;
     }
 
     /**
@@ -292,7 +329,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         this.symbolTable.addLocal(new Variable(this.name, this.types));
         this.types.clear();
         n.f3.accept(this);
-        this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+        this.symbolTable.addLocal(new Variable(this.name, this.types));
         this.types.clear();
         if (n.f4.present()) {
             n.f4.accept(this);

@@ -1,5 +1,8 @@
 package symboltable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +16,13 @@ import typesystem.epa.ChemTypes;
  */
 public class Method extends Symbol {
 
-    public Set<Variable> parameters = new HashSet<>();
+    public static final Logger logger = LogManager.getLogger(Method.class);
+
+    public Set<Symbol> parameters = new HashSet<>();
+
+    public Method(String name) {
+        super(name, new HashSet<>());
+    }
 
     public Method(String name, Set<ChemTypes> type) {
         super(name, type);
@@ -23,12 +32,16 @@ public class Method extends Symbol {
         this.parameters.add(var);
     }
 
-    public void addParameters(List<Variable> vars) {
+    public void addParameters(List<Symbol> vars) {
         this.parameters.addAll(vars);
     }
 
-    public void addParameters(Set<Variable> vars) {
+    public void addParameters(Set<Symbol> vars) {
         this.parameters.addAll(vars);
+    }
+
+    public void addReturnTypes(Set<ChemTypes> ret) {
+        super.type.addAll(ret);
     }
 
     public String toString() {
@@ -36,7 +49,7 @@ public class Method extends Symbol {
 
         sb.append(super.toString());
 
-        sb.append(this.parameters);
+        sb.append("\tParameters: ").append(this.parameters);
 
         return sb.toString();
     }
