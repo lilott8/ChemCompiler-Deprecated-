@@ -31,8 +31,8 @@ public class BioScriptParser implements Phase {
 
     public BioScriptParser(String fileName) {
         this.file = fileName;
-        this.typeChecker = new BSTypeChecker();
         this.symbolTable = new BSSymbolTable();
+        this.typeChecker = new BSTypeChecker(this.symbolTable.getSymbolTable());
     }
 
     @Override
@@ -47,12 +47,12 @@ public class BioScriptParser implements Phase {
             try {
                 BSProgram program = this.parser.BSProgram();
                 program.accept(this.symbolTable);
-                logger.info(this.symbolTable);
-                if (!this.config.ignoreWarnings()) {
+                // logger.info(this.symbolTable);
+                //if (!this.config.ignoreWarnings()) {
                     program.accept(this.typeChecker);
-                } else {
+                //} else {
                     logger.warn("Visibility checking is set to ignore warnings.");
-                }
+                //}
             } catch (ParseException e) {
                 logger.error(e);
             }
