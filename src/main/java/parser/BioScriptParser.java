@@ -50,6 +50,7 @@ public class BioScriptParser implements Phase {
                 // logger.info(this.symbolTable);
                 //if (!this.config.ignoreWarnings()) {
                     program.accept(this.typeChecker);
+                    this.typeChecker.solve();
                 //} else {
                     logger.warn("Visibility checking is set to ignore warnings.");
                 //}

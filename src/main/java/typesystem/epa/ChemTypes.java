@@ -85,6 +85,7 @@ public enum ChemTypes {
     MAT(130),
     CONST(131),
     BOOL(132),
+    MODULE(-1),
     NULL(-1),
     FALSE(-1);
 
@@ -165,6 +166,11 @@ public enum ChemTypes {
         integerChemTypesMap.put(100, WATER_AND_AQUEOUS_SOLUTIONS);
         integerChemTypesMap.put(128, REAL);
         integerChemTypesMap.put(129, NAT);
+        integerChemTypesMap.put(130, MAT);
+        integerChemTypesMap.put(131, CONST);
+        integerChemTypesMap.put(132, BOOL);
+        integerChemTypesMap.put(-1, MODULE);
+
         //integerChemTypesMap.put(130, MAT);
         //integerChemTypesMap.put(131, CONST);
 

@@ -67,7 +67,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
 
     @Override
     public Step run() {
-        return null;
+        return this;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // Anything in this section is always default scope.
         this.symbolTable.addLocal(new Variable(this.name, this.types));
         this.types.clear();
-        return null;
+        return this;
     }
 
     /**
@@ -108,7 +108,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // build the variable now
         this.symbolTable.addLocal(new Variable(this.name, this.types));
         this.types.clear();
-        return null;
+        return this;
     }
 
     /**
@@ -130,7 +130,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         this.types.clear();
         // Go get the rest of the expression(s).
         n.f3.accept(this);
-        return null;
+        return this;
     }
 
     /**
@@ -175,7 +175,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
 
         // Return back to previous scoping.
         this.symbolTable.endScope();
-        return null;
+        return this;
     }
 
     /**
@@ -194,7 +194,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         this.arguments.add(v);
         this.symbolTable.addLocal(v);
         this.types.clear();
-        return null;
+        return this;
     }
 
     /**
@@ -216,7 +216,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         n.f4.accept(this);
         // Return back to old scoping.
         this.symbolTable.endScope();
-        return null;
+        return this;
     }
 
     /**
@@ -234,7 +234,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         n.f0.accept(this);
         // Return back to old scoping.
         this.symbolTable.endScope();
-        return null;
+        return this;
     }
 
     /**
@@ -257,7 +257,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
             this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
             this.types.clear();
         }
-        return null;
+        return this;
     }
 
     /**
@@ -274,7 +274,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         this.types.clear();
         n.f3.accept(this);
         this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
-        return null;
+        return this;
     }
 
     /**
@@ -287,7 +287,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         n.f1.accept(this);
         this.symbolTable.addLocal(new Variable(this.name, this.types));
         this.types.clear();
-        return null;
+        return this;
     }
 
     /**
@@ -312,7 +312,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
             this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
             this.types.clear();
         }
-        return null;
+        return this;
     }
 
     /**
@@ -336,7 +336,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
             this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
             this.types.clear();
         }
-        return null;
+        return this;
     }
 
     /**
@@ -346,7 +346,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(NatLiteral n) {
         // super.visit(n);
         this.types.add(ChemTypes.NAT);
-        return null;
+        return this;
     }
 
     /**
@@ -356,7 +356,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(MatLiteral n) {
         // super.visit(n);
         this.types.add(ChemTypes.MAT);
-        return null;
+        return this;
     }
 
     /**
@@ -366,7 +366,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(RealLiteral n) {
         // super.visit(n);
         this.types.add(ChemTypes.REAL);
-        return null;
+        return this;
     }
 
     /**
@@ -376,7 +376,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(TrueLiteral n) {
         // super.visit(n);
         this.types.add(ChemTypes.BOOL);
-        return null;
+        return this;
     }
 
     /**
@@ -386,7 +386,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(FalseLiteral n) {
         //super.visit(n);
         this.types.add(ChemTypes.BOOL);
-        return null;
+        return this;
     }
 
     /**
@@ -395,7 +395,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     @Override
     public Step visit(Identifier n) {
         this.name = n.f0.toString();
-        return null;
+        return this;
     }
 
     public SymbolTable getSymbolTable() {
