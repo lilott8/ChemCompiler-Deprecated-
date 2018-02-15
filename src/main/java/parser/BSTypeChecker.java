@@ -29,29 +29,28 @@ import parser.ast.SplitInstruction;
 import parser.ast.Stationary;
 import parser.ast.TrueLiteral;
 import parser.visitor.GJNoArguDepthFirst;
-import phases.inference.elements.Instruction;
-import phases.inference.elements.Term;
-import phases.inference.elements.Variable;
-import phases.inference.rules.Rule;
-import phases.inference.satsolver.strategies.SolverStrategy;
-import phases.inference.satsolver.strategies.Z3Strategy;
+import typesystem.elements.Instruction;
+import typesystem.elements.Term;
+import shared.Variable;
+import typesystem.rules.Rule;
+import typesystem.satsolver.strategies.SolverStrategy;
+import typesystem.satsolver.strategies.Z3Strategy;
 import shared.Step;
 import symboltable.SymbolTable;
-import typesystem.epa.ChemTypes;
-import typesystem.identification.Identifier;
-import typesystem.identification.IdentifierFactory;
+import chemical.epa.ChemTypes;
+import chemical.identification.Identifier;
+import chemical.identification.IdentifierFactory;
 
-import static phases.inference.rules.Rule.InstructionType.BRANCH;
-import static phases.inference.rules.Rule.InstructionType.DRAIN;
-import static phases.inference.rules.Rule.InstructionType.FUNCTION;
-import static phases.inference.rules.Rule.InstructionType.LOOP;
-import static phases.inference.rules.Rule.InstructionType.MANIFEST;
-import static phases.inference.rules.Rule.InstructionType.STATIONARY;
-import static typesystem.epa.ChemTypes.BOOL;
-import static typesystem.epa.ChemTypes.MAT;
-import static typesystem.epa.ChemTypes.MODULE;
-import static typesystem.epa.ChemTypes.NAT;
-import static typesystem.epa.ChemTypes.NULL;
+import static typesystem.rules.Rule.InstructionType.BRANCH;
+import static typesystem.rules.Rule.InstructionType.DRAIN;
+import static typesystem.rules.Rule.InstructionType.LOOP;
+import static typesystem.rules.Rule.InstructionType.MANIFEST;
+import static typesystem.rules.Rule.InstructionType.STATIONARY;
+import static chemical.epa.ChemTypes.BOOL;
+import static chemical.epa.ChemTypes.MAT;
+import static chemical.epa.ChemTypes.MODULE;
+import static chemical.epa.ChemTypes.NAT;
+import static chemical.epa.ChemTypes.NULL;
 
 /**
  * @created: 11/30/17
@@ -142,6 +141,7 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
      */
     @Override
     public BSTypeChecker visit(Assignment n) {
+        this.isAssign = true;
         // Get the expression done before we get the identifier.
         // That way we can set the appropriate instruction.
         n.f3.accept(this);
@@ -175,6 +175,7 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
             addVariable(term);
             addInstruction(this.instruction);
         }
+        this.isAssign = false;
         return this;
     }
 
@@ -301,11 +302,10 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
     @Override
     public BSTypeChecker visit(MixInstruction n) {
         // super.visit(n);
-        Term term;
         this.instruction = new Instruction(Rule.InstructionType.MIX);
 
         n.f1.accept(this);
-        term = new Term(this.name);
+        Term term = new Term(this.name);
         term.addTypingConstraints(this.getTypingConstraints(term));
         addVariable(term);
         this.instruction.addInputVariable(term);
@@ -324,8 +324,6 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
             this.instruction.addProperty(term);
         }
 
-        // This needs to be set so we can finish the assignment inference.
-        isAssign = true;
         // Guarantee that we set the output variable typing,
         // And help ensure that the name is set correctly.
         this.typeForName = MAT;
@@ -355,8 +353,7 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
 
         this.instruction.addProperty(term);
 
-        // This needs to be set so we can finish the assignment inference.
-        isAssign = true;
+        // Set this so that the output type is correct.
         this.typeForName = MAT;
         return this;
     }
@@ -454,8 +451,6 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
             this.instruction.addProperty(term);
         }
 
-        // This needs to be set so we can finish the assignment inference.
-        this.isAssign = true;
         this.typeForName = NAT;
         return this;
     }

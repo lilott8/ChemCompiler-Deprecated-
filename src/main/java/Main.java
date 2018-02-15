@@ -85,7 +85,7 @@ public class Main {
         CliWrapper cli;
         Compiler compiler;
 
-        StatisticCombinator.writer.write("inference stuff:");
+        StatisticCombinator.writer.write("typesystem stuff:");
         StatisticCombinator.writer.write("min|max|total|median|average");
 
         StatisticCombinator.writer.flush();
@@ -139,7 +139,7 @@ public class Main {
         StatisticCombinator.writer.push(c);
         long inferenceTime, compileTime, beginTime = 0;
         logger.info("Running: " + c);
-        String args = String.format("-c %s -p inference " +
+        String args = String.format("-c %s -p typesystem " +
                 "%s -d -nf -i -drm -classify 16 -o /Users/jason/Desktop/\n", c, DBArgs.getDBArgs());
         cli = new CliWrapper();
         cli.parseCommandLine(StringUtils.split(args));
@@ -154,7 +154,7 @@ public class Main {
         inferenceTime = System.nanoTime() - beginTime;
 
         StatisticCombinator.writer.push("compile time: " + compileTime);
-        StatisticCombinator.writer.push("inference time: " + inferenceTime);
+        StatisticCombinator.writer.push("typesystem time: " + inferenceTime);
 
         StatisticCombinator.writer.push("=====================================");
         StatisticCombinator.writer.flush();

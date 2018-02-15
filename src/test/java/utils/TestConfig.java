@@ -1,46 +1,26 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import config.PhaseConfig;
-import phases.PhaseFacade;
+import config.CommonConfig;
 
 /**
  * @created: 9/1/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class TestConfig implements PhaseConfig {
+public class TestConfig implements CommonConfig {
 
     List<String> files = new ArrayList<>();
-    Set<PhaseFacade.PHASES> phases = new HashSet<>();
 
     public TestConfig(String file) {
         files.add(file);
-        phases.add(PhaseFacade.PHASES.INFERENCE);
     }
 
     @Override
     public List<String> getFilesForCompilation() {
         return files;
-    }
-
-    @Override
-    public Set<PhaseFacade.PHASES> getAllPhases() {
-        return phases;
-    }
-
-    @Override
-    public boolean phaseEnabled(PhaseFacade.PHASES phase) {
-        return this.phases.contains(phase);
-    }
-
-    @Override
-    public boolean phasesEnabled() {
-        return !this.phases.isEmpty();
     }
 
     @Override

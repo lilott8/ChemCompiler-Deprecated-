@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import phases.PhaseFacade;
+import shared.Phase;
+import shared.ReportingLevel;
 import translators.Translator;
 import translators.mfsim.MFSimSSATranslator;
 import translators.typesystem.TypeSystemTranslator;
@@ -26,9 +27,13 @@ import translators.typesystem.TypeSystemTranslator;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, DatabaseConfig, InferenceConfig {
+public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig, InferenceConfig {
 
     public static final Logger logger = LogManager.getLogger(Config.class);
+
+    private static String TS_LEVEL_ERROR = "ERROR";
+    private static String TS_LEVEL_WARN = "WARN";
+    private static String TS_LEVEL_NONE = "NONE";
 
     /**
      * Is the compiler in debug mode.
@@ -64,11 +69,6 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
      * List of translations that need to occur
      */
     private Map<String, Translator> translators = new HashMap<>();
-
-    /**
-     * List of phases that are enabled for compilation
-     */
-    private Set<PhaseFacade.PHASES> phases = new HashSet<>();
 
     /**
      * No default password
@@ -110,6 +110,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
      * What scope is the classification engine allowed to run at?
      */
     private int classificationLevel = 2;
+    /**
+     * Level of error reporting in the typesystem
+     */
+    private ReportingLevel errorLevel = ReportingLevel.ERROR;
     /**
      * Are we ignoring warnings?
      */
@@ -189,12 +193,6 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
             this.buildTranslators(Arrays.asList(cmd.getOptionValues("translate")));
         }
 
-        if (cmd.hasOption("phases")) {
-            for (String s : cmd.getOptionValues("phases")) {
-                this.phases.add(PhaseFacade.PHASES.valueOf(StringUtils.upperCase(s)));
-            }
-        }
-
         this.monitorResources = !cmd.hasOption("drm");
 
         // This is technically redundant, this is checked in the main.
@@ -243,7 +241,18 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
             this.smartsSize = this.smartsSize < 1 ? 1 : this.smartsSize;
         }
 
-        this.ignoreWarnings = cmd.hasOption("ignore");
+        if (cmd.hasOption("typesystem")) {
+            String level = cmd.getOptionValue("typesystem");
+            if (StringUtils.equalsIgnoreCase(TS_LEVEL_NONE, level)) {
+                logger.error("System is running with no type checking!");
+                this.errorLevel = ReportingLevel.NONE;
+            } else if (StringUtils.equalsIgnoreCase(TS_LEVEL_WARN, level)) {
+                logger.error("System will only validate errors.");
+                this.errorLevel = ReportingLevel.WARNING;
+            } else {
+                this.errorLevel = ReportingLevel.ERROR;
+            }
+        }
 
         // Default is build them, so if we don't have it, we build the filters.
         this.buildFilters = !cmd.hasOption("nofilters");
@@ -353,18 +362,6 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
         return !this.translators.isEmpty();
     }
 
-    public Set<PhaseFacade.PHASES> getAllPhases() {
-        return this.phases;
-    }
-
-    public boolean phasesEnabled() {
-        return !this.phases.isEmpty();
-    }
-
-    public boolean phaseEnabled(PhaseFacade.PHASES phase) {
-        return this.phases.contains(phase);
-    }
-
 
     @Override
     public String getConnectionString() {
@@ -428,11 +425,6 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     }
 
     @Override
-    public boolean ignoreWarnings() {
-        return this.ignoreWarnings;
-    }
-
-    @Override
     public boolean buildFilters() {
         return this.buildFilters;
     }
@@ -470,5 +462,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, PhaseConfig, Da
     @Override
     public boolean checkForChemAxon() {
         return this.checkForChemAxon;
+    }
+
+    @Override
+    public ReportingLevel getErrorLevel() {
+        return this.errorLevel;
     }
 }

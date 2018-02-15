@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 import config.Config;
 import config.ConfigFactory;
-import errors.ConfigurationException;
+import shared.errors.ConfigurationException;
 
 /**
  * @created: 9/14/17
@@ -132,15 +132,15 @@ public class CliWrapper {
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
                 .argName("clean").build());
 
-        // Enable additional phases for compilation.
-        desc = "What phases to enable." +
-                "\n Available phases: " +
-                "\n\t inference: run type inference" +
-                "\n\t simple: run simple inference" +
-                "\n Usage: -p {list of phases}";
-        options.addOption(Option.builder("p").longOpt("phases")
+        // Enable additional optimizations for compilation.
+        desc = "What optimizations to enable." +
+                "\n Available optimizations: " +
+                "\n\t ssi: run SSI algorithm" +
+                "\n\t ssa: run SSA algorithm" +
+                "\n Usage: -opts {list of optimizations}";
+        options.addOption(Option.builder("opts").longOpt("optimizations")
                 .desc(desc).hasArgs().required(false)
-                .argName("phases").build());
+                .argName("opts").build());
 
         // classification scope
         desc = "What level to attempt to classify materials at: \n" +
@@ -163,11 +163,11 @@ public class CliWrapper {
                 .argName("simulate").build());
 
         // Enforcement level
-        desc = "Ignores warnings.  Default is to error on warnings.\n" +
-                "Usage: -i";
-        options.addOption(Option.builder("i").longOpt("ignore")
-                .desc(desc).type(Boolean.class).hasArg(false).required(false)
-                .argName("ignore").build());
+        desc = "What level to report type system shared.errors.\n" +
+                "Usage: -ts {error|warn|none}";
+        options.addOption(Option.builder("ts").longOpt("typesystem")
+                .desc(desc).type(String.class).hasArg(true).required(false)
+                .argName("ts").build());
 
         // Build the filters
         desc = "Disable building the SMART filters.  This is only disabled for testing purposes.\n" +

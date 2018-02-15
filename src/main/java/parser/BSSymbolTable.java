@@ -36,7 +36,7 @@ import symboltable.Method;
 import symboltable.Symbol;
 import symboltable.SymbolTable;
 import symboltable.Variable;
-import typesystem.epa.ChemTypes;
+import chemical.epa.ChemTypes;
 
 /**
  * @created: 2/1/18

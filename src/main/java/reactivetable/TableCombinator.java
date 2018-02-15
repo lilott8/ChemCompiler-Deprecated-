@@ -22,14 +22,14 @@ import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
 import config.ConfigFactory;
 import config.InferenceConfig;
-import io.file.write.FileWriter;
-import io.file.write.SimpleWriter;
+import shared.io.file.write.FileWriter;
+import shared.io.file.write.SimpleWriter;
 import shared.substances.ChemAxonCompound;
-import typesystem.classification.Classifier;
-import typesystem.classification.ClassifierFactory;
-import typesystem.combinator.Combiner;
-import typesystem.combinator.CombinerFactory;
-import typesystem.epa.ChemTypes;
+import chemical.classification.Classifier;
+import chemical.classification.ClassifierFactory;
+import chemical.combinator.Combiner;
+import chemical.combinator.CombinerFactory;
+import chemical.epa.ChemTypes;
 
 /**
  * @created: 10/2/17

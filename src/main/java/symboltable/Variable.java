@@ -6,21 +6,17 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashSet;
 import java.util.Set;
 
-import typesystem.epa.ChemTypes;
+import chemical.epa.ChemTypes;
 
 /**
  * @created: 2/5/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Variable extends Symbol {
+public class Variable extends Symbol implements shared.Variable {
 
     public Variable(String name, Set<ChemTypes> type) {
        super(name, type);
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public String toString() {
@@ -39,5 +35,15 @@ public class Variable extends Symbol {
 
     public String getScope() {
         return this.scope;
+    }
+
+    @Override
+    public String getVarName() {
+        return null;
+    }
+
+    @Override
+    public Set<ChemTypes> getTypingConstraints() {
+        return null;
     }
 }
