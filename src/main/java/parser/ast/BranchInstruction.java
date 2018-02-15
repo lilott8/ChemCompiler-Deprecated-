@@ -8,16 +8,19 @@ import parser.visitor.*;
 
 /**
  * Grammar production:
- * f0 -> MixStatement()
- *       | DetectStatement()
- *       | SplitStatement()
- *       | FunctionInvoke()
+ * f0 -> IfStatement()
+ * f1 -> ( ElseIfStatement() )*
+ * f2 -> ( ElseStatement() )?
  */
-public class InstructionAssignment implements Node {
-   public NodeChoice f0;
+public class BranchInstruction implements Node {
+   public IfStatement f0;
+   public NodeListOptional f1;
+   public NodeOptional f2;
 
-   public InstructionAssignment(NodeChoice n0) {
+   public BranchInstruction(IfStatement n0, NodeListOptional n1, NodeOptional n2) {
       f0 = n0;
+      f1 = n1;
+      f2 = n2;
    }
 
    public void accept(Visitor v) {

@@ -8,15 +8,21 @@ import parser.visitor.*;
 
 /**
  * Grammar production:
- * f0 -> <IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
- *       | <ELSE_IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
- *       | <ELSE> <LBRACE> Statement() <RBRACE>
+ * f0 -> <DRAIN>
+ * f1 -> PrimaryExpression()
  */
-public class BranchStatement implements Node {
-   public NodeChoice f0;
+public class DrainInstruction implements Node {
+   public NodeToken f0;
+   public PrimaryExpression f1;
 
-   public BranchStatement(NodeChoice n0) {
+   public DrainInstruction(NodeToken n0, PrimaryExpression n1) {
       f0 = n0;
+      f1 = n1;
+   }
+
+   public DrainInstruction(PrimaryExpression n0) {
+      f0 = new NodeToken("drain");
+      f1 = n0;
    }
 
    public void accept(Visitor v) {

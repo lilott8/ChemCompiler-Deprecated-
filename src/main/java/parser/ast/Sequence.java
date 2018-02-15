@@ -8,7 +8,7 @@ import parser.visitor.*;
 
 /**
  * Grammar production:
- * f0 -> Method()
+ * f0 -> FunctionDefinition()
  *       | Statement()
  */
 public class Sequence implements Node {

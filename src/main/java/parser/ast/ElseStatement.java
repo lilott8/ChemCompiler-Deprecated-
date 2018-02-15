@@ -8,21 +8,29 @@ import parser.visitor.*;
 
 /**
  * Grammar production:
- * f0 -> <DRAIN>
- * f1 -> PrimaryExpression()
+ * f0 -> <ELSE>
+ * f1 -> <LBRACE>
+ * f2 -> Statement()
+ * f3 -> <RBRACE>
  */
-public class DrainStatement implements Node {
+public class ElseStatement implements Node {
    public NodeToken f0;
-   public PrimaryExpression f1;
+   public NodeToken f1;
+   public Statement f2;
+   public NodeToken f3;
 
-   public DrainStatement(NodeToken n0, PrimaryExpression n1) {
+   public ElseStatement(NodeToken n0, NodeToken n1, Statement n2, NodeToken n3) {
       f0 = n0;
       f1 = n1;
+      f2 = n2;
+      f3 = n3;
    }
 
-   public DrainStatement(PrimaryExpression n0) {
-      f0 = new NodeToken("drain");
-      f1 = n0;
+   public ElseStatement(Statement n0) {
+      f0 = new NodeToken("else");
+      f1 = new NodeToken("{");
+      f2 = n0;
+      f3 = new NodeToken("}");
    }
 
    public void accept(Visitor v) {

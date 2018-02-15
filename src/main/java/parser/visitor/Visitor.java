@@ -57,28 +57,10 @@ public interface Visitor {
    public void visit(Manifest n);
 
    /**
-    * f0 -> Method()
+    * f0 -> FunctionDefinition()
     *       | Statement()
     */
    public void visit(Sequence n);
-
-   /**
-    * f0 -> AssignmentInstruction()
-    *       | BranchStatement()
-    *       | RepeatStatement()
-    *       | HeatStatement()
-    *       | DrainStatement()
-    *       | FunctionInvoke()
-    */
-   public void visit(Statement n);
-
-   /**
-    * f0 -> ( TypingList() )*
-    * f1 -> Identifier()
-    * f2 -> <ASSIGN>
-    * f3 -> Expression()
-    */
-   public void visit(AssignmentInstruction n);
 
    /**
     * f0 -> <FUNCTION>
@@ -88,14 +70,24 @@ public interface Visitor {
     * f4 -> <RPAREN>
     * f5 -> ( <COLON> TypingList() )?
     * f6 -> <LBRACE>
-    * f7 -> ( Statement() )*
+    * f7 -> ( Statement() )+
     * f8 -> ( <RETURN> Expression() )?
     * f9 -> <RBRACE>
     */
-   public void visit(Function n);
+   public void visit(FunctionDefinition n);
 
    /**
-    * f0 -> Visibility()
+    * f0 -> Assignment()
+    *       | BranchInstruction()
+    *       | RepeatInstruction()
+    *       | HeatInstruction()
+    *       | DrainInstruction()
+    *       | Expression()
+    */
+   public void visit(Statement n);
+
+   /**
+    * f0 -> Type()
     * f1 -> ( TypingRest() )*
     */
    public void visit(TypingList n);
@@ -109,7 +101,7 @@ public interface Visitor {
 
    /**
     * f0 -> <COMMA>
-    * f1 -> Visibility()
+    * f1 -> Type()
     */
    public void visit(TypingRest n);
 
@@ -132,88 +124,41 @@ public interface Visitor {
    public void visit(FormalParameterRest n);
 
    /**
-    * f0 -> <MIX>
-    * f1 -> PrimaryExpression()
-    * f2 -> <WITH>
-    * f3 -> PrimaryExpression()
-    * f4 -> ( <FOR> IntegerLiteral() )?
+    * f0 -> IfStatement()
+    * f1 -> ( ElseIfStatement() )*
+    * f2 -> ( ElseStatement() )?
     */
-   public void visit(MixStatement n);
+   public void visit(BranchInstruction n);
 
    /**
-    * f0 -> <SPLIT>
-    * f1 -> PrimaryExpression()
-    * f2 -> <INTO>
-    * f3 -> IntegerLiteral()
-    */
-   public void visit(SplitStatement n);
-
-   /**
-    * f0 -> <DRAIN>
-    * f1 -> PrimaryExpression()
-    */
-   public void visit(DrainStatement n);
-
-   /**
-    * f0 -> <HEAT>
-    * f1 -> PrimaryExpression()
-    * f2 -> <AT>
-    * f3 -> IntegerLiteral()
-    * f4 -> ( <FOR> IntegerLiteral() )?
-    */
-   public void visit(HeatStatement n);
-
-   /**
-    * f0 -> <DETECT>
-    * f1 -> PrimaryExpression()
-    * f2 -> <ON>
-    * f3 -> PrimaryExpression()
-    * f4 -> ( <FOR> IntegerLiteral() )?
-    */
-   public void visit(DetectStatement n);
-
-   /**
-    * f0 -> <REPEAT>
-    * f1 -> IntegerLiteral()
-    * f2 -> <TIMES>
-    * f3 -> <LBRACE>
-    * f4 -> Statement()
-    * f5 -> <RBRACE>
-    */
-   public void visit(RepeatStatement n);
-
-   /**
-    * f0 -> <IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
-    *       | <ELSE_IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
-    *       | <ELSE> <LBRACE> Statement() <RBRACE>
-    */
-   public void visit(BranchStatement n);
-
-   /**
-    * f0 -> AndExpression()
-    *       | LessThanExpression()
-    *       | LessThanEqualExpression()
-    *       | GreaterThanExpression()
-    *       | GreaterThanEqualExpression()
-    *       | NotEqualExpression()
-    *       | EqualityExpression()
-    *       | OrExpression()
-    *       | PlusExpression()
-    *       | MinusExpression()
-    *       | TimesExpression()
-    *       | FunctionInvoke()
-    *       | PrimaryExpression()
-    *       | InstructionAssignment()
-    */
-   public void visit(Expression n);
-
-   /**
-    * f0 -> Identifier()
+    * f0 -> <IF>
     * f1 -> <LPAREN>
-    * f2 -> ( ExpressionList() )?
+    * f2 -> Expression()
     * f3 -> <RPAREN>
+    * f4 -> <LBRACE>
+    * f5 -> Statement()
+    * f6 -> <RBRACE>
     */
-   public void visit(FunctionInvoke n);
+   public void visit(IfStatement n);
+
+   /**
+    * f0 -> <ELSE_IF>
+    * f1 -> <LPAREN>
+    * f2 -> Expression()
+    * f3 -> <RPAREN>
+    * f4 -> <LBRACE>
+    * f5 -> Statement()
+    * f6 -> <RBRACE>
+    */
+   public void visit(ElseIfStatement n);
+
+   /**
+    * f0 -> <ELSE>
+    * f1 -> <LBRACE>
+    * f2 -> Statement()
+    * f3 -> <RBRACE>
+    */
+   public void visit(ElseStatement n);
 
    /**
     * f0 -> Expression()
@@ -228,12 +173,91 @@ public interface Visitor {
    public void visit(ExpressionRest n);
 
    /**
-    * f0 -> MixStatement()
-    *       | DetectStatement()
-    *       | SplitStatement()
-    *       | FunctionInvoke()
+    * f0 -> ( TypingList() )?
+    * f1 -> Identifier()
+    * f2 -> <ASSIGN>
+    * f3 -> Expression()
     */
-   public void visit(InstructionAssignment n);
+   public void visit(Assignment n);
+
+   /**
+    * f0 -> <MIX>
+    * f1 -> PrimaryExpression()
+    * f2 -> <WITH>
+    * f3 -> PrimaryExpression()
+    * f4 -> ( <FOR> IntegerLiteral() )?
+    */
+   public void visit(MixInstruction n);
+
+   /**
+    * f0 -> <SPLIT>
+    * f1 -> PrimaryExpression()
+    * f2 -> <INTO>
+    * f3 -> IntegerLiteral()
+    */
+   public void visit(SplitInstruction n);
+
+   /**
+    * f0 -> <DRAIN>
+    * f1 -> PrimaryExpression()
+    */
+   public void visit(DrainInstruction n);
+
+   /**
+    * f0 -> <HEAT>
+    * f1 -> PrimaryExpression()
+    * f2 -> <AT>
+    * f3 -> IntegerLiteral()
+    * f4 -> ( <FOR> IntegerLiteral() )?
+    */
+   public void visit(HeatInstruction n);
+
+   /**
+    * f0 -> <DETECT>
+    * f1 -> PrimaryExpression()
+    * f2 -> <ON>
+    * f3 -> PrimaryExpression()
+    * f4 -> ( <FOR> IntegerLiteral() )?
+    */
+   public void visit(DetectInstruction n);
+
+   /**
+    * f0 -> <REPEAT>
+    * f1 -> IntegerLiteral()
+    * f2 -> <TIMES>
+    * f3 -> <LBRACE>
+    * f4 -> Statement()
+    * f5 -> <RBRACE>
+    */
+   public void visit(RepeatInstruction n);
+
+   /**
+    * f0 -> Identifier()
+    * f1 -> <LPAREN>
+    * f2 -> ( ExpressionList() )?
+    * f3 -> <RPAREN>
+    */
+   public void visit(FunctionInvoke n);
+
+   /**
+    * f0 -> AndExpression()
+    *       | LessThanExpression()
+    *       | LessThanEqualExpression()
+    *       | GreaterThanExpression()
+    *       | GreaterThanEqualExpression()
+    *       | NotEqualExpression()
+    *       | EqualityExpression()
+    *       | OrExpression()
+    *       | PlusExpression()
+    *       | MinusExpression()
+    *       | TimesExpression()
+    *       | FunctionInvoke()
+    *       | MixInstruction()
+    *       | SplitInstruction()
+    *       | DetectInstruction()
+    *       | PrimaryExpression()
+    */
+   public void visit(Expression n);
 
    /**
     * f0 -> Identifier()

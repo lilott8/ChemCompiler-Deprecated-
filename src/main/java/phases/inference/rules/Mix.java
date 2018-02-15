@@ -31,7 +31,8 @@ public class Mix extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        Instruction instruction = new Instruction(node.getId(), InstructionType.MIX);
+        //Instruction instruction = new Instruction(node.getId(), InstructionType.MIX);
+        Instruction instruction = new Instruction(InstructionType.MIX);
 
         Set<ChemTypes> groupings = new HashSet<>();
 

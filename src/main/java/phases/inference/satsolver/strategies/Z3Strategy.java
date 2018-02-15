@@ -84,9 +84,11 @@ public class Z3Strategy implements SolverStrategy {
             }
         }
 
-        // logger.info(variables);
-        // logger.info(instructions);
-        // logger.info(sb);
+        if (ConfigFactory.getConfig().isDebug()) {
+            // logger.info(variables);
+            // logger.info(instructions);
+            logger.info(sb);
+        }
         return this.solveWithSMT2(sb.toString());
     }
 

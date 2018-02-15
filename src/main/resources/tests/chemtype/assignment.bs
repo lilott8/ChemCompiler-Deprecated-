@@ -1,0 +1,14 @@
+module test
+stationary test2
+manifest mat chemical1
+manifest chemical2
+
+instructions
+
+a = mix b with c
+mat bb = mix bbb with cc
+
+nat x = detect test on a for 30
+xx = detect test on a for 30
+
+heat a at 40 for 40

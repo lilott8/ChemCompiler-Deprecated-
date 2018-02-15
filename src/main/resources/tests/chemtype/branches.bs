@@ -1,0 +1,20 @@
+module test
+stationary test2
+manifest mat chemical1
+manifest chemical2
+
+instructions
+
+ab = detect test on y for 30
+
+if (ab < 3) {
+    heat a at 30
+}
+
+if (ab < 3) {
+    heat a at 30
+} else if (ab > 3) {
+    heat a at 30
+} else {
+    heat a at 50
+}

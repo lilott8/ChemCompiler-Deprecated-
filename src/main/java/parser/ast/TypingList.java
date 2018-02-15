@@ -8,7 +8,7 @@ import parser.visitor.*;
 
 /**
  * Grammar production:
- * f0 -> Visibility()
+ * f0 -> Type()
  * f1 -> ( TypingRest() )*
  */
 public class TypingList implements Node {

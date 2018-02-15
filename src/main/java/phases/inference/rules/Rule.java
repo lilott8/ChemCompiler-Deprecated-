@@ -27,7 +27,7 @@ import typesystem.identification.IdentifierFactory;
 public abstract class Rule {
 
     public enum InstructionType {
-        ASSIGN, DETECT, HEAT, BRANCH, MIX, SPLIT, OUTPUT
+        ASSIGN, DETECT, HEAT, BRANCH, MIX, SPLIT, OUTPUT, STATIONARY, LOOP, FUNCTION, MANIFEST, DRAIN, MODULE
     }
 
     protected InferenceType type;
@@ -62,7 +62,7 @@ public abstract class Rule {
     }
 
     protected static void addInstruction(Instruction i) {
-        instructions.put(i.id, i);
+        instructions.put(i.getId(), i);
     }
 
     protected static void addVariable(Variable t) {

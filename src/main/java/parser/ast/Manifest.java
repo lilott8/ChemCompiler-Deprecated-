@@ -4,10 +4,7 @@
 
 package parser.ast;
 
-import parser.visitor.GJNoArguVisitor;
-import parser.visitor.GJVisitor;
-import parser.visitor.GJVoidVisitor;
-import parser.visitor.Visitor;
+import parser.visitor.*;
 
 /**
  * Grammar production:

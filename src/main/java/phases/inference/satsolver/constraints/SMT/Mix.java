@@ -34,7 +34,7 @@ public class Mix implements Composer {
     public String compose(Instruction instruction) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("; Building mixes for: ").append(instruction.id).append(NL);
+        sb.append("; Building mixes for: ").append(instruction.getId()).append(NL);
 
         for (Variable v : instruction.getInput()) {
             sb.append(compose(v));

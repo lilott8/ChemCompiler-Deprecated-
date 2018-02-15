@@ -8,25 +8,25 @@ import parser.visitor.*;
 
 /**
  * Grammar production:
- * f0 -> ( TypingList() )*
+ * f0 -> ( TypingList() )?
  * f1 -> Identifier()
  * f2 -> <ASSIGN>
  * f3 -> Expression()
  */
-public class AssignmentInstruction implements Node {
-   public NodeListOptional f0;
+public class Assignment implements Node {
+   public NodeOptional f0;
    public Identifier f1;
    public NodeToken f2;
    public Expression f3;
 
-   public AssignmentInstruction(NodeListOptional n0, Identifier n1, NodeToken n2, Expression n3) {
+   public Assignment(NodeOptional n0, Identifier n1, NodeToken n2, Expression n3) {
       f0 = n0;
       f1 = n1;
       f2 = n2;
       f3 = n3;
    }
 
-   public AssignmentInstruction(NodeListOptional n0, Identifier n1, Expression n2) {
+   public Assignment(NodeOptional n0, Identifier n1, Expression n2) {
       f0 = n0;
       f1 = n1;
       f2 = new NodeToken("=");

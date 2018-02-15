@@ -25,7 +25,8 @@ public class IfBranch extends EdgeAnalyzer {
 
     @Override
     public Rule gatherConstraints(BasicBlockEdge edge) {
-        Instruction instruction = new Instruction(edge.getId(), InstructionType.BRANCH);
+        //Instruction instruction = new Instruction(edge.getId(), InstructionType.BRANCH);
+        Instruction instruction = new Instruction(InstructionType.BRANCH);
 
         Variable output = new Term(Rule.createHash(edge.getConditional().toString()));
         output.addTypingConstraint(NAT);

@@ -8,24 +8,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import parser.ast.AssignmentInstruction;
-import parser.ast.BranchStatement;
-import parser.ast.DetectStatement;
-import parser.ast.DrainStatement;
+import parser.ast.Assignment;
+import parser.ast.DetectInstruction;
+import parser.ast.DrainInstruction;
+import parser.ast.ElseIfStatement;
+import parser.ast.ElseStatement;
 import parser.ast.FalseLiteral;
 import parser.ast.FormalParameter;
-import parser.ast.FormalParameterList;
-import parser.ast.FormalParameterRest;
-import parser.ast.Function;
-import parser.ast.HeatStatement;
+import parser.ast.FunctionDefinition;
+import parser.ast.HeatInstruction;
 import parser.ast.Identifier;
+import parser.ast.IfStatement;
 import parser.ast.Manifest;
 import parser.ast.MatLiteral;
-import parser.ast.MixStatement;
+import parser.ast.MixInstruction;
 import parser.ast.NatLiteral;
 import parser.ast.RealLiteral;
-import parser.ast.RepeatStatement;
-import parser.ast.SplitStatement;
+import parser.ast.RepeatInstruction;
+import parser.ast.SplitInstruction;
 import parser.ast.Stationary;
 import parser.ast.TrueLiteral;
 import parser.visitor.GJNoArguDepthFirst;
@@ -118,7 +118,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      * f3 -> Expression()
      */
     @Override
-    public Step visit(AssignmentInstruction n) {
+    public Step visit(Assignment n) {
         // super.visit(n.f0);
         // Enumerate the types, if any.
         n.f0.accept(this);
@@ -141,12 +141,12 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      * f4 -> <RPAREN>
      * f5 -> ( <COLON> TypingList() )?
      * f6 -> <LBRACE>
-     * f7 -> ( Statement() )*
+     * f7 -> ( Statement() )+
      * f8 -> ( <RETURN> Expression() )?
      * f9 -> <RBRACE>
      */
     @Override
-    public Step visit(Function n) {
+    public Step visit(FunctionDefinition n) {
         // super.visit(n);
 
         // Get the name of the method.
@@ -206,7 +206,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      * f5 -> <RBRACE>
      */
     @Override
-    public Step visit(RepeatStatement n) {
+    public Step visit(RepeatInstruction n) {
         // super.visit(n);
         // Start a new scope.
         String name = String.format("%s_%d", REPEAT, scopeId++);
@@ -220,20 +220,68 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     }
 
     /**
-     * f0 -> <IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
-     * | <ELSE_IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
-     * | <ELSE> <LBRACE> Statement() <RBRACE>
+     * f0 -> <IF>
+     * f1 -> <LPAREN>
+     * f2 -> Expression()
+     * f3 -> <RPAREN>
+     * f4 -> <LBRACE>
+     * f5 -> Statement()
+     * f6 -> <RBRACE>
      */
     @Override
-    public Step visit(BranchStatement n) {
-        // Start a new scope.
+    public Step visit(IfStatement n) {
+        // super.visit(n);
+        n.f2.accept(this);
         String name = String.format("%s_%d", BRANCH, scopeId++);
         this.symbolTable.newScope(name);
         Branch symbol = new Branch(name, new HashSet<>());
         this.symbolTable.addLocal(symbol);
-        n.f0.accept(this);
+        n.f5.accept(this);
         // Return back to old scoping.
         this.symbolTable.endScope();
+
+        return this;
+    }
+
+    /**
+     * f0 -> <ELSE_IF>
+     * f1 -> <LPAREN>
+     * f2 -> Expression()
+     * f3 -> <RPAREN>
+     * f4 -> <LBRACE>
+     * f5 -> Statement()
+     * f6 -> <RBRACE>
+     */
+    @Override
+    public Step visit(ElseIfStatement n) {
+        // super.visit(n);
+        n.f2.accept(this);
+        String name = String.format("%s_%d", BRANCH, scopeId++);
+        this.symbolTable.newScope(name);
+        Branch symbol = new Branch(name, new HashSet<>());
+        this.symbolTable.addLocal(symbol);
+        n.f5.accept(this);
+        // Return back to old scoping.
+        this.symbolTable.endScope();
+
+        return this;
+    }
+
+    /**
+     * f0 -> <ELSE>
+     * f1 -> <LBRACE>
+     * f2 -> Statement()
+     * f3 -> <RBRACE>
+     */
+    @Override
+    public Step visit(ElseStatement n) {
+        // super.visit(n);
+        String name = String.format("%s_%d", BRANCH, scopeId++);
+        this.symbolTable.newScope(name);
+        n.f2.accept(this);
+        // Return back to old scoping.
+        this.symbolTable.endScope();
+
         return this;
     }
 
@@ -245,7 +293,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public Step visit(MixStatement n) {
+    public Step visit(MixInstruction n) {
         n.f1.accept(this);
         this.symbolTable.addLocal(new Variable(this.name, this.types));
         this.types.clear();
@@ -267,7 +315,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      * f3 -> IntegerLiteral()
      */
     @Override
-    public Step visit(SplitStatement n) {
+    public Step visit(SplitInstruction n) {
         //super.visit(n);
         n.f1.accept(this);
         this.symbolTable.addLocal(new Variable(this.name, this.types));
@@ -282,7 +330,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      * f1 -> PrimaryExpression()
      */
     @Override
-    public Step visit(DrainStatement n) {
+    public Step visit(DrainInstruction n) {
         //super.visit(n);
         n.f1.accept(this);
         this.symbolTable.addLocal(new Variable(this.name, this.types));
@@ -298,7 +346,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public Step visit(HeatStatement n) {
+    public Step visit(HeatInstruction n) {
         // super.visit(n);
 
         n.f1.accept(this);
@@ -323,7 +371,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public Step visit(DetectStatement n) {
+    public Step visit(DetectInstruction n) {
         // super.visit(n);
         n.f1.accept(this);
         this.symbolTable.addLocal(new Variable(this.name, this.types));

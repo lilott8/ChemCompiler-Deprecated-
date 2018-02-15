@@ -24,7 +24,8 @@ public class Detect extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        Instruction instruction = new Instruction(node.getId(), InstructionType.DETECT);
+        //Instruction instruction = new Instruction(node.getId(), InstructionType.DETECT);
+        Instruction instruction = new Instruction(InstructionType.DETECT);
 
         // There can be only one input variable.
         Variable input = null;

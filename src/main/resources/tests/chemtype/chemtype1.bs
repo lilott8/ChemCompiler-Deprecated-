@@ -30,6 +30,10 @@ if (1 < 2) {
     c = mix d with f
 }
 
+repeat 5 times {
+    a = mix a with b
+}
+
 b = mix a with chemical2 for 30
 c = mix b with x
 heat c at 49 for 3

@@ -12,17 +12,24 @@ import phases.inference.rules.Rule;
  */
 public class Instruction {
 
-    public final int id;
+    private static int instructionCounter = 0;
     public final Rule.InstructionType type;
+    public final int id;
     private List<Variable> output = new ArrayList<>();
     private List<Variable> input = new ArrayList<>();
     private List<Variable> properties = new ArrayList<>();
 
 
-    public Instruction(int id, Rule.InstructionType type) {
+    public Instruction(Rule.InstructionType type){
+        this.type = type;
+        this.id = instructionCounter++;
+    }
+
+
+    /*public Instruction(int id, Rule.InstructionType type) {
         this.id = id;
         this.type = type;
-    }
+    }*/
 
     public Instruction addOutputVariable(Variable output) {
         this.output.add(output);
@@ -37,6 +44,14 @@ public class Instruction {
     public Instruction addProperty(Variable prop) {
         this.properties.add(prop);
         return this;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public Rule.InstructionType getType() {
+        return this.type;
     }
 
     public List<Variable> getProperties() {

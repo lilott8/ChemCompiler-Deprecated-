@@ -24,7 +24,8 @@ public class Heat extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        Instruction instruction = new Instruction(node.getId(), InstructionType.HEAT);
+        //Instruction instruction = new Instruction(node.getId(), InstructionType.HEAT);
+        Instruction instruction = new Instruction(InstructionType.HEAT);
 
         Variable input = null;
         // There is only ever one input.

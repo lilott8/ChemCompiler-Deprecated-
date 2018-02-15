@@ -35,7 +35,8 @@ public class Split extends NodeAnalyzer {
         logger.info("=========================");
         */
 
-        Instruction instruction = new Instruction(node.getId(), InstructionType.SPLIT);
+        // Instruction instruction = new Instruction(node.getId(), InstructionType.SPLIT);
+        Instruction instruction = new Instruction(InstructionType.SPLIT);
 
         Variable input = null;
         for (String s : node.getUse()) {

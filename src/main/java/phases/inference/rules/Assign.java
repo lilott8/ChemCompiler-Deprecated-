@@ -32,7 +32,7 @@ public class Assign extends NodeAnalyzer {
              //logger.trace("Output: " + node.getOutputSymbols());
         }
 
-        Instruction instruction = new Instruction(node.getId(), InstructionType.ASSIGN);
+        Instruction instruction = new Instruction(InstructionType.ASSIGN);
 
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1

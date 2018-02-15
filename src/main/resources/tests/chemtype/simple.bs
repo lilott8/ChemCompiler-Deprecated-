@@ -1,0 +1,8 @@
+module test
+stationary test2
+manifest mat chemical1
+manifest chemical2
+
+instructions
+
+a = mix b with c for 30

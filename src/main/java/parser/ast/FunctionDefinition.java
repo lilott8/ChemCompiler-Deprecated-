@@ -15,11 +15,11 @@ import parser.visitor.*;
  * f4 -> <RPAREN>
  * f5 -> ( <COLON> TypingList() )?
  * f6 -> <LBRACE>
- * f7 -> ( Statement() )*
+ * f7 -> ( Statement() )+
  * f8 -> ( <RETURN> Expression() )?
  * f9 -> <RBRACE>
  */
-public class Function implements Node {
+public class FunctionDefinition implements Node {
    public NodeToken f0;
    public Identifier f1;
    public NodeToken f2;
@@ -27,11 +27,11 @@ public class Function implements Node {
    public NodeToken f4;
    public NodeOptional f5;
    public NodeToken f6;
-   public NodeListOptional f7;
+   public NodeList f7;
    public NodeOptional f8;
    public NodeToken f9;
 
-   public Function(NodeToken n0, Identifier n1, NodeToken n2, NodeListOptional n3, NodeToken n4, NodeOptional n5, NodeToken n6, NodeListOptional n7, NodeOptional n8, NodeToken n9) {
+   public FunctionDefinition(NodeToken n0, Identifier n1, NodeToken n2, NodeListOptional n3, NodeToken n4, NodeOptional n5, NodeToken n6, NodeList n7, NodeOptional n8, NodeToken n9) {
       f0 = n0;
       f1 = n1;
       f2 = n2;
@@ -44,7 +44,7 @@ public class Function implements Node {
       f9 = n9;
    }
 
-   public Function(Identifier n0, NodeListOptional n1, NodeOptional n2, NodeListOptional n3, NodeOptional n4) {
+   public FunctionDefinition(Identifier n0, NodeListOptional n1, NodeOptional n2, NodeList n3, NodeOptional n4) {
       f0 = new NodeToken("function");
       f1 = n0;
       f2 = new NodeToken("(");

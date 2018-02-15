@@ -8,29 +8,33 @@ import parser.visitor.*;
 
 /**
  * Grammar production:
- * f0 -> <SPLIT>
+ * f0 -> <DETECT>
  * f1 -> PrimaryExpression()
- * f2 -> <INTO>
- * f3 -> IntegerLiteral()
+ * f2 -> <ON>
+ * f3 -> PrimaryExpression()
+ * f4 -> ( <FOR> IntegerLiteral() )?
  */
-public class SplitStatement implements Node {
+public class DetectInstruction implements Node {
    public NodeToken f0;
    public PrimaryExpression f1;
    public NodeToken f2;
-   public IntegerLiteral f3;
+   public PrimaryExpression f3;
+   public NodeOptional f4;
 
-   public SplitStatement(NodeToken n0, PrimaryExpression n1, NodeToken n2, IntegerLiteral n3) {
+   public DetectInstruction(NodeToken n0, PrimaryExpression n1, NodeToken n2, PrimaryExpression n3, NodeOptional n4) {
       f0 = n0;
       f1 = n1;
       f2 = n2;
       f3 = n3;
+      f4 = n4;
    }
 
-   public SplitStatement(PrimaryExpression n0, IntegerLiteral n1) {
-      f0 = new NodeToken("split");
+   public DetectInstruction(PrimaryExpression n0, PrimaryExpression n1, NodeOptional n2) {
+      f0 = new NodeToken("detect");
       f1 = n0;
-      f2 = new NodeToken("into");
+      f2 = new NodeToken("on");
       f3 = n1;
+      f4 = n2;
    }
 
    public void accept(Visitor v) {

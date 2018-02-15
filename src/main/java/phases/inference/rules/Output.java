@@ -24,7 +24,8 @@ public class Output extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        Instruction instruction = new Instruction(node.getId(), InstructionType.OUTPUT);
+        //Instruction instruction = new Instruction(node.getId(), InstructionType.OUTPUT);
+        Instruction instruction = new Instruction(InstructionType.OUTPUT);
 
         Variable input = null;
         for (String s : node.getUse()) {

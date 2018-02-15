@@ -14,14 +14,14 @@ import parser.visitor.*;
  * f3 -> IntegerLiteral()
  * f4 -> ( <FOR> IntegerLiteral() )?
  */
-public class HeatStatement implements Node {
+public class HeatInstruction implements Node {
    public NodeToken f0;
    public PrimaryExpression f1;
    public NodeToken f2;
    public IntegerLiteral f3;
    public NodeOptional f4;
 
-   public HeatStatement(NodeToken n0, PrimaryExpression n1, NodeToken n2, IntegerLiteral n3, NodeOptional n4) {
+   public HeatInstruction(NodeToken n0, PrimaryExpression n1, NodeToken n2, IntegerLiteral n3, NodeOptional n4) {
       f0 = n0;
       f1 = n1;
       f2 = n2;
@@ -29,7 +29,7 @@ public class HeatStatement implements Node {
       f4 = n4;
    }
 
-   public HeatStatement(PrimaryExpression n0, IntegerLiteral n1, NodeOptional n2) {
+   public HeatInstruction(PrimaryExpression n0, IntegerLiteral n1, NodeOptional n2) {
       f0 = new NodeToken("heat");
       f1 = n0;
       f2 = new NodeToken("at");

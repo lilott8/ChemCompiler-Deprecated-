@@ -9,7 +9,7 @@ import parser.visitor.*;
 /**
  * Grammar production:
  * f0 -> <COMMA>
- * f1 -> Visibility()
+ * f1 -> Type()
  */
 public class TypingRest implements Node {
    public NodeToken f0;

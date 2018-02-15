@@ -15,7 +15,7 @@ import parser.visitor.*;
  * f4 -> Statement()
  * f5 -> <RBRACE>
  */
-public class RepeatStatement implements Node {
+public class RepeatInstruction implements Node {
    public NodeToken f0;
    public IntegerLiteral f1;
    public NodeToken f2;
@@ -23,7 +23,7 @@ public class RepeatStatement implements Node {
    public Statement f4;
    public NodeToken f5;
 
-   public RepeatStatement(NodeToken n0, IntegerLiteral n1, NodeToken n2, NodeToken n3, Statement n4, NodeToken n5) {
+   public RepeatInstruction(NodeToken n0, IntegerLiteral n1, NodeToken n2, NodeToken n3, Statement n4, NodeToken n5) {
       f0 = n0;
       f1 = n1;
       f2 = n2;
@@ -32,7 +32,7 @@ public class RepeatStatement implements Node {
       f5 = n5;
    }
 
-   public RepeatStatement(IntegerLiteral n0, Statement n1) {
+   public RepeatInstruction(IntegerLiteral n0, Statement n1) {
       f0 = new NodeToken("repeat");
       f1 = n0;
       f2 = new NodeToken("times");
