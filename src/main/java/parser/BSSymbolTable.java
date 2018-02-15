@@ -46,20 +46,17 @@ import typesystem.epa.ChemTypes;
 public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
 
     public static final Logger logger = LogManager.getLogger(BSSymbolTable.class);
-
+    private static final String REPEAT = "REPEAT";
+    private static final String BRANCH = "BRANCH";
+    private static final String INTEGER = "INTEGER";
     private SymbolTable symbolTable = new SymbolTable();
-
     private int scopeId = 0;
     private int integerId = 0;
-
     //private String scope = DEFAULT_SCOPE;
     // private Variable variable;
     private String name;
     private Set<ChemTypes> types = new HashSet<>();
     private List<Symbol> arguments = new ArrayList<>();
-    private static final String REPEAT = "REPEAT";
-    private static final String BRANCH = "BRANCH";
-    private static final String INTEGER = "INTEGER";
 
 
     public BSSymbolTable() {

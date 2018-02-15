@@ -4,7 +4,10 @@
 
 package parser.ast;
 
-import parser.visitor.*;
+import parser.visitor.GJNoArguVisitor;
+import parser.visitor.GJVisitor;
+import parser.visitor.GJVoidVisitor;
+import parser.visitor.Visitor;
 
 /**
  * Grammar production:
@@ -16,42 +19,45 @@ import parser.visitor.*;
  * f5 -> <EOF>
  */
 public class BSProgram implements Node {
-   public NodeListOptional f0;
-   public NodeListOptional f1;
-   public NodeList f2;
-   public NodeToken f3;
-   public NodeList f4;
-   public NodeToken f5;
+    public NodeListOptional f0;
+    public NodeListOptional f1;
+    public NodeList f2;
+    public NodeToken f3;
+    public NodeList f4;
+    public NodeToken f5;
 
-   public BSProgram(NodeListOptional n0, NodeListOptional n1, NodeList n2, NodeToken n3, NodeList n4, NodeToken n5) {
-      f0 = n0;
-      f1 = n1;
-      f2 = n2;
-      f3 = n3;
-      f4 = n4;
-      f5 = n5;
-   }
+    public BSProgram(NodeListOptional n0, NodeListOptional n1, NodeList n2, NodeToken n3, NodeList n4, NodeToken n5) {
+        f0 = n0;
+        f1 = n1;
+        f2 = n2;
+        f3 = n3;
+        f4 = n4;
+        f5 = n5;
+    }
 
-   public BSProgram(NodeListOptional n0, NodeListOptional n1, NodeList n2, NodeList n3) {
-      f0 = n0;
-      f1 = n1;
-      f2 = n2;
-      f3 = new NodeToken("instructions");
-      f4 = n3;
-      f5 = new NodeToken("");
-   }
+    public BSProgram(NodeListOptional n0, NodeListOptional n1, NodeList n2, NodeList n3) {
+        f0 = n0;
+        f1 = n1;
+        f2 = n2;
+        f3 = new NodeToken("instructions");
+        f4 = n3;
+        f5 = new NodeToken("");
+    }
 
-   public void accept(Visitor v) {
-      v.visit(this);
-   }
-   public <R,A> R accept(GJVisitor<R,A> v, A argu) {
-      return v.visit(this,argu);
-   }
-   public <R> R accept(GJNoArguVisitor<R> v) {
-      return v.visit(this);
-   }
-   public <A> void accept(GJVoidVisitor<A> v, A argu) {
-      v.visit(this,argu);
-   }
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
+
+    public <R, A> R accept(GJVisitor<R, A> v, A argu) {
+        return v.visit(this, argu);
+    }
+
+    public <R> R accept(GJNoArguVisitor<R> v) {
+        return v.visit(this);
+    }
+
+    public <A> void accept(GJVoidVisitor<A> v, A argu) {
+        v.visit(this, argu);
+    }
 }
 

@@ -4,7 +4,10 @@
 
 package parser.ast;
 
-import parser.visitor.*;
+import parser.visitor.GJNoArguVisitor;
+import parser.visitor.GJVisitor;
+import parser.visitor.GJVoidVisitor;
+import parser.visitor.Visitor;
 
 /**
  * Grammar production:
@@ -16,42 +19,45 @@ import parser.visitor.*;
  * f5 -> <RBRACE>
  */
 public class RepeatInstruction implements Node {
-   public NodeToken f0;
-   public IntegerLiteral f1;
-   public NodeToken f2;
-   public NodeToken f3;
-   public Statement f4;
-   public NodeToken f5;
+    public NodeToken f0;
+    public IntegerLiteral f1;
+    public NodeToken f2;
+    public NodeToken f3;
+    public Statement f4;
+    public NodeToken f5;
 
-   public RepeatInstruction(NodeToken n0, IntegerLiteral n1, NodeToken n2, NodeToken n3, Statement n4, NodeToken n5) {
-      f0 = n0;
-      f1 = n1;
-      f2 = n2;
-      f3 = n3;
-      f4 = n4;
-      f5 = n5;
-   }
+    public RepeatInstruction(NodeToken n0, IntegerLiteral n1, NodeToken n2, NodeToken n3, Statement n4, NodeToken n5) {
+        f0 = n0;
+        f1 = n1;
+        f2 = n2;
+        f3 = n3;
+        f4 = n4;
+        f5 = n5;
+    }
 
-   public RepeatInstruction(IntegerLiteral n0, Statement n1) {
-      f0 = new NodeToken("repeat");
-      f1 = n0;
-      f2 = new NodeToken("times");
-      f3 = new NodeToken("{");
-      f4 = n1;
-      f5 = new NodeToken("}");
-   }
+    public RepeatInstruction(IntegerLiteral n0, Statement n1) {
+        f0 = new NodeToken("repeat");
+        f1 = n0;
+        f2 = new NodeToken("times");
+        f3 = new NodeToken("{");
+        f4 = n1;
+        f5 = new NodeToken("}");
+    }
 
-   public void accept(Visitor v) {
-      v.visit(this);
-   }
-   public <R,A> R accept(GJVisitor<R,A> v, A argu) {
-      return v.visit(this,argu);
-   }
-   public <R> R accept(GJNoArguVisitor<R> v) {
-      return v.visit(this);
-   }
-   public <A> void accept(GJVoidVisitor<A> v, A argu) {
-      v.visit(this,argu);
-   }
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
+
+    public <R, A> R accept(GJVisitor<R, A> v, A argu) {
+        return v.visit(this, argu);
+    }
+
+    public <R> R accept(GJNoArguVisitor<R> v) {
+        return v.visit(this);
+    }
+
+    public <A> void accept(GJVoidVisitor<A> v, A argu) {
+        v.visit(this, argu);
+    }
 }
 

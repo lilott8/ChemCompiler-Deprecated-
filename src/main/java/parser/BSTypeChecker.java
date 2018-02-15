@@ -36,8 +36,6 @@ import phases.inference.satsolver.strategies.SolverStrategy;
 import phases.inference.satsolver.strategies.Z3Strategy;
 import shared.Step;
 import symboltable.SymbolTable;
-import typesystem.combinator.Combiner;
-import typesystem.combinator.CombinerFactory;
 import typesystem.epa.ChemTypes;
 import typesystem.identification.Identifier;
 import typesystem.identification.IdentifierFactory;
@@ -66,10 +64,12 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
     private static final String INTEGER = "INTEGER";
     private static final String BOOLEAN = "BOOLEAN";
     private static final String REAL = "REAL";
+    // Keep track of the instruction id to input/outputs
+    protected static Map<Integer, Instruction> instructions = new LinkedHashMap<>();
+    protected static Map<String, Variable> variables = new HashMap<>();
     private int realId = 0;
     private int booleanId = 0;
     private int integerId = 0;
-
     // The symbol table
     private SymbolTable symbolTable;
     // Name of variable.
@@ -81,11 +81,6 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
     private boolean isAssign = false;
     // Set the type to be NULL, for now.
     private ChemTypes typeForName = NULL;
-
-    // Keep track of the instruction id to input/outputs
-    protected static Map<Integer, Instruction> instructions = new LinkedHashMap<>();
-    protected static Map<String, Variable> variables = new HashMap<>();
-
     private Identifier identifier = IdentifierFactory.getIdentifier();
 
     private Map<String, Set<ChemTypes>> typeInference = new LinkedHashMap<>();
@@ -94,6 +89,30 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
 
     public BSTypeChecker(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
+    }
+
+    private static void addInstruction(Instruction i) {
+        logger.error("Adding instruction: " + i.getId());
+        logger.error(i);
+        instructions.put(i.getId(), i);
+    }
+
+    private static void addVariable(Variable t) {
+        if (!variables.containsKey(t.getVarName())) {
+            variables.put(t.getVarName(), t);
+        } else {
+            if (variables.get(t.getVarName()).equals(t)) {
+                logger.warn(String.format("%s is equal to %s", t, variables.get(t.getVarName())));
+            }
+        }
+    }
+
+    public static Map<Integer, Instruction> getInstructions() {
+        return instructions;
+    }
+
+    public static Map<String, Variable> getVariables() {
+        return variables;
     }
 
     @Override
@@ -118,7 +137,7 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
      * f2 -> <ASSIGN>
      * f3 -> Expression()
      * Depending on what the Expression evaluates to,
-     *  This will dictate what the assignment is.
+     * This will dictate what the assignment is.
      */
     @Override
     public BSTypeChecker visit(Assignment n) {
@@ -138,10 +157,10 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
         if (isAssign) {
             isAssign = false;
             logger.info("variable name: " + this.name);
-            switch(this.instruction.getType()) {
+            switch (this.instruction.getType()) {
                 case MIX:
                 case SPLIT:
-                    term.addTypingConstraint(MAT);
+                    term.addTypingConstraints(this.getTypingConstraints(term));
                     this.instruction.addOutputVariable(term);
                     break;
                 case DETECT:
@@ -152,6 +171,7 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
                     logger.warn("We have a function");
                     break;
             }
+            addVariable(term);
             addInstruction(this.instruction);
         }
         return this;
@@ -361,7 +381,7 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
         addVariable(term);
         this.instruction.addProperty(term);
 
-        if(n.f4.present()) {
+        if (n.f4.present()) {
             n.f4.accept(this);
             term = new Term(this.name);
             term.addTypingConstraint(NAT);
@@ -495,7 +515,7 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
     @Override
     public BSTypeChecker visit(parser.ast.Identifier n) {
         // super.visit(n);
-        switch(this.typeForName) {
+        switch (this.typeForName) {
             default:
             case MAT:
                 this.name = n.f0.toString();
@@ -575,35 +595,11 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
         return this;
     }
 
-    private static void addInstruction(Instruction i) {
-        logger.error("Adding instruction: " + i.getId());
-        logger.error(i);
-        instructions.put(i.getId(), i);
-    }
-
-    private static void addVariable(Variable t) {
-        if (!variables.containsKey(t.getVarName())) {
-            variables.put(t.getVarName(), t);
-        } else {
-            if (variables.get(t.getVarName()).equals(t)) {
-                logger.warn(String.format("%s is equal to %s", t, variables.get(t.getVarName())));
-            }
-        }
-    }
-
     private Set<ChemTypes> getTypingConstraints(Term t) {
         if (variables.containsKey(t.getVarName())) {
             return variables.get(t.getVarName()).getTypingConstraints();
         } else {
             return this.identifier.identifyCompoundForTypes(t.name);
         }
-    }
-
-    public static Map<Integer, Instruction> getInstructions() {
-        return instructions;
-    }
-
-    public static Map<String, Variable> getVariables() {
-        return variables;
     }
 }

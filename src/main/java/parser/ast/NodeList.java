@@ -4,43 +4,59 @@
 
 package parser.ast;
 
-import parser.visitor.*;
+import java.util.Enumeration;
+import java.util.Vector;
 
-import java.util.*;
+import parser.visitor.GJNoArguVisitor;
+import parser.visitor.GJVisitor;
+import parser.visitor.GJVoidVisitor;
+import parser.visitor.Visitor;
 
 /**
  * Represents a grammar list, e.g. ( A )+
  */
 public class NodeList implements NodeListInterface {
-   public NodeList() {
-      nodes = new Vector<Node>();
-   }
+    public Vector<Node> nodes;
 
-   public NodeList(Node firstNode) {
-      nodes = new Vector<Node>();
-      addNode(firstNode);
-   }
+    public NodeList() {
+        nodes = new Vector<Node>();
+    }
 
-   public void addNode(Node n) {
-      nodes.addElement(n);
-   }
+    public NodeList(Node firstNode) {
+        nodes = new Vector<Node>();
+        addNode(firstNode);
+    }
 
-   public Enumeration<Node> elements() { return nodes.elements(); }
-   public Node elementAt(int i)  { return nodes.elementAt(i); }
-   public int size()             { return nodes.size(); }
-   public void accept(Visitor v) {
-      v.visit(this);
-   }
-   public <R,A> R accept(GJVisitor<R,A> v, A argu) {
-      return v.visit(this,argu);
-   }
-   public <R> R accept(GJNoArguVisitor<R> v) {
-      return v.visit(this);
-   }
-   public <A> void accept(GJVoidVisitor<A> v, A argu) {
-      v.visit(this,argu);
-   }
+    public void addNode(Node n) {
+        nodes.addElement(n);
+    }
 
-   public Vector<Node> nodes;
+    public Enumeration<Node> elements() {
+        return nodes.elements();
+    }
+
+    public Node elementAt(int i) {
+        return nodes.elementAt(i);
+    }
+
+    public int size() {
+        return nodes.size();
+    }
+
+    public void accept(Visitor v) {
+        v.visit(this);
+    }
+
+    public <R, A> R accept(GJVisitor<R, A> v, A argu) {
+        return v.visit(this, argu);
+    }
+
+    public <R> R accept(GJNoArguVisitor<R> v) {
+        return v.visit(this);
+    }
+
+    public <A> void accept(GJVoidVisitor<A> v, A argu) {
+        v.visit(this, argu);
+    }
 }
 

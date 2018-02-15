@@ -26,4 +26,15 @@ public class Variable extends Symbol {
     public String toString() {
         return super.toString();
     }
+
+    public Variable addTypingConstraints(Set<ChemTypes> constraints) {
+        this.type.addAll(constraints);
+        return this;
+    }
+
+    public Variable addTypingConstraint(ChemTypes constraint) {
+        this.type.add(constraint);
+        return this;
+    }
+
 }
