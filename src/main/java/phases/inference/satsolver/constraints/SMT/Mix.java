@@ -61,7 +61,6 @@ public class Mix implements Composer {
 
     private String buildMix(Variable output, List<Variable> input) {
         StringBuilder sb = new StringBuilder();
-        Config config = ConfigFactory.getConfig();
 
         // We need the form: a \in output ^ b \in output => LU(a,b) \subseteq output
         // At this point, output's set contains the look up values already.

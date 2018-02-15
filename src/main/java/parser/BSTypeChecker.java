@@ -14,6 +14,7 @@ import parser.ast.DrainInstruction;
 import parser.ast.ElseIfStatement;
 import parser.ast.FalseLiteral;
 import parser.ast.FunctionDefinition;
+import parser.ast.FunctionInvoke;
 import parser.ast.HeatInstruction;
 import parser.ast.IfStatement;
 import parser.ast.IntegerLiteral;
@@ -252,11 +253,36 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
     @Override
     public BSTypeChecker visit(FunctionDefinition n) {
         // super.visit(n);
-        this.instruction = new Instruction(FUNCTION);
+        n.f1.accept(this);
+        Term term = new Term(this.name);
 
         if (n.f5.present()) {
             this.isAssign = true;
+            n.f5.accept(this);
+            term.addTypingConstraint(this.typeForName);
         }
+
+        addVariable(term);
+
+        n.f7.accept(this);
+
+        if (n.f8.present()) {
+            n.f8.accept(this);
+        }
+
+        return this;
+    }
+
+    /**
+     * f0 -> Identifier()
+     * f1 -> <LPAREN>
+     * f2 -> ( ExpressionList() )?
+     * f3 -> <RPAREN>
+     */
+    @Override
+    public BSTypeChecker visit(FunctionInvoke n) {
+        // super.visit(n);
+        // TODO: not quite sure what to do here.
 
         return this;
     }

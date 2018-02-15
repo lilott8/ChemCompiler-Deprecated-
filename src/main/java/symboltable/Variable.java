@@ -37,4 +37,7 @@ public class Variable extends Symbol {
         return this;
     }
 
+    public String getScope() {
+        return this.scope;
+    }
 }

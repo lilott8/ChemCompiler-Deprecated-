@@ -81,7 +81,7 @@ public class Inference implements Phase {
 
     // Default Constructor
     public Inference() {
-        this.loadRules();
+        //this.loadRules();
     }
 
     /**

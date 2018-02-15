@@ -47,7 +47,8 @@ public class SymbolTable {
     public void addLocal(Symbol symbol) {
         // Cache it for right now.
         Scope s = this.scopeStack.peek();
-
+        // Add the scope to the symbol.
+        symbol.addScope(s);
         // Add it to the scope.
         s.addSymbol(symbol);
         // Add it to the global list.
@@ -62,6 +63,8 @@ public class SymbolTable {
         Scope s = this.scopeStack.pop();
 
         for (Symbol symbol : symbols) {
+            // Add the scope to the symbol.
+            symbol.addScope(s);
             s.addSymbol(symbol);
             this.symbols.put(symbol.getName(), symbol);
         }

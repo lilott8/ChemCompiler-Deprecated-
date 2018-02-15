@@ -16,9 +16,15 @@ public abstract class Symbol {
     // Functions use this for their return value.
     protected Set<ChemTypes> type = new HashSet<>();
 
+    protected String scope;
+
     public Symbol(String name, Set<ChemTypes> type) {
         this.name = name;
         this.type.addAll(type);
+    }
+
+    public void addScope(Scope scope) {
+        this.scope = scope.getName();
     }
 
     public String getName() {
