@@ -38,7 +38,7 @@ The basic command line usage:
 *if using a translator, you must provide an output directory.
 
 
-###Definitions
+### Definitions
 
 A phase is a clearly defined process in which the compiler will run.  These are discrete and independent, e.g., `Parsing`, `Data Flow Analysis`.
 
