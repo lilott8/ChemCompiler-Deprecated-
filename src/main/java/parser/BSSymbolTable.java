@@ -159,16 +159,20 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         this.arguments.clear();
 
         // Get the types of this method.
-        n.f5.accept(this);
-        symbol.addReturnTypes(this.types);
-        this.types.clear();
+        if (n.f5.present()) {
+            n.f5.accept(this);
+            symbol.addReturnTypes(this.types);
+            this.types.clear();
+        }
 
         // Get the list of statements.
         n.f7.accept(this);
         this.symbolTable.addLocal(symbol);
 
-        // Get the return statement (Currently ignored).
-        n.f8.accept(this);
+        if (n.f8.present()) {
+            // Get the return statement (Currently ignored).
+            n.f8.accept(this);
+        }
 
         // Return back to previous scoping.
         this.symbolTable.endScope();
@@ -228,10 +232,10 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     @Override
     public Step visit(IfStatement n) {
         // super.visit(n);
-        n.f2.accept(this);
         String name = String.format("%s_%d", BRANCH, scopeId++);
         this.symbolTable.newScope(name);
         Branch symbol = new Branch(name, new HashSet<>());
+        n.f2.accept(this);
         this.symbolTable.addLocal(symbol);
         n.f5.accept(this);
         // Return back to old scoping.
@@ -252,11 +256,11 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     @Override
     public Step visit(ElseIfStatement n) {
         // super.visit(n);
-        n.f2.accept(this);
         String name = String.format("%s_%d", BRANCH, scopeId++);
         this.symbolTable.newScope(name);
         Branch symbol = new Branch(name, new HashSet<>());
         this.symbolTable.addLocal(symbol);
+        n.f2.accept(this);
         n.f5.accept(this);
         // Return back to old scoping.
         this.symbolTable.endScope();

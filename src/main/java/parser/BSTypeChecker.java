@@ -61,31 +61,37 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
 
     public static final Logger logger = LogManager.getLogger(BSTypeChecker.class);
 
+    // These are constants for naming scopes/constants.
     private static final String INTEGER = "INTEGER";
     private static final String BOOLEAN = "BOOLEAN";
     private static final String REAL = "REAL";
+    private static final String REPEAT = "REPEAT";
+    private static final String BRANCH = "BRANCH";
+    // Needed for scoping names where the scope is "branch".
+    private int scopeId = 0;
+
     // Keep track of the instruction id to input/outputs
     protected static Map<Integer, Instruction> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
+
     private int realId = 0;
     private int booleanId = 0;
     private int integerId = 0;
+
     // The symbol table
     private SymbolTable symbolTable;
+
     // Name of variable.
     private String name;
+
     // Typing constraints of variables.
     private Instruction instruction;
-    // Lets mix/split/math know that it is an assignment.
-    // This means that the output of an instruction must be set.
-    private boolean isAssign = false;
+
     // Set the type to be NULL, for now.
     private ChemTypes typeForName = NULL;
     private Identifier identifier = IdentifierFactory.getIdentifier();
-
-    private Map<String, Set<ChemTypes>> typeInference = new LinkedHashMap<>();
     private SolverStrategy z3 = new Z3Strategy();
-    // private NewZ3Strategy newZ3 = new NewZ3Strategy();
+
 
     public BSTypeChecker(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
@@ -141,7 +147,6 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
      */
     @Override
     public BSTypeChecker visit(Assignment n) {
-        this.isAssign = true;
         // Get the expression done before we get the identifier.
         // That way we can set the appropriate instruction.
         n.f3.accept(this);
@@ -155,27 +160,23 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
             n.f0.accept(this);
             term.addTypingConstraint(this.typeForName);
         }
-        if (isAssign) {
-            isAssign = false;
-            logger.info("variable name: " + this.name);
-            switch (this.instruction.getType()) {
-                case MIX:
-                case SPLIT:
-                    term.addTypingConstraints(this.getTypingConstraints(term));
-                    this.instruction.addOutputVariable(term);
-                    break;
-                case DETECT:
-                    term.addTypingConstraint(ChemTypes.REAL);
-                    this.instruction.addOutputVariable(term);
-                    break;
-                case FUNCTION:
-                    logger.warn("We have a function");
-                    break;
-            }
-            addVariable(term);
-            addInstruction(this.instruction);
+        logger.info("variable name: " + this.name);
+        switch (this.instruction.getType()) {
+            case MIX:
+            case SPLIT:
+                term.addTypingConstraints(this.getTypingConstraints(term));
+                this.instruction.addOutputVariable(term);
+                break;
+            case DETECT:
+                term.addTypingConstraint(ChemTypes.REAL);
+                this.instruction.addOutputVariable(term);
+                break;
+            case FUNCTION:
+                logger.warn("We have a function");
+                break;
         }
-        this.isAssign = false;
+        addVariable(term);
+        addInstruction(this.instruction);
         return this;
     }
 
@@ -258,7 +259,6 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
         Term term = new Term(this.name);
 
         if (n.f5.present()) {
-            this.isAssign = true;
             n.f5.accept(this);
             term.addTypingConstraint(this.typeForName);
         }
@@ -492,7 +492,7 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
     @Override
     public BSTypeChecker visit(IfStatement n) {
         // super.visit(n);
-        this.instruction = new Instruction(BRANCH);
+        this.instruction = new Instruction(Rule.InstructionType.BRANCH);
         this.name = String.format("%s_%d", NAT, integerId);
         Term term = new Term(this.name);
         term.addTypingConstraint(NAT);
@@ -517,7 +517,7 @@ public class BSTypeChecker extends GJNoArguDepthFirst<BSTypeChecker> implements 
     @Override
     public BSTypeChecker visit(ElseIfStatement n) {
         // super.visit(n);
-        this.instruction = new Instruction(BRANCH);
+        this.instruction = new Instruction(Rule.InstructionType.BRANCH);
         this.name = String.format("%s_%d", NAT, integerId);
         Term term = new Term(this.name);
         term.addTypingConstraint(NAT);
