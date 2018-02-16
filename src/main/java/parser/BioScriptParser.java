@@ -7,8 +7,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import config.CommonConfig;
 import config.ConfigFactory;
+import config.InferenceConfig;
+import parser.ast.BSProgram;
 import parser.parsing.BSParser;
 import parser.parsing.ParseException;
 import shared.Phase;
@@ -22,13 +23,15 @@ public class BioScriptParser implements Phase {
 
     public static final Logger logger = LogManager.getLogger(BioScriptParser.class);
     private BSParser parser;
-    private CommonConfig config = ConfigFactory.getConfig();
-    private TypeChecker typeChecker;
-    private SymbolTable symbolTable;
+    private InferenceConfig config = ConfigFactory.getConfig();
+    private BSTypeChecker typeChecker;
+    private BSSymbolTable symbolTable;
     private String file;
 
     public BioScriptParser(String fileName) {
         this.file = fileName;
+        this.symbolTable = new BSSymbolTable();
+        this.typeChecker = new BSTypeChecker(this.symbolTable.getSymbolTable());
     }
 
     @Override
@@ -40,11 +43,16 @@ public class BioScriptParser implements Phase {
     public Phase run() {
         try (InputStream input = new FileInputStream(this.file)) {
             this.parser = new BSParser(input);
-            // We run the type checking inside the parse.
             try {
-                this.parser.BSProgram();
-                this.symbolTable = ((SymbolTable) new BSSymbolTable((this.parser.BSProgram())).run());
-                this.typeChecker = ((TypeChecker) new BSTypeChecker(this.parser.BSProgram()).run());
+                BSProgram program = this.parser.BSProgram();
+                program.accept(this.symbolTable);
+                // logger.info(this.symbolTable);
+                if (!this.config.getErrorLevel().disabled()) {
+                    program.accept(this.typeChecker);
+                    this.typeChecker.solve();
+                } else {
+                    logger.error("Type checking has been disabled.");
+                }
             } catch (ParseException e) {
                 logger.error(e);
             }

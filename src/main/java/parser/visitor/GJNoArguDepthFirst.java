@@ -7,11 +7,13 @@ package parser.visitor;
 import java.util.Enumeration;
 
 import parser.ast.AndExpression;
-import parser.ast.AssignmentInstruction;
+import parser.ast.Assignment;
 import parser.ast.BSProgram;
-import parser.ast.BranchStatement;
-import parser.ast.DetectStatement;
-import parser.ast.DrainStatement;
+import parser.ast.BranchInstruction;
+import parser.ast.DetectInstruction;
+import parser.ast.DrainInstruction;
+import parser.ast.ElseIfStatement;
+import parser.ast.ElseStatement;
 import parser.ast.EqualityExpression;
 import parser.ast.Expression;
 import parser.ast.ExpressionList;
@@ -20,20 +22,20 @@ import parser.ast.FalseLiteral;
 import parser.ast.FormalParameter;
 import parser.ast.FormalParameterList;
 import parser.ast.FormalParameterRest;
-import parser.ast.Function;
+import parser.ast.FunctionDefinition;
 import parser.ast.FunctionInvoke;
 import parser.ast.GreaterThanEqualExpression;
 import parser.ast.GreaterThanExpression;
-import parser.ast.HeatStatement;
+import parser.ast.HeatInstruction;
 import parser.ast.Identifier;
-import parser.ast.InstructionAssignment;
+import parser.ast.IfStatement;
 import parser.ast.IntegerLiteral;
 import parser.ast.LessThanEqualExpression;
 import parser.ast.LessThanExpression;
 import parser.ast.Manifest;
 import parser.ast.MatLiteral;
 import parser.ast.MinusExpression;
-import parser.ast.MixStatement;
+import parser.ast.MixInstruction;
 import parser.ast.Module;
 import parser.ast.NatLiteral;
 import parser.ast.Node;
@@ -49,9 +51,9 @@ import parser.ast.ParenthesisExpression;
 import parser.ast.PlusExpression;
 import parser.ast.PrimaryExpression;
 import parser.ast.RealLiteral;
-import parser.ast.RepeatStatement;
+import parser.ast.RepeatInstruction;
 import parser.ast.Sequence;
-import parser.ast.SplitStatement;
+import parser.ast.SplitInstruction;
 import parser.ast.Statement;
 import parser.ast.Stationary;
 import parser.ast.TimesExpression;
@@ -117,9 +119,9 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
     //
 
     /**
-     * f0 -> Module()
-     * f1 -> Stationary()
-     * f2 -> Manifest()
+     * f0 -> ( Module() )*
+     * f1 -> ( Stationary() )*
+     * f2 -> ( Manifest() )+
      * f3 -> <INSTRUCTIONS>
      * f4 -> ( Sequence() )+
      * f5 -> <EOF>
@@ -136,66 +138,49 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
     }
 
     /**
-     * f0 -> ( <MODULE> Identifier() )*
+     * f0 -> <MODULE>
+     * f1 -> Identifier()
      */
     public R visit(Module n) {
         R _ret = null;
         n.f0.accept(this);
+        n.f1.accept(this);
         return _ret;
     }
 
     /**
-     * f0 -> ( <STATIONARY> ( Type() )? PrimaryExpression() )*
+     * f0 -> <STATIONARY>
+     * f1 -> ( TypingList() )?
+     * f2 -> PrimaryExpression()
      */
     public R visit(Stationary n) {
         R _ret = null;
         n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
         return _ret;
     }
 
     /**
-     * f0 -> ( <MANIFEST> ( Type() )? PrimaryExpression() )+
+     * f0 -> <MANIFEST>
+     * f1 -> ( TypingList() )?
+     * f2 -> PrimaryExpression()
      */
     public R visit(Manifest n) {
         R _ret = null;
         n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
         return _ret;
     }
 
     /**
-     * f0 -> Function()
+     * f0 -> FunctionDefinition()
      * | Statement()
      */
     public R visit(Sequence n) {
         R _ret = null;
         n.f0.accept(this);
-        return _ret;
-    }
-
-    /**
-     * f0 -> AssignmentInstruction()
-     * | BranchStatement()
-     * | RepeatStatement()
-     * | HeatStatement()
-     * | DrainStatement()
-     * | FunctionInvoke()
-     */
-    public R visit(Statement n) {
-        R _ret = null;
-        n.f0.accept(this);
-        return _ret;
-    }
-
-    /**
-     * f0 -> ( ( TypingList() )* Identifier() )?
-     * f1 -> <ASSIGN>
-     * f2 -> Expression()
-     */
-    public R visit(AssignmentInstruction n) {
-        R _ret = null;
-        n.f0.accept(this);
-        n.f1.accept(this);
-        n.f2.accept(this);
         return _ret;
     }
 
@@ -207,11 +192,11 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
      * f4 -> <RPAREN>
      * f5 -> ( <COLON> TypingList() )?
      * f6 -> <LBRACE>
-     * f7 -> ( Statement() )*
+     * f7 -> ( Statement() )+
      * f8 -> ( <RETURN> Expression() )?
      * f9 -> <RBRACE>
      */
-    public R visit(Function n) {
+    public R visit(FunctionDefinition n) {
         R _ret = null;
         n.f0.accept(this);
         n.f1.accept(this);
@@ -223,6 +208,20 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
         n.f7.accept(this);
         n.f8.accept(this);
         n.f9.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> Assignment()
+     * | BranchInstruction()
+     * | RepeatInstruction()
+     * | HeatInstruction()
+     * | DrainInstruction()
+     * | Expression()
+     */
+    public R visit(Statement n) {
+        R _ret = null;
+        n.f0.accept(this);
         return _ret;
     }
 
@@ -293,91 +292,28 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
     }
 
     /**
-     * f0 -> <MIX>
-     * f1 -> PrimaryExpression()
-     * f2 -> <WITH>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f0 -> IfStatement()
+     * f1 -> ( ElseIfStatement() )*
+     * f2 -> ( ElseStatement() )?
      */
-    public R visit(MixStatement n) {
+    public R visit(BranchInstruction n) {
         R _ret = null;
         n.f0.accept(this);
         n.f1.accept(this);
         n.f2.accept(this);
-        n.f3.accept(this);
-        n.f4.accept(this);
         return _ret;
     }
 
     /**
-     * f0 -> <SPLIT>
-     * f1 -> PrimaryExpression()
-     * f2 -> <INTO>
-     * f3 -> IntegerLiteral()
+     * f0 -> <IF>
+     * f1 -> <LPAREN>
+     * f2 -> Expression()
+     * f3 -> <RPAREN>
+     * f4 -> <LBRACE>
+     * f5 -> Statement()
+     * f6 -> <RBRACE>
      */
-    public R visit(SplitStatement n) {
-        R _ret = null;
-        n.f0.accept(this);
-        n.f1.accept(this);
-        n.f2.accept(this);
-        n.f3.accept(this);
-        return _ret;
-    }
-
-    /**
-     * f0 -> <DRAIN>
-     * f1 -> PrimaryExpression()
-     */
-    public R visit(DrainStatement n) {
-        R _ret = null;
-        n.f0.accept(this);
-        n.f1.accept(this);
-        return _ret;
-    }
-
-    /**
-     * f0 -> <HEAT>
-     * f1 -> PrimaryExpression()
-     * f2 -> <AT>
-     * f3 -> IntegerLiteral()
-     * f4 -> ( <FOR> IntegerLiteral() )?
-     */
-    public R visit(HeatStatement n) {
-        R _ret = null;
-        n.f0.accept(this);
-        n.f1.accept(this);
-        n.f2.accept(this);
-        n.f3.accept(this);
-        n.f4.accept(this);
-        return _ret;
-    }
-
-    /**
-     * f0 -> <DETECT>
-     * f1 -> PrimaryExpression()
-     * f2 -> <ON>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
-     */
-    public R visit(DetectStatement n) {
-        R _ret = null;
-        n.f0.accept(this);
-        n.f1.accept(this);
-        n.f2.accept(this);
-        n.f3.accept(this);
-        n.f4.accept(this);
-        return _ret;
-    }
-
-    /**
-     * f0 -> <REPEAT>
-     * f1 -> IntegerLiteral()
-     * f2 -> <TIMES>
-     * f3 -> <LBRACE>
-     * f4 -> Statement()
-     * f5 -> <RBRACE>
-     */
-    public R visit(RepeatStatement n) {
+    public R visit(IfStatement n) {
         R _ret = null;
         n.f0.accept(this);
         n.f1.accept(this);
@@ -385,49 +321,38 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
         n.f3.accept(this);
         n.f4.accept(this);
         n.f5.accept(this);
+        n.f6.accept(this);
         return _ret;
     }
 
     /**
-     * f0 -> <IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
-     * | <ELSE_IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
-     * | <ELSE> <LBRACE> Statement() <RBRACE>
-     */
-    public R visit(BranchStatement n) {
-        R _ret = null;
-        n.f0.accept(this);
-        return _ret;
-    }
-
-    /**
-     * f0 -> AndExpression()
-     * | LessThanExpression()
-     * | LessThanEqualExpression()
-     * | GreaterThanExpression()
-     * | GreaterThanEqualExpression()
-     * | NotEqualExpression()
-     * | EqualityExpression()
-     * | OrExpression()
-     * | PlusExpression()
-     * | MinusExpression()
-     * | TimesExpression()
-     * | FunctionInvoke()
-     * | PrimaryExpression()
-     * | InstructionAssignment()
-     */
-    public R visit(Expression n) {
-        R _ret = null;
-        n.f0.accept(this);
-        return _ret;
-    }
-
-    /**
-     * f0 -> Identifier()
+     * f0 -> <ELSE_IF>
      * f1 -> <LPAREN>
-     * f2 -> ( ExpressionList() )?
+     * f2 -> Expression()
      * f3 -> <RPAREN>
+     * f4 -> <LBRACE>
+     * f5 -> Statement()
+     * f6 -> <RBRACE>
      */
-    public R visit(FunctionInvoke n) {
+    public R visit(ElseIfStatement n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+        n.f3.accept(this);
+        n.f4.accept(this);
+        n.f5.accept(this);
+        n.f6.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> <ELSE>
+     * f1 -> <LBRACE>
+     * f2 -> Statement()
+     * f3 -> <RBRACE>
+     */
+    public R visit(ElseStatement n) {
         R _ret = null;
         n.f0.accept(this);
         n.f1.accept(this);
@@ -459,23 +384,161 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
     }
 
     /**
-     * f0 -> MixStatement()
-     * | DetectStatement()
-     * | SplitStatement()
-     * | FunctionInvoke()
+     * f0 -> ( TypingList() )?
+     * f1 -> Identifier()
+     * f2 -> <ASSIGN>
+     * f3 -> Expression()
      */
-    public R visit(InstructionAssignment n) {
+    public R visit(Assignment n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+        n.f3.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> <MIX>
+     * f1 -> PrimaryExpression()
+     * f2 -> <WITH>
+     * f3 -> PrimaryExpression()
+     * f4 -> ( <FOR> IntegerLiteral() )?
+     */
+    public R visit(MixInstruction n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+        n.f3.accept(this);
+        n.f4.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> <SPLIT>
+     * f1 -> PrimaryExpression()
+     * f2 -> <INTO>
+     * f3 -> IntegerLiteral()
+     */
+    public R visit(SplitInstruction n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+        n.f3.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> <DRAIN>
+     * f1 -> PrimaryExpression()
+     */
+    public R visit(DrainInstruction n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> <HEAT>
+     * f1 -> PrimaryExpression()
+     * f2 -> <AT>
+     * f3 -> IntegerLiteral()
+     * f4 -> ( <FOR> IntegerLiteral() )?
+     */
+    public R visit(HeatInstruction n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+        n.f3.accept(this);
+        n.f4.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> <DETECT>
+     * f1 -> PrimaryExpression()
+     * f2 -> <ON>
+     * f3 -> PrimaryExpression()
+     * f4 -> ( <FOR> IntegerLiteral() )?
+     */
+    public R visit(DetectInstruction n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+        n.f3.accept(this);
+        n.f4.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> <REPEAT>
+     * f1 -> IntegerLiteral()
+     * f2 -> <TIMES>
+     * f3 -> <LBRACE>
+     * f4 -> Statement()
+     * f5 -> <RBRACE>
+     */
+    public R visit(RepeatInstruction n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+        n.f3.accept(this);
+        n.f4.accept(this);
+        n.f5.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> Identifier()
+     * f1 -> <LPAREN>
+     * f2 -> ( ExpressionList() )?
+     * f3 -> <RPAREN>
+     */
+    public R visit(FunctionInvoke n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+        n.f3.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> AndExpression()
+     * | LessThanExpression()
+     * | LessThanEqualExpression()
+     * | GreaterThanExpression()
+     * | GreaterThanEqualExpression()
+     * | NotEqualExpression()
+     * | EqualityExpression()
+     * | OrExpression()
+     * | PlusExpression()
+     * | MinusExpression()
+     * | TimesExpression()
+     * | FunctionInvoke()
+     * | MixInstruction()
+     * | SplitInstruction()
+     * | DetectInstruction()
+     * | PrimaryExpression()
+     */
+    public R visit(Expression n) {
         R _ret = null;
         n.f0.accept(this);
         return _ret;
     }
 
     /**
-     * f0 -> IntegerLiteral()
+     * f0 -> Identifier()
      * | TrueLiteral()
      * | FalseLiteral()
-     * | Identifier()
      * | ParenthesisExpression()
+     * | IntegerLiteral()
      */
     public R visit(PrimaryExpression n) {
         R _ret = null;

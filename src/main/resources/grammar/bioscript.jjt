@@ -5,9 +5,9 @@ The grammar file definition:
 
 options {
     STATIC = false;
-    DEBUG_PARSER = true;
-    DEBUG_LOOKAHEAD = true;
-    DEBUG_TOKEN_MANAGER = true;
+    DEBUG_PARSER = false;
+    DEBUG_LOOKAHEAD = false;
+    DEBUG_TOKEN_MANAGER = false;
     ERROR_REPORTING = true;
     JAVA_UNICODE_ESCAPE = true;
 }
@@ -143,30 +143,30 @@ TOKEN : /* IDENTIFIERS */
 void BSProgram() :
 {}
 {
-    Module()
-    Stationary()
-    Manifest()
+    ( Module() )*
+    ( Stationary() ) *
+    ( Manifest() )+
     <INSTRUCTIONS>
-    (Sequence())+
+    ( Sequence() )+
     <EOF>
 }
 
 void Module() :
 {}
 {
-    (<MODULE> Identifier())*
+    <MODULE> Identifier()
 }
 
 void Stationary() :
 {}
 {
-    (<STATIONARY> (Type())? PrimaryExpression())*
+    <STATIONARY> (TypingList())? PrimaryExpression()
 }
 
 void Manifest() :
 {}
 {
-    (<MANIFEST> (Type())? PrimaryExpression())+
+    <MANIFEST> (TypingList())? PrimaryExpression()
 }
 
 void Sequence() :
@@ -191,7 +191,7 @@ void Statement() :
 void AssignmentInstruction() :
 {}
 {
-    ((TypingList())* Identifier())? <ASSIGN> Expression()
+    (TypingList())* Identifier() <ASSIGN> Expression()
 }
 
 void Function() :
@@ -324,7 +324,7 @@ void Expression() :
 void FunctionInvoke() :
 {}
 {
-  Identifier()<LPAREN> ( ExpressionList() )? <RPAREN>
+  Identifier() <LPAREN> ( ExpressionList() )? <RPAREN>
 }
 
 void ExpressionList() :
@@ -352,11 +352,11 @@ void PrimaryExpression() :
 {}
 {
     LOOKAHEAD(2)
-    IntegerLiteral()
+    Identifier()
     |   TrueLiteral()
     |   FalseLiteral()
-    |   Identifier()
     |   ParenthesisExpression()
+    |   IntegerLiteral()
 }
 
 void IntegerLiteral() :

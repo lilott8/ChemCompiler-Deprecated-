@@ -26,20 +26,21 @@ The basic command line usage:
  - -c/-compile [file/to/compile.json]
  - -p/-phase [comma delimited list of phases to run]
    - current support:
-     - inference
+     - typesystem
  - -o/-output [path/to/output/dir]
  - -t/-translator [comma delimited list of translators]*
     - current support:
       - mfsim
       - typesystem
  - -ssi [run the ssi algorithm]
+ - -ts {error/warn/none} will set the level with which the type system will validate correctness.
  
 *if using a translator, you must provide an output directory.
 
 
-###Definitions
+### Definitions
 
 A phase is a clearly defined process in which the compiler will run.  These are discrete and independent, e.g., `Parsing`, `Data Flow Analysis`.
 
-A step is a number of actions a phase may take to complete.  Within the `Parsing` phase, the parser handles `lexical analysis`, `type inference`, `I.R. transformation`, etc.
+A step is a number of actions a phase may take to complete.  Within the `Parsing` phase, the parser handles `lexical analysis`, `type typesystem`, `I.R. transformation`, etc.
  

@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import config.ConfigFactory;
-import errors.UsageException;
+import shared.errors.UsageException;
 
 /**
  * @created: 10/19/17

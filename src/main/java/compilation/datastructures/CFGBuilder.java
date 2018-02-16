@@ -107,7 +107,7 @@ public class CFGBuilder {
     /*
       * Method; Process Branch
       *
-      * Input: CFG , SSI.SSA.basicblock, Loop
+      * Input: CFG , SSI.SSA.basicblock, Control
       *      The basic block(BB) passed in represents the BB that was being processed when the Branch is triggered.
       *
       */
@@ -125,7 +125,7 @@ public class CFGBuilder {
             /*
              *  **NOTE** if While MUST EXIT from single location:
              *  if loopLeaves > 1
-             *      create Loop exit
+             *      create Control exit
              *      add leaves to exit
              *      add exit to whileConditionEntry
              *  else
@@ -169,7 +169,7 @@ public class CFGBuilder {
                     controlFlowGraph.addEdge(loopEntry, postLoopBasicBlock);
 
                     bb = postLoopBasicBlock;
-                } else if (instructionIndex == instructionList.size() - 1) {//if last instruction pass back this Loop
+                } else if (instructionIndex == instructionList.size() - 1) {//if last instruction pass back this Control
                     List<BasicBlock> loopTermination = new ArrayList<BasicBlock>();
                     loopTermination.add(loopEntry);
                     return loopTermination;

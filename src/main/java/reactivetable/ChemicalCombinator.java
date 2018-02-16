@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import io.file.write.FileWriter;
+import shared.io.file.write.FileWriter;
 import shared.substances.ChemAxonCompound;
-import typesystem.epa.ChemTypes;
+import chemical.epa.ChemTypes;
 
 /**
  * @created: 10/2/17

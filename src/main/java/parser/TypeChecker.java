@@ -5,5 +5,5 @@ package parser;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public abstract class TypeChecker {
+public interface TypeChecker {
 }

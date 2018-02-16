@@ -11,13 +11,25 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> ( <STATIONARY> ( Type() )? PrimaryExpression() )*
+ * f0 -> <STATIONARY>
+ * f1 -> ( TypingList() )?
+ * f2 -> PrimaryExpression()
  */
 public class Stationary implements Node {
-    public NodeListOptional f0;
+    public NodeToken f0;
+    public NodeOptional f1;
+    public PrimaryExpression f2;
 
-    public Stationary(NodeListOptional n0) {
+    public Stationary(NodeToken n0, NodeOptional n1, PrimaryExpression n2) {
         f0 = n0;
+        f1 = n1;
+        f2 = n2;
+    }
+
+    public Stationary(NodeOptional n0, PrimaryExpression n1) {
+        f0 = new NodeToken("stationary");
+        f1 = n0;
+        f2 = n1;
     }
 
     public void accept(Visitor v) {

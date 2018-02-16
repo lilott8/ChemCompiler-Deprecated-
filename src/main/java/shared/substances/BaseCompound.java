@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import chemaxon.struc.Molecule;
-import typesystem.epa.ChemTypes;
+import chemical.epa.ChemTypes;
 
 /**
  * Programmatic representation of a compound.  Contains a set of reactive groups,

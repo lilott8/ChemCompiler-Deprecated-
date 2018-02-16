@@ -1,0 +1,16 @@
+module test
+stationary test2
+manifest mat chemical1
+manifest chemical2
+
+instructions
+
+function doThis(mat chem) : mat {
+    return 1
+}
+
+function doThis2(mat chem, mat chem3, chem4) {
+    return 2
+}
+
+a = doThis(a)

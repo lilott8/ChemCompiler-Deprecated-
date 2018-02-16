@@ -10,7 +10,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import io.file.write.FileWriter;
+import shared.io.file.write.FileWriter;
 import shared.substances.ChemAxonCompound;
 
 /**

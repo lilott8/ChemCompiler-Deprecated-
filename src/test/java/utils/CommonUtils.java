@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import cli.CliWrapper;
 import compilation.Compiler;
 import config.ConfigFactory;
-import phases.inference.Inference;
+import typesystem.Inference;
 
 /**
  * @created: 9/1/17
@@ -15,7 +15,7 @@ import phases.inference.Inference;
 public class CommonUtils {
 
     public static boolean runTest(String file) {
-        String args = String.format("-c %s -p inference " +
+        String args = String.format("-c %s -p typesystem " +
                 "%s " +
                 "-d -nf -i -classify 16\n", file, DBArgs.getDBArgs());
         CliWrapper cli = new CliWrapper();

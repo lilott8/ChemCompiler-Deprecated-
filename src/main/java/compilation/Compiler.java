@@ -19,7 +19,6 @@ import executable.Experiment;
 import manager.Benchtop;
 import parser.BioScriptParser;
 import parsing.BioScript.BenchtopParser;
-import phases.PhaseFacade;
 import shared.Facade;
 import shared.Phase;
 import translators.TranslatorFacade;
@@ -86,20 +85,7 @@ public class Compiler {
     }
 
     public void runAllOps() {
-        this.runPhases();
         this.runTranslations();
-    }
-
-    public void runPhases() {
-        if (ConfigFactory.getConfig().phasesEnabled()) {
-            if (ConfigFactory.getConfig().isDebug()) {
-                // logger.info("Phases set to run: " + ConfigFactory.getConfig().getAllPhases());
-            }
-            for (CFG experiment : this.experimentControlFlowGraphs) {
-                Facade phase = new PhaseFacade(ConfigFactory.getConfig(), experiment);
-                phase.start();
-            }
-        }
     }
 
     public void runTranslations() {

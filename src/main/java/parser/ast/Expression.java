@@ -23,8 +23,10 @@ import parser.visitor.Visitor;
  * | MinusExpression()
  * | TimesExpression()
  * | FunctionInvoke()
+ * | MixInstruction()
+ * | SplitInstruction()
+ * | DetectInstruction()
  * | PrimaryExpression()
- * | InstructionAssignment()
  */
 public class Expression implements Node {
     public NodeChoice f0;

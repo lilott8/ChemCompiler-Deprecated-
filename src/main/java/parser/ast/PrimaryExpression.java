@@ -11,11 +11,11 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> IntegerLiteral()
+ * f0 -> Identifier()
  * | TrueLiteral()
  * | FalseLiteral()
- * | Identifier()
  * | ParenthesisExpression()
+ * | IntegerLiteral()
  */
 public class PrimaryExpression implements Node {
     public NodeChoice f0;

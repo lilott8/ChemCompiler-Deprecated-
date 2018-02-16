@@ -1,0 +1,16 @@
+module test
+stationary test2
+manifest mat chemical1
+manifest chemical2
+
+instructions
+
+function test(chemA) : nat {
+    a = mix chemA with dilution
+    return a
+}
+
+a = mix b with c for 30
+d = test(a)
+
+z = mix d with a

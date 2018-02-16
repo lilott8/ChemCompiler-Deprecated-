@@ -11,12 +11,12 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> AssignmentInstruction()
- * | BranchStatement()
- * | RepeatStatement()
- * | HeatStatement()
- * | DrainStatement()
- * | FunctionInvoke()
+ * f0 -> Assignment()
+ * | BranchInstruction()
+ * | RepeatInstruction()
+ * | HeatInstruction()
+ * | DrainInstruction()
+ * | Expression()
  */
 public class Statement implements Node {
     public NodeChoice f0;

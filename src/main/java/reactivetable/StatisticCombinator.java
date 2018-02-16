@@ -7,10 +7,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import io.file.read.FileReader;
-import io.file.read.SimpleReader;
-import io.file.write.FileWriter;
-import io.file.write.SimpleWriter;
+import shared.io.file.read.FileReader;
+import shared.io.file.read.SimpleReader;
+import shared.io.file.write.FileWriter;
+import shared.io.file.write.SimpleWriter;
 import shared.substances.ChemAxonCompound;
 
 /**

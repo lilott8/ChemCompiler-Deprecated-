@@ -1,11 +1,11 @@
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import inference.AquaCoreAssayTest;
-import inference.ChemTypeTest;
-import inference.ContrivedTest;
-import inference.ElisaTest;
-import inference.InferenceSuite;
+import typesystem.AquaCoreAssayTest;
+import typesystem.ChemTypeTest;
+import typesystem.ContrivedTest;
+import typesystem.ElisaTest;
+import typesystem.InferenceSuite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

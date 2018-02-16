@@ -3,7 +3,7 @@ package shared.substances;
 import java.util.Set;
 
 import chemaxon.struc.Molecule;
-import typesystem.epa.ChemTypes;
+import chemical.epa.ChemTypes;
 
 /**
  * @created: 9/13/17

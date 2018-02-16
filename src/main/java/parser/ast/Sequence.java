@@ -11,7 +11,7 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> Function()
+ * f0 -> FunctionDefinition()
  * | Statement()
  */
 public class Sequence implements Node {

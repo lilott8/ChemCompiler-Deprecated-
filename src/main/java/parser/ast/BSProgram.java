@@ -11,22 +11,22 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> Module()
- * f1 -> Stationary()
- * f2 -> Manifest()
+ * f0 -> ( Module() )*
+ * f1 -> ( Stationary() )*
+ * f2 -> ( Manifest() )+
  * f3 -> <INSTRUCTIONS>
  * f4 -> ( Sequence() )+
  * f5 -> <EOF>
  */
 public class BSProgram implements Node {
-    public Module f0;
-    public Stationary f1;
-    public Manifest f2;
+    public NodeListOptional f0;
+    public NodeListOptional f1;
+    public NodeList f2;
     public NodeToken f3;
     public NodeList f4;
     public NodeToken f5;
 
-    public BSProgram(Module n0, Stationary n1, Manifest n2, NodeToken n3, NodeList n4, NodeToken n5) {
+    public BSProgram(NodeListOptional n0, NodeListOptional n1, NodeList n2, NodeToken n3, NodeList n4, NodeToken n5) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
@@ -35,7 +35,7 @@ public class BSProgram implements Node {
         f5 = n5;
     }
 
-    public BSProgram(Module n0, Stationary n1, Manifest n2, NodeList n3) {
+    public BSProgram(NodeListOptional n0, NodeListOptional n1, NodeList n2, NodeList n3) {
         f0 = n0;
         f1 = n1;
         f2 = n2;

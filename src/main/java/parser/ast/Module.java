@@ -11,13 +11,21 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> ( <MODULE> Identifier() )*
+ * f0 -> <MODULE>
+ * f1 -> Identifier()
  */
 public class Module implements Node {
-    public NodeListOptional f0;
+    public NodeToken f0;
+    public Identifier f1;
 
-    public Module(NodeListOptional n0) {
+    public Module(NodeToken n0, Identifier n1) {
         f0 = n0;
+        f1 = n1;
+    }
+
+    public Module(Identifier n0) {
+        f0 = new NodeToken("module");
+        f1 = n0;
     }
 
     public void accept(Visitor v) {

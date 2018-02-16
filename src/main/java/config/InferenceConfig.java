@@ -2,6 +2,8 @@ package config;
 
 import org.apache.commons.lang3.StringUtils;
 
+import shared.ReportingLevel;
+
 /**
  * @created: 9/7/17
  * @since: 0.1
@@ -9,8 +11,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public interface InferenceConfig extends CommonConfig {
     int getClassificationLevel();
-    boolean ignoreWarnings();
     boolean buildFilters();
+    ReportingLevel getErrorLevel();
     String getEpaDefs();
     boolean simulateChemistry();
     int smartsLength();
