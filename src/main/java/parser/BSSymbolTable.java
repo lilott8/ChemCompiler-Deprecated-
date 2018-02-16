@@ -30,12 +30,9 @@ import parser.ast.Stationary;
 import parser.ast.TrueLiteral;
 import parser.visitor.GJNoArguDepthFirst;
 import shared.Step;
-import symboltable.Branch;
-import symboltable.Loop;
+import shared.variables.Symbol;
 import symboltable.Method;
-import symboltable.Symbol;
 import symboltable.SymbolTable;
-import symboltable.Variable;
 import chemical.epa.ChemTypes;
 
 /**
@@ -85,7 +82,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // Get the identifier.
         n.f2.accept(this);
         // Anything in this section is always default scope.
-        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.symbolTable.addLocal(new Symbol(this.name, this.types));
         this.types.clear();
         return this;
     }
@@ -103,7 +100,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // Get the identifier.
         n.f2.accept(this);
         // build the variable now
-        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.symbolTable.addLocal(new Symbol(this.name, this.types));
         this.types.clear();
         return this;
     }
@@ -122,7 +119,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // Set the identifier.
         n.f1.accept(this);
         // Add the variable to our scope.
-        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.symbolTable.addLocal(new Symbol(this.name, this.types));
         // Clear the set, we are done with it.
         this.types.clear();
         // Go get the rest of the expression(s).
@@ -150,24 +147,30 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         n.f1.accept(this);
         // Start a new scope.
         this.symbolTable.newScope(this.name);
-        Method symbol = new Method(this.name);
+        Method method = new Method(this.name);
 
         // Get the parameters of this method
         n.f3.accept(this);
-        //this.symbolTable.addLocals(this.arguments);
-        symbol.addParameters(this.arguments);
+        // Add the parameters to the method.
+        method.addParameters(this.arguments);
+        // Clear the arguments list
         this.arguments.clear();
 
         // Get the types of this method.
         if (n.f5.present()) {
             n.f5.accept(this);
-            symbol.addReturnTypes(this.types);
+            method.addReturnTypes(this.types);
+            this.types.clear();
+        } else {
+            this.types.add(ChemTypes.NULL);
+            method.addReturnTypes(this.types);
             this.types.clear();
         }
+        this.symbolTable.addMethod(method);
 
         // Get the list of statements.
         n.f7.accept(this);
-        this.symbolTable.addLocal(symbol);
+        // this.symbolTable.addLocal(symbol);
 
         if (n.f8.present()) {
             // Get the return statement (Currently ignored).
@@ -191,8 +194,8 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // Go fetch the name
         n.f1.accept(this);
         // save the record.
-        Variable v = new Variable(this.name, this.types);
-        this.arguments.add(v);
+        Symbol v = new Symbol(this.name, this.types);
+        // this.arguments.add(v);
         this.symbolTable.addLocal(v);
         this.types.clear();
         return this;
@@ -212,8 +215,12 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // Start a new scope.
         String name = String.format("%s_%d", REPEAT, scopeId++);
         this.symbolTable.newScope(name);
-        Loop symbol = new Loop(name, new HashSet<>());
-        this.symbolTable.addLocal(symbol);
+        Set<ChemTypes> types = new HashSet<>();
+        types.add(ChemTypes.NAT);
+        this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId), types));
+        types = null;
+        //Loop symbol = new Loop(name, new HashSet<>());
+        //this.symbolTable.addLocal(symbol);
         n.f4.accept(this);
         // Return back to old scoping.
         this.symbolTable.endScope();
@@ -232,11 +239,11 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     @Override
     public Step visit(IfStatement n) {
         // super.visit(n);
-        String name = String.format("%s_%d", BRANCH, scopeId++);
+        // String name = String.format("%s_%d", BRANCH, scopeId++);
         this.symbolTable.newScope(name);
-        Branch symbol = new Branch(name, new HashSet<>());
+        // Branch symbol = new Branch(name, new HashSet<>());
         n.f2.accept(this);
-        this.symbolTable.addLocal(symbol);
+        // this.symbolTable.addLocal(symbol);
         n.f5.accept(this);
         // Return back to old scoping.
         this.symbolTable.endScope();
@@ -256,10 +263,10 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     @Override
     public Step visit(ElseIfStatement n) {
         // super.visit(n);
-        String name = String.format("%s_%d", BRANCH, scopeId++);
+        // String name = String.format("%s_%d", BRANCH, scopeId++);
         this.symbolTable.newScope(name);
-        Branch symbol = new Branch(name, new HashSet<>());
-        this.symbolTable.addLocal(symbol);
+        // Branch symbol = new Branch(name, new HashSet<>());
+        // this.symbolTable.addLocal(symbol);
         n.f2.accept(this);
         n.f5.accept(this);
         // Return back to old scoping.
@@ -296,14 +303,14 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     @Override
     public Step visit(MixInstruction n) {
         n.f1.accept(this);
-        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.symbolTable.addLocal(new Symbol(this.name, this.types));
         this.types.clear();
         n.f3.accept(this);
-        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.symbolTable.addLocal(new Symbol(this.name, this.types));
         this.types.clear();
         if (n.f4.present()) {
             n.f4.accept(this);
-            this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+            this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId++), this.types));
             this.types.clear();
         }
         return this;
@@ -319,10 +326,10 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(SplitInstruction n) {
         //super.visit(n);
         n.f1.accept(this);
-        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.symbolTable.addLocal(new Symbol(this.name, this.types));
         this.types.clear();
         n.f3.accept(this);
-        this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+        this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId++), this.types));
         return this;
     }
 
@@ -334,7 +341,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(DrainInstruction n) {
         //super.visit(n);
         n.f1.accept(this);
-        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.symbolTable.addLocal(new Symbol(this.name, this.types));
         this.types.clear();
         return this;
     }
@@ -351,14 +358,14 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // super.visit(n);
 
         n.f1.accept(this);
-        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.symbolTable.addLocal(new Symbol(this.name, this.types));
         this.types.clear();
         n.f3.accept(this);
-        this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+        this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId++), this.types));
         this.types.clear();
         if (n.f4.present()) {
             n.f4.accept(this);
-            this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+            this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId++), this.types));
             this.types.clear();
         }
         return this;
@@ -375,14 +382,14 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(DetectInstruction n) {
         // super.visit(n);
         n.f1.accept(this);
-        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.symbolTable.addLocal(new Symbol(this.name, this.types));
         this.types.clear();
         n.f3.accept(this);
-        this.symbolTable.addLocal(new Variable(this.name, this.types));
+        this.symbolTable.addLocal(new Symbol(this.name, this.types));
         this.types.clear();
         if (n.f4.present()) {
             n.f4.accept(this);
-            this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
+            this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId++), this.types));
             this.types.clear();
         }
         return this;

@@ -1,12 +1,13 @@
 package typesystem.rules;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import chemical.epa.ChemTypes;
 import compilation.datastructures.node.InstructionNode;
 import typesystem.Inference.InferenceType;
-import typesystem.elements.Instruction;
-import typesystem.elements.Term;
-import shared.Variable;
+import typesystem.elements.Formula;
 import substance.Property;
 import chemical.combinator.Combiner;
 import chemical.combinator.CombinerFactory;
@@ -24,6 +25,11 @@ public abstract class NodeAnalyzer extends Rule {
 
     protected Identifier identifier;
     protected Combiner combiner;
+    protected final Set<ChemTypes> propertyTypes = new HashSet<>();
+
+    {
+        propertyTypes.add(REAL);
+    }
 
     protected NodeAnalyzer(InferenceType type) {
         super(type);
@@ -40,13 +46,13 @@ public abstract class NodeAnalyzer extends Rule {
 
     public abstract Rule gatherAllConstraints(InstructionNode node);
 
-    protected Instruction gatherProperties(Instruction instruction, List<Property> properties) {
-        for (Property p : properties) {
-            Variable prop = new Term(Rule.createHash(p.toString()));
+    protected Formula gatherProperties(Formula instruction, List<Property> properties) {
+        /*for (Property p : properties) {
+            Variable prop = new Term(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addInputVariable(prop);
             addVariable(prop);
-        }
+        }*/
         return instruction;
     }
 

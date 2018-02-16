@@ -16,8 +16,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import config.ConfigFactory;
-import typesystem.elements.Instruction;
-import shared.Variable;
+import shared.variables.Variable;
+import typesystem.elements.Formula;
 import typesystem.rules.Rule;
 import typesystem.satsolver.constraints.Composer;
 import typesystem.satsolver.constraints.SMT.Assign;
@@ -41,7 +41,7 @@ public class Z3Strategy implements SolverStrategy {
 
     public static final Logger logger = LogManager.getLogger(Z3Strategy.class);
 
-    private Map<Integer, Instruction> instructions;
+    private Map<Integer, Formula> instructions;
     private Map<String, Variable> variables;
 
     private Map<Rule.InstructionType, Composer> composers = new HashMap<>();
@@ -57,7 +57,7 @@ public class Z3Strategy implements SolverStrategy {
     }
 
     @Override
-    public boolean solveConstraints(Map<Integer, Instruction> instructions, Map<String, Variable> variables) {
+    public boolean solveConstraints(Map<Integer, Formula> instructions, Map<String, Variable> variables) {
         this.instructions = instructions;
         this.variables = variables;
 
@@ -78,7 +78,7 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(this.buildAssertsForNumberMaterial(i.getValue()));
         }
 
-        for (Map.Entry<Integer, Instruction> instruction : this.instructions.entrySet()) {
+        for (Map.Entry<Integer, Formula> instruction : this.instructions.entrySet()) {
             if (instruction.getValue().type == Rule.InstructionType.MIX) {
                 sb.append(this.composers.get(instruction.getValue().type).compose(instruction.getValue()));
             }
@@ -102,9 +102,9 @@ public class Z3Strategy implements SolverStrategy {
     private String buildDeclares(Variable v) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("; Initialize declares for: ").append(SolverStrategy.getSMTName(v.getVarName())).append(NL);
+        sb.append("; Initialize declares for: ").append(SolverStrategy.getSMTName(v.getName())).append(NL);
         for (Entry<Integer, ChemTypes> types : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-            sb.append("(declare-const ").append(SolverStrategy.getSMTName(v.getVarName(), types.getValue())).append(" Bool)").append(NL);
+            sb.append("(declare-const ").append(SolverStrategy.getSMTName(v.getName(), types.getValue())).append(" Bool)").append(NL);
         }
 
         return sb.toString();
@@ -125,24 +125,24 @@ public class Z3Strategy implements SolverStrategy {
         Set<ChemTypes> numbers = new HashSet<>(ChemTypes.getNums());
         Set<ChemTypes> materials = new HashSet<>(ChemTypes.getMaterials());
 
-        numbers.retainAll(v.getTypingConstraints());
-        materials.retainAll(v.getTypingConstraints());
+        numbers.retainAll(v.getTypes());
+        materials.retainAll(v.getTypes());
 
         // If we have an intersection, i.e. NAT || REAL appear in both sets,
         // And the typing constraints are > 2 (more than NAT & REAL), then
         // This program is untypeable.
         if (!numbers.isEmpty() && !materials.isEmpty()) {
-            sb.append("; Kill the type typesystem for ").append(v.getVarName()).append(NL);
+            sb.append("; Kill the type typesystem for ").append(v.getName()).append(NL);
             sb.append("(assert (= true false))").append(NL);
             return sb.toString();
         }
 
         // Otherwise we assume correctness.
-        if (v.getTypingConstraints().contains(REAL) || v.getTypingConstraints().contains(NAT)) {
-            sb.append("; ").append(SolverStrategy.getSMTName(v.getVarName())).append(" is a NUMBER").append(NL);
+        if (v.getTypes().contains(REAL) || v.getTypes().contains(NAT)) {
+            sb.append("; ").append(SolverStrategy.getSMTName(v.getName())).append(" is a NUMBER").append(NL);
             isMat = false;
         } else {
-            sb.append("; ").append(SolverStrategy.getSMTName(v.getVarName())).append(" is a MAT").append(NL);
+            sb.append("; ").append(SolverStrategy.getSMTName(v.getName())).append(" is a MAT").append(NL);
             isMat = true;
         }
 
@@ -151,9 +151,9 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(TAB).append("(not").append(NL);
         }
         sb.append(TAB + TAB).append("(or").append(NL)
-                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getVarName(), REAL))
+                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getName(), REAL))
                 .append(" true)").append(NL)
-                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getVarName(), NAT))
+                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getName(), NAT))
                 .append(" true)").append(NL);
         if (isMat) {
             sb.append(TAB + TAB).append(")").append(NL);

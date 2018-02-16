@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import shared.variables.Symbol;
+
 /**
  * @created: 2/8/18
  * @since: 0.1

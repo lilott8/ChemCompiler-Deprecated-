@@ -2,12 +2,6 @@ package typesystem.rules;
 
 import compilation.datastructures.node.InstructionNode;
 import typesystem.Inference.InferenceType;
-import typesystem.elements.Instruction;
-import typesystem.elements.Term;
-import shared.Variable;
-import substance.Property;
-
-import static chemical.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/28/17
@@ -24,8 +18,8 @@ public class Output extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        //Instruction instruction = new Instruction(node.getId(), InstructionType.OUTPUT);
-        Instruction instruction = new Instruction(InstructionType.OUTPUT);
+        //Formula instruction = new Formula(node.getId(), InstructionType.OUTPUT);
+        /*Formula instruction = new Formula(InstructionType.OUTPUT);
 
         Variable input = null;
         for (String s : node.getUse()) {
@@ -36,14 +30,14 @@ public class Output extends NodeAnalyzer {
         }
 
         for (Property p : node.getInstruction().getProperties()) {
-            Variable prop = new Term(Rule.createHash(p.toString()));
+            Variable prop = new Term(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addVariable(prop);
         }
 
         addInstruction(instruction);
-
+        */
         return this;
     }
 }

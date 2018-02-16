@@ -18,8 +18,8 @@ import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.node.InstructionNode;
 import shared.Phase;
-import typesystem.elements.Instruction;
-import shared.Variable;
+import shared.variables.Variable;
+import typesystem.elements.Formula;
 import typesystem.rules.EdgeAnalyzer;
 import typesystem.rules.InferenceRule;
 import typesystem.rules.NodeAnalyzer;
@@ -66,7 +66,7 @@ public class Inference implements shared.Phase {
     private final Map<String, EdgeAnalyzer> edgeAnalyzers = new HashMap<>();
 
     // Contains the typing constraints for instructions.
-    private Map<Integer, Instruction> instructions = new HashMap<>();
+    private Map<Integer, Formula> instructions = new HashMap<>();
     // Contains the typing constraints for all terms.
     private Map<String, Variable> variables = new HashMap<>();
 
@@ -135,14 +135,14 @@ public class Inference implements shared.Phase {
      *   A mapping of id to what was inferred.
      */
     public void inferConstraints(String name, InstructionNode instruction) {
-        if(this.basicBlockAnalyzers.containsKey(name)) {
+        /*if(this.basicBlockAnalyzers.containsKey(name)) {
             NodeAnalyzer rule = this.basicBlockAnalyzers.get(name);
             rule = (NodeAnalyzer) rule.gatherAllConstraints(instruction);
             this.addInstructions(rule.getInstructions());
             this.addTerms(rule.getVariables());
         } else {
             logger.warn("Node Analysis: We don't have a rule for: " + name);
-        }
+        }*/
         // return an empty array list for ease.
     }
 
@@ -162,14 +162,14 @@ public class Inference implements shared.Phase {
             EdgeAnalyzer rule = this.edgeAnalyzers.get(name);
             rule = (EdgeAnalyzer) rule.gatherConstraints(edge);
             this.addInstructions(rule.getInstructions());
-            this.addTerms(rule.getVariables());
+            //this.addTerms(rule.getVariables());
         }
         if (!this.edgeAnalyzers.containsKey(name) && !StringUtils.equalsIgnoreCase(name, "unknown")) {
             logger.warn("Edge Analysis: We don't have a rule for: " + name);
         }
     }
 
-    private void addInstructions(Map<Integer, Instruction> i) {
+    private void addInstructions(Map<Integer, Formula> i) {
         this.instructions.putAll(i);
     }
 
@@ -234,13 +234,13 @@ public class Inference implements shared.Phase {
         List<Integer> medianContainer = new ArrayList<>();
 
         for (Map.Entry<String, Variable> varEntry : this.variables.entrySet()) {
-            medianContainer.add(varEntry.getValue().getTypingConstraints().size());
-            total += varEntry.getValue().getTypingConstraints().size();
-            if (varEntry.getValue().getTypingConstraints().size() < min) {
-                min = varEntry.getValue().getTypingConstraints().size();
+            medianContainer.add(varEntry.getValue().getTypes().size());
+            total += varEntry.getValue().getTypes().size();
+            if (varEntry.getValue().getTypes().size() < min) {
+                min = varEntry.getValue().getTypes().size();
             }
-            if (varEntry.getValue().getTypingConstraints().size() > max) {
-                max = varEntry.getValue().getTypingConstraints().size();
+            if (varEntry.getValue().getTypes().size() > max) {
+                max = varEntry.getValue().getTypes().size();
             }
         }
 

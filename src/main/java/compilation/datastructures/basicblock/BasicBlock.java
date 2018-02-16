@@ -238,7 +238,7 @@ public class BasicBlock implements Serializable {
     public  String toString(String indentBuffer) {
         StringBuffer sb = new StringBuffer();
         sb.append(indentBuffer).append("Basic Block: ").append(id).append(NL);
-        sb.append(indentBuffer).append("\t Instruction Visibility: ").append(NL);
+        sb.append(indentBuffer).append("\t Formula Visibility: ").append(NL);
         for (InstructionNode node : instructions) {
             sb.append(node.toString(indentBuffer + "\t\t")).append(NL);
         }

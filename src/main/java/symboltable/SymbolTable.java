@@ -8,7 +8,9 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
+
+import shared.variables.Symbol;
+import shared.variables.Variable;
 
 /**
  * @created: 2/8/18
@@ -22,9 +24,11 @@ public class SymbolTable {
     public static final Logger logger = LogManager.getLogger(SymbolTable.class);
 
     // Maps variable name to variable class.
-    private Map<String, Symbol> symbols = new HashMap<>();
+    private Map<String, Variable> symbols = new HashMap<>();
     // Maps scope name to scopes.
     private Map<String, Scope> scopes = new HashMap<>();
+    // Maps methods to their declaration.
+    private Map<String, Method> methods = new HashMap<>();
     // private Map<String, Map<String, Symbol>> scopedSymbols = new HashMap<>();
     // Keep tabs of depth of stack.
     private Deque<Scope> scopeStack = new ArrayDeque<>();
@@ -87,7 +91,11 @@ public class SymbolTable {
         this.scopeStack.push(s);
     }
 
-    public Map<String, Symbol> getSymbols() {
+    public void addMethod(Method method) {
+        this.methods.put(method.getName(), method);
+    }
+
+    public Map<String, Variable> getSymbols() {
         return symbols;
     }
 
@@ -95,11 +103,15 @@ public class SymbolTable {
         return scopes;
     }
 
+    public Map<String, Method> getMethods() {
+        return this.methods;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for (Map.Entry<String, Symbol> entry : this.symbols.entrySet()) {
+        for (Map.Entry<String, Variable> entry : this.symbols.entrySet()) {
             sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(System.lineSeparator());
         }
         sb.append("=========================").append(System.lineSeparator());

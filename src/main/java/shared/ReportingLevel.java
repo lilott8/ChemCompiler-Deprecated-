@@ -14,21 +14,21 @@ public enum ReportingLevel {
     ERROR(100), WARNING(10), NONE(0);
 
     ReportingLevel(int value) {
-        this.level = level;
+        this.level = value;
     }
 
     private int level;
 
     public boolean warn() {
-        return level == WARNING.level || level == NONE.level;
+        return this.level == WARNING.level || this.level == NONE.level;
     }
 
     public boolean error() {
-        return level == ERROR.level;
+        return this.level == ERROR.level;
     }
 
     public boolean disabled() {
-        return level == NONE.level;
+        return this.level == NONE.level;
     }
 
 }

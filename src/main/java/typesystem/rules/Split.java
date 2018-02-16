@@ -2,13 +2,6 @@ package typesystem.rules;
 
 import compilation.datastructures.node.InstructionNode;
 import typesystem.Inference.InferenceType;
-import typesystem.elements.Instruction;
-import typesystem.elements.Term;
-import shared.Variable;
-import substance.Property;
-
-import static chemical.epa.ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION;
-import static chemical.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/27/17
@@ -35,8 +28,8 @@ public class Split extends NodeAnalyzer {
         logger.info("=========================");
         */
 
-        // Instruction instruction = new Instruction(node.getId(), InstructionType.SPLIT);
-        Instruction instruction = new Instruction(InstructionType.SPLIT);
+        // Formula instruction = new Formula(node.getId(), InstructionType.SPLIT);
+        /*Formula instruction = new Formula(InstructionType.SPLIT);
 
         Variable input = null;
         for (String s : node.getUse()) {
@@ -60,13 +53,13 @@ public class Split extends NodeAnalyzer {
         }
 
         for (Property p : node.getInstruction().getProperties()) {
-            Variable prop = new Term(Rule.createHash(p.toString()));
+            Variable prop = new Term(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addVariable(prop);
         }
 
-        addInstruction(instruction);
+        addInstruction(instruction);*/
         return this;
     }
 }

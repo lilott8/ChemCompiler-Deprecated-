@@ -13,9 +13,9 @@ import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
+import shared.variables.Variable;
 import typesystem.Inference.InferenceType;
-import typesystem.elements.Instruction;
-import shared.Variable;
+import typesystem.elements.Formula;
 import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
 
@@ -37,7 +37,7 @@ public abstract class Rule {
     protected InferenceConfig config = ConfigFactory.getConfig();
 
     // Keep track of the instruction id to input/outputs
-    protected static Map<Integer, Instruction> instructions = new LinkedHashMap<>();
+    protected static Map<Integer, Formula> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
 
     protected Rule(InferenceType type) {
@@ -57,19 +57,19 @@ public abstract class Rule {
         return variables;
     }
 
-    public Map<Integer, Instruction> getInstructions() {
+    public Map<Integer, Formula> getInstructions() {
         return instructions;
     }
 
-    protected static void addInstruction(Instruction i) {
+    protected static void addInstruction(Formula i) {
         instructions.put(i.getId(), i);
     }
 
     protected static void addVariable(Variable t) {
-        if (!variables.containsKey(t.getVarName())) {
-            variables.put(t.getVarName(), t);
+        if (!variables.containsKey(t.getName())) {
+            variables.put(t.getName(), t);
         } else {
-            if (variables.get(t.getVarName()).equals(t)) {
+            if (variables.get(t.getName()).equals(t)) {
             }
         }
     }
@@ -97,10 +97,10 @@ public abstract class Rule {
     }
 
     protected Set<ChemTypes> getTypingConstraints(Variable input) {
-        if (variables.containsKey(input.getVarName())) {
-            return variables.get(input.getVarName()).getTypingConstraints();
+        if (variables.containsKey(input.getName())) {
+            return variables.get(input.getName()).getTypes();
         } else {
-            return IdentifierFactory.getIdentifier().identifyCompoundForTypes(input.getVarName());
+            return IdentifierFactory.getIdentifier().identifyCompoundForTypes(input.getName());
         }
     }
 

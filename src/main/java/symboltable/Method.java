@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.variables.Symbol;
+import shared.variables.Variable;
 
 /**
  * @created: 2/8/18
@@ -28,7 +30,7 @@ public class Method extends Symbol {
         super(name, type);
     }
 
-    public void addParameter(Variable var) {
+    public void addParameter(Symbol var) {
         this.parameters.add(var);
     }
 
@@ -41,7 +43,7 @@ public class Method extends Symbol {
     }
 
     public void addReturnTypes(Set<ChemTypes> ret) {
-        super.type.addAll(ret);
+        super.types.addAll(ret);
     }
 
     public String toString() {

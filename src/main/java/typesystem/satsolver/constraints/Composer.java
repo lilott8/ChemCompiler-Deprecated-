@@ -1,7 +1,7 @@
 package typesystem.satsolver.constraints;
 
-import typesystem.elements.Instruction;
-import shared.Variable;
+import shared.variables.Variable;
+import typesystem.elements.Formula;
 
 import static typesystem.satsolver.strategies.SolverStrategy.NL;
 
@@ -13,7 +13,7 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
  */
 public interface Composer {
 
-    String compose(Instruction instruction);
+    String compose(Formula instruction);
     String compose(Variable variable);
 
     default String killSwitch() {

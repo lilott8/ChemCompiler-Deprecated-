@@ -1,15 +1,7 @@
 package typesystem.rules;
 
-import org.apache.commons.lang3.StringUtils;
-
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import typesystem.Inference.InferenceType;
-import typesystem.elements.Instruction;
-import typesystem.elements.Term;
-import shared.Variable;
-
-import static chemical.epa.ChemTypes.NAT;
-import static chemical.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/27/17
@@ -25,8 +17,8 @@ public class IfBranch extends EdgeAnalyzer {
 
     @Override
     public Rule gatherConstraints(BasicBlockEdge edge) {
-        //Instruction instruction = new Instruction(edge.getId(), InstructionType.BRANCH);
-        Instruction instruction = new Instruction(InstructionType.BRANCH);
+        //Formula instruction = new Formula(edge.getId(), InstructionType.BRANCH);
+        /*Formula instruction = new Formula(InstructionType.BRANCH);
 
         Variable output = new Term(Rule.createHash(edge.getConditional().toString()));
         output.addTypingConstraint(NAT);
@@ -68,7 +60,7 @@ public class IfBranch extends EdgeAnalyzer {
             addVariable(right);
         }
 
-        addInstruction(instruction);
+        addInstruction(instruction);*/
 
         return this;
     }

@@ -3,15 +3,15 @@ package typesystem.elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import shared.variables.Variable;
 import typesystem.rules.Rule;
-import shared.Variable;
 
 /**
  * @created: 10/13/17
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Instruction {
+public class Formula {
 
     private static int instructionCounter = 0;
     public final Rule.InstructionType type;
@@ -21,28 +21,28 @@ public class Instruction {
     private List<Variable> properties = new ArrayList<>();
 
 
-    public Instruction(Rule.InstructionType type){
+    public Formula(Rule.InstructionType type){
         this.type = type;
         this.id = instructionCounter++;
     }
 
 
-    /*public Instruction(int id, Rule.InstructionType type) {
+    /*public Formula(int id, Rule.InstructionType type) {
         this.id = id;
         this.type = type;
     }*/
 
-    public Instruction addOutputVariable(Variable output) {
+    public Formula addOutputVariable(Variable output) {
         this.output.add(output);
         return this;
     }
 
-    public Instruction addInputVariable(Variable input) {
+    public Formula addInputVariable(Variable input) {
         this.input.add(input);
         return this;
     }
 
-    public Instruction addProperty(Variable prop) {
+    public Formula addProperty(Variable prop) {
         this.properties.add(prop);
         return this;
     }

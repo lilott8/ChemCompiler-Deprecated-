@@ -4,8 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-import typesystem.elements.Instruction;
-import shared.Variable;
+import shared.variables.Variable;
+import typesystem.elements.Formula;
 import chemical.epa.ChemTypes;
 
 /**
@@ -19,7 +19,7 @@ public interface SolverStrategy {
     String TAB = "\t";
 
     // boolean solveConstraints(Map<String, Composer> constraints);
-    boolean solveConstraints(Map<Integer, Instruction> instructions, Map<String, Variable> variables);
+    boolean solveConstraints(Map<Integer, Formula> instructions, Map<String, Variable> variables);
 
     static String getSMTName(String key, ChemTypes t) {
         key = StringUtils.replaceAll(key, "[^A-Za-z0-9]", "_");

@@ -1,18 +1,7 @@
 package typesystem.rules;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import compilation.datastructures.node.InstructionNode;
 import typesystem.Inference.InferenceType;
-import typesystem.elements.Instruction;
-import typesystem.elements.Term;
-import shared.Variable;
-import substance.Property;
-import chemical.epa.ChemTypes;
-import chemical.epa.EpaManager;
-
-import static chemical.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/27/17
@@ -31,8 +20,8 @@ public class Mix extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
 
-        //Instruction instruction = new Instruction(node.getId(), InstructionType.MIX);
-        Instruction instruction = new Instruction(InstructionType.MIX);
+        //Formula instruction = new Formula(node.getId(), InstructionType.MIX);
+        /*Formula instruction = new Formula(InstructionType.MIX);
 
         Set<ChemTypes> groupings = new HashSet<>();
 
@@ -74,13 +63,13 @@ public class Mix extends NodeAnalyzer {
 
         // Get the properties of the instruction if they exist
         for (Property p : node.getInstruction().getProperties()) {
-            Variable prop = new Term(Rule.createHash(p.toString()));
+            Variable prop = new Term(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addVariable(prop);
         }
 
-        addInstruction(instruction);
+        addInstruction(instruction);*/
         // logger.trace("=======================");
         return this;
     }

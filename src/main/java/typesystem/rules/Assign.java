@@ -2,13 +2,7 @@ package typesystem.rules;
 
 import compilation.datastructures.node.InstructionNode;
 import typesystem.Inference.InferenceType;
-import typesystem.elements.Instruction;
-import typesystem.elements.Term;
-import shared.Variable;
-import substance.Property;
-
-import static chemical.epa.ChemTypes.NAT;
-import static chemical.epa.ChemTypes.REAL;
+import typesystem.elements.Formula;
 
 /**
  * @created: 7/27/17
@@ -32,14 +26,14 @@ public class Assign extends NodeAnalyzer {
              //logger.trace("Output: " + node.getOutputSymbols());
         }
 
-        Instruction instruction = new Instruction(InstructionType.ASSIGN);
+        Formula instruction = new Formula(InstructionType.ASSIGN);
 
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1
         /*
          * New workings here.
          */
-        Term output = null;
+        /*Term output = null;
         for (String s : node.getDef()) {
             output = new Term(s);
         }
@@ -75,13 +69,13 @@ public class Assign extends NodeAnalyzer {
         addVariable(output);
 
         for (Property p : node.getInstruction().getProperties()) {
-            Variable prop = new Term(Rule.createHash(p.toString()));
+            Variable prop = new Term(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addVariable(prop);
         }
 
-        addInstruction(instruction);
+        addInstruction(instruction);*/
         return this;
     }
 }

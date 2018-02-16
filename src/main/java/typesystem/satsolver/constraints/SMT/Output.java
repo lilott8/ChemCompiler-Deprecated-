@@ -1,7 +1,7 @@
 package typesystem.satsolver.constraints.SMT;
 
-import typesystem.elements.Instruction;
-import shared.Variable;
+import shared.variables.Variable;
+import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.Composer;
 import typesystem.satsolver.strategies.SolverStrategy;
 import chemical.epa.ChemTypes;
@@ -16,7 +16,7 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
 public class Output implements Composer {
 
     @Override
-    public String compose(Instruction instruction) {
+    public String compose(Formula instruction) {
         StringBuilder sb = new StringBuilder();
 
         for (Variable v : instruction.getOutput()) {
@@ -38,8 +38,8 @@ public class Output implements Composer {
     public String compose(Variable variable) {
         StringBuilder sb = new StringBuilder();
 
-        for (ChemTypes t : variable.getTypingConstraints()) {
-            sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getVarName(), t)).append(" true))").append(NL);
+        for (ChemTypes t : variable.getTypes()) {
+            sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getName(), t)).append(" true))").append(NL);
         }
 
         return sb.toString();
