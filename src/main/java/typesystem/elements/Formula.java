@@ -3,7 +3,7 @@ package typesystem.elements;
 import java.util.ArrayList;
 import java.util.List;
 
-import shared.variables.Variable;
+import shared.Variable;
 import typesystem.rules.Rule;
 
 /**

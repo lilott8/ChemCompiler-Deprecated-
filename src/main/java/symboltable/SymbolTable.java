@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import shared.variables.Symbol;
-import shared.variables.Variable;
+import shared.Variable;
 
 /**
  * @created: 2/8/18
@@ -59,7 +58,7 @@ public class SymbolTable {
         return this.scopeStack.peek();
     }
 
-    public void addLocal(Symbol symbol) {
+    public void addLocal(Variable symbol) {
         // Cache it for right now.
         Scope s = this.scopeStack.pop();
         // Add the scope to the symbol.
@@ -75,11 +74,11 @@ public class SymbolTable {
         this.scopeStack.push(s);
     }
 
-    public void addLocals(List<Symbol> symbols) {
+    public void addLocals(List<Variable> symbols) {
         // Cache it for right now.
         Scope s = this.scopeStack.pop();
 
-        for (Symbol symbol : symbols) {
+        for (Variable symbol : symbols) {
             // Add the scope to the symbol.
             symbol.addScope(s);
             s.addSymbol(symbol);
@@ -105,6 +104,24 @@ public class SymbolTable {
 
     public Map<String, Method> getMethods() {
         return this.methods;
+    }
+
+    public Scope getCurrentScope() {
+        return this.scopeStack.peek();
+    }
+
+    public String getCurrentScopeName() {
+        return this.scopeStack.peek().getName();
+    }
+
+    public Variable getScopedSymbol(String scope, String varName) {
+        Variable var = null;
+        if (this.scopes.containsKey(scope) && this.scopes.get(scope).symbols.containsKey(varName)) {
+            var = this.scopes.get(scope).symbols.get(varName);
+        } else {
+            logger.warn(String.format("%s doesn't exist in scope %s", varName, this.scopeStack.peek().getName()));
+        }
+        return var;
     }
 
     @Override

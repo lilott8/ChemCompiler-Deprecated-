@@ -1,6 +1,6 @@
 package typesystem.satsolver.constraints.SMT;
 
-import shared.variables.Variable;
+import shared.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.Composer;
 import typesystem.satsolver.strategies.SolverStrategy;

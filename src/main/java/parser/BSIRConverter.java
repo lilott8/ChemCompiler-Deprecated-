@@ -8,7 +8,7 @@ import shared.Step;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class BSIRConverter extends GJNoArguDepthFirst<BSTypeChecker> implements Step {
+public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
 
     @Override
     public Step run() {

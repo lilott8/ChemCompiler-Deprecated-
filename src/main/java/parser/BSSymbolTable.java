@@ -4,10 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import chemical.identification.IdentifierFactory;
 import parser.ast.Assignment;
 import parser.ast.DetectInstruction;
 import parser.ast.DrainInstruction;
@@ -19,9 +23,11 @@ import parser.ast.FunctionDefinition;
 import parser.ast.HeatInstruction;
 import parser.ast.Identifier;
 import parser.ast.IfStatement;
+import parser.ast.IntegerLiteral;
 import parser.ast.Manifest;
 import parser.ast.MatLiteral;
 import parser.ast.MixInstruction;
+import parser.ast.Module;
 import parser.ast.NatLiteral;
 import parser.ast.RealLiteral;
 import parser.ast.RepeatInstruction;
@@ -30,33 +36,68 @@ import parser.ast.Stationary;
 import parser.ast.TrueLiteral;
 import parser.visitor.GJNoArguDepthFirst;
 import shared.Step;
-import shared.variables.Symbol;
+import shared.Variable;
 import symboltable.Method;
 import symboltable.SymbolTable;
 import chemical.epa.ChemTypes;
+import typesystem.elements.Formula;
+import typesystem.rules.Rule;
+import typesystem.satsolver.strategies.SolverStrategy;
+import typesystem.satsolver.strategies.Z3Strategy;
+
+import static chemical.epa.ChemTypes.BOOL;
+import static chemical.epa.ChemTypes.MODULE;
+import static chemical.epa.ChemTypes.NAT;
+import static chemical.epa.ChemTypes.REAL;
+import static typesystem.rules.Rule.InstructionType.DRAIN;
+import static typesystem.rules.Rule.InstructionType.LOOP;
+import static typesystem.rules.Rule.InstructionType.MANIFEST;
+import static typesystem.rules.Rule.InstructionType.STATIONARY;
 
 /**
  * @created: 2/1/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
+public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, TypeChecker {
 
     public static final Logger logger = LogManager.getLogger(BSSymbolTable.class);
     private static final String REPEAT = "REPEAT";
     private static final String BRANCH = "BRANCH";
     private static final String INTEGER = "INTEGER";
+    private static final String BOOLEAN = "BOOLEAN";
+
     private SymbolTable symbolTable = new SymbolTable();
     private int scopeId = 0;
+    private int realId = 0;
+    private int booleanId = 0;
     private int integerId = 0;
-    //private String scope = DEFAULT_SCOPE;
-    // private Variable variable;
-    private String name;
-    private Set<ChemTypes> types = new HashSet<>();
-    private List<Symbol> arguments = new ArrayList<>();
 
+    // Name of current working variable.
+    private String name;
+    // Associated types.
+    private Set<ChemTypes> types = new HashSet<>();
+    // Arguments to functions, etc.
+    private List<Variable> arguments = new ArrayList<>();
+
+    // Keep track of the instruction id to input/outputs
+    protected static Map<Integer, Formula> instructions = new LinkedHashMap<>();
+    protected static Map<String, Variable> variables = new HashMap<>();
+
+    // Typing constraints of variables.
+    private Formula instruction;
+
+    // Ability to identify stuff.
+    private chemical.identification.Identifier identifier = IdentifierFactory.getIdentifier();
+    // How we solve constraints.
+    private SolverStrategy z3 = new Z3Strategy();
 
     public BSSymbolTable() {
+    }
+
+    @Override
+    public void solve() {
+        this.z3.solveConstraints(instructions, variables);
     }
 
     @Override
@@ -81,8 +122,19 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         n.f1.accept(this);
         // Get the identifier.
         n.f2.accept(this);
+
+        // Type checking material.
+        this.instruction = new Formula(STATIONARY);
+        Variable term = new Variable(this.name);
+        term.addScope(this.symbolTable.getCurrentScope());
+        term.addTypingConstraints(this.getTypingConstraints(term));
+        addVariable(term);
+        this.instruction.addInputVariable(term);
+        addInstruction(this.instruction);
+        // End type checking.
+
         // Anything in this section is always default scope.
-        this.symbolTable.addLocal(new Symbol(this.name, this.types));
+        this.symbolTable.addLocal(term);
         this.types.clear();
         return this;
     }
@@ -99,9 +151,43 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         n.f1.accept(this);
         // Get the identifier.
         n.f2.accept(this);
+
+        // Begin type checking.
+        this.instruction = new Formula(MANIFEST);
+        Variable term = new Variable(this.name);
+        term.addScope(this.symbolTable.getCurrentScope());
+        term.addTypingConstraints(this.getTypingConstraints(term));
+        addVariable(term);
+        this.instruction.addInputVariable(term);
+        addInstruction(this.instruction);
+        // End type checking.
+
         // build the variable now
-        this.symbolTable.addLocal(new Symbol(this.name, this.types));
+        this.symbolTable.addLocal(term);
         this.types.clear();
+
+        return this;
+    }
+
+    /**
+     * f0 -> <MODULE>
+     * f1 -> Identifier()
+     */
+    @Override
+    public Step visit(Module n) {
+
+        n.f1.accept(this);
+        // Begin type checking.
+        this.instruction = new Formula(Rule.InstructionType.MODULE);
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraint(MODULE);
+        addVariable(term);
+        instruction.addInputVariable(term);
+        addInstruction(this.instruction);
+        // End type checking.
+
+        this.symbolTable.addLocal(term);
+
         return this;
     }
 
@@ -113,17 +199,37 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      */
     @Override
     public Step visit(Assignment n) {
-        // super.visit(n.f0);
-        // Enumerate the types, if any.
-        n.f0.accept(this);
-        // Set the identifier.
-        n.f1.accept(this);
-        // Add the variable to our scope.
-        this.symbolTable.addLocal(new Symbol(this.name, this.types));
-        // Clear the set, we are done with it.
-        this.types.clear();
-        // Go get the rest of the expression(s).
+        // Get the expression done before we get the identifier.
+        // That way we can set the appropriate instruction.
         n.f3.accept(this);
+        // Once we have established the expression,
+        // We can identify the identifier.
+        n.f1.accept(this);
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        if (n.f0.present()) {
+            n.f0.accept(this);
+            term.addTypingConstraints(this.getTypingConstraints(term));
+        }
+        this.symbolTable.addLocal(term);
+        switch (this.instruction.getType()) {
+            case MIX:
+            case SPLIT:
+                term.addTypingConstraints(this.getTypingConstraints(term));
+                this.instruction.addOutputVariable(term);
+                break;
+            case DETECT:
+                term.addTypingConstraint(ChemTypes.REAL);
+                this.instruction.addOutputVariable(term);
+                break;
+            case FUNCTION:
+                // We need to see what the return type of a given function is.
+                term.addTypingConstraints(this.symbolTable.getMethods().get(term.getName()).getTypes());
+                this.instruction.addOutputVariable(term);
+                break;
+        }
+        addVariable(term);
+        addInstruction(this.instruction);
+        this.types.clear();
         return this;
     }
 
@@ -145,9 +251,12 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
 
         // Get the name of the method.
         n.f1.accept(this);
-        // Start a new scope.
+        // The method belongs to the parent scope.
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        // Now we have a new scope
         this.symbolTable.newScope(this.name);
-        Method method = new Method(this.name);
+        // Start a new scope.
+        Method method = new Method(this.name, this.symbolTable.getCurrentScope());
 
         // Get the parameters of this method
         n.f3.accept(this);
@@ -156,7 +265,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // Clear the arguments list
         this.arguments.clear();
 
-        // Get the types of this method.
+        // Get the type(s) of this method.
         if (n.f5.present()) {
             n.f5.accept(this);
             method.addReturnTypes(this.types);
@@ -170,15 +279,23 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
 
         // Get the list of statements.
         n.f7.accept(this);
-        // this.symbolTable.addLocal(symbol);
 
         if (n.f8.present()) {
-            // Get the return statement (Currently ignored).
+            // Get the return statement.
             n.f8.accept(this);
+            // If this symbol has already been processed, we don't have to do anything.
+            if (!variables.containsKey(this.symbolTable.getCurrentScope().getName() + "_" + this.name)) {
+                Variable ret = new Variable(this.name, this.symbolTable.getCurrentScope());
+                ret.addTypingConstraints(method.getTypes());
+                //addVariable(ret);
+                this.symbolTable.addLocal(ret);
+            }
         }
+        addVariable(term);
 
         // Return back to previous scoping.
         this.symbolTable.endScope();
+
         return this;
     }
 
@@ -194,7 +311,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // Go fetch the name
         n.f1.accept(this);
         // save the record.
-        Symbol v = new Symbol(this.name, this.types);
+        Variable v = new Variable(this.name, this.types, this.symbolTable.getCurrentScope());
         // this.arguments.add(v);
         this.symbolTable.addLocal(v);
         this.types.clear();
@@ -215,15 +332,20 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // Start a new scope.
         String name = String.format("%s_%d", REPEAT, scopeId++);
         this.symbolTable.newScope(name);
-        Set<ChemTypes> types = new HashSet<>();
-        types.add(ChemTypes.NAT);
-        this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId), types));
-        types = null;
-        //Loop symbol = new Loop(name, new HashSet<>());
-        //this.symbolTable.addLocal(symbol);
+        // Begin type checking.
+        this.name = String.format("%s_%d", NAT, integerId++);
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraint(NAT);
+        addVariable(term);
+        this.instruction = new Formula(LOOP);
+        this.instruction.addInputVariable(term);
+        addInstruction(this.instruction);
+        // End type checking
+
         n.f4.accept(this);
         // Return back to old scoping.
         this.symbolTable.endScope();
+
         return this;
     }
 
@@ -240,10 +362,20 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(IfStatement n) {
         // super.visit(n);
         // String name = String.format("%s_%d", BRANCH, scopeId++);
-        this.symbolTable.newScope(name);
-        // Branch symbol = new Branch(name, new HashSet<>());
+        // TODO: Not 100% sure this is correct (it will be incorrect for the other scope changes too).
+        this.symbolTable.newScope(this.name);
+        // Begin type checking.
+        this.instruction = new Formula(Rule.InstructionType.BRANCH);
+        this.name = String.format("%s_%d", NAT, integerId);
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraint(NAT);
+        addVariable(term);
+        this.instruction.addInputVariable(term);
+        addInstruction(this.instruction);
+        // End type checking.
+
+        this.symbolTable.addLocal(term);
         n.f2.accept(this);
-        // this.symbolTable.addLocal(symbol);
         n.f5.accept(this);
         // Return back to old scoping.
         this.symbolTable.endScope();
@@ -264,9 +396,19 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(ElseIfStatement n) {
         // super.visit(n);
         // String name = String.format("%s_%d", BRANCH, scopeId++);
-        this.symbolTable.newScope(name);
-        // Branch symbol = new Branch(name, new HashSet<>());
-        // this.symbolTable.addLocal(symbol);
+        this.symbolTable.newScope(this.name);
+
+        // Begin type checking.
+        this.instruction = new Formula(Rule.InstructionType.BRANCH);
+        this.name = String.format("%s_%d", NAT, integerId);
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraint(NAT);
+        addVariable(term);
+        this.instruction.addInputVariable(term);
+        addInstruction(this.instruction);
+        // End type checking.
+
+        this.symbolTable.addLocal(term);
         n.f2.accept(this);
         n.f5.accept(this);
         // Return back to old scoping.
@@ -302,17 +444,35 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      */
     @Override
     public Step visit(MixInstruction n) {
+        this.instruction = new Formula(Rule.InstructionType.MIX);
+
         n.f1.accept(this);
-        this.symbolTable.addLocal(new Symbol(this.name, this.types));
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraints(this.getTypingConstraints(term));
+        addVariable(term);
+        this.instruction.addInputVariable(term);
+        this.symbolTable.addLocal(term);
         this.types.clear();
+
         n.f3.accept(this);
-        this.symbolTable.addLocal(new Symbol(this.name, this.types));
+        n.f3.accept(this);
+        term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraints(this.getTypingConstraints(term));
+        addVariable(term);
+        this.instruction.addInputVariable(term);
+        this.symbolTable.addLocal(term);
         this.types.clear();
+
         if (n.f4.present()) {
             n.f4.accept(this);
-            this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId++), this.types));
+            term = new Variable(this.name, this.symbolTable.getCurrentScope());
+            term.addTypingConstraint(NAT);
+            addVariable(term);
+            this.instruction.addProperty(term);
+            this.symbolTable.addLocal(term);
             this.types.clear();
         }
+
         return this;
     }
 
@@ -326,10 +486,21 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(SplitInstruction n) {
         //super.visit(n);
         n.f1.accept(this);
-        this.symbolTable.addLocal(new Symbol(this.name, this.types));
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraints(this.types);
+        addVariable(term);
+        this.symbolTable.addLocal(term);
+        this.instruction.addInputVariable(term);
         this.types.clear();
+
         n.f3.accept(this);
-        this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId++), this.types));
+        // Use the generated name for the integer.
+        term = new Variable(String.format("%s_%d", INTEGER, integerId++), this.symbolTable.getCurrentScope());
+        term.addTypingConstraint(NAT);
+        addVariable(term);
+        this.symbolTable.addLocal(term);
+        this.instruction.addProperty(term);
+
         return this;
     }
 
@@ -341,8 +512,17 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(DrainInstruction n) {
         //super.visit(n);
         n.f1.accept(this);
-        this.symbolTable.addLocal(new Symbol(this.name, this.types));
+
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraints(this.getTypingConstraints(term));
+        this.symbolTable.addLocal(term);
+        addVariable(term);
         this.types.clear();
+
+        this.instruction = new Formula(DRAIN);
+        this.instruction.addInputVariable(term);
+        addInstruction(this.instruction);
+
         return this;
     }
 
@@ -358,16 +538,30 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
         // super.visit(n);
 
         n.f1.accept(this);
-        this.symbolTable.addLocal(new Symbol(this.name, this.types));
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraints(this.getTypingConstraints(term));
+        this.symbolTable.addLocal(term);
+        addVariable(term);
         this.types.clear();
+        this.instruction.addInputVariable(term);
+
         n.f3.accept(this);
-        this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId++), this.types));
+        term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraint(ChemTypes.REAL);
+        addVariable(term);
+        this.instruction.addProperty(term);
+        this.symbolTable.addLocal(term);
         this.types.clear();
         if (n.f4.present()) {
             n.f4.accept(this);
-            this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId++), this.types));
+            term = new Variable(this.name, this.symbolTable.getCurrentScope());
+            term.addTypingConstraint(NAT);
+            addVariable(term);
+            this.instruction.addProperty(term);
+            this.symbolTable.addLocal(new Variable(String.format("%s_%d", INTEGER, integerId++), this.types));
             this.types.clear();
         }
+        addInstruction(this.instruction);
         return this;
     }
 
@@ -382,16 +576,40 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(DetectInstruction n) {
         // super.visit(n);
         n.f1.accept(this);
-        this.symbolTable.addLocal(new Symbol(this.name, this.types));
+        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraints(this.getTypingConstraints(term));
+        addVariable(term);
+        this.instruction.addInputVariable(term);
+        this.symbolTable.addLocal(term);
         this.types.clear();
+
         n.f3.accept(this);
-        this.symbolTable.addLocal(new Symbol(this.name, this.types));
+        term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        term.addTypingConstraint(NAT);
+        addVariable(term);
+        this.instruction.addInputVariable(term);
+        this.symbolTable.addLocal(term);
         this.types.clear();
+
         if (n.f4.present()) {
             n.f4.accept(this);
-            this.symbolTable.addLocal(new Symbol(String.format("%s_%d", INTEGER, integerId++), this.types));
+            term = new Variable(this.name, this.symbolTable.getCurrentScope());
+            term.addTypingConstraint(NAT);
+            addVariable(term);
+            this.instruction.addProperty(term);
+            this.symbolTable.addLocal(term);
             this.types.clear();
         }
+
+        return this;
+    }
+
+    /**
+     * f0 -> <INTEGER_LITERAL>
+     */
+    @Override
+    public Step visit(IntegerLiteral n) {
+        this.name = String.format("%s_%d", INTEGER, integerId++);
         return this;
     }
 
@@ -402,6 +620,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
     public Step visit(NatLiteral n) {
         // super.visit(n);
         this.types.add(ChemTypes.NAT);
+
         return this;
     }
 
@@ -450,7 +669,15 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
      */
     @Override
     public Step visit(Identifier n) {
-        this.name = n.f0.toString();
+        if (this.types.contains(REAL)) {
+            this.name = String.format("%s_%d", REAL, realId++);
+        } else if (this.types.contains(NAT)) {
+            this.name = String.format("%s_%d", INTEGER, integerId++);
+        } else if (this.types.contains(BOOL)) {
+            this.name = String.format("%s_%d", BOOLEAN, booleanId++);
+        } else {
+            this.name = n.f0.toString();
+        }
         return this;
     }
 
@@ -460,5 +687,27 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step {
 
     public String toString() {
         return this.symbolTable.toString();
+    }
+
+    private Set<ChemTypes> getTypingConstraints(Variable t) {
+        if (variables.containsKey(t.getScopedName())) {
+            return variables.get(t.getScopedName()).getTypes();
+        } else {
+            return this.identifier.identifyCompoundForTypes(t.getName());
+        }
+    }
+
+    private static void addVariable(Variable t) {
+        if (!variables.containsKey(t.getScopedName())) {
+            variables.put(t.getScopedName(), t);
+        } else {
+            if (variables.get(t.getScopedName()).equals(t)) {
+                logger.warn(String.format("%s is equal to %s", t, variables.get(t.getName())));
+            }
+        }
+    }
+
+    private static void addInstruction(Formula i) {
+        instructions.put(i.getId(), i);
     }
 }
