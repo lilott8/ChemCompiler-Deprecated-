@@ -1,11 +1,9 @@
 package symboltable;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import shared.variables.Symbol;
+import shared.Variable;
 
 /**
  * @created: 2/8/18
@@ -23,7 +21,7 @@ public class Scope {
     private int frameSize = 0;
     // Will probably never be used, but jic.
     private Visibility type = Visibility.GLOBAL;
-    Map<String, Symbol> symbols = new HashMap<>();
+    Map<String, Variable> symbols = new HashMap<>();
 
     public Scope(String name) {
         this.name = name;
@@ -40,7 +38,7 @@ public class Scope {
         this.frameSize = frameSize;
     }
 
-    public void addSymbol(Symbol symbol) {
+    public void addSymbol(Variable symbol) {
         this.symbols.put(symbol.getName(), symbol);
     }
 
@@ -52,14 +50,14 @@ public class Scope {
         return type;
     }
 
-    public Map<String, Symbol> getVariables() {
+    public Map<String, Variable> getVariables() {
         return symbols;
     }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for (Map.Entry<String, Symbol> entry : this.symbols.entrySet()) {
+        for (Map.Entry<String, Variable> entry : this.symbols.entrySet()) {
             sb.append("\t").append(entry.getKey()).append(": ").append(entry.getValue()).append(System.lineSeparator());
         }
 

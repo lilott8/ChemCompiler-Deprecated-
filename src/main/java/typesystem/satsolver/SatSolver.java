@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-import shared.variables.Variable;
+import shared.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
 

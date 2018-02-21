@@ -6,4 +6,6 @@ package parser;
  * @project: ChemicalCompiler
  */
 public interface TypeChecker {
+
+    public void solve();
 }

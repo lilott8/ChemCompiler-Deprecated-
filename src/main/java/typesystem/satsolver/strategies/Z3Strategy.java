@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import config.ConfigFactory;
-import shared.variables.Variable;
+import shared.Variable;
 import typesystem.elements.Formula;
 import typesystem.rules.Rule;
 import typesystem.satsolver.constraints.Composer;

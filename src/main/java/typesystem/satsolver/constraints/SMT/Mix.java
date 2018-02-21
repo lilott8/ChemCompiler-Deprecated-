@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import shared.variables.Variable;
+import shared.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.Composer;
 import typesystem.satsolver.strategies.SolverStrategy;

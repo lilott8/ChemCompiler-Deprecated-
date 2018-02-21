@@ -8,19 +8,18 @@ import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import shared.variables.Symbol;
-import shared.variables.Variable;
+import shared.Variable;
 
 /**
  * @created: 2/8/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Method extends Symbol {
+public class Method extends Variable {
 
     public static final Logger logger = LogManager.getLogger(Method.class);
 
-    public Set<Symbol> parameters = new HashSet<>();
+    public Set<Variable> parameters = new HashSet<>();
 
     public Method(String name) {
         super(name, new HashSet<>());
@@ -30,15 +29,23 @@ public class Method extends Symbol {
         super(name, type);
     }
 
-    public void addParameter(Symbol var) {
+    public Method(String name, Scope scope) {
+        super(name, scope);
+    }
+
+    public Method(String name, Set<ChemTypes> type, Scope scope) {
+        super(name, type, scope);
+    }
+
+    public void addParameter(Variable var) {
         this.parameters.add(var);
     }
 
-    public void addParameters(List<Symbol> vars) {
+    public void addParameters(List<Variable> vars) {
         this.parameters.addAll(vars);
     }
 
-    public void addParameters(Set<Symbol> vars) {
+    public void addParameters(Set<Variable> vars) {
         this.parameters.addAll(vars);
     }
 
