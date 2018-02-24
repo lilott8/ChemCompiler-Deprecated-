@@ -1,4 +1,4 @@
-package shared;
+package shared.variable;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,7 +13,7 @@ import symboltable.Scope;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Variable {
+public class Variable implements ScopedVariable, TypedVariable {
 
     protected String name;
     protected Set<ChemTypes> types = new HashSet<>();
@@ -58,7 +58,7 @@ public class Variable {
     }
 
     public String getName() {
-        return this.getScopedName();
+        return this.name;
     }
 
     public String getScopedName() {

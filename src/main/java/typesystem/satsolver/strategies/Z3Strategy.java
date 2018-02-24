@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import config.ConfigFactory;
-import shared.Variable;
+import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.rules.Rule;
 import typesystem.satsolver.constraints.Composer;
@@ -104,7 +104,7 @@ public class Z3Strategy implements SolverStrategy {
 
         sb.append("; Initialize declares for: ").append(SolverStrategy.getSMTName(v.getName())).append(NL);
         for (Entry<Integer, ChemTypes> types : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-            sb.append("(declare-const ").append(SolverStrategy.getSMTName(v.getName(), types.getValue())).append(" Bool)").append(NL);
+            sb.append("(declare-const ").append(SolverStrategy.getSMTName(v.getScopedName(), types.getValue())).append(" Bool)").append(NL);
         }
 
         return sb.toString();
@@ -151,9 +151,9 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(TAB).append("(not").append(NL);
         }
         sb.append(TAB + TAB).append("(or").append(NL)
-                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getName(), REAL))
+                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getScopedName(), REAL))
                 .append(" true)").append(NL)
-                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getName(), NAT))
+                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getScopedName(), NAT))
                 .append(" true)").append(NL);
         if (isMat) {
             sb.append(TAB + TAB).append(")").append(NL);

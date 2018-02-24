@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import shared.Variable;
+import shared.variable.Variable;
 
 /**
  * @created: 2/8/18
@@ -51,6 +51,10 @@ public class Method extends Variable {
 
     public void addReturnTypes(Set<ChemTypes> ret) {
         super.types.addAll(ret);
+    }
+
+    public boolean hasReturnTypes() {
+        return !super.types.isEmpty();
     }
 
     public String toString() {

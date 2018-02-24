@@ -13,7 +13,7 @@ import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
-import shared.Variable;
+import shared.variable.Variable;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;
 import chemical.epa.ChemTypes;

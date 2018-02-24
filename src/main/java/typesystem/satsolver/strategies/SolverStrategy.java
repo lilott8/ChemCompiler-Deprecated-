@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-import shared.Variable;
+import shared.variable.Variable;
 import typesystem.elements.Formula;
 import chemical.epa.ChemTypes;
 

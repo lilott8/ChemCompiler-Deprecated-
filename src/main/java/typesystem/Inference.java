@@ -18,7 +18,7 @@ import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.node.InstructionNode;
 import shared.Phase;
-import shared.Variable;
+import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.rules.EdgeAnalyzer;
 import typesystem.rules.InferenceRule;

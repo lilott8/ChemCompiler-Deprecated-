@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import shared.Variable;
+import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.Composer;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -51,7 +51,7 @@ public class Mix implements Composer {
         StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : variable.getTypes()) {
-            sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getName(), t)).append(" true))").append(NL);
+            sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
         }
 
         return sb.toString();
@@ -96,15 +96,15 @@ public class Mix implements Composer {
         sb.append("(assert").append(NL);
         sb.append(TAB).append("(=>").append(NL);
         sb.append(TAB + TAB).append("(and").append(NL);
-        sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(input1.getName(), t1)).append(" true)").append(NL);
-        sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(input2.getName(), t2)).append(" true)").append(NL);
+        sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(input1.getScopedName(), t1)).append(" true)").append(NL);
+        sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(input2.getScopedName(), t2)).append(" true)").append(NL);
         sb.append(TAB + TAB).append(")").append(NL);
         sb.append(TAB + TAB).append("(and").append(NL);
         for (ChemTypes t : EpaManager.INSTANCE.lookUp(t1, t2)) {
-            sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(output.getName(), t)).append(" true)").append(NL);
+            sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(output.getScopedName(), t)).append(" true)").append(NL);
         }
         sb.append(TAB + TAB).append(")").append(NL);
-        //logger.info(String.format("(assert \n\t(=> \n\t\t(and \n\t\t\t(= %s %s) \n\t\t\t(= %s %s)) \n\t\t(and \n\t\t\t(= %s %s)))", getSMTName(input1.getName(), t1), getSMTName(output.getName(), t1), getSMTName(input2.getName(), t2), getSMTName(output.getName(), t2), EpaManager.INSTANCE.lookUp(t1, t2), "?"));
+        //logger.info(String.format("(assert \n\t(=> \n\t\t(and \n\t\t\t(= %s %s) \n\t\t\t(= %s %s)) \n\t\t(and \n\t\t\t(= %s %s)))", getSMTName(input1.getScopedName(), t1), getSMTName(output.getScopedName(), t1), getSMTName(input2.getScopedName(), t2), getSMTName(output.getScopedName(), t2), EpaManager.INSTANCE.lookUp(t1, t2), "?"));
         sb.append(TAB).append(")").append(NL);
         sb.append(")").append(NL);
 
@@ -123,21 +123,21 @@ public class Mix implements Composer {
         sb.append("(assert").append(NL);
         sb.append(TAB).append("(=>").append(NL);
         sb.append(TAB + TAB).append("(and").append(NL);
-        sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(input1.getName(), t1)).append(" true)").append(NL);
-        sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(input2.getName(), t2)).append(" true)").append(NL);
+        sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(input1.getScopedName(), t1)).append(" true)").append(NL);
+        sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(input2.getScopedName(), t2)).append(" true)").append(NL);
         sb.append(TAB + TAB).append(")").append(NL);
         sb.append(TAB + TAB).append("(and").append(NL);
         Set<ChemTypes> notPresent = new HashSet<>(EpaManager.INSTANCE.lookUp(t1, t2));
         Set<ChemTypes> allTypes = new HashSet<>(ChemTypes.getAllTypes());
         for (ChemTypes t : EpaManager.INSTANCE.lookUp(t1, t2)) {
-            sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(output.getName(), t)).append(" true)").append(NL);
+            sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(output.getScopedName(), t)).append(" true)").append(NL);
         }
         allTypes.removeAll(notPresent);
         for (ChemTypes t : allTypes) {
-            sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(output.getName(), t)).append(" false)").append(NL);
+            sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(output.getScopedName(), t)).append(" false)").append(NL);
         }
         sb.append(TAB + TAB).append(")").append(NL);
-        //logger.info(String.format("(assert \n\t(=> \n\t\t(and \n\t\t\t(= %s %s) \n\t\t\t(= %s %s)) \n\t\t(and \n\t\t\t(= %s %s)))", getSMTName(input1.getName(), t1), getSMTName(output.getName(), t1), getSMTName(input2.getName(), t2), getSMTName(output.getName(), t2), EpaManager.INSTANCE.lookUp(t1, t2), "?"));
+        //logger.info(String.format("(assert \n\t(=> \n\t\t(and \n\t\t\t(= %s %s) \n\t\t\t(= %s %s)) \n\t\t(and \n\t\t\t(= %s %s)))", getSMTName(input1.getScopedName(), t1), getSMTName(output.getScopedName(), t1), getSMTName(input2.getScopedName(), t2), getSMTName(output.getScopedName(), t2), EpaManager.INSTANCE.lookUp(t1, t2), "?"));
         sb.append(TAB).append(")").append(NL);
         sb.append(")").append(NL);
 

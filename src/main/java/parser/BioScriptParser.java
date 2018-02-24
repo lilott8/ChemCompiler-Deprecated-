@@ -44,6 +44,7 @@ public class BioScriptParser implements Phase {
             try {
                 BSProgram program = this.parser.BSProgram();
                 program.accept(this.symbolTable);
+                logger.info(this.symbolTable);
                 if (!this.config.getErrorLevel().disabled()) {
                     this.symbolTable.solve();
                 } else {
@@ -55,6 +56,9 @@ public class BioScriptParser implements Phase {
             input.close();
         } catch (IOException ioe) {
             logger.fatal("Couldn't load the file: " + this.file);
+        } catch (Exception e) {
+            logger.fatal(e.getMessage());
+            logger.fatal(e.toString());
         }
         return this;
     }

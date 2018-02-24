@@ -1,6 +1,6 @@
 package typesystem.satsolver.constraints.SMT;
 
-import shared.Variable;
+import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.Composer;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -39,7 +39,7 @@ public class Split implements Composer {
         StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : variable.getTypes()) {
-            sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getName(), t)).append(" true))").append(NL);
+            sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
         }
 
         return sb.toString();

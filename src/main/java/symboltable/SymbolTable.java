@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import shared.Variable;
+import javax.annotation.Nullable;
+
+import shared.variable.Variable;
 
 /**
  * @created: 2/8/18
@@ -28,32 +30,31 @@ public class SymbolTable {
     private Map<String, Scope> scopes = new HashMap<>();
     // Maps methods to their declaration.
     private Map<String, Method> methods = new HashMap<>();
-    // private Map<String, Map<String, Symbol>> scopedSymbols = new HashMap<>();
     // Keep tabs of depth of stack.
     private Deque<Scope> scopeStack = new ArrayDeque<>();
 
     public SymbolTable() {
-        // Add the default scope to the stack.
+        // Add the default scope to the stack; it has no parent.
         Scope origins = new Scope(DEFAULT_SCOPE);
+        // Push the scope to the stack.
         this.scopeStack.push(origins);
         this.scopes.put(DEFAULT_SCOPE, origins);
-        // this.scopedSymbols.put(DEFAULT_SCOPE, new HashMap<>());
     }
 
     public Scope newScope(String name) {
-        // Create a new context and push it onto the stack.
-        this.scopeStack.push(new Scope(name));
+        // Create a new context.
+        Scope scope = new Scope(name, this.scopeStack.peek());
+        // Push the new scope onto the stack.
+        this.scopeStack.push(scope);
         // Save the scope in the hashmap.
         this.scopes.put(name, this.scopeStack.peek());
-        // Create the scoped symbol hashmap.
-        // this.scopedSymbols.put(name, new HashMap<>());
         // Return the new scope.
         return this.scopeStack.peek();
     }
 
     public Scope endScope() {
         // Remove the most recent element.
-        Scope s = this.scopeStack.pop();
+        this.scopeStack.pop();
         // Return the context we return to.
         return this.scopeStack.peek();
     }
@@ -106,6 +107,10 @@ public class SymbolTable {
         return this.methods;
     }
 
+    public Scope getParentScope() {
+        return this.scopeStack.peek().getParentScope();
+    }
+
     public Scope getCurrentScope() {
         return this.scopeStack.peek();
     }
@@ -124,17 +129,47 @@ public class SymbolTable {
         return var;
     }
 
+    public Variable searchScopesForVariable(String name) {
+        for(Map.Entry<String, Scope> scope : this.scopes.entrySet()) {
+            if (scope.getValue().getVariables().containsKey(name)) {
+                return scope.getValue().getVariables().get(name);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Recursive function looking for a definition of a
+     * variable in parent scope(s).
+     * @param name name of variable
+     * @param s scope
+     * @return variable or null
+     */
+    @Nullable
+    public Variable searchScopeHierarchy(String name, Scope s) {
+        if (s == null) {
+            return null;
+        } else {
+            if (s.getVariables().containsKey(name)) {
+                return s.getVariables().get(name);
+            } else {
+                return searchScopeHierarchy(name, s.getParentScope());
+            }
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for (Map.Entry<String, Variable> entry : this.symbols.entrySet()) {
-            sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(System.lineSeparator());
-        }
-        sb.append("=========================").append(System.lineSeparator());
+        //for (Map.Entry<String, Variable> entry : this.symbols.entrySet()) {
+        //    sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(System.lineSeparator());
+        //}
+        //sb.append("=========================").append(System.lineSeparator());
         for (Map.Entry<String, Scope> entry : this.scopes.entrySet()) {
             sb.append("Scope: ").append(entry.getKey()).append(": ")
                     .append(System.lineSeparator()).append(entry.getValue());
+            sb.append("===========================").append(System.lineSeparator());
         }
         return sb.toString();
     }
