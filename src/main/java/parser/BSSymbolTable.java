@@ -212,7 +212,6 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
         // We can identify the identifier.
         n.f1.accept(this);
         // Search the hierarchy for the output var.
-        logger.fatal("WE NEED TO FIGURE OUT HOW TO HANDLE A VARIABLE THAT HASN'T BEEN SAVED TO THE VARIABLES MAP YET AND ASSIGN IT TO THE FUNCTION");
         Variable output = this.symbolTable.searchScopeHierarchy(this.name, this.symbolTable.getCurrentScope());
         if (output == null) {
             output = new Variable(this.name, this.symbolTable.getCurrentScope());
@@ -253,8 +252,6 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      */
     @Override
     public Step visit(FunctionInvoke n) {
-        // First get the term that needs to be modified.
-        String variableName = this.name;
         // Get the method name.
         n.f0.accept(this);
         // Get the method.
@@ -263,20 +260,6 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
             logger.fatal("Undeclared function: " + this.name);
             return this;
         }
-
-        logger.info(variableName);
-        Variable assignedTo = this.symbolTable.searchScopeHierarchy(variableName, this.symbolTable.getCurrentScope());
-
-        if (assignedTo == null) {
-            logger.fatal("Undefined variable: " + variableName);
-            return this;
-        }
-        assignedTo.addTypingConstraints(method.getTypes());
-        logger.info(assignedTo.getScopedName());
-        variables.get(assignedTo.getScopedName()).addTypingConstraints(assignedTo.getTypes());
-        this.instruction.addOutputVariable(assignedTo);
-
-        //this.instruction.
 
         n.f2.accept(this);
         return this;
@@ -759,7 +742,8 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
     }
 
     public String toString() {
-        return this.symbolTable.toString();
+        //return this.symbolTable.toString();
+        return this.instructions.toString();
     }
 
     private Set<ChemTypes> getTypingConstraints(Variable t) {
