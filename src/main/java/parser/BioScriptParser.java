@@ -24,12 +24,14 @@ public class BioScriptParser implements Phase {
     public static final Logger logger = LogManager.getLogger(BioScriptParser.class);
     private BSParser parser;
     private InferenceConfig config = ConfigFactory.getConfig();
-    private BSSymbolTable symbolTable;
+    private BSVisitor symbolTable;
+    private BSTypeChecker typeChecker;
     private String file;
 
     public BioScriptParser(String fileName) {
         this.file = fileName;
         this.symbolTable = new BSSymbolTable();
+        this.typeChecker = new BSTypeChecker();
     }
 
     @Override
@@ -46,6 +48,8 @@ public class BioScriptParser implements Phase {
                 program.accept(this.symbolTable);
                 logger.info(this.symbolTable);
                 if (!this.config.getErrorLevel().disabled()) {
+                    program.accept(this.typeChecker);
+                    this.typeChecker.solve();
                     //this.symbolTable.solve();
                 } else {
                     logger.error("Type checking has been disabled.");

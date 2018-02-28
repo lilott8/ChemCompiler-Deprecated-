@@ -1,5 +1,8 @@
 package parser;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 import parser.ast.Assignment;
 import parser.ast.BSProgram;
 import parser.ast.DetectInstruction;
@@ -32,6 +35,8 @@ import shared.Step;
  * @project: ChemicalCompiler
  */
 public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
+
+    private Deque<String> scope = new ArrayDeque<>();
 
     @Override
     public Step run() {
@@ -286,5 +291,19 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
     @Override
     public Step visit(Identifier n) {
         return super.visit(n);
+    }
+
+    private String newScope(String name) {
+        // Push the new scope onto the stack.
+        this.scope.push(name);
+        // Return the scope we are in.
+        return this.scope.peek();
+    }
+
+    private String endScope() {
+        // Remove the most recent element.
+        this.scope.pop();
+        // Return the context we return to.
+        return this.scope.peek();
     }
 }

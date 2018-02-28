@@ -36,7 +36,6 @@ import parser.ast.SplitInstruction;
 import parser.ast.Stationary;
 import parser.ast.TrueLiteral;
 import parser.visitor.GJNoArguDepthFirst;
-import shared.Step;
 import shared.variable.Variable;
 import symboltable.Method;
 import symboltable.SymbolTable;
@@ -61,7 +60,7 @@ import static typesystem.rules.Rule.InstructionType.STATIONARY;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, TypeChecker {
+public class BSSymbolTable extends BSVisitor {
 
     public static final Logger logger = LogManager.getLogger(BSSymbolTable.class);
     private static final String REPEAT = "REPEAT";
@@ -83,36 +82,17 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
     private List<Variable> arguments = new ArrayList<>();
     private Method method;
 
-    // Keep track of the instruction id to input/outputs
-    protected static Map<Integer, Formula> instructions = new LinkedHashMap<>();
-    protected static Map<String, Variable> variables = new HashMap<>();
-
-    // Typing constraints of variables.
-    private Formula instruction;
-
-    // Ability to identify stuff.
-    private chemical.identification.Identifier identifier = IdentifierFactory.getIdentifier();
-    // How we solve constraints.
-    private SolverStrategy z3 = new Z3Strategy();
-
-    private boolean inFunction = false;
-
     public BSSymbolTable() {
     }
 
     @Override
-    public void solve() {
-        this.z3.solveConstraints(instructions, variables);
-    }
-
-    @Override
-    public Step run() {
+    public BSSymbolTable run() {
         return this;
     }
 
     @Override
     public String getName() {
-        return "BSSymbolTable";
+        return this.getClass().getName();
     }
 
     /**
@@ -121,7 +101,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f2 -> PrimaryExpression()
      */
     @Override
-    public Step visit(Stationary n) {
+    public BSSymbolTable visit(Stationary n) {
         // super.visit(n);
         // Get the types.
         n.f1.accept(this);
@@ -150,7 +130,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f2 -> PrimaryExpression()
      */
     @Override
-    public Step visit(Manifest n) {
+    public BSSymbolTable visit(Manifest n) {
         // super.visit(n);
         // Begin type checking.
         this.instruction = new Formula(MANIFEST);
@@ -180,7 +160,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f1 -> Identifier()
      */
     @Override
-    public Step visit(Module n) {
+    public BSSymbolTable visit(Module n) {
 
         n.f1.accept(this);
         // Begin type checking.
@@ -204,7 +184,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f3 -> Expression()
      */
     @Override
-    public Step visit(Assignment n) {
+    public BSSymbolTable visit(Assignment n) {
         // Get the expression done before we get the identifier.
         // That way we can set the appropriate instruction.
         n.f3.accept(this);
@@ -233,7 +213,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
                 break;
             case FUNCTION:
                 // We need to see what the return type of a given function is.
-                output.addTypingConstraints(this.symbolTable.getMethods().get(output.getName()).getTypes());
+                output.addTypingConstraints(this.method.getTypes());
                 logger.info(output);
                 this.instruction.addOutputVariable(output);
                 break;
@@ -251,7 +231,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f3 -> <RPAREN>
      */
     @Override
-    public Step visit(FunctionInvoke n) {
+    public BSSymbolTable visit(FunctionInvoke n) {
         // Get the method name.
         n.f0.accept(this);
         // Get the method.
@@ -260,6 +240,9 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
             logger.fatal("Undeclared function: " + this.name);
             return this;
         }
+
+        this.instruction = new Formula(FUNCTION);
+        this.instruction.addInputVariable(method);
 
         n.f2.accept(this);
         return this;
@@ -278,9 +261,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f9 -> <RBRACE>
      */
     @Override
-    public Step visit(FunctionDefinition n) {
-        // Take the lock for functions.
-        this.inFunction = true;
+    public BSSymbolTable visit(FunctionDefinition n) {
         // Lets us know if we have a typed function,
         // If we do, then there must be a return statement.
         boolean needReturn = false;
@@ -321,7 +302,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
             n.f8.accept(this);
             // If this symbol has already been processed, we don't have to do anything.
             // If there is a return type, then we must add that to the variable name.
-            if (!variables.containsKey(this.symbolTable.getCurrentScope().getName() + "_" + this.name)) {
+            if (!BSVisitor.variables.containsKey(this.symbolTable.getCurrentScope().getName() + "_" + this.name)) {
                 Variable ret = checkForOrCreateVariable(); // new Variable(this.name, this.symbolTable.getCurrentScope());
                 ret.addTypingConstraints(method.getTypes());
                 this.symbolTable.addLocal(ret);
@@ -330,10 +311,10 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
 
             // This will associate the type of the function with the type of what is being returned.
             if (!method.hasReturnTypes()) {
-                method.addReturnTypes(variables.get(this.symbolTable.getCurrentScope().getName() + "_" + this.name).getTypes());
+                method.addReturnTypes(BSVisitor.variables.get(this.symbolTable.getCurrentScope().getName() + "_" + this.name).getTypes());
             }
         } else {
-            if (needReturn == true) {
+            if (needReturn) {
                 logger.fatal("You need a return statement!");
             }
         }
@@ -343,7 +324,6 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
 
         this.symbolTable.endScope();
         // Remove the lock for functions.
-        this.inFunction = false;
 
         return this;
     }
@@ -353,7 +333,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f1 -> Identifier()
      */
     @Override
-    public Step visit(FormalParameter n) {
+    public BSSymbolTable visit(FormalParameter n) {
         // super.visit(n);
         // Go fetch the typing list
         n.f0.accept(this);
@@ -377,7 +357,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f5 -> <RBRACE>
      */
     @Override
-    public Step visit(RepeatInstruction n) {
+    public BSSymbolTable visit(RepeatInstruction n) {
         // super.visit(n);
         // Start a new scope.
         String name = String.format("%s_%d", REPEAT, scopeId++);
@@ -411,7 +391,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f6 -> <RBRACE>
      */
     @Override
-    public Step visit(IfStatement n) {
+    public BSSymbolTable visit(IfStatement n) {
         // Begin type checking.
         this.instruction = new Formula(Rule.InstructionType.BRANCH);
         this.symbolTable.newScope(this.name);
@@ -444,7 +424,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f6 -> <RBRACE>
      */
     @Override
-    public Step visit(ElseIfStatement n) {
+    public BSSymbolTable visit(ElseIfStatement n) {
         // super.visit(n);
         // String name = String.format("%s_%d", BRANCH, scopeId++);
         this.symbolTable.newScope(this.name);
@@ -475,7 +455,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f3 -> <RBRACE>
      */
     @Override
-    public Step visit(ElseStatement n) {
+    public BSSymbolTable visit(ElseStatement n) {
         // super.visit(n);
         String name = String.format("%s_%d", BRANCH, scopeId++);
         this.symbolTable.newScope(name);
@@ -494,7 +474,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public Step visit(MixInstruction n) {
+    public BSSymbolTable visit(MixInstruction n) {
         this.instruction = new Formula(Rule.InstructionType.MIX);
 
         // Get the first material.
@@ -520,7 +500,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f3 -> IntegerLiteral()
      */
     @Override
-    public Step visit(SplitInstruction n) {
+    public BSSymbolTable visit(SplitInstruction n) {
         //super.visit(n);
         n.f1.accept(this);
         checkForOrCreateVariable();
@@ -565,7 +545,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f1 -> PrimaryExpression()
      */
     @Override
-    public Step visit(DrainInstruction n) {
+    public BSSymbolTable visit(DrainInstruction n) {
         //super.visit(n);
         n.f1.accept(this);
         Variable term = this.checkForOrCreateVariable();
@@ -591,7 +571,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public Step visit(HeatInstruction n) {
+    public BSSymbolTable visit(HeatInstruction n) {
         // super.visit(n);
 
         n.f1.accept(this);
@@ -632,7 +612,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public Step visit(DetectInstruction n) {
+    public BSSymbolTable visit(DetectInstruction n) {
         // super.visit(n);
         n.f1.accept(this);
         this.checkForOrCreateVariable();
@@ -664,7 +644,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f0 -> <INTEGER_LITERAL>
      */
     @Override
-    public Step visit(IntegerLiteral n) {
+    public BSSymbolTable visit(IntegerLiteral n) {
         this.name = String.format("%s_%d", INTEGER, integerId++);
         return this;
     }
@@ -673,7 +653,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f0 -> <NAT>
      */
     @Override
-    public Step visit(NatLiteral n) {
+    public BSSymbolTable visit(NatLiteral n) {
         // super.visit(n);
         this.types.add(ChemTypes.NAT);
 
@@ -684,7 +664,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f0 -> <MAT>
      */
     @Override
-    public Step visit(MatLiteral n) {
+    public BSSymbolTable visit(MatLiteral n) {
         // super.visit(n);
         this.types.add(ChemTypes.MAT);
         return this;
@@ -694,7 +674,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f0 -> <REAL>
      */
     @Override
-    public Step visit(RealLiteral n) {
+    public BSSymbolTable visit(RealLiteral n) {
         // super.visit(n);
         this.types.add(ChemTypes.REAL);
         return this;
@@ -704,7 +684,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f0 -> <TRUE>
      */
     @Override
-    public Step visit(TrueLiteral n) {
+    public BSSymbolTable visit(TrueLiteral n) {
         // super.visit(n);
         this.types.add(ChemTypes.BOOL);
         return this;
@@ -714,7 +694,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f0 -> <FALSE>
      */
     @Override
-    public Step visit(FalseLiteral n) {
+    public BSSymbolTable visit(FalseLiteral n) {
         //super.visit(n);
         this.types.add(ChemTypes.BOOL);
         return this;
@@ -724,7 +704,7 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
      * f0 -> <IDENTIFIER>
      */
     @Override
-    public Step visit(Identifier n) {
+    public BSSymbolTable visit(Identifier n) {
         if (this.types.contains(REAL)) {
             this.name = String.format("%s_%d", REAL, realId++);
         } else if (this.types.contains(NAT)) {
@@ -743,28 +723,14 @@ public class BSSymbolTable extends GJNoArguDepthFirst<Step> implements Step, Typ
 
     public String toString() {
         //return this.symbolTable.toString();
-        return this.instructions.toString();
+        return BSVisitor.instructions.toString();
     }
 
     private Set<ChemTypes> getTypingConstraints(Variable t) {
-        if (variables.containsKey(t.getScopedName())) {
-            return variables.get(t.getScopedName()).getTypes();
+        if (BSVisitor.variables.containsKey(t.getScopedName())) {
+            return BSVisitor.variables.get(t.getScopedName()).getTypes();
         } else {
             return this.identifier.identifyCompoundForTypes(t.getName());
         }
-    }
-
-    private static void addVariable(Variable t) {
-        if (!variables.containsKey(t.getScopedName())) {
-            variables.put(t.getScopedName(), t);
-        } else {
-            if (variables.get(t.getScopedName()).equals(t)) {
-                logger.warn(String.format("%s is equal to %s", t, variables.get(t.getName())));
-            }
-        }
-    }
-
-    private static void addInstruction(Formula i) {
-        instructions.put(i.getId(), i);
     }
 }
