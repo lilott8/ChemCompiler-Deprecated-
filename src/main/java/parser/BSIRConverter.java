@@ -27,19 +27,18 @@ import parser.ast.SplitInstruction;
 import parser.ast.Stationary;
 import parser.ast.TrueLiteral;
 import parser.visitor.GJNoArguDepthFirst;
-import shared.Step;
 
 /**
  * @created: 2/14/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
+public class BSIRConverter extends BSVisitor {
 
     private Deque<String> scope = new ArrayDeque<>();
 
     @Override
-    public Step run() {
+    public BSVisitor run() {
         return null;
     }
 
@@ -57,7 +56,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f5 -> <EOF>
      */
     @Override
-    public Step visit(BSProgram n) {
+    public BSVisitor visit(BSProgram n) {
         return super.visit(n);
     }
 
@@ -66,7 +65,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f1 -> Identifier()
      */
     @Override
-    public Step visit(Module n) {
+    public BSVisitor visit(Module n) {
         return super.visit(n);
     }
 
@@ -76,7 +75,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f2 -> PrimaryExpression()
      */
     @Override
-    public Step visit(Stationary n) {
+    public BSVisitor visit(Stationary n) {
         return super.visit(n);
     }
 
@@ -86,7 +85,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f2 -> PrimaryExpression()
      */
     @Override
-    public Step visit(Manifest n) {
+    public BSVisitor visit(Manifest n) {
         return super.visit(n);
     }
 
@@ -103,7 +102,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f9 -> <RBRACE>
      */
     @Override
-    public Step visit(FunctionDefinition n) {
+    public BSVisitor visit(FunctionDefinition n) {
         return super.visit(n);
     }
 
@@ -117,7 +116,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f6 -> <RBRACE>
      */
     @Override
-    public Step visit(IfStatement n) {
+    public BSVisitor visit(IfStatement n) {
         return super.visit(n);
     }
 
@@ -131,7 +130,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f6 -> <RBRACE>
      */
     @Override
-    public Step visit(ElseIfStatement n) {
+    public BSVisitor visit(ElseIfStatement n) {
         return super.visit(n);
     }
 
@@ -142,7 +141,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f3 -> <RBRACE>
      */
     @Override
-    public Step visit(ElseStatement n) {
+    public BSVisitor visit(ElseStatement n) {
         return super.visit(n);
     }
 
@@ -153,7 +152,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f3 -> Expression()
      */
     @Override
-    public Step visit(Assignment n) {
+    public BSVisitor visit(Assignment n) {
         return super.visit(n);
     }
 
@@ -165,7 +164,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public Step visit(MixInstruction n) {
+    public BSVisitor visit(MixInstruction n) {
         return super.visit(n);
     }
 
@@ -176,7 +175,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f3 -> IntegerLiteral()
      */
     @Override
-    public Step visit(SplitInstruction n) {
+    public BSVisitor visit(SplitInstruction n) {
         return super.visit(n);
     }
 
@@ -185,7 +184,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f1 -> PrimaryExpression()
      */
     @Override
-    public Step visit(DrainInstruction n) {
+    public BSVisitor visit(DrainInstruction n) {
         return super.visit(n);
     }
 
@@ -197,7 +196,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public Step visit(HeatInstruction n) {
+    public BSVisitor visit(HeatInstruction n) {
         return super.visit(n);
     }
 
@@ -209,7 +208,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public Step visit(DetectInstruction n) {
+    public BSVisitor visit(DetectInstruction n) {
         return super.visit(n);
     }
 
@@ -222,7 +221,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f5 -> <RBRACE>
      */
     @Override
-    public Step visit(RepeatInstruction n) {
+    public BSVisitor visit(RepeatInstruction n) {
         return super.visit(n);
     }
 
@@ -233,7 +232,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f3 -> <RPAREN>
      */
     @Override
-    public Step visit(FunctionInvoke n) {
+    public BSVisitor visit(FunctionInvoke n) {
         return super.visit(n);
     }
 
@@ -241,7 +240,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f0 -> <INTEGER_LITERAL>
      */
     @Override
-    public Step visit(IntegerLiteral n) {
+    public BSVisitor visit(IntegerLiteral n) {
         return super.visit(n);
     }
 
@@ -249,7 +248,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f0 -> <NAT>
      */
     @Override
-    public Step visit(NatLiteral n) {
+    public BSVisitor visit(NatLiteral n) {
         return super.visit(n);
     }
 
@@ -257,7 +256,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f0 -> <MAT>
      */
     @Override
-    public Step visit(MatLiteral n) {
+    public BSVisitor visit(MatLiteral n) {
         return super.visit(n);
     }
 
@@ -265,7 +264,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f0 -> <REAL>
      */
     @Override
-    public Step visit(RealLiteral n) {
+    public BSVisitor visit(RealLiteral n) {
         return super.visit(n);
     }
 
@@ -273,7 +272,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f0 -> <TRUE>
      */
     @Override
-    public Step visit(TrueLiteral n) {
+    public BSVisitor visit(TrueLiteral n) {
         return super.visit(n);
     }
 
@@ -281,7 +280,7 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f0 -> <FALSE>
      */
     @Override
-    public Step visit(FalseLiteral n) {
+    public BSVisitor visit(FalseLiteral n) {
         return super.visit(n);
     }
 
@@ -289,21 +288,8 @@ public class BSIRConverter extends GJNoArguDepthFirst<Step> implements Step {
      * f0 -> <IDENTIFIER>
      */
     @Override
-    public Step visit(Identifier n) {
+    public BSVisitor visit(Identifier n) {
         return super.visit(n);
     }
 
-    private String newScope(String name) {
-        // Push the new scope onto the stack.
-        this.scope.push(name);
-        // Return the scope we are in.
-        return this.scope.peek();
-    }
-
-    private String endScope() {
-        // Remove the most recent element.
-        this.scope.pop();
-        // Return the context we return to.
-        return this.scope.peek();
-    }
 }

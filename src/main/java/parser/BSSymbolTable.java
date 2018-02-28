@@ -63,16 +63,6 @@ import static typesystem.rules.Rule.InstructionType.STATIONARY;
 public class BSSymbolTable extends BSVisitor {
 
     public static final Logger logger = LogManager.getLogger(BSSymbolTable.class);
-    private static final String REPEAT = "REPEAT";
-    private static final String BRANCH = "BRANCH";
-    private static final String INTEGER = "INTEGER";
-    private static final String BOOLEAN = "BOOLEAN";
-
-    private SymbolTable symbolTable = new SymbolTable();
-    private int scopeId = 0;
-    private int realId = 0;
-    private int booleanId = 0;
-    private int integerId = 0;
 
     // Name of current working variable.
     private String name;
@@ -504,12 +494,6 @@ public class BSSymbolTable extends BSVisitor {
         //super.visit(n);
         n.f1.accept(this);
         checkForOrCreateVariable();
-        //Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
-        //term.addTypingConstraints(this.types);
-        //addVariable(term);
-        //this.symbolTable.addLocal(term);
-        //this.instruction.addInputVariable(term);
-        //this.types.clear();
 
         n.f3.accept(this);
         // Use the generated name for the integer.
@@ -550,12 +534,6 @@ public class BSSymbolTable extends BSVisitor {
         n.f1.accept(this);
         Variable term = this.checkForOrCreateVariable();
 
-        //Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
-        //term.addTypingConstraints(this.getTypingConstraints(term));
-        //this.symbolTable.addLocal(term);
-        //addVariable(term);
-        //this.types.clear();
-
         this.instruction = new Formula(DRAIN);
         this.instruction.addInputVariable(term);
         addInstruction(this.instruction);
@@ -576,21 +554,9 @@ public class BSSymbolTable extends BSVisitor {
 
         n.f1.accept(this);
         this.checkForOrCreateVariable();
-        //Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
-        //term.addTypingConstraints(this.getTypingConstraints(term));
-        //this.symbolTable.addLocal(term);
-        //addVariable(term);
-        //this.types.clear();
-        //this.instruction.addInputVariable(term);
 
         n.f3.accept(this);
         this.checkForOrCreateVariable();
-        // Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
-        // term.addTypingConstraint(ChemTypes.REAL);
-        // addVariable(term);
-        // this.instruction.addProperty(term);
-        // this.symbolTable.addLocal(term);
-        // this.types.clear();
         if (n.f4.present()) {
             n.f4.accept(this);
             Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
@@ -616,19 +582,9 @@ public class BSSymbolTable extends BSVisitor {
         // super.visit(n);
         n.f1.accept(this);
         this.checkForOrCreateVariable();
-        // Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
-        // term.addTypingConstraints(this.getTypingConstraints(term));
-        // addVariable(term);
-        // this.instruction.addInputVariable(term);
-        // this.symbolTable.addLocal(term);
-        // this.types.clear();
 
         n.f3.accept(this);
         Variable input = this.checkForOrCreateVariable();
-        //Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
-        //term.addTypingConstraint(NAT);
-        //addVariable(term);
-        // this.symbolTable.addLocal(input);
         this.instruction.addInputVariable(input);
         this.types.clear();
 

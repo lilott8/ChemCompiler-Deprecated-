@@ -7,6 +7,7 @@ import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
 import ir.TypedInstruction;
 import shared.Step;
+import symboltable.SymbolTable;
 import typesystem.satsolver.strategies.SolverStrategy;
 import typesystem.satsolver.strategies.Z3Strategy;
 
@@ -27,6 +28,10 @@ public class BSTypeChecker extends BSVisitor implements TypeChecker {
 
     // How we solve constraints.
     private SolverStrategy z3 = new Z3Strategy();
+
+    public BSTypeChecker(SymbolTable symbolTable) {
+        super(symbolTable);
+    }
 
     @Override
     public void solve() {

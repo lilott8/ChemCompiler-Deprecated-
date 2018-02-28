@@ -13,6 +13,7 @@ import chemical.identification.IdentifierFactory;
 import parser.visitor.GJNoArguDepthFirst;
 import shared.Step;
 import shared.variable.Variable;
+import symboltable.SymbolTable;
 import typesystem.elements.Formula;
 
 /**
@@ -21,6 +22,16 @@ import typesystem.elements.Formula;
  * @project: ChemicalCompiler
  */
 public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements Step {
+    protected static final String REPEAT = "REPEAT";
+    protected static final String BRANCH = "BRANCH";
+    protected static final String INTEGER = "INTEGER";
+    protected static final String BOOLEAN = "BOOLEAN";
+    protected int scopeId = 0;
+    protected int realId = 0;
+    protected int booleanId = 0;
+    protected int integerId = 0;
+
+    protected SymbolTable symbolTable = new SymbolTable();
 
     private Deque<String> scope = new ArrayDeque<>();
 
@@ -34,6 +45,18 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
 
     // Ability to identify stuff.
     protected chemical.identification.Identifier identifier = IdentifierFactory.getIdentifier();
+
+    public BSVisitor() {
+
+    }
+
+    public BSVisitor(SymbolTable symbolTable) {
+        this.symbolTable = symbolTable;
+    }
+
+    public SymbolTable getSymbolTable() {
+        return this.symbolTable;
+    }
 
     protected String getCurrentScope() {
         return this.scope.peek();

@@ -31,7 +31,6 @@ public class BioScriptParser implements Phase {
     public BioScriptParser(String fileName) {
         this.file = fileName;
         this.symbolTable = new BSSymbolTable();
-        this.typeChecker = new BSTypeChecker();
     }
 
     @Override
@@ -48,6 +47,7 @@ public class BioScriptParser implements Phase {
                 program.accept(this.symbolTable);
                 logger.info(this.symbolTable);
                 if (!this.config.getErrorLevel().disabled()) {
+                    this.typeChecker = new BSTypeChecker(this.symbolTable.getSymbolTable());
                     program.accept(this.typeChecker);
                     this.typeChecker.solve();
                     //this.symbolTable.solve();
