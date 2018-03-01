@@ -11,7 +11,7 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public interface Composer {
+public interface SMTSolver {
 
     String compose(Formula instruction);
     String compose(Variable variable);

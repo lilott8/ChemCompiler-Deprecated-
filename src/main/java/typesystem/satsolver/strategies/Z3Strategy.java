@@ -19,7 +19,7 @@ import config.ConfigFactory;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.rules.Rule;
-import typesystem.satsolver.constraints.Composer;
+import typesystem.satsolver.constraints.SMTSolver;
 import typesystem.satsolver.constraints.SMT.Assign;
 import typesystem.satsolver.constraints.SMT.Branch;
 import typesystem.satsolver.constraints.SMT.Detect;
@@ -44,7 +44,7 @@ public class Z3Strategy implements SolverStrategy {
     private Map<Integer, Formula> instructions;
     private Map<String, Variable> variables;
 
-    private Map<Rule.InstructionType, Composer> composers = new HashMap<>();
+    private Map<Rule.InstructionType, SMTSolver> composers = new HashMap<>();
 
     public Z3Strategy() {
         composers.put(Rule.InstructionType.ASSIGN, new Assign());

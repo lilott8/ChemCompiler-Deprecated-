@@ -2,7 +2,7 @@ package typesystem.satsolver.constraints.SMT;
 
 import shared.variable.Variable;
 import typesystem.elements.Formula;
-import typesystem.satsolver.constraints.Composer;
+import typesystem.satsolver.constraints.SMTSolver;
 import typesystem.satsolver.strategies.SolverStrategy;
 import chemical.epa.ChemTypes;
 
@@ -13,7 +13,7 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Heat implements Composer {
+public class Heat implements SMTSolver {
 
     @Override
     public String compose(Formula instruction) {

@@ -22,10 +22,12 @@ import shared.Phase;
 public class BioScriptParser implements Phase {
 
     public static final Logger logger = LogManager.getLogger(BioScriptParser.class);
+
     private BSParser parser;
     private InferenceConfig config = ConfigFactory.getConfig();
     private BSVisitor symbolTable;
-    private BSTypeChecker typeChecker;
+    private BSVisitor typeChecker;
+    private BSVisitor irConverter;
     private String file;
 
     public BioScriptParser(String fileName) {
@@ -49,13 +51,19 @@ public class BioScriptParser implements Phase {
                 if (!this.config.getErrorLevel().disabled()) {
                     this.typeChecker = new BSTypeChecker(this.symbolTable.getSymbolTable());
                     program.accept(this.typeChecker);
-                    this.typeChecker.solve();
+                    this.typeChecker.run();
                     //this.symbolTable.solve();
                 } else {
                     logger.error("Type checking has been disabled.");
                 }
+                this.irConverter = new BSIRConverter(this.symbolTable.getSymbolTable());
+                program.accept(this.irConverter);
+                logger.info(this.irConverter);
             } catch (ParseException e) {
                 logger.error(e);
+                if (this.config.isDebug()) {
+                    e.printStackTrace();
+                }
             }
             input.close();
         } catch (IOException ioe) {
@@ -63,6 +71,9 @@ public class BioScriptParser implements Phase {
         } catch (Exception e) {
             logger.fatal(e.getMessage());
             logger.fatal(e.toString());
+            if (this.config.isDebug()) {
+                e.printStackTrace();
+            }
         }
         return this;
     }

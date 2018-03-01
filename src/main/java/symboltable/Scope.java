@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import shared.variable.Method;
 import shared.variable.Variable;
 
 /**

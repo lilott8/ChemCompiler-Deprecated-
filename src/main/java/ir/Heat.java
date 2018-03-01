@@ -1,23 +1,27 @@
-package typesystem.satsolver.constraints.SMT;
+package ir;
 
 import shared.variable.Variable;
 import typesystem.elements.Formula;
-import typesystem.satsolver.constraints.SMTSolver;
 
 /**
- * @created: 2/21/18
+ * @created: 2/28/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Failure implements SMTSolver {
+public class Heat extends Instruction {
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
 
     @Override
     public String compose(Formula instruction) {
-        return killSwitch();
+        return null;
     }
 
     @Override
     public String compose(Variable variable) {
-        return killSwitch();
+        return null;
     }
 }

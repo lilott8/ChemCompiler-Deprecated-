@@ -1,14 +1,12 @@
 package ir;
 
 import java.util.List;
-import java.util.Set;
 
 import chemical.combinator.CombinerFactory;
 import chemical.epa.ChemTypes;
 import chemical.epa.EpaManager;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
-import typesystem.satsolver.constraints.Composer;
 
 import static typesystem.satsolver.strategies.SolverStrategy.NL;
 import static typesystem.satsolver.strategies.SolverStrategy.TAB;
@@ -19,7 +17,12 @@ import static typesystem.satsolver.strategies.SolverStrategy.getSMTName;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Mix extends TypedInstruction implements Composer {
+public class Mix extends Instruction {
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
 
     @Override
     public String compose(Formula instruction) {

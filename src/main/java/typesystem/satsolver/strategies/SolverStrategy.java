@@ -18,7 +18,7 @@ public interface SolverStrategy {
     String NL = System.lineSeparator();
     String TAB = "\t";
 
-    // boolean solveConstraints(Map<String, Composer> constraints);
+    // boolean solveConstraints(Map<String, SMTSolver> constraints);
     boolean solveConstraints(Map<Integer, Formula> instructions, Map<String, Variable> variables);
 
     static String getSMTName(String key, ChemTypes t) {

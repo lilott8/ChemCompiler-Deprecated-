@@ -3,6 +3,7 @@ package parser;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import ir.Experiment;
 import parser.ast.Assignment;
 import parser.ast.BSProgram;
 import parser.ast.DetectInstruction;
@@ -27,6 +28,13 @@ import parser.ast.SplitInstruction;
 import parser.ast.Stationary;
 import parser.ast.TrueLiteral;
 import parser.visitor.GJNoArguDepthFirst;
+import shared.variable.Method;
+import shared.variable.Variable;
+import symboltable.SymbolTable;
+import typesystem.elements.Formula;
+import typesystem.rules.Rule;
+
+import static chemical.epa.ChemTypes.NAT;
 
 /**
  * @created: 2/14/18
@@ -35,7 +43,11 @@ import parser.visitor.GJNoArguDepthFirst;
  */
 public class BSIRConverter extends BSVisitor {
 
-    private Deque<String> scope = new ArrayDeque<>();
+    private Experiment experiment = new Experiment(1, "Experiment");
+
+    public BSIRConverter(SymbolTable symbolTable) {
+        super(symbolTable);
+    }
 
     @Override
     public BSVisitor run() {
@@ -44,20 +56,7 @@ public class BSIRConverter extends BSVisitor {
 
     @Override
     public String getName() {
-        return null;
-    }
-
-    /**
-     * f0 -> ( Module() )*
-     * f1 -> ( Stationary() )*
-     * f2 -> ( Manifest() )+
-     * f3 -> <INSTRUCTIONS>
-     * f4 -> ( Sequence() )+
-     * f5 -> <EOF>
-     */
-    @Override
-    public BSVisitor visit(BSProgram n) {
-        return super.visit(n);
+        return BSIRConverter.class.getName();
     }
 
     /**
@@ -66,7 +65,14 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(Module n) {
-        return super.visit(n);
+        // Get the name.
+        n.f1.accept(this);
+        Variable f1 = variables.get(this.scopifyName());
+
+        // Build the IR data structure.
+        this.experiment.addModule(f1);
+
+        return this;
     }
 
     /**
@@ -76,7 +82,14 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(Stationary n) {
-        return super.visit(n);
+        // Get the name.
+        n.f2.accept(this);
+        Variable f2 = variables.get(this.scopifyName());
+
+        // Build the IR data structure.
+        this.experiment.addStationary(f2);
+
+        return this;
     }
 
     /**
@@ -86,7 +99,14 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(Manifest n) {
-        return super.visit(n);
+        // Get the name.
+        n.f2.accept(this);
+        Variable f2 = variables.get(this.scopifyName());
+
+        // Build the IR data structure.
+        this.experiment.addManifest(f2);
+
+        return this;
     }
 
     /**
@@ -103,7 +123,19 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(FunctionDefinition n) {
-        return super.visit(n);
+        // super.visit(n);
+        // Get the name of the method.
+        n.f1.accept(this);
+        // Get a new scope.
+        this.newScope(this.name);
+        // Build the method.
+        this.method = this.symbolTable.getMethods().get(this.name);
+
+        // Add the method.
+        this.experiment.addMethods(this.method);
+
+        this.endScope();
+        return this;
     }
 
     /**
@@ -117,7 +149,21 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(IfStatement n) {
-        return super.visit(n);
+        // Build the name.
+        this.name = String.format("%s_%d", BRANCH, scopeId++);
+        // Create a new scope.
+        this.newScope(this.name);
+        // Get the expression.
+        n.f2.accept(this);
+        Variable f2 = variables.get(this.scopifyName());
+
+        // Get the statement.
+        n.f5.accept(this);
+
+        // Return back to old scoping.
+        this.endScope();
+
+        return this;
     }
 
     /**
@@ -131,7 +177,18 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(ElseIfStatement n) {
-        return super.visit(n);
+        // Get the name and scope.
+        String scopeName = String.format("%s_%d", BRANCH, scopeId++);
+        this.newScope(scopeName);
+
+        // Get the expression.
+        n.f2.accept(this);
+
+        // Get the statements in the scope.
+        n.f5.accept(this);
+        // Return back to old scoping.
+        this.endScope();
+        return this;
     }
 
     /**
@@ -142,7 +199,15 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(ElseStatement n) {
-        return super.visit(n);
+        // super.visit(n);
+        String scopeName = String.format("%s_%d", BRANCH, scopeId++);
+        this.newScope(scopeName);
+        n.f2.accept(this);
+
+        // Return back to old scoping.
+
+        this.endScope();
+        return this;
     }
 
     /**
@@ -153,7 +218,8 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(Assignment n) {
-        return super.visit(n);
+        // super.visit(n);
+        return this;
     }
 
     /**
@@ -165,7 +231,21 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(MixInstruction n) {
-        return super.visit(n);
+        // Get the name.
+        n.f1.accept(this);
+        Variable f1 = variables.get(this.scopifyName());
+        n.f3.accept(this);
+        Variable f3 = variables.get(this.scopifyName());
+
+        // Build the IR data structure.
+
+        if (n.f4.present()) {
+            n.f4.accept(this);
+            Variable f4 = variables.get(this.scopifyName());
+            // Add f4 to the data structure.
+        }
+
+        return this;
     }
 
     /**
@@ -176,7 +256,16 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(SplitInstruction n) {
-        return super.visit(n);
+        // Get the name.
+        n.f1.accept(this);
+        Variable f1 = variables.get(this.scopifyName());
+        // Get the name.
+        n.f3.accept(this);
+        Variable f3 = variables.get(this.scopifyName());
+
+        // Build the IR data structure.
+
+        return this;
     }
 
     /**
@@ -185,7 +274,13 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(DrainInstruction n) {
-        return super.visit(n);
+        // Get the name.
+        n.f1.accept(this);
+        Variable f1 = variables.get(this.scopifyName());
+
+        // Build the IR data structure.
+
+        return this;
     }
 
     /**
@@ -197,7 +292,21 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(HeatInstruction n) {
-        return super.visit(n);
+        // Get the name.
+        n.f1.accept(this);
+        Variable f1 = variables.get(this.scopifyName());
+        // Get the name.
+        n.f3.accept(this);
+        Variable f3 = variables.get(this.scopifyName());
+
+        // Build the IR data structure.
+
+        if (n.f4.present()) {
+            n.f4.accept(this);
+            Variable f4 = variables.get(this.scopifyName());
+            // Add f4 to the data structure.
+        }
+        return this;
     }
 
     /**
@@ -209,7 +318,22 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(DetectInstruction n) {
-        return super.visit(n);
+        // Get the name.
+        n.f1.accept(this);
+        Variable f1 = variables.get(this.scopifyName());
+        n.f3.accept(this);
+        Variable f3 = variables.get(this.scopifyName());
+
+        // Build the IR data structure.
+
+        if (n.f4.present()) {
+            n.f4.accept(this);
+            Variable f4 = variables.get(this.scopifyName());
+            // Add f4 to the data structure.
+        }
+
+
+        return this;
     }
 
     /**
@@ -222,7 +346,15 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(RepeatInstruction n) {
-        return super.visit(n);
+        // super.visit(n);
+        String scopeName = String.format("%s_%d", REPEAT, scopeId++);
+        this.newScope(this.name);
+        this.name = String.format("%s_%d", NAT, integerId++);
+
+        // Build the new IR data structure.
+
+        this.endScope();
+        return this;
     }
 
     /**
@@ -233,63 +365,11 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(FunctionInvoke n) {
-        return super.visit(n);
+        // super.visit(n);
+        return this;
     }
 
-    /**
-     * f0 -> <INTEGER_LITERAL>
-     */
-    @Override
-    public BSVisitor visit(IntegerLiteral n) {
-        return super.visit(n);
+    public String toString() {
+        return this.experiment.toString();
     }
-
-    /**
-     * f0 -> <NAT>
-     */
-    @Override
-    public BSVisitor visit(NatLiteral n) {
-        return super.visit(n);
-    }
-
-    /**
-     * f0 -> <MAT>
-     */
-    @Override
-    public BSVisitor visit(MatLiteral n) {
-        return super.visit(n);
-    }
-
-    /**
-     * f0 -> <REAL>
-     */
-    @Override
-    public BSVisitor visit(RealLiteral n) {
-        return super.visit(n);
-    }
-
-    /**
-     * f0 -> <TRUE>
-     */
-    @Override
-    public BSVisitor visit(TrueLiteral n) {
-        return super.visit(n);
-    }
-
-    /**
-     * f0 -> <FALSE>
-     */
-    @Override
-    public BSVisitor visit(FalseLiteral n) {
-        return super.visit(n);
-    }
-
-    /**
-     * f0 -> <IDENTIFIER>
-     */
-    @Override
-    public BSVisitor visit(Identifier n) {
-        return super.visit(n);
-    }
-
 }

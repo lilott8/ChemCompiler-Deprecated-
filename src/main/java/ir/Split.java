@@ -3,7 +3,6 @@ package ir;
 import chemical.epa.ChemTypes;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
-import typesystem.satsolver.constraints.Composer;
 import typesystem.satsolver.strategies.SolverStrategy;
 
 import static typesystem.satsolver.strategies.SolverStrategy.NL;
@@ -13,7 +12,13 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Split extends TypedInstruction implements Composer {
+public class Split extends Instruction {
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
+
     @Override
     public String compose(Formula instruction) {
         StringBuilder sb = new StringBuilder();

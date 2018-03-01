@@ -4,14 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import chemical.identification.IdentifierFactory;
 import parser.ast.Assignment;
 import parser.ast.DetectInstruction;
 import parser.ast.DrainInstruction;
@@ -35,15 +31,12 @@ import parser.ast.RepeatInstruction;
 import parser.ast.SplitInstruction;
 import parser.ast.Stationary;
 import parser.ast.TrueLiteral;
-import parser.visitor.GJNoArguDepthFirst;
 import shared.variable.Variable;
-import symboltable.Method;
+import shared.variable.Method;
 import symboltable.SymbolTable;
 import chemical.epa.ChemTypes;
 import typesystem.elements.Formula;
 import typesystem.rules.Rule;
-import typesystem.satsolver.strategies.SolverStrategy;
-import typesystem.satsolver.strategies.Z3Strategy;
 
 import static chemical.epa.ChemTypes.BOOL;
 import static chemical.epa.ChemTypes.MODULE;
@@ -63,20 +56,14 @@ import static typesystem.rules.Rule.InstructionType.STATIONARY;
 public class BSSymbolTable extends BSVisitor {
 
     public static final Logger logger = LogManager.getLogger(BSSymbolTable.class);
-
-    // Name of current working variable.
-    private String name;
-    // Associated types.
-    private Set<ChemTypes> types = new HashSet<>();
     // Arguments to functions, etc.
     private List<Variable> arguments = new ArrayList<>();
-    private Method method;
 
     public BSSymbolTable() {
     }
 
     @Override
-    public BSSymbolTable run() {
+    public BSVisitor run() {
         return this;
     }
 
@@ -91,7 +78,7 @@ public class BSSymbolTable extends BSVisitor {
      * f2 -> PrimaryExpression()
      */
     @Override
-    public BSSymbolTable visit(Stationary n) {
+    public BSVisitor visit(Stationary n) {
         // super.visit(n);
         // Get the types.
         n.f1.accept(this);
@@ -120,7 +107,7 @@ public class BSSymbolTable extends BSVisitor {
      * f2 -> PrimaryExpression()
      */
     @Override
-    public BSSymbolTable visit(Manifest n) {
+    public BSVisitor visit(Manifest n) {
         // super.visit(n);
         // Begin type checking.
         this.instruction = new Formula(MANIFEST);
@@ -150,8 +137,8 @@ public class BSSymbolTable extends BSVisitor {
      * f1 -> Identifier()
      */
     @Override
-    public BSSymbolTable visit(Module n) {
-
+    public BSVisitor visit(Module n) {
+        // Get the name.
         n.f1.accept(this);
         // Begin type checking.
         this.instruction = new Formula(Rule.InstructionType.MODULE);
@@ -174,7 +161,7 @@ public class BSSymbolTable extends BSVisitor {
      * f3 -> Expression()
      */
     @Override
-    public BSSymbolTable visit(Assignment n) {
+    public BSVisitor visit(Assignment n) {
         // Get the expression done before we get the identifier.
         // That way we can set the appropriate instruction.
         n.f3.accept(this);
@@ -221,7 +208,7 @@ public class BSSymbolTable extends BSVisitor {
      * f3 -> <RPAREN>
      */
     @Override
-    public BSSymbolTable visit(FunctionInvoke n) {
+    public BSVisitor visit(FunctionInvoke n) {
         // Get the method name.
         n.f0.accept(this);
         // Get the method.
@@ -251,7 +238,7 @@ public class BSSymbolTable extends BSVisitor {
      * f9 -> <RBRACE>
      */
     @Override
-    public BSSymbolTable visit(FunctionDefinition n) {
+    public BSVisitor visit(FunctionDefinition n) {
         // Lets us know if we have a typed function,
         // If we do, then there must be a return statement.
         boolean needReturn = false;
@@ -323,7 +310,7 @@ public class BSSymbolTable extends BSVisitor {
      * f1 -> Identifier()
      */
     @Override
-    public BSSymbolTable visit(FormalParameter n) {
+    public BSVisitor visit(FormalParameter n) {
         // super.visit(n);
         // Go fetch the typing list
         n.f0.accept(this);
@@ -347,11 +334,11 @@ public class BSSymbolTable extends BSVisitor {
      * f5 -> <RBRACE>
      */
     @Override
-    public BSSymbolTable visit(RepeatInstruction n) {
+    public BSVisitor visit(RepeatInstruction n) {
         // super.visit(n);
         // Start a new scope.
-        String name = String.format("%s_%d", REPEAT, scopeId++);
-        this.symbolTable.newScope(name);
+        String scopeName = String.format("%s_%d", REPEAT, scopeId++);
+        this.symbolTable.newScope(scopeName);
         // Begin type checking.
         this.name = String.format("%s_%d", NAT, integerId++);
         Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
@@ -381,12 +368,15 @@ public class BSSymbolTable extends BSVisitor {
      * f6 -> <RBRACE>
      */
     @Override
-    public BSSymbolTable visit(IfStatement n) {
-        // Begin type checking.
+    public BSVisitor visit(IfStatement n) {
+        // Build the instruction.
         this.instruction = new Formula(Rule.InstructionType.BRANCH);
+        // Build the name.
+        this.name = String.format("%s_%d", BRANCH, scopeId++);
+        // Create a new scope.
         this.symbolTable.newScope(this.name);
-        this.name = String.format("%s_%d", NAT, integerId);
-        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        // Build the variable that resolves a branch evaluation.
+        Variable term = new Variable(String.format("%s_%d", NAT, integerId++), this.symbolTable.getCurrentScope());
         term.addTypingConstraint(NAT);
         addVariable(term);
         this.instruction.addInputVariable(term);
@@ -414,15 +404,15 @@ public class BSSymbolTable extends BSVisitor {
      * f6 -> <RBRACE>
      */
     @Override
-    public BSSymbolTable visit(ElseIfStatement n) {
+    public BSVisitor visit(ElseIfStatement n) {
         // super.visit(n);
-        // String name = String.format("%s_%d", BRANCH, scopeId++);
-        this.symbolTable.newScope(this.name);
+        String scopeName = String.format("%s_%d", BRANCH, scopeId++);
+        this.symbolTable.newScope(scopeName);
 
         // Begin type checking.
         this.instruction = new Formula(Rule.InstructionType.BRANCH);
-        this.name = String.format("%s_%d", NAT, integerId);
         Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        this.name = String.format("%s_%d", NAT, integerId);
         term.addTypingConstraint(NAT);
         addVariable(term);
         this.instruction.addInputVariable(term);
@@ -445,10 +435,10 @@ public class BSSymbolTable extends BSVisitor {
      * f3 -> <RBRACE>
      */
     @Override
-    public BSSymbolTable visit(ElseStatement n) {
+    public BSVisitor visit(ElseStatement n) {
         // super.visit(n);
-        String name = String.format("%s_%d", BRANCH, scopeId++);
-        this.symbolTable.newScope(name);
+        String scopeName = String.format("%s_%d", BRANCH, scopeId++);
+        this.symbolTable.newScope(scopeName);
         n.f2.accept(this);
         // Return back to old scoping.
         this.symbolTable.endScope();
@@ -464,7 +454,7 @@ public class BSSymbolTable extends BSVisitor {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public BSSymbolTable visit(MixInstruction n) {
+    public BSVisitor visit(MixInstruction n) {
         this.instruction = new Formula(Rule.InstructionType.MIX);
 
         // Get the first material.
@@ -490,7 +480,7 @@ public class BSSymbolTable extends BSVisitor {
      * f3 -> IntegerLiteral()
      */
     @Override
-    public BSSymbolTable visit(SplitInstruction n) {
+    public BSVisitor visit(SplitInstruction n) {
         //super.visit(n);
         n.f1.accept(this);
         checkForOrCreateVariable();
@@ -529,7 +519,7 @@ public class BSSymbolTable extends BSVisitor {
      * f1 -> PrimaryExpression()
      */
     @Override
-    public BSSymbolTable visit(DrainInstruction n) {
+    public BSVisitor visit(DrainInstruction n) {
         //super.visit(n);
         n.f1.accept(this);
         Variable term = this.checkForOrCreateVariable();
@@ -549,7 +539,7 @@ public class BSSymbolTable extends BSVisitor {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public BSSymbolTable visit(HeatInstruction n) {
+    public BSVisitor visit(HeatInstruction n) {
         // super.visit(n);
 
         n.f1.accept(this);
@@ -578,8 +568,9 @@ public class BSSymbolTable extends BSVisitor {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public BSSymbolTable visit(DetectInstruction n) {
+    public BSVisitor visit(DetectInstruction n) {
         // super.visit(n);
+        // Get the name
         n.f1.accept(this);
         this.checkForOrCreateVariable();
 
@@ -596,90 +587,13 @@ public class BSSymbolTable extends BSVisitor {
         return this;
     }
 
-    /**
-     * f0 -> <INTEGER_LITERAL>
-     */
-    @Override
-    public BSSymbolTable visit(IntegerLiteral n) {
-        this.name = String.format("%s_%d", INTEGER, integerId++);
-        return this;
-    }
-
-    /**
-     * f0 -> <NAT>
-     */
-    @Override
-    public BSSymbolTable visit(NatLiteral n) {
-        // super.visit(n);
-        this.types.add(ChemTypes.NAT);
-
-        return this;
-    }
-
-    /**
-     * f0 -> <MAT>
-     */
-    @Override
-    public BSSymbolTable visit(MatLiteral n) {
-        // super.visit(n);
-        this.types.add(ChemTypes.MAT);
-        return this;
-    }
-
-    /**
-     * f0 -> <REAL>
-     */
-    @Override
-    public BSSymbolTable visit(RealLiteral n) {
-        // super.visit(n);
-        this.types.add(ChemTypes.REAL);
-        return this;
-    }
-
-    /**
-     * f0 -> <TRUE>
-     */
-    @Override
-    public BSSymbolTable visit(TrueLiteral n) {
-        // super.visit(n);
-        this.types.add(ChemTypes.BOOL);
-        return this;
-    }
-
-    /**
-     * f0 -> <FALSE>
-     */
-    @Override
-    public BSSymbolTable visit(FalseLiteral n) {
-        //super.visit(n);
-        this.types.add(ChemTypes.BOOL);
-        return this;
-    }
-
-    /**
-     * f0 -> <IDENTIFIER>
-     */
-    @Override
-    public BSSymbolTable visit(Identifier n) {
-        if (this.types.contains(REAL)) {
-            this.name = String.format("%s_%d", REAL, realId++);
-        } else if (this.types.contains(NAT)) {
-            this.name = String.format("%s_%d", INTEGER, integerId++);
-        } else if (this.types.contains(BOOL)) {
-            this.name = String.format("%s_%d", BOOLEAN, booleanId++);
-        } else {
-            this.name = n.f0.toString();
-        }
-        return this;
-    }
-
     public SymbolTable getSymbolTable() {
         return this.symbolTable;
     }
 
     public String toString() {
-        //return this.symbolTable.toString();
-        return BSVisitor.instructions.toString();
+        return this.symbolTable.toString();
+        //return BSVisitor.instructions.toString();
     }
 
     private Set<ChemTypes> getTypingConstraints(Variable t) {

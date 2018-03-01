@@ -9,7 +9,7 @@ import java.util.Set;
 
 import shared.variable.Variable;
 import typesystem.elements.Formula;
-import typesystem.satsolver.constraints.Composer;
+import typesystem.satsolver.constraints.SMTSolver;
 import typesystem.satsolver.strategies.SolverStrategy;
 import chemical.combinator.CombinerFactory;
 import chemical.epa.ChemTypes;
@@ -24,7 +24,7 @@ import static typesystem.satsolver.strategies.SolverStrategy.getSMTName;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Mix implements Composer {
+public class Mix implements SMTSolver {
 
     public static final Logger logger = LogManager.getLogger(Mix.class);
 

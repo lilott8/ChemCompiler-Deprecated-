@@ -1,19 +1,18 @@
-package typesystem.satsolver.constraints.SMT;
+package ir;
 
+import chemical.epa.ChemTypes;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
-import typesystem.satsolver.constraints.SMTSolver;
 import typesystem.satsolver.strategies.SolverStrategy;
-import chemical.epa.ChemTypes;
 
 import static typesystem.satsolver.strategies.SolverStrategy.NL;
 
 /**
- * @created: 10/16/17
+ * @created: 2/28/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Assign implements SMTSolver {
+public class Assign extends Instruction {
 
     @Override
     public String compose(Formula instruction) {
@@ -36,5 +35,10 @@ public class Assign implements SMTSolver {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String toJSON() {
+        return null;
     }
 }

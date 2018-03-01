@@ -1,4 +1,4 @@
-package symboltable;
+package shared.variable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import shared.variable.Variable;
+import symboltable.Scope;
 
 /**
  * @created: 2/8/18
