@@ -1,4 +1,4 @@
-package ir;
+package ir.soot.instruction;
 
 import chemical.epa.ChemTypes;
 import shared.variable.Variable;
@@ -13,6 +13,16 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
  * @project: ChemicalCompiler
  */
 public class Assign extends Instruction {
+
+    Instruction instruction;
+
+    public Assign() {
+        super();
+    }
+
+    public void addInstruction(Instruction instruction) {
+        this.instruction = instruction;
+    }
 
     @Override
     public String compose(Formula instruction) {

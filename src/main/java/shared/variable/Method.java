@@ -2,12 +2,16 @@ package shared.variable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import ir.graph.Statement;
 import symboltable.Scope;
 
 /**
@@ -15,26 +19,23 @@ import symboltable.Scope;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Method extends Variable {
+public class Method {
 
     public static final Logger logger = LogManager.getLogger(Method.class);
 
-    public Set<Variable> parameters = new HashSet<>();
+    protected Set<ChemTypes> types = new HashSet<>();
+    protected Set<Variable> parameters = new HashSet<>();
+    protected String name;
+    protected Graph<Statement, DefaultEdge> statements = new DefaultDirectedGraph<>(DefaultEdge.class);
+    private Statement lastStatement;
 
     public Method(String name) {
-        super(name, new HashSet<>());
+        this(name, new HashSet<>());
     }
 
     public Method(String name, Set<ChemTypes> type) {
-        super(name, type);
-    }
-
-    public Method(String name, Scope scope) {
-        super(name, scope);
-    }
-
-    public Method(String name, Set<ChemTypes> type, Scope scope) {
-        super(name, type, scope);
+        this.name = name;
+        this.types.addAll(type);
     }
 
     public void addParameter(Variable var) {
@@ -50,11 +51,29 @@ public class Method extends Variable {
     }
 
     public void addReturnTypes(Set<ChemTypes> ret) {
-        super.types.addAll(ret);
+        this.types.addAll(ret);
     }
 
     public boolean hasReturnTypes() {
-        return !super.types.isEmpty();
+        return !this.types.isEmpty();
+    }
+
+    public void addStatement(Statement statement) {
+        this.statements.addVertex(statement);
+        this.statements.addEdge(lastStatement, statement);
+        this.lastStatement = statement;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Set<ChemTypes> getTypes() {
+        return this.types;
+    }
+
+    public Set<Variable> getParameters() {
+        return this.parameters;
     }
 
     public String toString() {

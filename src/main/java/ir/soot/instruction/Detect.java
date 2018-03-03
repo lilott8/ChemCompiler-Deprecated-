@@ -1,4 +1,4 @@
-package ir;
+package ir.soot.instruction;
 
 import chemical.epa.ChemTypes;
 import shared.variable.Variable;
@@ -13,6 +13,11 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
  * @project: ChemicalCompiler
  */
 public class Detect extends Instruction {
+
+    public Detect() {
+        super();
+        this.type.add(ChemTypes.REAL);
+    }
 
     @Override
     public String toJSON() {

@@ -1,14 +1,14 @@
-package ir;
+package ir.soot.instruction;
 
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
 /**
- * @created: 2/28/18
+ * @created: 3/1/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Heat extends Instruction {
+public class Manifest extends Instruction {
 
     @Override
     public String toJSON() {

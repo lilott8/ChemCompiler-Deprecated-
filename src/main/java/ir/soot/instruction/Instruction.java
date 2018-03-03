@@ -1,4 +1,4 @@
-package ir;
+package ir.soot.instruction;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -70,5 +70,9 @@ public abstract class Instruction implements SMTSolver {
 
     public List<Variable> getProperties() {
         return this.properties;
+    }
+
+    public int getId() {
+        return id;
     }
 }

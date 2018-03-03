@@ -1,4 +1,4 @@
-package ir;
+package ir.soot.instruction;
 
 import java.util.List;
 
@@ -18,6 +18,10 @@ import static typesystem.satsolver.strategies.SolverStrategy.getSMTName;
  * @project: ChemicalCompiler
  */
 public class Mix extends Instruction {
+
+    public Mix() {
+        super();
+    }
 
     @Override
     public String toJSON() {

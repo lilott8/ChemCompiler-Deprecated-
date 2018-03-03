@@ -1,4 +1,4 @@
-package ir;
+package ir.soot.instruction;
 
 import chemical.epa.ChemTypes;
 import shared.variable.Variable;

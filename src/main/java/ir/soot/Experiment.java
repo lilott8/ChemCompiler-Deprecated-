@@ -1,4 +1,4 @@
-package ir;
+package ir.soot;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ir.soot.instruction.Instruction;
 import shared.variable.Variable;
 import shared.variable.Method;
 
@@ -77,8 +78,8 @@ public class Experiment {
         this.stationary.put(v.getScopedName(), v);
     }
 
-    public void addMethods(Variable v) {
-        this.methods.put(v.getScopedName(), (Method) v);
+    public void addMethods(Method v) {
+        this.methods.put(v.getName(), v);
     }
 
     public String toString() {

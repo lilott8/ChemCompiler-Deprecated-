@@ -4,49 +4,37 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import ir.soot.instruction.Assign;
+import ir.soot.instruction.Drain;
+import ir.soot.instruction.Invoke;
+import ir.soot.instruction.Mix;
+import ir.soot.statement.Branch;
 import parser.ast.Assignment;
 import parser.ast.DetectInstruction;
 import parser.ast.DrainInstruction;
 import parser.ast.ElseIfStatement;
 import parser.ast.ElseStatement;
-import parser.ast.FalseLiteral;
 import parser.ast.FormalParameter;
 import parser.ast.FunctionDefinition;
 import parser.ast.FunctionInvoke;
 import parser.ast.HeatInstruction;
-import parser.ast.Identifier;
 import parser.ast.IfStatement;
-import parser.ast.IntegerLiteral;
 import parser.ast.Manifest;
-import parser.ast.MatLiteral;
 import parser.ast.MixInstruction;
 import parser.ast.Module;
-import parser.ast.NatLiteral;
-import parser.ast.RealLiteral;
 import parser.ast.RepeatInstruction;
 import parser.ast.SplitInstruction;
 import parser.ast.Stationary;
-import parser.ast.TrueLiteral;
 import shared.variable.Variable;
 import shared.variable.Method;
 import symboltable.SymbolTable;
 import chemical.epa.ChemTypes;
-import typesystem.elements.Formula;
-import typesystem.rules.Rule;
 
-import static chemical.epa.ChemTypes.BOOL;
 import static chemical.epa.ChemTypes.MODULE;
 import static chemical.epa.ChemTypes.NAT;
-import static chemical.epa.ChemTypes.REAL;
-import static typesystem.rules.Rule.InstructionType.DRAIN;
 import static typesystem.rules.Rule.InstructionType.FUNCTION;
-import static typesystem.rules.Rule.InstructionType.LOOP;
-import static typesystem.rules.Rule.InstructionType.MANIFEST;
-import static typesystem.rules.Rule.InstructionType.STATIONARY;
 
 /**
  * @created: 2/1/18
@@ -86,13 +74,11 @@ public class BSSymbolTable extends BSVisitor {
         n.f2.accept(this);
 
         // Type checking material.
-        this.instruction = new Formula(STATIONARY);
+        this.instruction = new Assign();
         Variable term = new Variable(this.name);
         term.addScope(this.symbolTable.getCurrentScope());
         term.addTypingConstraints(this.getTypingConstraints(term));
         addVariable(term);
-        this.instruction.addInputVariable(term);
-        addInstruction(this.instruction);
         // End type checking.
 
         // Anything in this section is always default scope.
@@ -110,19 +96,17 @@ public class BSSymbolTable extends BSVisitor {
     public BSVisitor visit(Manifest n) {
         // super.visit(n);
         // Begin type checking.
-        this.instruction = new Formula(MANIFEST);
 
         // Get the types.
         n.f1.accept(this);
         // Get the identifier.
         n.f2.accept(this);
 
+        // Build the symbol.
         Variable term = new Variable(this.name);
         term.addScope(this.symbolTable.getCurrentScope());
         term.addTypingConstraints(this.getTypingConstraints(term));
         addVariable(term);
-        this.instruction.addInputVariable(term);
-        addInstruction(this.instruction);
         // End type checking.
 
         // build the variable now
@@ -140,15 +124,11 @@ public class BSSymbolTable extends BSVisitor {
     public BSVisitor visit(Module n) {
         // Get the name.
         n.f1.accept(this);
-        // Begin type checking.
-        this.instruction = new Formula(Rule.InstructionType.MODULE);
+        // Build the symbol.
         Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
         term.addTypingConstraint(MODULE);
         addVariable(term);
-        instruction.addInputVariable(term);
-        addInstruction(this.instruction);
-        // End type checking.
-
+        // Add the symbol to the scope.
         this.symbolTable.addLocal(term);
 
         return this;
@@ -178,23 +158,13 @@ public class BSSymbolTable extends BSVisitor {
             }
             this.symbolTable.addLocal(output);
         }
-        switch (this.instruction.getType()) {
-            case MIX:
-            case SPLIT:
-                output.addTypingConstraints(this.getTypingConstraints(output));
-                this.instruction.addOutputVariable(output);
-                break;
-            case DETECT:
-                output.addTypingConstraint(ChemTypes.REAL);
-                this.instruction.addOutputVariable(output);
-                break;
-            case FUNCTION:
-                // We need to see what the return type of a given function is.
-                output.addTypingConstraints(this.method.getTypes());
-                logger.info(output);
-                this.instruction.addOutputVariable(output);
-                break;
+
+        if (this.instruction instanceof Invoke) {
+            output.addTypingConstraints(this.method.getTypes());
+        } else {
+            output.addTypingConstraints(this.getTypingConstraints(output));
         }
+        this.instruction.addOutputVariable(output);
         addVariable(output);
         addInstruction(this.instruction);
         this.types.clear();
@@ -218,8 +188,8 @@ public class BSSymbolTable extends BSVisitor {
             return this;
         }
 
-        this.instruction = new Formula(FUNCTION);
-        this.instruction.addInputVariable(method);
+        this.instruction = new Invoke(method);
+        //this.instruction.addInputVariable(method);
 
         n.f2.accept(this);
         return this;
@@ -249,7 +219,7 @@ public class BSSymbolTable extends BSVisitor {
         // Now we have a new scope
         this.symbolTable.newScope(this.name);
         // Start a new scope.
-        this.method = new Method(this.name, this.symbolTable.getCurrentScope());
+        this.method = new Method(this.name);
 
         // Get the parameters of this method
         n.f3.accept(this);
@@ -339,16 +309,12 @@ public class BSSymbolTable extends BSVisitor {
         // Start a new scope.
         String scopeName = String.format("%s_%d", REPEAT, scopeId++);
         this.symbolTable.newScope(scopeName);
-        // Begin type checking.
+
         this.name = String.format("%s_%d", NAT, integerId++);
         Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
         term.addTypingConstraint(NAT);
         addVariable(term);
-        this.instruction = new Formula(LOOP);
-        this.instruction.addInputVariable(term);
-        this.symbolTable.addLocal(term);
-        addInstruction(this.instruction);
-        // End type checking.
+
 
         // Get the statements.
         n.f4.accept(this);
@@ -370,7 +336,8 @@ public class BSSymbolTable extends BSVisitor {
     @Override
     public BSVisitor visit(IfStatement n) {
         // Build the instruction.
-        this.instruction = new Formula(Rule.InstructionType.BRANCH);
+        logger.fatal("You need to reset the instruction in If");
+        //this.instruction = new Branch();
         // Build the name.
         this.name = String.format("%s_%d", BRANCH, scopeId++);
         // Create a new scope.
@@ -410,7 +377,8 @@ public class BSSymbolTable extends BSVisitor {
         this.symbolTable.newScope(scopeName);
 
         // Begin type checking.
-        this.instruction = new Formula(Rule.InstructionType.BRANCH);
+        logger.fatal("You need to reset the instruction in ElseIf");
+        //this.instruction = new Branch();
         Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
         this.name = String.format("%s_%d", NAT, integerId);
         term.addTypingConstraint(NAT);
@@ -455,7 +423,7 @@ public class BSSymbolTable extends BSVisitor {
      */
     @Override
     public BSVisitor visit(MixInstruction n) {
-        this.instruction = new Formula(Rule.InstructionType.MIX);
+        this.instruction = new Mix();
 
         // Get the first material.
         n.f1.accept(this);
@@ -524,7 +492,7 @@ public class BSSymbolTable extends BSVisitor {
         n.f1.accept(this);
         Variable term = this.checkForOrCreateVariable();
 
-        this.instruction = new Formula(DRAIN);
+        this.instruction = new Drain();
         this.instruction.addInputVariable(term);
         addInstruction(this.instruction);
 
@@ -596,11 +564,5 @@ public class BSSymbolTable extends BSVisitor {
         //return BSVisitor.instructions.toString();
     }
 
-    private Set<ChemTypes> getTypingConstraints(Variable t) {
-        if (BSVisitor.variables.containsKey(t.getScopedName())) {
-            return BSVisitor.variables.get(t.getScopedName()).getTypes();
-        } else {
-            return this.identifier.identifyCompoundForTypes(t.getName());
-        }
-    }
+
 }

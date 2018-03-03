@@ -1,18 +1,28 @@
 package parser;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jgrapht.graph.AbstractBaseGraph;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
+import ir.soot.Body;
+import ir.soot.instruction.Instruction;
+import ir.soot.statement.Block;
+import ir.soot.statement.Statement;
 import parser.ast.FalseLiteral;
 import parser.ast.Identifier;
 import parser.ast.IntegerLiteral;
@@ -25,7 +35,6 @@ import shared.Step;
 import shared.variable.Method;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
-import typesystem.elements.Formula;
 
 import static chemical.epa.ChemTypes.BOOL;
 import static chemical.epa.ChemTypes.NAT;
@@ -54,11 +63,18 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     public static final Logger logger = LogManager.getLogger(BSVisitor.class);
 
     // Keep track of the instruction id to input/outputs
-    protected static Map<Integer, Formula> instructions = new LinkedHashMap<>();
+    protected static Map<Integer, Instruction> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
+    protected Map<String, Instruction> controlInstructions = new HashMap<>();
+
+    protected boolean assignToFunction = false;
+    // Allows us to handle nested branching and if/elseif/.../else.
+    protected Deque<Instruction> branchStack = new ArrayDeque<>();
+    // Allows us to handle nested looping.
+    protected Deque<Instruction> loopStack = new ArrayDeque<>();
 
     // Current instruction to work on.
-    protected Formula instruction;
+    protected Instruction instruction;
     // Current name to work on.
     protected String name;
     // Current type(s) of variables.
@@ -101,7 +117,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
         return this.scope.peek();
     }
 
-    protected static void addVariable(Variable t) {
+    protected void addVariable(Variable t) {
         if (!variables.containsKey(t.getScopedName())) {
             variables.put(t.getScopedName(), t);
         } else {
@@ -111,12 +127,14 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
         }
     }
 
-    protected static void addInstruction(Formula i) {
+    protected void addInstruction(Instruction i) {
         instructions.put(i.getId(), i);
+        if (!StringUtils.equalsIgnoreCase(this.getCurrentScope(), SymbolTable.DEFAULT_SCOPE)) {
+            this.controlInstructions.put(this.getCurrentScope(), i);
+        }
     }
 
     protected String scopifyName() {
-        logger.warn(this.getCurrentScope() + "_" + this.name);
         return this.getCurrentScope() + "_" + this.name;
     }
 
@@ -189,5 +207,13 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
             this.name = n.f0.toString();
         }
         return this;
+    }
+
+    protected Set<ChemTypes> getTypingConstraints(Variable t) {
+        if (BSVisitor.variables.containsKey(t.getScopedName())) {
+            return BSVisitor.variables.get(t.getScopedName()).getTypes();
+        } else {
+            return this.identifier.identifyCompoundForTypes(t.getName());
+        }
     }
 }
