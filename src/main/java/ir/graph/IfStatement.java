@@ -1,5 +1,8 @@
 package ir.graph;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
 
 import shared.variable.Variable;
@@ -11,7 +14,12 @@ import shared.variable.Variable;
  */
 public class IfStatement extends BaseConditional {
 
-    public IfStatement(String condition) {
-        super(condition);
+    public static final Logger logger = LogManager.getLogger(IfStatement.class);
+
+    public static final String INSTRUCTION = "IF";
+
+    public IfStatement(String name, String condition) {
+        super(name, condition);
+        logger.warn("Why is the condition coming in as a string?");
     }
 }

@@ -7,7 +7,9 @@ package ir.graph;
  */
 public class LoopStatement extends BaseConditional {
 
-    public LoopStatement(String condition) {
-        super(condition);
+    public static final String INSTRUCTION = "LOOP";
+
+    public LoopStatement(String name, String condition) {
+        super(name, condition);
     }
 }

@@ -12,9 +12,14 @@ import shared.variable.Variable;
  */
 public class AssignStatement extends BaseStatement implements Assign {
 
+    public static final String INSTRUCTION = "ASSIGN";
+
     Variable leftOpt;
     Statement rightOp;
 
+    public AssignStatement(String name) {
+        super(name);
+    }
 
     @Override
     public void setLeftOp(Variable variable) {

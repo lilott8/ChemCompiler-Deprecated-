@@ -1,5 +1,8 @@
 package ir.graph;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
 
 import shared.variable.Variable;
@@ -11,6 +14,8 @@ import shared.variable.Variable;
  */
 public abstract class BaseConditional extends BaseStatement implements Conditional {
 
+    public static final Logger logger = LogManager.getLogger(BaseConditional.class);
+
     protected Statement trueTarget;
     protected Statement falseTarget;
     protected String condition;
@@ -20,7 +25,8 @@ public abstract class BaseConditional extends BaseStatement implements Condition
         this.fallsThrough = true;
     }
 
-    public BaseConditional(String condition) {
+    public BaseConditional(String name, String condition) {
+        super(name);
         this.condition = condition;
     }
 
@@ -57,5 +63,10 @@ public abstract class BaseConditional extends BaseStatement implements Condition
     @Override
     public List<Variable> getInputVariables() {
         return null;
+    }
+
+    @Override
+    public void setTrueTarget(Block block) {
+        logger.warn("setTrueTarget(Block block) is not implemented");
     }
 }

@@ -36,7 +36,7 @@ public class TableMain {
 
         // run the file manager as a new thread.
         // fileManager.start();
-        // threadManager.runThread(new Thread(fileManager, String.format("Thread-%d", threadManager.getNextId())));
+        // threadManager.runThread(new Thread(fileManager, String.format("Thread-%d", threadManager.getNextInstructionId())));
         // Add the correct number of combine threads.
         for (int x = 0; x < ConfigFactory.getConfig().getNumberOfThreads(); x++) {
             //for (int x = 0; x < 1; x++) {

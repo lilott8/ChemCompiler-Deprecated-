@@ -65,10 +65,12 @@ public class SymbolTable {
         Scope s = this.scopeStack.pop();
         // Add the scope to the symbol.
         symbol.addScope(s);
+        // Add the symbols to scoped symbol name table.
+        this.symbols.put(symbol.getScopedName(), symbol);
         // Add it to the scope.
         s.addSymbol(symbol);
         // Add it to the global list.
-        this.symbols.put(symbol.getName(), symbol);
+        // this.symbols.put(symbol.getName(), symbol);
         // Save the variable in the correct scope.
         // this.scopedSymbols.get(s.getName()).put(symbol.getName(), symbol);
 
@@ -98,6 +100,10 @@ public class SymbolTable {
 
     public Map<String, Variable> getSymbols() {
         return symbols;
+    }
+
+    public Variable getSymbol(String name) {
+        return this.symbols.get(name);
     }
 
     public Map<String, Scope> getScopes() {
@@ -159,18 +165,27 @@ public class SymbolTable {
         }
     }
 
+    public Scope getScopeByName(String name) {
+        return this.scopes.get(name);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        //for (Map.Entry<String, Variable> entry : this.symbols.entrySet()) {
-        //    sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(System.lineSeparator());
-        //}
-        //sb.append("=========================").append(System.lineSeparator());
-        for (Map.Entry<String, Scope> entry : this.scopes.entrySet()) {
-            sb.append("Scope: ").append(entry.getKey()).append(": ")
-                    .append(System.lineSeparator()).append(entry.getValue());
-            sb.append("===========================").append(System.lineSeparator());
+        boolean vars = true;
+
+        if (vars) {
+            for (Map.Entry<String, Variable> entry : this.symbols.entrySet()) {
+                sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(System.lineSeparator());
+            }
+            sb.append("=========================").append(System.lineSeparator());
+        } else {
+            for (Map.Entry<String, Scope> entry : this.scopes.entrySet()) {
+                sb.append("Scope: ").append(entry.getKey()).append(": ")
+                        .append(System.lineSeparator()).append(entry.getValue());
+                sb.append("===========================").append(System.lineSeparator());
+            }
         }
         return sb.toString();
     }

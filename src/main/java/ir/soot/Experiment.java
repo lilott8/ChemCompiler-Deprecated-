@@ -71,6 +71,7 @@ public class Experiment {
     }
 
     public void addModule(Variable v) {
+        logger.error(v);
         this.modules.put(v.getScopedName(), v);
     }
 

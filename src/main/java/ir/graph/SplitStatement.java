@@ -6,4 +6,10 @@ package ir.graph;
  * @project: ChemicalCompiler
  */
 public class SplitStatement extends BaseStatement {
+
+    public static final String INSTRUCTION = "SPLIT";
+
+    public SplitStatement(String name) {
+        super(name);
+    }
 }

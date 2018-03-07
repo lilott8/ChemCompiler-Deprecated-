@@ -6,4 +6,8 @@ package ir.graph;
  * @project: ChemicalCompiler
  */
 public abstract class BaseNop extends BaseStatement implements Nop {
+
+    public BaseNop(String name) {
+        super(name);
+    }
 }

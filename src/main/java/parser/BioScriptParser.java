@@ -59,6 +59,7 @@ public class BioScriptParser implements Phase {
                 this.irConverter = new BSIRConverter(this.symbolTable.getSymbolTable());
                 program.accept(this.irConverter);
                 logger.info(this.irConverter);
+                ((BSIRConverter)this.irConverter).writeToDisk();
             } catch (ParseException e) {
                 logger.error(e);
                 if (this.config.isDebug()) {

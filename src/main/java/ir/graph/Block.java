@@ -16,6 +16,14 @@ public class Block {
     private static int idCounter = 0;
     private int id = idCounter++;
 
+    public Statement getLeader() {
+        return this.statements.get(0);
+    }
+
+    public Statement getLastStatement() {
+        return this.statements.get(this.statements.size()-1);
+    }
+
     public int getId() {
         return this.id;
     }

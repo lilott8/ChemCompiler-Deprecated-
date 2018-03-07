@@ -8,7 +8,7 @@ instructions
 function doThis(mat chem) : mat {
     a = mix chemical1 with chemical2
     b = mix a with chemical2 for 30
-    nat c = detect something on somethingelse
+    nat c = detect something on somethingelse for 20
 }
 
 function doThis2(mat chem, mat chem3, chem4) {

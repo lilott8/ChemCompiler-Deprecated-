@@ -18,6 +18,7 @@ public class Variable implements ScopedVariable, TypedVariable {
     protected String name;
     protected Set<ChemTypes> types = new HashSet<>();
     protected Scope scope;
+    //protected Value value;
 
     public Variable(String name) {
         this.name = name;
@@ -48,6 +49,15 @@ public class Variable implements ScopedVariable, TypedVariable {
         this.types.add(constraint);
         return this;
     }
+
+    /*public Variable setValue(Value value) {
+        this.value = value;
+        return this;
+    }
+
+    public Value getValue() {
+        return this.value;
+    }*/
 
     public void addScope(Scope scope) {
         this.scope = scope;

@@ -17,6 +17,11 @@ public abstract class BaseStatement implements Statement {
     protected boolean containsInvoke = false;
     protected List<Variable> inputVariables = new ArrayList<>();
     protected List<Variable> properties = new ArrayList<>();
+    protected String name;
+
+    public BaseStatement(String name) {
+        this.name = name;
+    }
 
     @Override
     public void addInputVariable(Variable variable) {
@@ -51,5 +56,14 @@ public abstract class BaseStatement implements Statement {
     @Override
     public boolean isBranch() {
         return this.isBranch;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    public String toString() {
+        return this.name;
     }
 }

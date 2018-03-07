@@ -15,7 +15,8 @@ public class InvokeStatement extends BaseStatement implements Invoke {
 
     private Method method;
 
-    public InvokeStatement(Method method) {
+    public InvokeStatement(String name, Method method) {
+        super(name);
         this.containsInvoke = true;
     }
 

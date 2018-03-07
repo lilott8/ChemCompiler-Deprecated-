@@ -6,4 +6,6 @@ package ir.graph;
  * @project: ChemicalCompiler
  */
 public interface Vertex {
+
+    String getName();
 }

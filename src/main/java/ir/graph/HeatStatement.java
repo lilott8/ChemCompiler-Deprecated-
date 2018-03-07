@@ -8,5 +8,9 @@ package ir.graph;
  */
 public class HeatStatement extends BaseNop {
 
+    public static final String INSTRUCTION = "HEAT";
 
+    public HeatStatement(String name) {
+        super(name);
+    }
 }

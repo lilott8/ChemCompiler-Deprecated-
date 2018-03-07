@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
@@ -51,10 +52,13 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     protected static final String BRANCH = "BRANCH";
     protected static final String INTEGER = "INTEGER";
     protected static final String BOOLEAN = "BOOLEAN";
-    protected int scopeId = 0;
-    protected int realId = 0;
-    protected int booleanId = 0;
-    protected int integerId = 0;
+    protected static final String CONST = "CONST";
+    private int scopeId = 0;
+    private int realId = 0;
+    private int booleanId = 0;
+    private int integerId = 0;
+
+    private AtomicInteger instructionId = new AtomicInteger(0);
 
     protected SymbolTable symbolTable = new SymbolTable();
 
@@ -67,16 +71,12 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     protected static Map<String, Variable> variables = new HashMap<>();
     protected Map<String, Instruction> controlInstructions = new HashMap<>();
 
-    protected boolean assignToFunction = false;
-    // Allows us to handle nested branching and if/elseif/.../else.
-    protected Deque<Instruction> branchStack = new ArrayDeque<>();
-    // Allows us to handle nested looping.
-    protected Deque<Instruction> loopStack = new ArrayDeque<>();
-
     // Current instruction to work on.
     protected Instruction instruction;
     // Current name to work on.
     protected String name;
+    // Constant for a variable.
+    protected Variable constant;
     // Current type(s) of variables.
     protected Set<ChemTypes> types = new HashSet<>();
     // Current method to work on.
@@ -89,7 +89,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
         this.newScope(SymbolTable.DEFAULT_SCOPE);
     }
 
-    public BSVisitor() { }
+    public BSVisitor() {}
 
     public BSVisitor(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
@@ -143,7 +143,9 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
      */
     @Override
     public BSVisitor visit(IntegerLiteral n) {
-        this.name = String.format("%s_%d", INTEGER, integerId++);
+        this.name = String.format("%s_%s", CONST, n.f0.toString());
+        this.constant = new Variable(this.name, this.symbolTable.getScopeByName(this.getCurrentScope()));
+        this.constant.addTypingConstraint(NAT);
         return this;
     }
 
@@ -215,5 +217,29 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
         } else {
             return this.identifier.identifyCompoundForTypes(t.getName());
         }
+    }
+
+    protected int getNextIntId() {
+        return this.integerId++;
+    }
+
+    protected int getNextRealId() {
+        return this.realId++;
+    }
+
+    protected int getNextScopeId() {
+        return this.scopeId++;
+    }
+
+    protected int getNextBoolId() {
+        return this.booleanId++;
+    }
+
+    protected int getNextInstructionId() {
+        return this.instructionId.getAndIncrement();
+    }
+
+    protected int getCurrentId() {
+        return this.instructionId.get();
     }
 }
