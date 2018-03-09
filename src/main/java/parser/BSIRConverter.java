@@ -281,8 +281,8 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(BranchStatement n) {
-        Nop sink = new SinkStatement();
-        this.statements.addVertex(sink);
+        Nop branchSink = new SinkStatement();
+        Nop branchSource = new SourceStatement();
 
         // Build the scope for the If Statement.
         String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
@@ -298,17 +298,30 @@ public class BSIRConverter extends BSVisitor {
 
         Conditional branch = new ir.graph.IfStatement(f2.toString());
         branch.setScopeName(scopeName);
-        this.blocks.addToBlock(branch);
-        this.blocks.newBranchBlock();
 
+        // Set the targets to the appropriate
+        // Source/Sink targets, for simplification.
+        branch.setFalseTarget(branchSink);
+        branch.setTrueTarget(branchSource);
+        // Add the branch to the block.
+        this.blocks.addToBlock(branch);
+        // Create a new basic block.
+        this.blocks.newBranchBlock(branchSource);
+        // Save the scope/control.
         this.controlStack.push(branch);
 
         // Get the statement(s).
         n.f5.accept(this);
 
         this.endScope();
+        // End the block for this.
         this.blocks.endBranchBlock();
         this.controlStack.pop();
+
+        // Add the new sink.
+        this.blocks.addToBlock(branchSink);
+        // Create the edge between the branch and sink.
+        this.blocks.addEdge(branch, branchSink);
 
         if (n.f7.present() || n.f8.present()) {
             boolean fromElseIf = false;
@@ -328,25 +341,52 @@ public class BSIRConverter extends BSVisitor {
             if (n.f8.present()) {
                 scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
                 this.newScope(scopeName);
+                Conditional elseBranch = new ir.graph.IfStatement("");
+                elseBranch.setScopeName(scopeName);
+
+                Nop elseSource = new SourceStatement();
+                Nop elseSink = new SinkStatement();
+
+                elseBranch.setFalseTarget(elseSink);
+                elseBranch.setTrueTarget(elseSource);
+
+                // Create a block that doesn't fall through.
+                this.blocks.newElseBlock(elseBranch);
+                // Add the source for this block.
+                this.blocks.addToBlock(elseSource);
+                this.controlStack.push(elseBranch);
+
+                // Grab the statements.
                 n.f8.accept(this);
-                Conditional elseBranch = this.controlStack.pop();
                 // Set the false branch
                 if (!fromElseIf) {
                     branch.setFalseTarget(elseBranch);
+                    // TODO: This forces an NPE.
+                    // this.blocks.updateStatement(branch, branch);
+                    logger.warn("You might not have the false target of branches.");
+
+                    // Add the sink
+                    this.blocks.addToBlock(elseSink);
+                    // Remove the connection between the branch,
+                    // And it's sink.  It is redundant.
+                    this.blocks.removeEdge(branch, branchSink);
+                    // Connect the branch to the else.
+                    this.blocks.addEdge(branch, elseBranch);
+                    // Connect the branch sink with the else.
+                    this.blocks.addEdge(branchSink, elseSink);
                 } else {
+                    // This is only necessary if the else if is in use.
+                    // Add the last else if to this else.
+                    // this.blocks.addEdge();
                     // get the last else if statement
                     // and point the false branch here.
                 }
+                this.controlStack.pop();
                 this.endScope();
             }
-        } else {
-            branch.setFalseTarget(sink);
-            this.statements.addEdge(branch, sink);
-            this.previousStatement.setFallsThrough(true);
-            this.statements.addEdge(this.previousStatement, sink);
         }
 
-        this.previousStatement = sink;
+        this.previousStatement = branchSink;
 
         return this;
     }
@@ -387,8 +427,12 @@ public class BSIRConverter extends BSVisitor {
 
         this.endScope();
 
-        this.blocks.newBranchBlock(sink);
+        // We need this block, because we don't
+        // Want the previous instruction to fall through.
+        this.blocks.newElseBlock(sink);
+        // This edge is the loop exiting.
         this.blocks.addEdge(loop, sink);
+        // This edge is the loop back into the condition.
         this.blocks.addEdge(this.previousStatement, loop);
 
         this.instructions.put(loop.getId(), loop);

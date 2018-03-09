@@ -55,6 +55,29 @@ public class BlockGraph {
         this.newBranchBlock(new SourceStatement());
     }
 
+    /**
+     * This creates a straggled blog,
+     * It is up to the developer to connect
+     * it to the graph.
+     *
+     * @param statement statement to be added to graph.
+     */
+    public void newElseBlock(Statement statement) {
+        Block temp = new Block();
+        this.basicBlocks.addVertex(statement);
+        temp.addStatement(statement);
+        this.blockQueue.add(this.currentBlock);
+        this.currentBlock = temp;
+    }
+
+    /**
+     * Create and connect a new block.
+     * This case handles the true statement.
+     * Use @function newElseBlock to account
+     * For the false case.
+     *
+     * @param statement statement to be added to the graph.
+     */
     public void newBranchBlock(Statement statement) {
         Block temp = new Block();
         this.basicBlocks.addVertex(statement);
@@ -64,12 +87,34 @@ public class BlockGraph {
         this.currentBlock = temp;
     }
 
+    /**
+     * Add an edge between blocks/statements.
+     * @param source
+     * @param destination
+     */
     public void addEdge(Statement source, Statement destination) {
         this.basicBlocks.addEdge(source, destination);
     }
 
-    public void endBranchBlock() {
-        Block temp = new Block();
+    /**
+     * Remove an edge, used for updating loops/branches.
+     *
+     * @param source      source of edge.
+     * @param destination destination of edge.
+     */
+    public void removeEdge(Statement source, Statement destination) {
+        this.basicBlocks.removeEdge(source, destination);
+    }
+
+    public void updateStatement(Statement newVertex, Statement oldVertex) {
+        this.basicBlocks.addVertex(newVertex);
+        for (DefaultEdge edge : this.basicBlocks.outgoingEdgesOf(oldVertex)) {
+            this.basicBlocks.addEdge(newVertex, this.basicBlocks.getEdgeTarget(edge), edge);
+        }
+        for (DefaultEdge edge : this.basicBlocks.incomingEdgesOf(oldVertex)) {
+            this.basicBlocks.addEdge(this.basicBlocks.getEdgeTarget(edge), newVertex, edge);
+        }
+        this.basicBlocks.removeVertex(oldVertex);
     }
 
     public void pointsBackTo(Statement statement) {

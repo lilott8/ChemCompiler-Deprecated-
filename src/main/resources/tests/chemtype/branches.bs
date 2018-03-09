@@ -9,12 +9,25 @@ ab = detect test on y for 30
 
 if (ab < 3) {
     heat a at 30
+    heat b at 50
 }
+
+heat x at 40
 
 if (ab < 3) {
     heat a at 30
-} else if (ab > 3) {
-    heat a at 30
+    heat c at 30
+    if (ab > 4) {
+        a = split x into 4
+        b = mix c with four
+    }
 } else {
-    heat a at 50
+    heat a at 55
+    if (l < 2) {
+        drain x
+        repeat 4 times {
+            drain a
+            drain b
+        }
+    }
 }
