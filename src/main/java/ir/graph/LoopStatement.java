@@ -9,7 +9,7 @@ public class LoopStatement extends BaseConditional {
 
     public static final String INSTRUCTION = "LOOP";
 
-    public LoopStatement(String name, String condition) {
-        super(name, condition);
+    public LoopStatement(String condition) {
+        super(INSTRUCTION, condition);
     }
 }

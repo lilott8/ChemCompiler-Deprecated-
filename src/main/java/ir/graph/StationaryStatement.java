@@ -9,8 +9,8 @@ public class StationaryStatement extends BaseNop {
 
     public static final String INSTRUCTION = "STATIONARY";
 
-    public StationaryStatement(String name) {
-        super(name);
+    public StationaryStatement() {
+        super(INSTRUCTION);
     }
 
 }

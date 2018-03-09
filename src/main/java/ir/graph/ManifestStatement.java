@@ -9,7 +9,7 @@ public class ManifestStatement extends BaseNop {
 
     public static final String INSTRUCTION = "MANIFEST";
 
-    public ManifestStatement(String name) {
-        super(name);
+    public ManifestStatement() {
+        super(INSTRUCTION);
     }
 }

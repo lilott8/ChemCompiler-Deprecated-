@@ -14,5 +14,8 @@ public interface Conditional extends Statement {
     void setTrueTarget(Statement target);
     Statement getFalseTarget();
     void setFalseTarget(Statement target);
-    void setTrueTarget(Block block);
+
+    String getScopeName();
+
+    void setScopeName(String name);
 }

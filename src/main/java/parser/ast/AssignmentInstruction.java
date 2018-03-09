@@ -9,35 +9,32 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Grammar production:
- * f0 -> <DETECT>
- * f1 -> PrimaryExpression()
- * f2 -> <ON>
- * f3 -> PrimaryExpression()
- * f4 -> ( <FOR> IntegerLiteral() )?
+ * f0 -> ( TypingList() )*
+ * f1 -> Identifier()
+ * f2 -> <ASSIGN>
+ * f3 -> Expression()
  */
-public class DetectInstruction implements Node {
-    public NodeToken f0;
-    public PrimaryExpression f1;
+public class AssignmentInstruction implements Node {
+    public NodeListOptional f0;
+    public Identifier f1;
     public NodeToken f2;
-    public PrimaryExpression f3;
-    public NodeOptional f4;
+    public Expression f3;
 
-    public DetectInstruction(NodeToken n0, PrimaryExpression n1, NodeToken n2, PrimaryExpression n3, NodeOptional n4) {
+    public AssignmentInstruction(NodeListOptional n0, Identifier n1, NodeToken n2, Expression n3) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
         f3 = n3;
-        f4 = n4;
     }
 
-    public DetectInstruction(PrimaryExpression n0, PrimaryExpression n1, NodeOptional n2) {
-        f0 = new NodeToken("detect");
-        f1 = n0;
-        f2 = new NodeToken("on");
-        f3 = n1;
-        f4 = n2;
+    public AssignmentInstruction(NodeListOptional n0, Identifier n1, Expression n2) {
+        f0 = n0;
+        f1 = n1;
+        f2 = new NodeToken("=");
+        f3 = n2;
     }
 
     public void accept(Visitor v) {

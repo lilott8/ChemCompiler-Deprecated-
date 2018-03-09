@@ -9,6 +9,7 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Represents an grammar optional node, e.g. ( A )? or [ A ]
  */

@@ -10,6 +10,6 @@ public class DrainStatement extends BaseStatement {
     public static final String INSTRUCTION = "DRAIN";
 
     public DrainStatement(String name) {
-        super(name);
+        super(INSTRUCTION);
     }
 }

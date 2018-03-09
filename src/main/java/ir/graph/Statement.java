@@ -1,9 +1,7 @@
 package ir.graph;
 
 import java.util.List;
-import java.util.Set;
 
-import chemical.epa.ChemTypes;
 import shared.variable.Variable;
 
 /**
@@ -17,6 +15,8 @@ public interface Statement extends Vertex {
     List<Variable> getProperties();
     void addInputVariable(Variable variable);
     void addProperty(Variable variable);
+
+    void setFallsThrough(boolean fallsThrough);
 
     boolean containsInvoke();
 

@@ -9,24 +9,23 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Grammar production:
  * f0 -> AndExpression()
- * | LessThanExpression()
- * | LessThanEqualExpression()
- * | GreaterThanExpression()
- * | GreaterThanEqualExpression()
- * | NotEqualExpression()
- * | EqualityExpression()
- * | OrExpression()
- * | PlusExpression()
- * | MinusExpression()
- * | TimesExpression()
- * | FunctionInvoke()
- * | MixInstruction()
- * | SplitInstruction()
- * | DetectInstruction()
- * | PrimaryExpression()
+ *       | LessThanExpression()
+ *       | LessThanEqualExpression()
+ *       | GreaterThanExpression()
+ *       | GreaterThanEqualExpression()
+ *       | NotEqualExpression()
+ *       | EqualityExpression()
+ *       | OrExpression()
+ *       | PlusExpression()
+ *       | MinusExpression()
+ *       | TimesExpression()
+ *       | FunctionInvoke()
+ *       | PrimaryExpression()
+ *       | InstructionAssignment()
  */
 public class Expression implements Node {
     public NodeChoice f0;

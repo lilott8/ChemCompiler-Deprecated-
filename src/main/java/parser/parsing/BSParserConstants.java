@@ -183,51 +183,47 @@ public interface BSParserConstants {
     /**
      * RegularExpression Id.
      */
-    int DIVIDE = 48;
+    int MULTIPLY = 48;
     /**
      * RegularExpression Id.
      */
-    int MULTIPLY = 49;
+    int OR = 49;
     /**
      * RegularExpression Id.
      */
-    int OR = 50;
+    int INSTRUCTIONS = 50;
     /**
      * RegularExpression Id.
      */
-    int INSTRUCTIONS = 51;
+    int TRUE = 51;
     /**
      * RegularExpression Id.
      */
-    int TRUE = 52;
+    int FALSE = 52;
     /**
      * RegularExpression Id.
      */
-    int FALSE = 53;
+    int COMMA = 53;
     /**
      * RegularExpression Id.
      */
-    int COMMA = 54;
+    int COLON = 54;
     /**
      * RegularExpression Id.
      */
-    int COLON = 55;
+    int INTEGER_LITERAL = 55;
     /**
      * RegularExpression Id.
      */
-    int INTEGER_LITERAL = 56;
+    int IDENTIFIER = 56;
     /**
      * RegularExpression Id.
      */
-    int IDENTIFIER = 57;
+    int LETTER = 57;
     /**
      * RegularExpression Id.
      */
-    int LETTER = 58;
-    /**
-     * RegularExpression Id.
-     */
-    int DIGIT = 59;
+    int DIGIT = 58;
 
     /**
      * Lexical state.
@@ -286,7 +282,6 @@ public interface BSParserConstants {
             "\">=\"",
             "\"==\"",
             "\"-\"",
-            "\"/\"",
             "\"*\"",
             "\"||\"",
             "\"instructions\"",

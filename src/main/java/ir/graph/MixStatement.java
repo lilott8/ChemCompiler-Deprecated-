@@ -9,7 +9,7 @@ public class MixStatement extends BaseStatement {
 
     public static final String INSTRUCTION = "MIX";
 
-    public MixStatement(String name) {
-        super(name);
+    public MixStatement() {
+        super(INSTRUCTION);
     }
 }

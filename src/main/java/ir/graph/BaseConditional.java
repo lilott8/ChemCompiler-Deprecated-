@@ -19,6 +19,7 @@ public abstract class BaseConditional extends BaseStatement implements Condition
     protected Statement trueTarget;
     protected Statement falseTarget;
     protected String condition;
+    protected String scopeName;
 
     {
         this.isBranch = true;
@@ -66,7 +67,17 @@ public abstract class BaseConditional extends BaseStatement implements Condition
     }
 
     @Override
-    public void setTrueTarget(Block block) {
-        logger.warn("setTrueTarget(Block block) is not implemented");
+    public String getName() {
+        return super.getName() + ": " + this.condition;
+    }
+
+    @Override
+    public String getScopeName() {
+        return this.scopeName;
+    }
+
+    @Override
+    public void setScopeName(String scopeName) {
+        this.scopeName = scopeName;
     }
 }

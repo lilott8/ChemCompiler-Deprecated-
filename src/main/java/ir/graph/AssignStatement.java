@@ -17,8 +17,8 @@ public class AssignStatement extends BaseStatement implements Assign {
     Variable leftOpt;
     Statement rightOp;
 
-    public AssignStatement(String name) {
-        super(name);
+    public AssignStatement() {
+        super(INSTRUCTION);
     }
 
     @Override
@@ -39,5 +39,10 @@ public class AssignStatement extends BaseStatement implements Assign {
     @Override
     public Set<ChemTypes> getTypes() {
         return this.leftOpt.getTypes();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", super.toString(), this.rightOp.getName());
     }
 }

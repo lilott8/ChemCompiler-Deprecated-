@@ -1,23 +1,20 @@
 package parser;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jgrapht.Graph;
-import org.jgrapht.ext.DOTExporter;
-import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedPseudograph;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import chemical.epa.ChemTypes;
-import config.ConfigFactory;
+import ir.blocks.BlockGraph;
+import ir.graph.Assign;
 import ir.graph.AssignStatement;
-import ir.graph.Block;
 import ir.graph.Conditional;
 import ir.graph.DetectStatement;
 import ir.graph.DrainStatement;
@@ -27,26 +24,25 @@ import ir.graph.LoopStatement;
 import ir.graph.ManifestStatement;
 import ir.graph.MixStatement;
 import ir.graph.ModuleStatement;
+import ir.graph.Nop;
+import ir.graph.SinkStatement;
+import ir.graph.SourceStatement;
 import ir.graph.SplitStatement;
 import ir.graph.Statement;
 import ir.graph.StationaryStatement;
 import ir.soot.Experiment;
-import parser.ast.Assignment;
-import parser.ast.DetectInstruction;
-import parser.ast.DrainInstruction;
+import parser.ast.AssignmentInstruction;
+import parser.ast.BranchStatement;
 import parser.ast.ElseIfStatement;
 import parser.ast.ElseStatement;
 import parser.ast.FormalParameter;
-import parser.ast.FunctionDefinition;
+import parser.ast.Function;
 import parser.ast.FunctionInvoke;
-import parser.ast.HeatInstruction;
-import parser.ast.IfStatement;
 import parser.ast.Manifest;
-import parser.ast.MixInstruction;
 import parser.ast.Module;
-import parser.ast.RepeatInstruction;
-import parser.ast.SplitInstruction;
+import parser.ast.RepeatStatement;
 import parser.ast.Stationary;
+import shared.errors.InvalidSyntaxException;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
 
@@ -61,23 +57,24 @@ public class BSIRConverter extends BSVisitor {
 
     private Experiment experiment = new Experiment(1, "Experiment");
     private boolean isAssign = false;
+    // Manage the left hand side of the expression.
+    private Variable assignTo = null;
 
-    //List<Statement> statements = new ArrayList<>();
-    private Statement statement;
     private boolean inMethod = false;
     // The graph of the IR.
-    private Graph<Statement, DefaultEdge> statements = new DefaultDirectedGraph<>(DefaultEdge.class);
+    private AbstractBaseGraph<Statement, DefaultEdge> statements = new DirectedPseudograph<>(DefaultEdge.class);
     // A simple stack that allows us to know when control changes
-    private Deque<Statement> controlStack = new ArrayDeque<>();
-    // The corresponding stack for the blocks associated with a control change.
-    private Deque<Block> blocks = new ArrayDeque<>();
+    private Deque<Conditional> controlStack = new ArrayDeque<>();
     // The previous statement we were on.
     private Statement previousStatement;
-
+    // Temporary jumps for control flow movement.
+    private BlockGraph blocks = new BlockGraph();
+    private Map<String, Statement> sinkStatements = new HashMap<>();
+    private Map<Integer, Statement> instructions = new LinkedHashMap<>();
 
     public BSIRConverter(SymbolTable symbolTable) {
         super(symbolTable);
-        this.blocks.push(new Block());
+
     }
 
     @Override
@@ -102,13 +99,13 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
         // Build the IR data structure.
-        AssignStatement assign = new AssignStatement(String.format("%s-%d",
-                AssignStatement.INSTRUCTION, this.getNextInstructionId()));
-        ModuleStatement module = new ModuleStatement(String.format("%s-%d",
-                ModuleStatement.INSTRUCTION, this.getNextInstructionId()));
+        AssignStatement assign = new AssignStatement();
+        ModuleStatement module = new ModuleStatement();
         module.addInputVariable(f1);
         assign.setRightOp(module);
         this.resolveBranch(assign);
+        this.blocks.addToBlock(assign);
+        this.instructions.put(assign.getId(), assign);
 
         return this;
     }
@@ -126,13 +123,13 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
         // Build the IR data structure.
-        AssignStatement assign = new AssignStatement(String.format("%s-%d",
-                AssignStatement.INSTRUCTION, this.getNextInstructionId()));
-        StationaryStatement stationary = new StationaryStatement(String.format("%s-%d",
-                StationaryStatement.INSTRUCTION, this.getNextInstructionId()));
+        AssignStatement assign = new AssignStatement();
+        StationaryStatement stationary = new StationaryStatement();
         stationary.addInputVariable(f2);
         assign.setRightOp(stationary);
         this.resolveBranch(assign);
+        this.blocks.addToBlock(assign);
+        this.instructions.put(assign.getId(), assign);
 
         return this;
     }
@@ -150,16 +147,17 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
         // Build the IR data structure.
-        AssignStatement assign = new AssignStatement(String.format("%s-%d",
-                AssignStatement.INSTRUCTION, this.getNextInstructionId()));
-        ManifestStatement manifest = new ManifestStatement(String.format("%s-%d",
-                ManifestStatement.INSTRUCTION, this.getNextInstructionId()));
+        AssignStatement assign = new AssignStatement();
+        ManifestStatement manifest = new ManifestStatement();
         manifest.addInputVariable(f2);
         assign.setRightOp(manifest);
         this.resolveBranch(assign);
+        this.blocks.addToBlock(assign);
+        this.instructions.put(assign.getId(), assign);
 
         return this;
     }
+
 
     /**
      * f0 -> ( TypingList() )?
@@ -168,32 +166,21 @@ public class BSIRConverter extends BSVisitor {
      * f3 -> Expression()
      */
     @Override
-    public BSVisitor visit(Assignment n) {
+    public BSVisitor visit(AssignmentInstruction n) {
 
         // Get the name.
         n.f1.accept(this);
-        Variable f1 = this.symbolTable.searchScopeHierarchy(this.name,
+        this.assignTo = this.symbolTable.searchScopeHierarchy(this.name,
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
-        this.statement = new AssignStatement(String.format("%s-%d", AssignStatement.INSTRUCTION,
-                this.getNextInstructionId()));
-        this.statement.addInputVariable(f1);
         this.isAssign = true;
 
         // Get the expression.
         n.f3.accept(this);
 
-        this.resolveBranch(this.statement);
-
-        /*
-        if (this.assignToFunction) {
-            instr.addInputVariable(this.method);
-            this.assignToFunction = false;
-        } else {
-            instr.addInstruction(this.instruction);
-        }*/
-
         this.isAssign = false;
+        // Just to be sure.
+        this.assignTo = null;
         return this;
     }
 
@@ -210,13 +197,18 @@ public class BSIRConverter extends BSVisitor {
 
         this.method = this.symbolTable.getMethods().get(this.name);
 
-        Statement invoke = new InvokeStatement(this.method.getName(), this.method);
+        Statement invoke = new InvokeStatement(this.method);
 
         if (isAssign) {
-            ((AssignStatement)this.statement).setRightOp(invoke);
-        } else {
-            this.resolveBranch(invoke);
+            AssignStatement assign = new AssignStatement();
+            assign.setLeftOp(this.assignTo);
+            assign.setRightOp(invoke);
         }
+
+        this.resolveBranch(invoke);
+        this.blocks.addToBlock(invoke);
+        this.previousStatement = invoke;
+        this.instructions.put(invoke.getId(), invoke);
 
         return this;
     }
@@ -234,7 +226,7 @@ public class BSIRConverter extends BSVisitor {
      * f9 -> <RBRACE>
      */
     @Override
-    public BSVisitor visit(FunctionDefinition n) {
+    public BSVisitor visit(Function n) {
         // super.visit(n);
         // Get the name of the method.
         n.f1.accept(this);
@@ -271,48 +263,10 @@ public class BSIRConverter extends BSVisitor {
         n.f0.accept(this);
         // Go fetch the name
         n.f1.accept(this);
-        logger.info("in formal parameter");
         return this;
     }
 
-    /**
-     * f0 -> <REPEAT>
-     * f1 -> IntegerLiteral()
-     * f2 -> <TIMES>
-     * f3 -> <LBRACE>
-     * f4 -> Statement()
-     * f5 -> <RBRACE>
-     */
-    @Override
-    public BSVisitor visit(RepeatInstruction n) {
-        String scopeName = String.format("%s_%d", REPEAT, this.getNextScopeId());
-        this.newScope(scopeName);
 
-        n.f1.accept(this);
-        logger.warn("name: " + scopeName + "_" + this.name);
-        Variable f1 = this.symbolTable.searchScopeHierarchy(this.name,
-                this.symbolTable.getScopeByName(this.getCurrentScope()));
-        logger.info(f1);
-
-        // Build the new IR data structure.
-        LoopStatement loop = new LoopStatement(String.format("%s-%d", LoopStatement.INSTRUCTION,
-                this.getNextInstructionId()), f1.toString());
-        this.statements.addVertex(loop);
-        this.statements.addEdge(this.previousStatement, loop);
-        // Save the instruction on the control stack.
-        this.controlStack.push(loop);
-
-        // Get the statements.
-        n.f4.accept(this);
-
-        this.endScope();
-
-        // Keep the previous statement so we can add
-        // the branches to it.
-        this.previousStatement = this.controlStack.pop();
-
-        return this;
-    }
 
     /**
      * f0 -> <IF>
@@ -320,12 +274,17 @@ public class BSIRConverter extends BSVisitor {
      * f2 -> Expression()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
-     * f5 -> Statement()
+     * f5 -> ( Statement() )+
      * f6 -> <RBRACE>
+     * f7 -> ( ElseIfStatement() )*
+     * f8 -> ( ElseStatement() )?
      */
     @Override
-    public BSVisitor visit(IfStatement n) {
-        // Build the name.
+    public BSVisitor visit(BranchStatement n) {
+        Nop sink = new SinkStatement();
+        this.statements.addVertex(sink);
+
+        // Build the scope for the If Statement.
         String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
         // Create a new scope.
         this.newScope(scopeName);
@@ -337,19 +296,102 @@ public class BSIRConverter extends BSVisitor {
         Variable f2 = this.symbolTable.searchScopeHierarchy(this.name,
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
-        Conditional statement = new ir.graph.IfStatement(String.format("%s-%d",
-                ir.graph.IfStatement.INSTRUCTION, this.getNextInstructionId()), f2.toString());
-        this.statements.addVertex(statement);
-        this.statements.addEdge(this.previousStatement, statement);
-        this.controlStack.push(statement);
+        Conditional branch = new ir.graph.IfStatement(f2.toString());
+        branch.setScopeName(scopeName);
+        this.blocks.addToBlock(branch);
+        this.blocks.newBranchBlock();
 
-        // Get the statement.
+        this.controlStack.push(branch);
+
+        // Get the statement(s).
         n.f5.accept(this);
 
-        // Return back to old scoping.
         this.endScope();
-        // Save the instruction as the last instruction.
-        this.previousStatement = this.controlStack.pop();
+        this.blocks.endBranchBlock();
+        this.controlStack.pop();
+
+        if (n.f7.present() || n.f8.present()) {
+            boolean fromElseIf = false;
+            // Parse the elseIf(s)
+            if (n.f7.present()) {
+                fromElseIf = true;
+                // scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
+                // this.newScope(scopeName);
+                // n.f1.accept(this);
+                // this.previousStatement.setFallsThrough(true);
+                // this.statements.addEdge(this.previousStatement, sink);
+                // this.endScope();
+                throw new InvalidSyntaxException("\"else if\" statements are not allowed.");
+            }
+
+            // Parse the else
+            if (n.f8.present()) {
+                scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
+                this.newScope(scopeName);
+                n.f8.accept(this);
+                Conditional elseBranch = this.controlStack.pop();
+                // Set the false branch
+                if (!fromElseIf) {
+                    branch.setFalseTarget(elseBranch);
+                } else {
+                    // get the last else if statement
+                    // and point the false branch here.
+                }
+                this.endScope();
+            }
+        } else {
+            branch.setFalseTarget(sink);
+            this.statements.addEdge(branch, sink);
+            this.previousStatement.setFallsThrough(true);
+            this.statements.addEdge(this.previousStatement, sink);
+        }
+
+        this.previousStatement = sink;
+
+        return this;
+    }
+
+    /**
+     * f0 -> <REPEAT>
+     * f1 -> IntegerLiteral()
+     * f2 -> <TIMES>
+     * f3 -> <LBRACE>
+     * f4 -> ( Statement() )+
+     * f5 -> <RBRACE>
+     */
+    @Override
+    public BSVisitor visit(RepeatStatement n) {
+        Nop source = new SourceStatement();
+        Nop sink = new SinkStatement();
+
+        String scopeName = String.format("%s_%d", REPEAT, this.getNextScopeId());
+        this.newScope(scopeName);
+
+        n.f1.accept(this);
+        Variable f1 = this.symbolTable.searchScopeHierarchy(this.name,
+                this.symbolTable.getScopeByName(this.getCurrentScope()));
+
+        // Build the new IR data structure.
+        LoopStatement loop = new LoopStatement(f1.toString());
+        loop.setScopeName(scopeName);
+
+        // Make sure we set the false target to the sink.
+        loop.setFalseTarget(sink);
+        loop.setTrueTarget(source);
+
+        this.blocks.addToBlock(loop);
+        this.blocks.newBranchBlock(source);
+
+        // Get the statements.
+        n.f4.accept(this);
+
+        this.endScope();
+
+        this.blocks.newBranchBlock(sink);
+        this.blocks.addEdge(loop, sink);
+        this.blocks.addEdge(this.previousStatement, loop);
+
+        this.instructions.put(loop.getId(), loop);
 
         return this;
     }
@@ -360,64 +402,50 @@ public class BSIRConverter extends BSVisitor {
      * f2 -> Expression()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
-     * f5 -> Statement()
+     * f5 -> ( Statement() )+
      * f6 -> <RBRACE>
      */
     @Override
     public BSVisitor visit(ElseIfStatement n) {
-        // Get the name and scope.
-        String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
-        this.newScope(scopeName);
-
-        // Get the expression.
         logger.warn("Not parsing expression");
         // n.f2.accept(this);
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
-        logger.warn(String.format("%s_%s", this.getCurrentScope(), this.name));
+        // Build a false variable for the expression, for now.
         Variable f2 = this.symbolTable.searchScopeHierarchy(this.name,
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
-        logger.warn(f2);
 
-        Conditional elseIf = new ir.graph.IfStatement(String.format("%s-%d",
-                ir.graph.IfStatement.INSTRUCTION, this.getNextInstructionId()), f2.toString());
-        ((Conditional) this.previousStatement).setFalseTarget(elseIf);
-        this.statements.addVertex(elseIf);
-        this.statements.addEdge(this.previousStatement, elseIf);
-        this.controlStack.push(elseIf);
+        Conditional branch = new ir.graph.IfStatement(f2.toString());
+        branch.setScopeName(this.getCurrentScope());
+        this.blocks.addToBlock(branch);
+        this.blocks.newBranchBlock();
 
+        this.controlStack.push(branch);
         // Get the statements in the scope.
         n.f5.accept(this);
+        this.previousStatement.setFallsThrough(true);
 
-        // Return back to old scoping.
-        this.endScope();
-        this.previousStatement = this.controlStack.pop();
         return this;
     }
 
     /**
      * f0 -> <ELSE>
      * f1 -> <LBRACE>
-     * f2 -> Statement()
+     * f2 -> ( Statement() )+
      * f3 -> <RBRACE>
      */
     @Override
     public BSVisitor visit(ElseStatement n) {
-        // super.visit(n);
-        String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
-        this.newScope(scopeName);
 
-        Conditional elseStatement = new ir.graph.IfStatement(String.format("%s-%d",
-                ir.graph.IfStatement.INSTRUCTION, this.getNextInstructionId()), "");
-        ((Conditional) this.previousStatement).setFalseTarget(elseStatement);
-        this.statements.addVertex(elseStatement);
-        this.statements.addEdge(this.previousStatement, elseStatement);
-        this.controlStack.push(elseStatement);
-
+        Conditional branch = new ir.graph.IfStatement("");
+        branch.setScopeName(this.getCurrentScope());
+        this.controlStack.push(branch);
         // Get the statements
         n.f2.accept(this);
-        // Return back to old scoping.
-        this.endScope();
-        this.previousStatement = this.controlStack.pop();
+
+        // Save the last node in the control block,
+        // So we know where to fall through from.
+        this.previousStatement.setFallsThrough(true);
+
         return this;
     }
 
@@ -429,7 +457,7 @@ public class BSIRConverter extends BSVisitor {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public BSVisitor visit(MixInstruction n) {
+    public BSVisitor visit(parser.ast.MixStatement n) {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = this.symbolTable.searchScopeHierarchy(this.name,
@@ -439,8 +467,7 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
         // Build the IR data structure.
-        Statement mix = new MixStatement(String.format("%s-%d",
-                MixStatement.INSTRUCTION, this.getNextInstructionId()));
+        Statement mix = new MixStatement();
         mix.addInputVariable(f1);
         mix.addInputVariable(f3);
 
@@ -453,9 +480,14 @@ public class BSIRConverter extends BSVisitor {
             mix.addProperty(f4);
         }
 
-        this.experiment.addInstruction(instruction);
-
-        ((AssignStatement)this.statement).setRightOp(mix);
+        // this.experiment.addInstruction(instruction);
+        AssignStatement assign = new AssignStatement();
+        assign.setLeftOp(this.assignTo);
+        assign.setRightOp(mix);
+        this.resolveBranch(mix);
+        this.blocks.addToBlock(assign);
+        this.previousStatement = assign;
+        this.instructions.put(assign.getId(), assign);
 
         return this;
     }
@@ -467,7 +499,7 @@ public class BSIRConverter extends BSVisitor {
      * f3 -> IntegerLiteral()
      */
     @Override
-    public BSVisitor visit(SplitInstruction n) {
+    public BSVisitor visit(parser.ast.SplitStatement n) {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = this.symbolTable.searchScopeHierarchy(this.name,
@@ -478,11 +510,17 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
         // Build the IR data structure.
-        Statement split = new SplitStatement(String.format("%s-%d", SplitStatement.INSTRUCTION,
-                this.getNextInstructionId()));
+        Statement split = new SplitStatement();
         split.addInputVariable(f1);
         split.addProperty(f3);
-        ((AssignStatement)this.statement).setRightOp(split);
+
+        AssignStatement assign = new AssignStatement();
+        assign.setLeftOp(this.assignTo);
+        assign.setRightOp(split);
+        this.resolveBranch(split);
+        this.blocks.addToBlock(assign);
+        this.previousStatement = assign;
+        this.instructions.put(assign.getId(), assign);
 
         return this;
     }
@@ -495,7 +533,7 @@ public class BSIRConverter extends BSVisitor {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public BSVisitor visit(DetectInstruction n) {
+    public BSVisitor visit(parser.ast.DetectStatement n) {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = this.symbolTable.searchScopeHierarchy(this.name,
@@ -505,11 +543,9 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
         // Build the IR data structure.
-        Statement detect = new DetectStatement(String.format("%s-%d", DetectStatement.INSTRUCTION,
-                this.getNextInstructionId()));
+        Statement detect = new DetectStatement();
         detect.addInputVariable(f1);
         detect.addInputVariable(f3);
-
 
         if (n.f4.present()) {
             n.f4.accept(this);
@@ -520,7 +556,13 @@ public class BSIRConverter extends BSVisitor {
             detect.addProperty(f4);
         }
 
-        ((AssignStatement) this.statement).setRightOp(detect);
+        AssignStatement assign = new AssignStatement();
+        assign.setLeftOp(this.assignTo);
+        assign.setRightOp(detect);
+        this.resolveBranch(detect);
+        this.blocks.addToBlock(assign);
+        this.previousStatement = assign;
+        this.instructions.put(assign.getId(), assign);
 
         return this;
     }
@@ -530,7 +572,7 @@ public class BSIRConverter extends BSVisitor {
      * f1 -> PrimaryExpression()
      */
     @Override
-    public BSVisitor visit(DrainInstruction n) {
+    public BSVisitor visit(parser.ast.DrainStatement n) {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = this.symbolTable.searchScopeHierarchy(this.name,
@@ -542,6 +584,9 @@ public class BSIRConverter extends BSVisitor {
         drain.addInputVariable(f1);
         // We can add the statement immediately.
         this.resolveBranch(drain);
+        this.blocks.addToBlock(drain);
+        this.previousStatement = drain;
+        this.instructions.put(drain.getId(), drain);
 
         return this;
     }
@@ -554,7 +599,7 @@ public class BSIRConverter extends BSVisitor {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public BSVisitor visit(HeatInstruction n) {
+    public BSVisitor visit(parser.ast.HeatStatement n) {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = this.symbolTable.searchScopeHierarchy(this.name,
@@ -579,52 +624,64 @@ public class BSIRConverter extends BSVisitor {
         }
 
         this.resolveBranch(heat);
+        this.blocks.addToBlock(heat);
+        this.previousStatement = heat;
+        this.instructions.put(heat.getId(), heat);
 
         return this;
     }
 
+    private void addStatement(Statement statement) {
+
+    }
+
     private void resolveBranch(Statement statement) {
         // If the stack is empty, we don't do anything to it.
-        if (!this.controlStack.isEmpty()) {
+        /*if (!this.controlStack.isEmpty()) {
             // If these don't match, then we know we've finished a branching
             // series and need to put the input statement as the next statement.
-            if (!StringUtils.equalsIgnoreCase(this.controlStack.peek().getName(), this.getCurrentScope())) {
+            logger.info(this.controlStack.peekFirst().getScopeName() +"\t" + this.getCurrentScope());
+            if (!StringUtils.equalsIgnoreCase(this.controlStack.peekFirst().getScopeName(), this.getCurrentScope())) {
+                logger.fatal("Scopes don't match!");
                 // Pop off the current branch to mutate
-                Conditional currentBranch = (Conditional) this.controlStack.peek();
+                Conditional currentBranch = this.controlStack.getFirst();
                 currentBranch.setFalseTarget(statement);
                 // Add it to the graph
                 this.statements.addVertex(statement);
                 this.statements.addEdge(currentBranch, statement);
             } else {
-                // Block block = this.blocks.pop();
-                // block.addStatement(statement);
                 this.statements.addVertex(statement);
-                // this.statements.addEdge(block.getLastStatement(), statement);
-                this.statements.addEdge(this.previousStatement, statement);
-                this.previousStatement = statement;
-                // this.blocks.push(block);
-            }
-        } else {
-            this.statements.addVertex(statement);
-            if (this.previousStatement != null) {
                 this.statements.addEdge(this.previousStatement, statement);
             }
-            this.previousStatement = statement;
-        }
+        } else {*/
+        //this.statements.addVertex(statement);
+        //if (this.previousStatement != null) {
+        //this.statements.addEdge(this.previousStatement, statement);
+        //  }
+        //}
+        this.previousStatement = statement;
     }
 
     public void writeToDisk() {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(ConfigFactory.getConfig().getOutputDir() + "graph.dot");
-             OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream, "UTF-8")) {
-            DOTExporter<Statement, DefaultEdge> exporter = new DOTExporter<>();
-            exporter.export(writer, this.statements);
-        } catch(IOException e) {
-            logger.fatal(e.getMessage());
-            e.printStackTrace();
-        }
+        this.blocks.writeToDisk();
     }
 
     public String toString() {
-        return this.experiment.toString();
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Integer, Statement> entry : this.instructions.entrySet()) {
+            if (entry.getValue() instanceof Assign) {
+                Assign temp = (Assign) entry.getValue();
+                sb.append(temp.getId()).append(System.lineSeparator());
+            } else if (entry.getValue() instanceof Conditional) {
+                Conditional temp = (Conditional) entry.getValue();
+                sb.append(temp.getId()).append(temp.getName()).append(" TRUE:").append(System.lineSeparator());
+                sb.append(temp.getTrueTarget()).append(System.lineSeparator());
+                sb.append(temp.getId()).append(temp.getName()).append(" FALSE:").append(System.lineSeparator());
+                sb.append(temp.getFalseTarget()).append(System.lineSeparator());
+            } else {
+                sb.append(entry.getValue().getName());
+            }
+        }
+        return sb.toString();
     }
 }

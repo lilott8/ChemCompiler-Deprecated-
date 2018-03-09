@@ -8,35 +8,33 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import chemical.epa.ChemTypes;
 import ir.soot.instruction.Assign;
 import ir.soot.instruction.Drain;
 import ir.soot.instruction.Invoke;
 import ir.soot.instruction.Mix;
-import ir.soot.statement.Branch;
-import parser.ast.Assignment;
-import parser.ast.DetectInstruction;
-import parser.ast.DrainInstruction;
+import parser.ast.AssignmentInstruction;
+import parser.ast.BranchStatement;
+import parser.ast.DetectStatement;
+import parser.ast.DrainStatement;
 import parser.ast.ElseIfStatement;
 import parser.ast.ElseStatement;
 import parser.ast.FormalParameter;
-import parser.ast.FunctionDefinition;
+import parser.ast.Function;
 import parser.ast.FunctionInvoke;
-import parser.ast.HeatInstruction;
-import parser.ast.IfStatement;
+import parser.ast.HeatStatement;
 import parser.ast.Manifest;
-import parser.ast.MixInstruction;
+import parser.ast.MixStatement;
 import parser.ast.Module;
-import parser.ast.RepeatInstruction;
-import parser.ast.SplitInstruction;
+import parser.ast.RepeatStatement;
+import parser.ast.SplitStatement;
 import parser.ast.Stationary;
-import shared.variable.Variable;
 import shared.variable.Method;
+import shared.variable.Variable;
 import symboltable.SymbolTable;
-import chemical.epa.ChemTypes;
 
 import static chemical.epa.ChemTypes.MODULE;
 import static chemical.epa.ChemTypes.NAT;
-import static typesystem.rules.Rule.InstructionType.FUNCTION;
 
 /**
  * @created: 2/1/18
@@ -144,7 +142,7 @@ public class BSSymbolTable extends BSVisitor {
      * f3 -> Expression()
      */
     @Override
-    public BSVisitor visit(Assignment n) {
+    public BSVisitor visit(AssignmentInstruction n) {
         // Get the expression done before we get the identifier.
         // That way we can set the appropriate instruction.
         n.f3.accept(this);
@@ -211,7 +209,7 @@ public class BSSymbolTable extends BSVisitor {
      * f9 -> <RBRACE>
      */
     @Override
-    public BSVisitor visit(FunctionDefinition n) {
+    public BSVisitor visit(Function n) {
         // Lets us know if we have a typed function,
         // If we do, then there must be a return statement.
         boolean needReturn = false;
@@ -303,11 +301,11 @@ public class BSSymbolTable extends BSVisitor {
      * f1 -> IntegerLiteral()
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
-     * f4 -> Statement()
+     * f4 -> ( Statement() )+
      * f5 -> <RBRACE>
      */
     @Override
-    public BSVisitor visit(RepeatInstruction n) {
+    public BSVisitor visit(RepeatStatement n) {
         // super.visit(n);
         // Start a new scope.
         String scopeName = String.format("%s_%d", REPEAT, this.getNextScopeId());
@@ -333,11 +331,13 @@ public class BSSymbolTable extends BSVisitor {
      * f2 -> Expression()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
-     * f5 -> Statement()
+     * f5 -> ( Statement() )+
      * f6 -> <RBRACE>
+     * f7 -> ( ElseIfStatement() )*
+     * f8 -> ( ElseStatement() )?
      */
     @Override
-    public BSVisitor visit(IfStatement n) {
+    public BSVisitor visit(BranchStatement n) {
         // Build the instruction.
         logger.fatal("You need to reset the instruction in If");
         //this.instruction = new Branch();
@@ -361,6 +361,14 @@ public class BSSymbolTable extends BSVisitor {
         n.f5.accept(this);
         // Return back to old scoping.
         this.symbolTable.endScope();
+
+        if (n.f7.present()) {
+            n.f7.accept(this);
+        }
+
+        if (n.f8.present()) {
+            n.f8.accept(this);
+        }
 
         return this;
     }
@@ -427,7 +435,7 @@ public class BSSymbolTable extends BSVisitor {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public BSVisitor visit(MixInstruction n) {
+    public BSVisitor visit(MixStatement n) {
         this.instruction = new Mix();
 
         // Get the first material.
@@ -461,7 +469,7 @@ public class BSSymbolTable extends BSVisitor {
      * f3 -> IntegerLiteral()
      */
     @Override
-    public BSVisitor visit(SplitInstruction n) {
+    public BSVisitor visit(SplitStatement n) {
         //super.visit(n);
         n.f1.accept(this);
         checkForOrCreateVariable();
@@ -485,7 +493,7 @@ public class BSSymbolTable extends BSVisitor {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public BSVisitor visit(DetectInstruction n) {
+    public BSVisitor visit(DetectStatement n) {
         // super.visit(n);
         // Get the name
         n.f1.accept(this);
@@ -517,7 +525,7 @@ public class BSSymbolTable extends BSVisitor {
      * f1 -> PrimaryExpression()
      */
     @Override
-    public BSVisitor visit(DrainInstruction n) {
+    public BSVisitor visit(DrainStatement n) {
         //super.visit(n);
         n.f1.accept(this);
         Variable term = this.checkForOrCreateVariable();
@@ -537,7 +545,7 @@ public class BSSymbolTable extends BSVisitor {
      * f4 -> ( <FOR> IntegerLiteral() )?
      */
     @Override
-    public BSVisitor visit(HeatInstruction n) {
+    public BSVisitor visit(HeatStatement n) {
         // super.visit(n);
 
         n.f1.accept(this);

@@ -9,7 +9,7 @@ public class SplitStatement extends BaseStatement {
 
     public static final String INSTRUCTION = "SPLIT";
 
-    public SplitStatement(String name) {
-        super(name);
+    public SplitStatement() {
+        super(INSTRUCTION);
     }
 }

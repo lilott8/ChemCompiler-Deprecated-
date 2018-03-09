@@ -11,7 +11,6 @@ import parser.visitor.GJNoArguVisitor;
 import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
-
 /**
  * Represents a single token in the grammar.  If the "-tk" option
  * is used, also contains a Vector of preceding special tokens.

@@ -9,10 +9,11 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Grammar production:
- * f0 -> FunctionDefinition()
- * | Statement()
+ * f0 -> Function()
+ *       | Statement()
  */
 public class Sequence implements Node {
     public NodeChoice f0;

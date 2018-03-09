@@ -2,6 +2,7 @@ package ir.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import shared.variable.Variable;
 
@@ -12,15 +13,19 @@ import shared.variable.Variable;
  */
 public abstract class BaseStatement implements Statement {
 
+    private static AtomicInteger idCounter = new AtomicInteger(0);
+
     protected boolean isBranch = false;
     protected boolean fallsThrough = false;
     protected boolean containsInvoke = false;
     protected List<Variable> inputVariables = new ArrayList<>();
     protected List<Variable> properties = new ArrayList<>();
     protected String name;
+    protected int id;
 
-    public BaseStatement(String name) {
+    protected BaseStatement(String name) {
         this.name = name;
+        this.id = idCounter.getAndIncrement();
     }
 
     @Override
@@ -63,7 +68,22 @@ public abstract class BaseStatement implements Statement {
         return this.name;
     }
 
+    @Override
+    public int getId() {
+        return this.id;
+    }
+
+    @Override
+    public String getIdAsString() {
+        return Integer.toString(this.id);
+    }
+
+    @Override
+    public void setFallsThrough(boolean fallsThrough) {
+        this.fallsThrough = fallsThrough;
+    }
+
     public String toString() {
-        return this.name;
+        return String.format("%s-%d", this.name, this.id);
     }
 }

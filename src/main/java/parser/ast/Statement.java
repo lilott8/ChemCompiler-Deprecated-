@@ -9,14 +9,15 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Grammar production:
- * f0 -> Assignment()
- * | BranchInstruction()
- * | RepeatInstruction()
- * | HeatInstruction()
- * | DrainInstruction()
- * | Expression()
+ * f0 -> AssignmentInstruction()
+ *       | BranchStatement()
+ *       | RepeatStatement()
+ *       | HeatStatement()
+ *       | DrainStatement()
+ *       | FunctionInvoke()
  */
 public class Statement implements Node {
     public NodeChoice f0;

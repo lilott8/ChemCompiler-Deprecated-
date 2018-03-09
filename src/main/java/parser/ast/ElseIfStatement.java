@@ -9,6 +9,7 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Grammar production:
  * f0 -> <ELSE_IF>
@@ -16,7 +17,7 @@ import parser.visitor.Visitor;
  * f2 -> Expression()
  * f3 -> <RPAREN>
  * f4 -> <LBRACE>
- * f5 -> Statement()
+ * f5 -> ( Statement() )+
  * f6 -> <RBRACE>
  */
 public class ElseIfStatement implements Node {
@@ -25,10 +26,10 @@ public class ElseIfStatement implements Node {
     public Expression f2;
     public NodeToken f3;
     public NodeToken f4;
-    public Statement f5;
+    public NodeList f5;
     public NodeToken f6;
 
-    public ElseIfStatement(NodeToken n0, NodeToken n1, Expression n2, NodeToken n3, NodeToken n4, Statement n5, NodeToken n6) {
+    public ElseIfStatement(NodeToken n0, NodeToken n1, Expression n2, NodeToken n3, NodeToken n4, NodeList n5, NodeToken n6) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
@@ -38,7 +39,7 @@ public class ElseIfStatement implements Node {
         f6 = n6;
     }
 
-    public ElseIfStatement(Expression n0, Statement n1) {
+    public ElseIfStatement(Expression n0, NodeList n1) {
         f0 = new NodeToken("else if");
         f1 = new NodeToken("(");
         f2 = n0;

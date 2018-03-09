@@ -9,7 +9,7 @@ public class DetectStatement extends BaseStatement {
 
     public static final String INSTRUCTION = "DETECT";
 
-    public DetectStatement(String name) {
-        super(name);
+    public DetectStatement() {
+        super(INSTRUCTION);
     }
 }

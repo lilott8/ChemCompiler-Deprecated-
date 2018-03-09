@@ -9,21 +9,24 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Grammar production:
- * f0 -> IfStatement()
- * f1 -> ( ElseIfStatement() )*
- * f2 -> ( ElseStatement() )?
+ * f0 -> <DRAIN>
+ * f1 -> PrimaryExpression()
  */
-public class BranchInstruction implements Node {
-    public IfStatement f0;
-    public NodeListOptional f1;
-    public NodeOptional f2;
+public class DrainStatement implements Node {
+    public NodeToken f0;
+    public PrimaryExpression f1;
 
-    public BranchInstruction(IfStatement n0, NodeListOptional n1, NodeOptional n2) {
+    public DrainStatement(NodeToken n0, PrimaryExpression n1) {
         f0 = n0;
         f1 = n1;
-        f2 = n2;
+    }
+
+    public DrainStatement(PrimaryExpression n0) {
+        f0 = new NodeToken("drain");
+        f1 = n0;
     }
 
     public void accept(Visitor v) {

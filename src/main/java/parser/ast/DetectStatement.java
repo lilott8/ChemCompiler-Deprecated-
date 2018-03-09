@@ -9,39 +9,36 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Grammar production:
- * f0 -> <REPEAT>
- * f1 -> IntegerLiteral()
- * f2 -> <TIMES>
- * f3 -> <LBRACE>
- * f4 -> Statement()
- * f5 -> <RBRACE>
+ * f0 -> <DETECT>
+ * f1 -> PrimaryExpression()
+ * f2 -> <ON>
+ * f3 -> PrimaryExpression()
+ * f4 -> ( <FOR> IntegerLiteral() )?
  */
-public class RepeatInstruction implements Node {
+public class DetectStatement implements Node {
     public NodeToken f0;
-    public IntegerLiteral f1;
+    public PrimaryExpression f1;
     public NodeToken f2;
-    public NodeToken f3;
-    public Statement f4;
-    public NodeToken f5;
+    public PrimaryExpression f3;
+    public NodeOptional f4;
 
-    public RepeatInstruction(NodeToken n0, IntegerLiteral n1, NodeToken n2, NodeToken n3, Statement n4, NodeToken n5) {
+    public DetectStatement(NodeToken n0, PrimaryExpression n1, NodeToken n2, PrimaryExpression n3, NodeOptional n4) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
         f3 = n3;
         f4 = n4;
-        f5 = n5;
     }
 
-    public RepeatInstruction(IntegerLiteral n0, Statement n1) {
-        f0 = new NodeToken("repeat");
+    public DetectStatement(PrimaryExpression n0, PrimaryExpression n1, NodeOptional n2) {
+        f0 = new NodeToken("detect");
         f1 = n0;
-        f2 = new NodeToken("times");
-        f3 = new NodeToken("{");
-        f4 = n1;
-        f5 = new NodeToken("}");
+        f2 = new NodeToken("on");
+        f3 = n1;
+        f4 = n2;
     }
 
     public void accept(Visitor v) {

@@ -9,31 +9,36 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Grammar production:
- * f0 -> ( TypingList() )?
- * f1 -> Identifier()
- * f2 -> <ASSIGN>
- * f3 -> Expression()
+ * f0 -> <MIX>
+ * f1 -> PrimaryExpression()
+ * f2 -> <WITH>
+ * f3 -> PrimaryExpression()
+ * f4 -> ( <FOR> IntegerLiteral() )?
  */
-public class Assignment implements Node {
-    public NodeOptional f0;
-    public Identifier f1;
+public class MixStatement implements Node {
+    public NodeToken f0;
+    public PrimaryExpression f1;
     public NodeToken f2;
-    public Expression f3;
+    public PrimaryExpression f3;
+    public NodeOptional f4;
 
-    public Assignment(NodeOptional n0, Identifier n1, NodeToken n2, Expression n3) {
+    public MixStatement(NodeToken n0, PrimaryExpression n1, NodeToken n2, PrimaryExpression n3, NodeOptional n4) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
         f3 = n3;
+        f4 = n4;
     }
 
-    public Assignment(NodeOptional n0, Identifier n1, Expression n2) {
-        f0 = n0;
-        f1 = n1;
-        f2 = new NodeToken("=");
-        f3 = n2;
+    public MixStatement(PrimaryExpression n0, PrimaryExpression n1, NodeOptional n2) {
+        f0 = new NodeToken("mix");
+        f1 = n0;
+        f2 = new NodeToken("with");
+        f3 = n1;
+        f4 = n2;
     }
 
     public void accept(Visitor v) {

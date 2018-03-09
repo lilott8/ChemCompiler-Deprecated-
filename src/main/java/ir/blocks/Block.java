@@ -1,9 +1,10 @@
-package ir.graph;
+package ir.blocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
+import ir.graph.Statement;
 
 /**
  * @created: 3/2/18
@@ -16,6 +17,13 @@ public class Block {
     private static int idCounter = 0;
     private int id = idCounter++;
 
+    public Block(Statement... statements) {
+        this.statements.addAll(Arrays.asList(statements));
+    }
+
+    public Block() {
+    }
+
     public Statement getLeader() {
         return this.statements.get(0);
     }
@@ -26,10 +34,6 @@ public class Block {
 
     public int getId() {
         return this.id;
-    }
-
-    public Block(Statement... statements) {
-        this.statements.addAll(Arrays.asList(statements));
     }
 
     public List<Statement> getStatements() {

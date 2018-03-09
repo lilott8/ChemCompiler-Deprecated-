@@ -3,10 +3,6 @@ package ir.graph;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
-
-import shared.variable.Variable;
-
 /**
  * @created: 3/2/18
  * @since: 0.1
@@ -18,8 +14,8 @@ public class IfStatement extends BaseConditional {
 
     public static final String INSTRUCTION = "IF";
 
-    public IfStatement(String name, String condition) {
-        super(name, condition);
+    public IfStatement(String condition) {
+        super(INSTRUCTION, condition);
         logger.warn("Why is the condition coming in as a string?");
     }
 }

@@ -9,11 +9,12 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Grammar production:
  * f0 -> MatLiteral()
- * | NatLiteral()
- * | RealLiteral()
+ *       | NatLiteral()
+ *       | RealLiteral()
  */
 public class Type implements Node {
     public NodeChoice f0;

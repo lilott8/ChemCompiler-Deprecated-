@@ -1,10 +1,6 @@
 package ir.graph;
 
-import java.util.Set;
-
-import chemical.epa.ChemTypes;
 import shared.variable.Method;
-import shared.variable.Variable;
 
 /**
  * @created: 3/2/18
@@ -15,8 +11,8 @@ public class InvokeStatement extends BaseStatement implements Invoke {
 
     private Method method;
 
-    public InvokeStatement(String name, Method method) {
-        super(name);
+    public InvokeStatement(Method method) {
+        super(method.getName());
         this.containsInvoke = true;
     }
 

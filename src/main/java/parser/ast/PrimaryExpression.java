@@ -9,13 +9,14 @@ import parser.visitor.GJVisitor;
 import parser.visitor.GJVoidVisitor;
 import parser.visitor.Visitor;
 
+
 /**
  * Grammar production:
  * f0 -> Identifier()
- * | TrueLiteral()
- * | FalseLiteral()
- * | ParenthesisExpression()
- * | IntegerLiteral()
+ *       | TrueLiteral()
+ *       | FalseLiteral()
+ *       | ParenthesisExpression()
+ *       | IntegerLiteral()
  */
 public class PrimaryExpression implements Node {
     public NodeChoice f0;

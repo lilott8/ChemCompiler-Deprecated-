@@ -9,7 +9,7 @@ public class ModuleStatement extends BaseNop {
 
     public static final String INSTRUCTION = "MODULE";
 
-    public ModuleStatement(String name) {
-        super(name);
+    public ModuleStatement() {
+        super(INSTRUCTION);
     }
 }
