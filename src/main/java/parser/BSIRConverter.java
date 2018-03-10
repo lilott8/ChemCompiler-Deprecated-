@@ -2,9 +2,8 @@ package parser;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jgrapht.graph.AbstractBaseGraph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedPseudograph;
+import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -12,30 +11,29 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import ir.blocks.BlockGraph;
-import ir.graph.Assign;
-import ir.graph.AssignStatement;
-import ir.graph.Conditional;
-import ir.graph.DetectStatement;
-import ir.graph.DrainStatement;
-import ir.graph.HeatStatement;
-import ir.graph.InvokeStatement;
-import ir.graph.LoopStatement;
-import ir.graph.ManifestStatement;
-import ir.graph.MixStatement;
-import ir.graph.ModuleStatement;
-import ir.graph.Nop;
-import ir.graph.SinkStatement;
-import ir.graph.SourceStatement;
-import ir.graph.SplitStatement;
-import ir.graph.Statement;
-import ir.graph.StationaryStatement;
-import ir.soot.Experiment;
+import ir.graph.BlockGraph;
+import ir.graph.Edge;
+import ir.statements.Assign;
+import ir.statements.AssignStatement;
+import ir.statements.Conditional;
+import ir.statements.DetectStatement;
+import ir.statements.DrainStatement;
+import ir.statements.HeatStatement;
+import ir.statements.InvokeStatement;
+import ir.statements.LoopStatement;
+import ir.statements.ManifestStatement;
+import ir.statements.MixStatement;
+import ir.statements.ModuleStatement;
+import ir.statements.Nop;
+import ir.statements.SinkStatement;
+import ir.statements.SourceStatement;
+import ir.statements.SplitStatement;
+import ir.statements.Statement;
+import ir.statements.StationaryStatement;
 import parser.ast.AssignmentInstruction;
 import parser.ast.BranchStatement;
 import parser.ast.ElseIfStatement;
 import parser.ast.ElseStatement;
-import parser.ast.FormalParameter;
 import parser.ast.Function;
 import parser.ast.FunctionInvoke;
 import parser.ast.Manifest;
@@ -55,26 +53,27 @@ public class BSIRConverter extends BSVisitor {
 
     public static final Logger logger = LogManager.getLogger(BSIRConverter.class);
 
-    private Experiment experiment = new Experiment(1, "Experiment");
+    // Are we in assignment?
     private boolean isAssign = false;
     // Manage the left hand side of the expression.
     private Variable assignTo = null;
+    private boolean graphsCombined = false;
 
     private boolean inMethod = false;
-    // The graph of the IR.
-    private AbstractBaseGraph<Statement, DefaultEdge> statements = new DirectedPseudograph<>(DefaultEdge.class);
     // A simple stack that allows us to know when control changes
     private Deque<Conditional> controlStack = new ArrayDeque<>();
+    private Deque<String> methodStack = new ArrayDeque<>();
     // The previous statement we were on.
     private Statement previousStatement;
-    // Temporary jumps for control flow movement.
-    private BlockGraph blocks = new BlockGraph();
-    private Map<String, Statement> sinkStatements = new HashMap<>();
+    // Maps the function we are in with the appropriate graph.
+    private Map<String, BlockGraph> graphs = new HashMap<>();
     private Map<Integer, Statement> instructions = new LinkedHashMap<>();
+
 
     public BSIRConverter(SymbolTable symbolTable) {
         super(symbolTable);
-
+        this.graphs.put(SymbolTable.DEFAULT_SCOPE, new BlockGraph());
+        this.methodStack.push(SymbolTable.DEFAULT_SCOPE);
     }
 
     @Override
@@ -103,8 +102,7 @@ public class BSIRConverter extends BSVisitor {
         ModuleStatement module = new ModuleStatement();
         module.addInputVariable(f1);
         assign.setRightOp(module);
-        this.resolveBranch(assign);
-        this.blocks.addToBlock(assign);
+        this.graphs.get(this.methodStack.peek()).addToBlock(assign);
         this.instructions.put(assign.getId(), assign);
 
         return this;
@@ -127,8 +125,7 @@ public class BSIRConverter extends BSVisitor {
         StationaryStatement stationary = new StationaryStatement();
         stationary.addInputVariable(f2);
         assign.setRightOp(stationary);
-        this.resolveBranch(assign);
-        this.blocks.addToBlock(assign);
+        this.graphs.get(this.methodStack.peek()).addToBlock(assign);
         this.instructions.put(assign.getId(), assign);
 
         return this;
@@ -151,8 +148,7 @@ public class BSIRConverter extends BSVisitor {
         ManifestStatement manifest = new ManifestStatement();
         manifest.addInputVariable(f2);
         assign.setRightOp(manifest);
-        this.resolveBranch(assign);
-        this.blocks.addToBlock(assign);
+        this.graphs.get(this.methodStack.peek()).addToBlock(assign);
         this.instructions.put(assign.getId(), assign);
 
         return this;
@@ -199,14 +195,34 @@ public class BSIRConverter extends BSVisitor {
 
         Statement invoke = new InvokeStatement(this.method);
 
-        if (isAssign) {
+        // Expand the function into the current tree.
+
+        /*
+         * Case: a = func()
+         * Point the last instruction to the first method instruction
+         * Regenerate ids for the method vertices
+         * Build the edges
+         * Add the last instruction to the right op
+         * Set the last statement
+         */
+        //Statement entry = this.method.getBlockGraph().firstStatement();
+        //Statement exit = this.method.getBlockGraph().finalStatement();
+        //this.graphs.get(this.methodStack.peek()).addToBlock(entry);
+        //Graph<Statement, Edge> methodGraph = this.method.getBlockGraph().getGraph();
+
+        if (this.isAssign) {
             AssignStatement assign = new AssignStatement();
             assign.setLeftOp(this.assignTo);
+            //assign.setRightOp(exit);
             assign.setRightOp(invoke);
         }
+        // case:
+        // func()
+        else {
+            //this.graphs.get(this.methodStack.peek()).addToBlock(exit);
+            this.graphs.get(this.methodStack.peek()).addToBlock(invoke);
+        }
 
-        this.resolveBranch(invoke);
-        this.blocks.addToBlock(invoke);
         this.previousStatement = invoke;
         this.instructions.put(invoke.getId(), invoke);
 
@@ -230,13 +246,14 @@ public class BSIRConverter extends BSVisitor {
         // super.visit(n);
         // Get the name of the method.
         n.f1.accept(this);
+        this.methodStack.push(this.name);
         // Get a new scope.
         this.newScope(this.name);
+        this.methodStack.push(this.name);
+        this.graphs.put(this.name, new BlockGraph());
         // Build the method.
         this.method = this.symbolTable.getMethods().get(this.name);
         this.inMethod = true;
-        // Add the method.
-        this.experiment.addMethods(this.method);
 
         // Because we have too.
         n.f3.accept(this);
@@ -250,23 +267,10 @@ public class BSIRConverter extends BSVisitor {
         this.inMethod = false;
 
         this.endScope();
+        this.method.addStatements(this.graphs.get(this.methodStack.peek()));
+        this.methodStack.pop();
         return this;
     }
-
-    /**
-     * f0 -> ( TypingList() )*
-     * f1 -> Identifier()
-     */
-    @Override
-    public BSVisitor visit(FormalParameter n) {
-        // Go fetch the typing list
-        n.f0.accept(this);
-        // Go fetch the name
-        n.f1.accept(this);
-        return this;
-    }
-
-
 
     /**
      * f0 -> <IF>
@@ -281,7 +285,7 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(BranchStatement n) {
-        Nop branchSink = new SinkStatement();
+        Nop branchFalse = new SinkStatement();
         Nop branchSource = new SourceStatement();
 
         // Build the scope for the If Statement.
@@ -296,17 +300,18 @@ public class BSIRConverter extends BSVisitor {
         Variable f2 = this.symbolTable.searchScopeHierarchy(this.name,
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
-        Conditional branch = new ir.graph.IfStatement(f2.toString());
+        Conditional branch = new ir.statements.IfStatement(f2.toString());
         branch.setScopeName(scopeName);
+        this.instructions.put(branch.getId(), branch);
 
         // Set the targets to the appropriate
         // Source/Sink targets, for simplification.
-        branch.setFalseTarget(branchSink);
+        branch.setFalseTarget(branchFalse);
         branch.setTrueTarget(branchSource);
         // Add the branch to the block.
-        this.blocks.addToBlock(branch);
+        this.graphs.get(this.methodStack.peek()).addToBlock(branch);
         // Create a new basic block.
-        this.blocks.newBranchBlock(branchSource);
+        this.graphs.get(this.methodStack.peek()).newBranchBlock(branchSource);
         // Save the scope/control.
         this.controlStack.push(branch);
 
@@ -315,13 +320,12 @@ public class BSIRConverter extends BSVisitor {
 
         this.endScope();
         // End the block for this.
-        this.blocks.endBranchBlock();
         this.controlStack.pop();
 
         // Add the new sink.
-        this.blocks.addToBlock(branchSink);
+        this.graphs.get(this.methodStack.peek()).addToBlock(branchFalse);
         // Create the edge between the branch and sink.
-        this.blocks.addEdge(branch, branchSink);
+        this.graphs.get(this.methodStack.peek()).addEdge(branch, branchFalse);
 
         if (n.f7.present() || n.f8.present()) {
             boolean fromElseIf = false;
@@ -341,8 +345,9 @@ public class BSIRConverter extends BSVisitor {
             if (n.f8.present()) {
                 scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
                 this.newScope(scopeName);
-                Conditional elseBranch = new ir.graph.IfStatement("");
+                Conditional elseBranch = new ir.statements.IfStatement("");
                 elseBranch.setScopeName(scopeName);
+                this.instructions.put(elseBranch.getId(), elseBranch);
 
                 Nop elseSource = new SourceStatement();
                 Nop elseSink = new SinkStatement();
@@ -351,33 +356,28 @@ public class BSIRConverter extends BSVisitor {
                 elseBranch.setTrueTarget(elseSource);
 
                 // Create a block that doesn't fall through.
-                this.blocks.newElseBlock(elseBranch);
+                this.graphs.get(this.methodStack.peek()).newElseBlock(elseBranch);
                 // Add the source for this block.
-                this.blocks.addToBlock(elseSource);
+                this.graphs.get(this.methodStack.peek()).addToBlock(elseSource);
                 this.controlStack.push(elseBranch);
 
                 // Grab the statements.
                 n.f8.accept(this);
                 // Set the false branch
                 if (!fromElseIf) {
-                    branch.setFalseTarget(elseBranch);
-                    // TODO: This forces an NPE.
-                    // this.blocks.updateStatement(branch, branch);
-                    logger.warn("You might not have the false target of branches.");
-
                     // Add the sink
-                    this.blocks.addToBlock(elseSink);
+                    this.graphs.get(this.methodStack.peek()).addToBlock(elseSink);
                     // Remove the connection between the branch,
                     // And it's sink.  It is redundant.
-                    this.blocks.removeEdge(branch, branchSink);
+                    this.graphs.get(this.methodStack.peek()).removeEdge(branch, branchFalse);
                     // Connect the branch to the else.
-                    this.blocks.addEdge(branch, elseBranch);
+                    this.graphs.get(this.methodStack.peek()).addEdge(branch, elseBranch);
                     // Connect the branch sink with the else.
-                    this.blocks.addEdge(branchSink, elseSink);
+                    this.graphs.get(this.methodStack.peek()).addEdge(branchFalse, elseSink);
                 } else {
                     // This is only necessary if the else if is in use.
                     // Add the last else if to this else.
-                    // this.blocks.addEdge();
+                    // this.graph.addEdge();
                     // get the last else if statement
                     // and point the false branch here.
                 }
@@ -386,7 +386,7 @@ public class BSIRConverter extends BSVisitor {
             }
         }
 
-        this.previousStatement = branchSink;
+        this.previousStatement = branchFalse;
 
         return this;
     }
@@ -419,8 +419,8 @@ public class BSIRConverter extends BSVisitor {
         loop.setFalseTarget(sink);
         loop.setTrueTarget(source);
 
-        this.blocks.addToBlock(loop);
-        this.blocks.newBranchBlock(source);
+        this.graphs.get(this.methodStack.peek()).addToBlock(loop);
+        this.graphs.get(this.methodStack.peek()).newBranchBlock(source);
 
         // Get the statements.
         n.f4.accept(this);
@@ -429,11 +429,11 @@ public class BSIRConverter extends BSVisitor {
 
         // We need this block, because we don't
         // Want the previous instruction to fall through.
-        this.blocks.newElseBlock(sink);
+        this.graphs.get(this.methodStack.peek()).newElseBlock(sink);
         // This edge is the loop exiting.
-        this.blocks.addEdge(loop, sink);
+        this.graphs.get(this.methodStack.peek()).addEdge(loop, sink);
         // This edge is the loop back into the condition.
-        this.blocks.addEdge(this.previousStatement, loop);
+        this.graphs.get(this.methodStack.peek()).addEdge(this.previousStatement, loop);
 
         this.instructions.put(loop.getId(), loop);
 
@@ -458,10 +458,10 @@ public class BSIRConverter extends BSVisitor {
         Variable f2 = this.symbolTable.searchScopeHierarchy(this.name,
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
-        Conditional branch = new ir.graph.IfStatement(f2.toString());
+        Conditional branch = new ir.statements.IfStatement(f2.toString());
         branch.setScopeName(this.getCurrentScope());
-        this.blocks.addToBlock(branch);
-        this.blocks.newBranchBlock();
+        this.graphs.get(this.methodStack.peek()).addToBlock(branch);
+        this.graphs.get(this.methodStack.peek()).newBranchBlock();
 
         this.controlStack.push(branch);
         // Get the statements in the scope.
@@ -480,7 +480,7 @@ public class BSIRConverter extends BSVisitor {
     @Override
     public BSVisitor visit(ElseStatement n) {
 
-        Conditional branch = new ir.graph.IfStatement("");
+        Conditional branch = new ir.statements.IfStatement("");
         branch.setScopeName(this.getCurrentScope());
         this.controlStack.push(branch);
         // Get the statements
@@ -515,7 +515,6 @@ public class BSIRConverter extends BSVisitor {
         mix.addInputVariable(f1);
         mix.addInputVariable(f3);
 
-
         if (n.f4.present()) {
             n.f4.accept(this);
             Variable f4 = this.symbolTable.searchScopeHierarchy(this.name,
@@ -528,8 +527,7 @@ public class BSIRConverter extends BSVisitor {
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);
         assign.setRightOp(mix);
-        this.resolveBranch(mix);
-        this.blocks.addToBlock(assign);
+        this.graphs.get(this.methodStack.peek()).addToBlock(assign);
         this.previousStatement = assign;
         this.instructions.put(assign.getId(), assign);
 
@@ -561,8 +559,7 @@ public class BSIRConverter extends BSVisitor {
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);
         assign.setRightOp(split);
-        this.resolveBranch(split);
-        this.blocks.addToBlock(assign);
+        this.graphs.get(this.methodStack.peek()).addToBlock(assign);
         this.previousStatement = assign;
         this.instructions.put(assign.getId(), assign);
 
@@ -603,8 +600,7 @@ public class BSIRConverter extends BSVisitor {
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);
         assign.setRightOp(detect);
-        this.resolveBranch(detect);
-        this.blocks.addToBlock(assign);
+        this.graphs.get(this.methodStack.peek()).addToBlock(assign);
         this.previousStatement = assign;
         this.instructions.put(assign.getId(), assign);
 
@@ -627,8 +623,7 @@ public class BSIRConverter extends BSVisitor {
                 DrainStatement.INSTRUCTION, this.getNextInstructionId()));
         drain.addInputVariable(f1);
         // We can add the statement immediately.
-        this.resolveBranch(drain);
-        this.blocks.addToBlock(drain);
+        this.graphs.get(this.methodStack.peek()).addToBlock(drain);
         this.previousStatement = drain;
         this.instructions.put(drain.getId(), drain);
 
@@ -667,47 +662,35 @@ public class BSIRConverter extends BSVisitor {
             heat.addProperty(f4);
         }
 
-        this.resolveBranch(heat);
-        this.blocks.addToBlock(heat);
+        this.graphs.get(this.methodStack.peek()).addToBlock(heat);
         this.previousStatement = heat;
         this.instructions.put(heat.getId(), heat);
 
         return this;
     }
 
-    private void addStatement(Statement statement) {
-
-    }
-
-    private void resolveBranch(Statement statement) {
-        // If the stack is empty, we don't do anything to it.
-        /*if (!this.controlStack.isEmpty()) {
-            // If these don't match, then we know we've finished a branching
-            // series and need to put the input statement as the next statement.
-            logger.info(this.controlStack.peekFirst().getScopeName() +"\t" + this.getCurrentScope());
-            if (!StringUtils.equalsIgnoreCase(this.controlStack.peekFirst().getScopeName(), this.getCurrentScope())) {
-                logger.fatal("Scopes don't match!");
-                // Pop off the current branch to mutate
-                Conditional currentBranch = this.controlStack.getFirst();
-                currentBranch.setFalseTarget(statement);
-                // Add it to the graph
-                this.statements.addVertex(statement);
-                this.statements.addEdge(currentBranch, statement);
-            } else {
-                this.statements.addVertex(statement);
-                this.statements.addEdge(this.previousStatement, statement);
-            }
-        } else {*/
-        //this.statements.addVertex(statement);
-        //if (this.previousStatement != null) {
-        //this.statements.addEdge(this.previousStatement, statement);
-        //  }
-        //}
-        this.previousStatement = statement;
+    private void combineGraphs() {
+        Graph<Statement, Edge> mainGraph = this.graphs.get(SymbolTable.DEFAULT_SCOPE).getGraph();
+        // We don't want to iterate this graph.
+        this.graphs.remove(SymbolTable.DEFAULT_SCOPE);
+        // These are the remaining methods that need to be integrated into the graph.
+        for (Map.Entry<String, BlockGraph> entry : this.graphs.entrySet()) {
+            logger.warn("Combining: " + entry.getKey());
+            Graphs.addGraph(mainGraph, entry.getValue().getGraph());
+        }
+        this.graphsCombined = true;
+        writeToDisk(mainGraph);
     }
 
     public void writeToDisk() {
-        this.blocks.writeToDisk();
+        if (!this.graphsCombined) {
+            this.combineGraphs();
+        }
+        BlockGraph.writeToDisk(this.graphs);
+    }
+
+    private void writeToDisk(Graph<Statement, Edge> graph) {
+        BlockGraph.writeToDisk(graph);
     }
 
     public String toString() {

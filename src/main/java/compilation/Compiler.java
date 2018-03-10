@@ -8,17 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import compilation.datastructures.CFGBuilder;
-import compilation.datastructures.basicblock.BasicBlock;
-import compilation.datastructures.basicblock.DependencySlicedBasicBlock;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.ssi.StaticSingleInformation;
 import config.Config;
 import config.ConfigFactory;
-import executable.Experiment;
 import manager.Benchtop;
 import parser.BioScriptParser;
-import parsing.BioScript.BenchtopParser;
 import shared.Facade;
 import shared.Phase;
 import translators.TranslatorFacade;
@@ -65,7 +60,7 @@ public class Compiler {
                     this.controlFlow = CFGBuilder.buildControlFlowGraph(experiment);
                     this.SSI = new StaticSingleInformation(this.controlFlow);
 
-                    //replaces basic blocks with dependancy sliced versions
+                    //replaces basic graph with dependancy sliced versions
                     for (BasicBlock bb : this.SSI.getBasicBlocks().values()) {
                         this.SSI.newBasicBlock(new DependencySlicedBasicBlock(bb, this.SSI));
                     }

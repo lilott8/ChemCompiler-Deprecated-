@@ -1,4 +1,7 @@
-package typesystem.satsolver.constraints;
+package ir.statements;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import chemical.epa.ChemTypes;
 import shared.variable.Variable;
@@ -7,40 +10,41 @@ import typesystem.satsolver.strategies.SolverStrategy;
 
 import static typesystem.satsolver.strategies.SolverStrategy.NL;
 
-
 /**
- * @created: 9/12/17
+ * @created: 3/2/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public interface SMTSolver {
+public class IfStatement extends BaseConditional {
 
-    String compose(Formula instruction);
-    String compose(Variable variable);
+    public static final Logger logger = LogManager.getLogger(IfStatement.class);
 
-    default String killSwitch() {
-        return "; Nuke it from orbit!" + NL + "(assert (= true false))" + NL;
+    public static final String INSTRUCTION = "IF";
+
+    public IfStatement(String condition) {
+        super(INSTRUCTION, condition);
+        logger.warn("Why is the condition coming in as a string?");
     }
 
-    default String defaultCompose(Formula instruction) {
+    @Override
+    public String compose(Formula instruction) {
         StringBuilder sb = new StringBuilder();
-
-        for (Variable v : instruction.getOutput()) {
-            sb.append(compose(v));
-        }
 
         for (Variable v : instruction.getInput()) {
             sb.append(compose(v));
+            //sb.append(this.formInputSMT(v));
         }
 
-        for (Variable v : instruction.getProperties()) {
+        for (Variable v : instruction.getOutput()) {
+            //sb.append(this.formOutputSMT(v));
             sb.append(compose(v));
         }
 
         return sb.toString();
     }
 
-    default String defaultCompose(Variable variable) {
+    @Override
+    public String compose(Variable variable) {
         StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : variable.getTypes()) {

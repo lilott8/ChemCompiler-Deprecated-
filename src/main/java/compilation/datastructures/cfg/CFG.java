@@ -29,7 +29,7 @@ import variable.Variable;
 public class CFG implements Serializable {
     public static final Logger logger = LogManager.getLogger(CFG.class);
 
-    //private UndirectedGraph<BasicBlock, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
+    //private UndirectedGraph<BasicBlock, DefaultEdge> statements = new SimpleGraph<>(DefaultEdge.class);
 
     protected Map<Integer, BasicBlock> basicBlocks = new LinkedHashMap<>();
     protected BasicBlock entry;

@@ -2,17 +2,14 @@ package shared.variable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import ir.graph.Statement;
-import symboltable.Scope;
+import ir.graph.BlockGraph;
+import ir.statements.Statement;
 
 /**
  * @created: 2/8/18
@@ -26,8 +23,7 @@ public class Method {
     protected Set<ChemTypes> types = new HashSet<>();
     protected Set<Variable> parameters = new HashSet<>();
     protected String name;
-    protected Graph<Statement, DefaultEdge> statements = new DefaultDirectedGraph<>(DefaultEdge.class);
-    private Statement lastStatement;
+    protected BlockGraph statements = new BlockGraph();
 
     public Method(String name) {
         this(name, new HashSet<>());
@@ -58,10 +54,16 @@ public class Method {
         return !this.types.isEmpty();
     }
 
+    public BlockGraph getBlockGraph() {
+        return this.statements;
+    }
+
     public void addStatement(Statement statement) {
-        this.statements.addVertex(statement);
-        this.statements.addEdge(lastStatement, statement);
-        this.lastStatement = statement;
+        this.statements.addToBlock(statement);
+    }
+
+    public void addStatements(BlockGraph graph) {
+        this.statements = graph;
     }
 
     public String getName() {

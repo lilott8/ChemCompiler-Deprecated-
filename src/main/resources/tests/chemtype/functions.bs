@@ -6,11 +6,13 @@ manifest chemical2
 instructions
 
 function doThis(mat chem) : mat {
-    return 1
+    drain chem
+    return b
 }
 
 function doThis2(mat chem, mat chem3, chem4) {
-    return 2
+    drain chem3
+    return a
 }
 
 a = doThis(a)

@@ -13,11 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import chemical.epa.ChemTypes;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.node.InstructionNode;
+import reactivetable.StatisticCombinator;
 import shared.Phase;
+import shared.Tuple;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.rules.EdgeAnalyzer;
@@ -25,9 +28,6 @@ import typesystem.rules.InferenceRule;
 import typesystem.rules.NodeAnalyzer;
 import typesystem.satsolver.SatSolver;
 import typesystem.satsolver.strategies.Z3Strategy;
-import reactivetable.StatisticCombinator;
-import shared.Tuple;
-import chemical.epa.ChemTypes;
 
 /**
  * @created: 7/27/17
@@ -57,7 +57,7 @@ public class Inference implements shared.Phase {
     public static final String INFERENCE_PACKAGE = "typesystem.rules";
 
     /**
-     * We have two because the differences between blocks
+     * We have two because the differences between graph
      * and edges are stark.  So this enforces guarantees that
      * each analyzer will do exactly what it's supposed to,
      * and make troubleshooting easier.
@@ -76,7 +76,7 @@ public class Inference implements shared.Phase {
     // How are we going to solve this type typesystem problem?
     private SatSolver solver = new SatSolver();
 
-    // Control flow graph needed to infer types from.
+    // Control flow statements needed to infer types from.
     private CFG controlFlowGraph;
 
     // Default Constructor
@@ -153,7 +153,7 @@ public class Inference implements shared.Phase {
      * @param name
      *   Name of the instruction.
      * @param edge
-     *   Edge between basic blocks.
+     *   Edge between basic graph.
      * @return
      *   A mapping of id to what was inferred.
      */

@@ -9,10 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import ir.soot.instruction.Assign;
-import ir.soot.instruction.Drain;
-import ir.soot.instruction.Invoke;
-import ir.soot.instruction.Mix;
+import ir.statements.AssignStatement;
+import ir.statements.Invoke;
+import ir.statements.InvokeStatement;
 import parser.ast.AssignmentInstruction;
 import parser.ast.BranchStatement;
 import parser.ast.DetectStatement;
@@ -92,7 +91,7 @@ public class BSSymbolTable extends BSVisitor {
         n.f2.accept(this);
 
         // Type checking material.
-        this.instruction = new Assign();
+        this.instruction = new AssignStatement();
         Variable f2 = new Variable(this.name);
         f2.addScope(this.symbolTable.getCurrentScope());
         f2.addTypingConstraints(this.getTypingConstraints(f2));
@@ -165,9 +164,7 @@ public class BSSymbolTable extends BSVisitor {
         } else {
             f1.addTypingConstraints(this.getTypingConstraints(f1));
         }
-        this.instruction.addOutputVariable(f1);
         addVariable(f1);
-        addInstruction(this.instruction);
         this.types.clear();
         return this;
     }
@@ -189,7 +186,7 @@ public class BSSymbolTable extends BSVisitor {
             return this;
         }
 
-        this.instruction = new Invoke(method);
+        this.instruction = new InvokeStatement(method);
         //this.instruction.addInputVariable(method);
 
         n.f2.accept(this);
@@ -291,6 +288,9 @@ public class BSSymbolTable extends BSVisitor {
         Variable f1 = new Variable(this.name, this.types, this.symbolTable.getCurrentScope());
         // this.arguments.add(v);
         this.symbolTable.addLocal(f1);
+
+        this.arguments.add(f1);
+
         this.types.clear();
 
         return this;
@@ -436,7 +436,7 @@ public class BSSymbolTable extends BSVisitor {
      */
     @Override
     public BSVisitor visit(MixStatement n) {
-        this.instruction = new Mix();
+        this.instruction = new ir.statements.MixStatement();
 
         // Get the first material.
         n.f1.accept(this);
@@ -529,10 +529,6 @@ public class BSSymbolTable extends BSVisitor {
         //super.visit(n);
         n.f1.accept(this);
         Variable term = this.checkForOrCreateVariable();
-
-        this.instruction = new Drain();
-        this.instruction.addInputVariable(term);
-        addInstruction(this.instruction);
 
         return this;
     }

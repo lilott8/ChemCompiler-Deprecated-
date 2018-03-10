@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
-import ir.soot.instruction.Instruction;
+import ir.statements.Statement;
 import parser.ast.FalseLiteral;
 import parser.ast.Identifier;
 import parser.ast.IntegerLiteral;
@@ -59,12 +59,12 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     public static final Logger logger = LogManager.getLogger(BSVisitor.class);
 
     // Keep track of the instruction id to input/outputs
-    protected static Map<Integer, Instruction> instructions = new LinkedHashMap<>();
+    protected static Map<Integer, Statement> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
-    protected Map<String, Instruction> controlInstructions = new HashMap<>();
+    protected Map<String, Statement> controlInstructions = new HashMap<>();
 
     // Current instruction to work on.
-    protected Instruction instruction;
+    protected Statement instruction;
     // Current name to work on.
     protected String name;
     // Constant for a variable.
@@ -119,7 +119,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
         }
     }
 
-    protected void addInstruction(Instruction i) {
+    protected void addInstruction(Statement i) {
         instructions.put(i.getId(), i);
         if (!StringUtils.equalsIgnoreCase(this.getCurrentScope(), SymbolTable.DEFAULT_SCOPE)) {
             this.controlInstructions.put(this.getCurrentScope(), i);
