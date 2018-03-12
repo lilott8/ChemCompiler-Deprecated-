@@ -18,11 +18,11 @@ import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.node.InstructionNode;
+import ir.statements.Statement;
 import reactivetable.StatisticCombinator;
 import shared.Phase;
 import shared.Tuple;
 import shared.variable.Variable;
-import typesystem.elements.Formula;
 import typesystem.rules.EdgeAnalyzer;
 import typesystem.rules.InferenceRule;
 import typesystem.rules.NodeAnalyzer;
@@ -66,7 +66,7 @@ public class Inference implements shared.Phase {
     private final Map<String, EdgeAnalyzer> edgeAnalyzers = new HashMap<>();
 
     // Contains the typing constraints for instructions.
-    private Map<Integer, Formula> instructions = new HashMap<>();
+    private Map<Integer, Statement> instructions = new HashMap<>();
     // Contains the typing constraints for all terms.
     private Map<String, Variable> variables = new HashMap<>();
 
@@ -161,7 +161,7 @@ public class Inference implements shared.Phase {
         if (this.edgeAnalyzers.containsKey(name)) {
             EdgeAnalyzer rule = this.edgeAnalyzers.get(name);
             rule = (EdgeAnalyzer) rule.gatherConstraints(edge);
-            this.addInstructions(rule.getInstructions());
+            // this.addInstructions(rule.getInstructions());
             //this.addTerms(rule.getVariables());
         }
         if (!this.edgeAnalyzers.containsKey(name) && !StringUtils.equalsIgnoreCase(name, "unknown")) {
@@ -169,7 +169,7 @@ public class Inference implements shared.Phase {
         }
     }
 
-    private void addInstructions(Map<Integer, Formula> i) {
+    private void addInstructions(Map<Integer, Statement> i) {
         this.instructions.putAll(i);
     }
 

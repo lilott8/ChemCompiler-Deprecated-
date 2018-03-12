@@ -7,8 +7,6 @@ import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
 
-import static typesystem.satsolver.strategies.SolverStrategy.NL;
-
 /**
  * @created: 3/2/18
  * @since: 0.1
@@ -17,6 +15,7 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
 public class AssignStatement extends BaseStatement implements Assign {
 
     public static final String INSTRUCTION = "ASSIGN";
+    public static final String VERB = "VARAIBLE_DECLARATION";
 
     Variable leftOpt;
     Statement rightOp;
@@ -71,5 +70,15 @@ public class AssignStatement extends BaseStatement implements Assign {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String toJson() {
+        return this.toJson("");
+    }
+
+    @Override
+    public String toJson(String indent) {
+        return null;
     }
 }

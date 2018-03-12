@@ -25,4 +25,22 @@ public class StationaryStatement extends BaseNop {
     public String compose(Variable variable) {
         return super.defaultCompose(variable);
     }
+
+    @Override
+    public String toJson() {
+        return this.toJson("");
+    }
+
+    @Override
+    public String toJson(String indent) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(AssignStatement.VERB).append(" : {").append(Statement.NL);
+        sb.append("\"ID\" : ").append(this.id).append(", ").append(Statement.NL);
+        sb.append("\"Name\" : ").append(this.name).append(", ").append(Statement.NL);
+        sb.append("\"TYPE\" : \"").append(INSTRUCTION).append("\"").append(Statement.NL);
+        sb.append("}");
+
+        return sb.toString();
+    }
 }

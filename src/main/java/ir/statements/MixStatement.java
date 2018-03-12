@@ -9,7 +9,6 @@ import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
 
-import static typesystem.satsolver.strategies.SolverStrategy.NL;
 import static typesystem.satsolver.strategies.SolverStrategy.TAB;
 import static typesystem.satsolver.strategies.SolverStrategy.getSMTName;
 
@@ -107,5 +106,15 @@ public class MixStatement extends BaseStatement {
         sb.append(")").append(NL);
 
         return sb.toString();
+    }
+
+    @Override
+    public String toJson() {
+        return this.toJson("");
+    }
+
+    @Override
+    public String toJson(String indent) {
+        return null;
     }
 }

@@ -25,4 +25,14 @@ public class SourceStatement extends BaseNop implements Nop {
     public String compose(Variable variable) {
         return super.defaultCompose(variable);
     }
+
+    @Override
+    public String toJson() {
+        return this.toJson("");
+    }
+
+    @Override
+    public String toJson(String indent) {
+        return null;
+    }
 }

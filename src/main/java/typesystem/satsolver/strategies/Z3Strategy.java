@@ -15,11 +15,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import chemical.epa.ChemTypes;
 import config.ConfigFactory;
+import ir.statements.MixStatement;
+import ir.statements.Statement;
 import shared.variable.Variable;
-import typesystem.elements.Formula;
 import typesystem.rules.Rule;
-import typesystem.satsolver.constraints.SMTSolver;
 import typesystem.satsolver.constraints.SMT.Assign;
 import typesystem.satsolver.constraints.SMT.Branch;
 import typesystem.satsolver.constraints.SMT.Detect;
@@ -27,7 +28,7 @@ import typesystem.satsolver.constraints.SMT.Heat;
 import typesystem.satsolver.constraints.SMT.Mix;
 import typesystem.satsolver.constraints.SMT.Output;
 import typesystem.satsolver.constraints.SMT.Split;
-import chemical.epa.ChemTypes;
+import typesystem.satsolver.constraints.SMTSolver;
 
 import static chemical.epa.ChemTypes.NAT;
 import static chemical.epa.ChemTypes.REAL;
@@ -41,7 +42,7 @@ public class Z3Strategy implements SolverStrategy {
 
     public static final Logger logger = LogManager.getLogger(Z3Strategy.class);
 
-    private Map<Integer, Formula> instructions;
+    private Map<Integer, Statement> instructions;
     private Map<String, Variable> variables;
 
     private Map<Rule.InstructionType, SMTSolver> composers = new HashMap<>();
@@ -57,7 +58,7 @@ public class Z3Strategy implements SolverStrategy {
     }
 
     @Override
-    public boolean solveConstraints(Map<Integer, Formula> instructions, Map<String, Variable> variables) {
+    public boolean solveConstraints(Map<Integer, Statement> instructions, Map<String, Variable> variables) {
         this.instructions = instructions;
         this.variables = variables;
 
@@ -78,9 +79,12 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(this.buildAssertsForNumberMaterial(i.getValue()));
         }
 
-        for (Map.Entry<Integer, Formula> instruction : this.instructions.entrySet()) {
-            if (instruction.getValue().type == Rule.InstructionType.MIX) {
-                sb.append(this.composers.get(instruction.getValue().type).compose(instruction.getValue()));
+        for (Map.Entry<Integer, Statement> instruction : this.instructions.entrySet()) {
+            if (instruction instanceof MixStatement) {
+                //if (instruction.getValue().type == Rule.InstructionType.MIX) {
+                logger.fatal("need to redo solveConstrains");
+                //sb.append(this.composers.get(instruction.getValue().type).compose(instruction.getValue()));
+                //}
             }
         }
 

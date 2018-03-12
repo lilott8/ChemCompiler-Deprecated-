@@ -1,9 +1,12 @@
 package ir.statements;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import chemical.epa.ChemTypes;
 import shared.variable.Variable;
 
 /**
@@ -20,6 +23,7 @@ public abstract class BaseStatement implements Statement {
     protected boolean containsInvoke = false;
     protected List<Variable> inputVariables = new ArrayList<>();
     protected List<Variable> properties = new ArrayList<>();
+    protected Set<ChemTypes> types = new HashSet<>();
     protected String name;
     protected int id;
 
@@ -35,6 +39,12 @@ public abstract class BaseStatement implements Statement {
     @Override
     public void addInputVariable(Variable variable) {
         this.inputVariables.add(variable);
+        this.types.addAll(variable.getTypes());
+    }
+
+    @Override
+    public Set<ChemTypes> getType() {
+        return this.types;
     }
 
     @Override
