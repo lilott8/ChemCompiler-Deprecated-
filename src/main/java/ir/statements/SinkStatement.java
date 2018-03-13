@@ -33,6 +33,6 @@ public class SinkStatement extends BaseNop {
 
     @Override
     public String toJson(String indent) {
-        return null;
+        return "";
     }
 }

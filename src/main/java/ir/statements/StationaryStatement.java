@@ -33,13 +33,13 @@ public class StationaryStatement extends BaseNop {
 
     @Override
     public String toJson(String indent) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("");
 
-        sb.append(AssignStatement.VERB).append(" : {").append(Statement.NL);
-        sb.append("\"ID\" : ").append(this.id).append(", ").append(Statement.NL);
-        sb.append("\"Name\" : ").append(this.name).append(", ").append(Statement.NL);
-        sb.append("\"TYPE\" : \"").append(INSTRUCTION).append("\"").append(Statement.NL);
-        sb.append("}");
+        sb.append("\"SENSOR_DECLARATION\" : {").append(Statement.NL);
+        sb.append("\"ID\" : ").append(this.id).append(",").append(Statement.NL);
+        sb.append("\"NAME\" : \"").append(this.inputVariables.get(0).getName()).append("\",").append(Statement.NL);
+        sb.append("\"TYPE\" : \"SENSOR\"").append(Statement.NL).append("}").append(Statement.NL);
+        sb.append(",").append(Statement.NL);
 
         return sb.toString();
     }

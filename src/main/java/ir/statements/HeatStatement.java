@@ -34,6 +34,8 @@ public class HeatStatement extends BaseNop {
 
     @Override
     public String toJson(String indent) {
-        return null;
+        StringBuilder sb = new StringBuilder("");
+
+        return sb.toString();
     }
 }

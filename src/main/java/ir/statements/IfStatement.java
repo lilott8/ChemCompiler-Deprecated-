@@ -26,7 +26,7 @@ public class IfStatement extends BaseConditional {
 
     @Override
     public String compose(Formula instruction) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("");
 
         for (Variable v : instruction.getInput()) {
             sb.append(compose(v));
@@ -43,7 +43,7 @@ public class IfStatement extends BaseConditional {
 
     @Override
     public String compose(Variable variable) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("");
 
         for (ChemTypes t : variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
@@ -59,6 +59,8 @@ public class IfStatement extends BaseConditional {
 
     @Override
     public String toJson(String indent) {
-        return null;
+        StringBuilder sb = new StringBuilder("");
+
+        return sb.toString();
     }
 }

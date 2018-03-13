@@ -39,7 +39,7 @@ public class BlockGraph {
     private Deque<Block> blockQueue = new ArrayDeque<>();
 
     public static void writeToDisk(Map<String, BlockGraph> graphs) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(ConfigFactory.getConfig().getOutputDir() + "statements.dot");
+        try (FileOutputStream fileOutputStream = new FileOutputStream(ConfigFactory.getConfig().getOutputDir() + "graph.dot");
              OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream, "UTF-8")) {
             ComponentNameProvider<Statement> vertexId = v -> v.getIdAsString();
             ComponentNameProvider<Statement> vertexName = v -> v.getName();
@@ -56,7 +56,7 @@ public class BlockGraph {
     }
 
     public static void writeToDisk(Graph<Statement, Edge> graph) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(ConfigFactory.getConfig().getOutputDir() + "statements.dot");
+        try (FileOutputStream fileOutputStream = new FileOutputStream(ConfigFactory.getConfig().getOutputDir() + "graph.dot");
              OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream, "UTF-8")) {
             ComponentNameProvider<Statement> vertexId = v -> v.getIdAsString();
             ComponentNameProvider<Statement> vertexName = v -> v.getName();

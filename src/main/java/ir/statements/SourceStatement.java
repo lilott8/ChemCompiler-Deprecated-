@@ -33,6 +33,6 @@ public class SourceStatement extends BaseNop implements Nop {
 
     @Override
     public String toJson(String indent) {
-        return null;
+        return "";
     }
 }

@@ -33,6 +33,8 @@ public class DrainStatement extends BaseStatement {
 
     @Override
     public String toJson(String indent) {
-        return null;
+        StringBuilder sb = new StringBuilder("");
+
+        return sb.toString();
     }
 }

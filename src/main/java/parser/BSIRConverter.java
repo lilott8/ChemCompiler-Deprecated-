@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
+import org.jgrapht.traverse.DepthFirstIterator;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -98,12 +99,10 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
         // Build the IR data structure.
-        AssignStatement assign = new AssignStatement();
         ModuleStatement module = new ModuleStatement();
         module.addInputVariable(f1);
-        assign.setRightOp(module);
-        this.graphs.get(this.methodStack.peek()).addToBlock(assign);
-        this.instructions.put(assign.getId(), assign);
+        this.graphs.get(this.methodStack.peek()).addToBlock(module);
+        this.instructions.put(module.getId(), module);
 
         return this;
     }
@@ -121,12 +120,10 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
         // Build the IR data structure.
-        AssignStatement assign = new AssignStatement();
         StationaryStatement stationary = new StationaryStatement();
         stationary.addInputVariable(f2);
-        assign.setRightOp(stationary);
-        this.graphs.get(this.methodStack.peek()).addToBlock(assign);
-        this.instructions.put(assign.getId(), assign);
+        this.graphs.get(this.methodStack.peek()).addToBlock(stationary);
+        this.instructions.put(stationary.getId(), stationary);
 
         return this;
     }
@@ -144,12 +141,10 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
         // Build the IR data structure.
-        AssignStatement assign = new AssignStatement();
         ManifestStatement manifest = new ManifestStatement();
         manifest.addInputVariable(f2);
-        assign.setRightOp(manifest);
-        this.graphs.get(this.methodStack.peek()).addToBlock(assign);
-        this.instructions.put(assign.getId(), assign);
+        this.graphs.get(this.methodStack.peek()).addToBlock(manifest);
+        this.instructions.put(manifest.getId(), manifest);
 
         return this;
     }
@@ -684,7 +679,7 @@ public class BSIRConverter extends BSVisitor {
 
     public void writeToDisk() {
         if (!this.graphsCombined) {
-            this.combineGraphs();
+            //this.combineGraphs();
         }
         BlockGraph.writeToDisk(this.graphs);
     }
@@ -709,6 +704,20 @@ public class BSIRConverter extends BSVisitor {
                 sb.append(entry.getValue().getName());
             }
         }
+        return sb.toString();
+    }
+
+    public String export() {
+        StringBuilder sb = new StringBuilder("{").append(Statement.NL);
+        for (Map.Entry<String, BlockGraph> entry : this.graphs.entrySet()) {
+            Graph<Statement, Edge> graph = entry.getValue().getGraph();
+            DepthFirstIterator<Statement, Edge> iterator = new DepthFirstIterator<>(graph);
+            Statement statement = null;
+            while (iterator.hasNext()) {
+                sb.append(iterator.next().toJson());
+            }
+        }
+        sb.append("}");
         return sb.toString();
     }
 }
