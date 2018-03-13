@@ -1,10 +1,12 @@
 package ir.statements;
 
 import java.util.List;
+import java.util.Set;
 
 import chemical.combinator.CombinerFactory;
 import chemical.epa.ChemTypes;
 import chemical.epa.EpaManager;
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -47,7 +49,7 @@ public class MixStatement extends BaseStatement {
     public String compose(Variable variable) {
         StringBuilder sb = new StringBuilder("");
 
-        for (ChemTypes t : variable.getTypes()) {
+        for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
         }
 
@@ -64,8 +66,8 @@ public class MixStatement extends BaseStatement {
         boolean killSwitch = false;
         for (Variable input1 : input) {
             for (Variable input2 : input) {
-                for (ChemTypes t1 : input1.getTypes()) {
-                    for (ChemTypes t2 : input2.getTypes()) {
+                for (ChemTypes t1 : (Set<ChemTypes>) input1.getTypes()) {
+                    for (ChemTypes t2 : (Set<ChemTypes>) input2.getTypes()) {
                         if (!CombinerFactory.getCombiner().combine(t1, t2)) {
                             killSwitch = true;
                         }
@@ -115,8 +117,48 @@ public class MixStatement extends BaseStatement {
 
     @Override
     public String toJson(String indent) {
-        StringBuilder sb = new StringBuilder("");
-
+        // Open the object
+        StringBuilder sb = new StringBuilder("{").append(NL);
+        // Create the operation.
+        sb.append("\"OPERATION\" : {").append(NL);
+        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"NAME\" : \"MIX\",").append(NL);
+        sb.append("\"CLASSIFICATION\" : \"MIX\",").append(NL);
+        sb.append("\"INPUTS\" : [").append(NL);
+        int x = 0;
+        for (Variable v : this.inputVariables) {
+            // Open the object tag.
+            sb.append("{").append(NL);
+            sb.append(v.buildInput());
+            if (!this.properties.isEmpty()) {
+                sb.append(",").append(NL);
+                if (this.properties.containsKey(Property.TIME)) {
+                    sb.append("\"VOLUME\" : {").append(NL);
+                    sb.append("\"VALUE\" : ").append(this.properties.get(Property.TIME).getValue()).append(",").append(NL);
+                    sb.append("\"UNITS\" : ").append("\"mL\"").append(NL);
+                    sb.append("}").append(NL);
+                }
+            }
+            // Close the object tag.
+            sb.append("}").append(NL);
+            if (x < this.inputVariables.size() - 1) {
+                sb.append(",").append(NL);
+            }
+            x++;
+        }
+        // Closes the open bracket.
+        sb.append("],").append(NL);
+        sb.append("\"OUTPUTS\" : [").append(NL);
+        // Open the tag.
+        sb.append("{").append(NL);
+        sb.append(this.outputVariable.redeclare());
+        // Close the open tag.
+        sb.append("}").append(NL);
+        sb.append("]").append(NL);
+        // Closes the OPERATION.
+        sb.append("}").append(NL);
+        // Closes the OBJECT.
+        sb.append("}").append(NL);
         return sb.toString();
     }
 }

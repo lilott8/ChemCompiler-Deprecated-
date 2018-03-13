@@ -12815,7 +12815,7 @@
             This is placed here incidentally and should not be here,
             Commented out just for reasons, marked for deletion 2017-01-25
             <reaction>
-                <id>23</id>
+                <idCounter>23</idCounter>
                 <outcome>N</outcome>
             </reaction>-->
             <reaction>

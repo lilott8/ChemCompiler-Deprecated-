@@ -1,5 +1,7 @@
 package typesystem.satsolver.constraints;
 
+import java.util.Set;
+
 import chemical.epa.ChemTypes;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
@@ -43,7 +45,7 @@ public interface SMTSolver {
     default String defaultCompose(Variable variable) {
         StringBuilder sb = new StringBuilder();
 
-        for (ChemTypes t : variable.getTypes()) {
+        for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
         }
 

@@ -1,5 +1,8 @@
 package ir.statements;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
@@ -13,6 +16,8 @@ import typesystem.satsolver.strategies.SolverStrategy;
  * @project: ChemicalCompiler
  */
 public class AssignStatement extends BaseStatement implements Assign {
+
+    public static final Logger logger = LogManager.getLogger(AssignStatement.class);
 
     public static final String INSTRUCTION = "ASSIGN";
     public static final String VERB = "VARAIBLE_DECLARATION";
@@ -65,7 +70,7 @@ public class AssignStatement extends BaseStatement implements Assign {
     public String compose(Variable variable) {
         StringBuilder sb = new StringBuilder("");
 
-        for (ChemTypes t : variable.getTypes()) {
+        for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
         }
 
@@ -79,8 +84,41 @@ public class AssignStatement extends BaseStatement implements Assign {
 
     @Override
     public String toJson(String indent) {
-        StringBuilder sb = new StringBuilder("");
-
-        return sb.toString();
+        if (this.rightOp.containsInvoke()) {
+            logger.warn("not addressing invocations yet.");
+        }
+        /*
+              {
+        "OPERATION" : {
+          "NAME" : "Mix",
+          "ID" : "1294012199300654748",
+          "CLASSIFICATION" : "MIX",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Cycloheptatriene2"
+              }
+            },
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "Ammonium Dichromate"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+            {
+              "VARIABLE_DECLARATION" : {
+                "ID" : "d",
+                "TYPE" : "VARIABLE",
+                "NAME" : "d"
+              }
+            }
+          ]
+        }
+      }
+         */
+        return this.rightOp.toJson();
     }
 }

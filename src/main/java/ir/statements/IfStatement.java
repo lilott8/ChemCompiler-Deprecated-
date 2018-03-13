@@ -3,6 +3,8 @@ package ir.statements;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Set;
+
 import chemical.epa.ChemTypes;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
@@ -45,7 +47,7 @@ public class IfStatement extends BaseConditional {
     public String compose(Variable variable) {
         StringBuilder sb = new StringBuilder("");
 
-        for (ChemTypes t : variable.getTypes()) {
+        for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
         }
 

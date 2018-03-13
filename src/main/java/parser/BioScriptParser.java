@@ -58,7 +58,6 @@ public class BioScriptParser implements Phase {
                     logger.error("Type checking has been disabled.");
                 }
                 this.irConverter = new BSIRConverter(this.symbolTable.getSymbolTable());
-                this.jsonConverter = new BSJsonConverter(this.symbolTable.symbolTable);
                 //program.accept(this.jsonConverter);
                 //logger.info(this.jsonConverter);
                 //logger.fatal("We are not using the IR");

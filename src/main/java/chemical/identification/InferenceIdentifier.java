@@ -10,13 +10,13 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
+import chemical.epa.ChemTypes;
 import config.Config;
 import config.ConfigFactory;
 import shared.io.database.ConnectorFactory;
 import shared.io.database.DatabaseConnector;
 import shared.substances.BaseCompound;
 import shared.substances.NaiveCompound;
-import chemical.epa.ChemTypes;
 
 /**
  * @created: 10/17/17
@@ -116,7 +116,7 @@ public class InferenceIdentifier extends Identifier {
     private Set<ChemTypes> searchByPubChemId(long id) {
         String query = String.format("SELECT rg.epa_id FROM chemicals c " +
                 "LEFT JOIN chemicals_reactive_groups crg ON c.pubchem_id = crg.pubchem_id " +
-                "LEFT JOIN reactive_groups rg on crg.reactive_groups_id = rg.id WHERE c.%s = ?",
+                        "LEFT JOIN reactive_groups rg on crg.reactive_groups_id = rg.id WHERE c.%s = ?",
                 Representation.getColumn(Representation.PUBCHEM_ID));
         return this.issueQuery(query, id, "epa_id");
     }

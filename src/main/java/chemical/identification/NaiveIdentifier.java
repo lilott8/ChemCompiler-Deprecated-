@@ -6,9 +6,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashSet;
 import java.util.Set;
 
-import shared.substances.BaseCompound;
-import shared.substances.NaiveCompound;
 import chemical.epa.ChemTypes;
+import shared.substances.NaiveCompound;
 
 /**
  * @created: 9/13/17

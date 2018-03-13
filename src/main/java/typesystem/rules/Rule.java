@@ -11,13 +11,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import chemical.epa.ChemTypes;
+import chemical.identification.IdentifierFactory;
 import config.ConfigFactory;
 import config.InferenceConfig;
 import shared.variable.Variable;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;
-import chemical.epa.ChemTypes;
-import chemical.identification.IdentifierFactory;
 
 /**
  * @created: 7/31/17

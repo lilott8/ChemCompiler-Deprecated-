@@ -11,11 +11,11 @@ import java.util.Set;
 
 import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
+import chemical.epa.ChemTypes;
 import shared.io.database.ConnectorFactory;
 import shared.io.database.DatabaseConnector;
 import shared.substances.BaseCompound;
 import shared.substances.ChemAxonCompound;
-import chemical.epa.ChemTypes;
 
 /**
  * @created: 9/13/17

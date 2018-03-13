@@ -3,7 +3,6 @@ package shared.substances;
 import java.util.HashSet;
 import java.util.Set;
 
-import chemaxon.struc.Molecule;
 import chemical.epa.ChemTypes;
 
 /**
@@ -60,7 +59,7 @@ public abstract class BaseCompound<T> {
 
     /**
      * Gets the getId of the compound
-     * @return the pubchem id
+     * @return the pubchem idCounter
      */
     public long getId() {
         return id;

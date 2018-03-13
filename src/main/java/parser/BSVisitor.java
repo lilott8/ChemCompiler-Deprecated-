@@ -26,6 +26,7 @@ import parser.ast.TrueLiteral;
 import parser.visitor.GJNoArguDepthFirst;
 import shared.Step;
 import shared.variable.Method;
+import shared.variable.Property;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
 
@@ -58,7 +59,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
 
     public static final Logger logger = LogManager.getLogger(BSVisitor.class);
 
-    // Keep track of the instruction id to input/outputs
+    // Keep track of the instruction idCounter to input/outputs
     protected static Map<Integer, Statement> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
     protected Map<String, Statement> controlInstructions = new HashMap<>();
@@ -69,6 +70,8 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     protected String name;
     // Constant for a variable.
     protected Variable constant;
+    // Store any value of the variable.
+    protected String value;
     // Current type(s) of variables.
     protected Set<ChemTypes> types = new HashSet<>();
     // Current method to work on.
@@ -136,7 +139,9 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     @Override
     public BSVisitor visit(IntegerLiteral n) {
         this.name = String.format("%s_%s", CONST, n.f0.toString());
-        this.constant = new Variable(this.name, this.symbolTable.getScopeByName(this.getCurrentScope()));
+        this.constant = new Property<Integer>(this.name, this.symbolTable.getScopeByName(this.getCurrentScope()));
+        this.value = n.f0.toString();
+        this.constant.setValue(Integer.parseInt(n.f0.toString()));
         this.constant.addTypingConstraint(NAT);
         return this;
     }
@@ -174,6 +179,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     @Override
     public BSVisitor visit(TrueLiteral n) {
         this.types.add(ChemTypes.BOOL);
+        this.value = "true";
         return this;
     }
 
@@ -183,6 +189,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     @Override
     public BSVisitor visit(FalseLiteral n) {
         this.types.add(ChemTypes.BOOL);
+        this.value = "false";
         return this;
     }
 

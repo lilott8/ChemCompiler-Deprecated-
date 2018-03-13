@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import ir.statements.AssignStatement;
 import ir.statements.Invoke;
 import ir.statements.InvokeStatement;
 import parser.ast.AssignmentInstruction;
@@ -28,7 +27,11 @@ import parser.ast.Module;
 import parser.ast.RepeatStatement;
 import parser.ast.SplitStatement;
 import parser.ast.Stationary;
+import shared.variable.AssignedVariable;
 import shared.variable.Method;
+import shared.variable.Property;
+import shared.variable.SensorVariable;
+import shared.variable.StationaryVariable;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
 
@@ -68,9 +71,10 @@ public class BSSymbolTable extends BSVisitor {
         // Get the name.
         n.f1.accept(this);
         // Build the symbol.
-        Variable f1 = new Variable(this.name, this.symbolTable.getCurrentScope());
+        Variable f1 = new SensorVariable(this.name, this.symbolTable.getCurrentScope());
         f1.addTypingConstraint(MODULE);
         addVariable(f1);
+        this.symbolTable.addInput(f1);
         // Add the symbol to the scope.
         this.symbolTable.addLocal(f1);
 
@@ -91,11 +95,11 @@ public class BSSymbolTable extends BSVisitor {
         n.f2.accept(this);
 
         // Type checking material.
-        this.instruction = new AssignStatement();
-        Variable f2 = new Variable(this.name);
+        Variable f2 = new StationaryVariable(this.name);
         f2.addScope(this.symbolTable.getCurrentScope());
         f2.addTypingConstraints(this.getTypingConstraints(f2));
         this.symbolTable.addLocal(f2);
+        this.symbolTable.addInput(f2);
         addVariable(f2);
         // End type checking.
 
@@ -121,7 +125,7 @@ public class BSSymbolTable extends BSVisitor {
         n.f2.accept(this);
 
         // Build the symbol.
-        Variable f2 = new Variable(this.name);
+        Variable f2 = new AssignedVariable(this.name);
         f2.addScope(this.symbolTable.getCurrentScope());
         f2.addTypingConstraints(this.getTypingConstraints(f2));
         addVariable(f2);
@@ -129,6 +133,7 @@ public class BSSymbolTable extends BSVisitor {
 
         // build the variable now
         this.symbolTable.addLocal(f2);
+        this.symbolTable.addInput(f2);
         this.types.clear();
 
         return this;
@@ -151,7 +156,7 @@ public class BSSymbolTable extends BSVisitor {
         // Search the hierarchy for the output var.
         Variable f1 = this.symbolTable.searchScopeHierarchy(this.name, this.symbolTable.getCurrentScope());
         if (f1 == null) {
-            f1 = new Variable(this.name, this.symbolTable.getCurrentScope());
+            f1 = new AssignedVariable(this.name, this.symbolTable.getCurrentScope());
             if (n.f0.present()) {
                 n.f0.accept(this);
                 f1.addTypingConstraints(this.getTypingConstraints(f1));
@@ -187,8 +192,6 @@ public class BSSymbolTable extends BSVisitor {
         }
 
         this.instruction = new InvokeStatement(method);
-        //this.instruction.addInputVariable(method);
-
         n.f2.accept(this);
         return this;
     }
@@ -213,7 +216,7 @@ public class BSSymbolTable extends BSVisitor {
         // Get the name of the method.
         n.f1.accept(this);
         // The method belongs to the parent scope.
-        Variable f1 = new Variable(this.name, this.symbolTable.getCurrentScope());
+        // Variable f1 = new AssignedVariable(this.name, this.symbolTable.getCurrentScope());
         // Now we have a new scope
         this.symbolTable.newScope(this.name);
         // Start a new scope.
@@ -265,7 +268,7 @@ public class BSSymbolTable extends BSVisitor {
         }
 
         this.symbolTable.addMethod(this.method);
-        addVariable(f1);
+        // addVariable(f1);
 
         this.symbolTable.endScope();
         // Remove the lock for functions.
@@ -285,7 +288,7 @@ public class BSSymbolTable extends BSVisitor {
         // Go fetch the name
         n.f1.accept(this);
         // save the record.
-        Variable f1 = new Variable(this.name, this.types, this.symbolTable.getCurrentScope());
+        Variable f1 = new AssignedVariable(this.name, this.types, this.symbolTable.getCurrentScope());
         // this.arguments.add(v);
         this.symbolTable.addLocal(f1);
 
@@ -312,7 +315,8 @@ public class BSSymbolTable extends BSVisitor {
         this.symbolTable.newScope(scopeName);
 
         n.f1.accept(this);
-        Variable f1 = new Variable(this.name, this.symbolTable.getCurrentScope());
+        Variable f1 = new AssignedVariable<Integer>(this.name, this.symbolTable.getCurrentScope());
+        f1.setValue(Integer.parseInt(this.value));
         f1.addTypingConstraint(NAT);
         addVariable(f1);
         this.symbolTable.addLocal(f1);
@@ -340,18 +344,15 @@ public class BSSymbolTable extends BSVisitor {
     public BSVisitor visit(BranchStatement n) {
         // Build the instruction.
         logger.fatal("You need to reset the instruction in If");
-        //this.instruction = new Branch();
         // Build the name.
         String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
         // Create a new scope.
         this.symbolTable.newScope(scopeName);
         // Build the variable that resolves a branch evaluation.
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
-        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        Variable term = new AssignedVariable(this.name, this.symbolTable.getCurrentScope());
         term.addTypingConstraint(NAT);
         addVariable(term);
-        this.instruction.addInputVariable(term);
-        addInstruction(this.instruction);
         // End type checking.
 
         this.symbolTable.addLocal(term);
@@ -390,14 +391,11 @@ public class BSSymbolTable extends BSVisitor {
 
         // Begin type checking.
         logger.fatal("You need to reset the instruction in ElseIf");
-        //this.instruction = new Branch();
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
         logger.warn(String.format("Symbol Table elseif: %s_%s", this.symbolTable.getCurrentScope().getName(), this.name));
-        Variable term = new Variable(this.name, this.symbolTable.getCurrentScope());
+        Variable term = new AssignedVariable(this.name, this.symbolTable.getCurrentScope());
         term.addTypingConstraint(NAT);
         addVariable(term);
-        this.instruction.addInputVariable(term);
-        addInstruction(this.instruction);
         // End type checking.
 
         this.symbolTable.addLocal(term);
@@ -436,8 +434,6 @@ public class BSSymbolTable extends BSVisitor {
      */
     @Override
     public BSVisitor visit(MixStatement n) {
-        this.instruction = new ir.statements.MixStatement();
-
         // Get the first material.
         n.f1.accept(this);
         checkForOrCreateVariable();
@@ -448,15 +444,7 @@ public class BSSymbolTable extends BSVisitor {
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            Variable constant = this.symbolTable.searchScopeHierarchy(this.name, this.symbolTable.getCurrentScope());
-            if (constant == null) {
-                constant = this.constant;
-                this.symbolTable.addLocal(constant);
-            }
-            this.instruction.addProperty(constant);
-            // Set<ChemTypes> types = new HashSet<>();
-            // types.add(NAT);
-            // checkForOrCreateVariable(types);
+            this.checkForOrCreateProperty("SECONDS");
         }
 
         return this;
@@ -476,11 +464,11 @@ public class BSSymbolTable extends BSVisitor {
 
         n.f3.accept(this);
         // Use the generated name for the integer.
-        Variable f3 = new Variable(this.name, this.symbolTable.getCurrentScope());
+        Property f3 = new Property<Integer>(this.name, this.symbolTable.getCurrentScope());
+        f3.setValue(this.value);
         f3.addTypingConstraint(NAT);
         addVariable(f3);
         this.symbolTable.addLocal(f3);
-        this.instruction.addProperty(f3);
 
         return this;
     }
@@ -500,21 +488,11 @@ public class BSSymbolTable extends BSVisitor {
         this.checkForOrCreateVariable();
 
         n.f3.accept(this);
-        Variable input = this.checkForOrCreateVariable();
-        this.instruction.addInputVariable(input);
-        this.types.clear();
+        this.checkForOrCreateVariable();
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            Variable constant = this.symbolTable.searchScopeHierarchy(this.name, this.symbolTable.getCurrentScope());
-            if (constant == null) {
-                constant = this.constant;
-                this.symbolTable.addLocal(constant);
-            }
-            this.instruction.addProperty(constant);
-            // Set<ChemTypes> types = new HashSet<>();
-            // types.add(NAT);
-            // this.checkForOrCreateVariable(types);
+            this.checkForOrCreateProperty("SECONDS");
         }
 
         return this;
@@ -548,15 +526,13 @@ public class BSSymbolTable extends BSVisitor {
         this.checkForOrCreateVariable();
 
         n.f3.accept(this);
-        this.checkForOrCreateVariable();
+        this.checkForOrCreateProperty("CELSIUS");
+
         if (n.f4.present()) {
             n.f4.accept(this);
-            this.instruction.addProperty(this.constant);
-            // Set<ChemTypes> types = new HashSet<>();
-            // types.add(NAT);
-            // this.checkForOrCreateVariable(types);
+            this.checkForOrCreateProperty("SECONDS");
+
         }
-        addInstruction(this.instruction);
         return this;
     }
 
@@ -565,26 +541,36 @@ public class BSSymbolTable extends BSVisitor {
         return checkForOrCreateVariable(new HashSet<>());
     }
 
+    private Property checkForOrCreateProperty(String units) {
+        Property prop = (Property) this.symbolTable.searchScopeHierarchy(this.name, this.symbolTable.getCurrentScope());
+        if (prop == null) {
+            prop = (Property) this.constant;
+            // Set<ChemTypes> types = new HashSet<>();
+            // types.add(REAL);
+            // prop = new Property(this.name, types, this.symbolTable.getCurrentScope());
+            prop.setValue(Integer.parseInt(this.value));
+            prop.setUnits(units);
+            addVariable(prop);
+            this.symbolTable.addLocal(prop);
+        }
+        this.types.clear();
+        return prop;
+    }
+
     private Variable checkForOrCreateVariable(Set<ChemTypes> inputTypes) {
         Variable declaration = this.symbolTable.searchScopeHierarchy(this.name, this.symbolTable.getCurrentScope());
         if (declaration == null) {
-            Variable term;
-            term = new Variable(this.name, this.symbolTable.getCurrentScope());
+            declaration = new AssignedVariable(this.name, this.symbolTable.getCurrentScope());
             if (inputTypes.isEmpty()) {
-                term.addTypingConstraints(this.getTypingConstraints(term));
+                declaration.addTypingConstraints(this.getTypingConstraints(declaration));
             } else {
-                term.addTypingConstraints(inputTypes);
+                declaration.addTypingConstraints(inputTypes);
             }
-            addVariable(term);
-            this.instruction.addInputVariable(term);
-            this.symbolTable.addLocal(term);
-            this.types.clear();
-            return term;
-        } else {
-            this.instruction.addInputVariable(declaration);
-            this.types.clear();
-            return declaration;
+            addVariable(declaration);
+            this.symbolTable.addLocal(declaration);
         }
+        this.types.clear();
+        return declaration;
     }
 
 

@@ -9,7 +9,7 @@ ab = detect test on y for 30
 
 if (ab < 3) {
     heat a at 30
-    heat b at 50
+    heat b at 50 for 90
 }
 
 heat x at 40

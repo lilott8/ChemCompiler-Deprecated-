@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,9 @@ public class SymbolTable {
     // Keep tabs of depth of stack.
     private Deque<Scope> scopeStack = new ArrayDeque<>();
 
+    // List of input variables.  These are treated differently.
+    private List<Variable> inputs = new ArrayList<>();
+
     public SymbolTable() {
         // Add the default scope to the stack; it has no parent.
         Scope origins = new Scope(DEFAULT_SCOPE);
@@ -58,6 +62,10 @@ public class SymbolTable {
         this.scopeStack.pop();
         // Return the context we return to.
         return this.scopeStack.peek();
+    }
+
+    public void addInput(Variable symbol) {
+        this.inputs.add(symbol);
     }
 
     public void addLocal(Variable symbol) {
@@ -124,6 +132,10 @@ public class SymbolTable {
 
     public String getCurrentScopeName() {
         return this.scopeStack.peek().getName();
+    }
+
+    public List<Variable> getInputs() {
+        return this.inputs;
     }
 
     public Variable getScopedSymbol(String scope, String varName) {

@@ -20,16 +20,16 @@ import java.util.Set;
 
 import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
-import config.ConfigFactory;
-import config.InferenceConfig;
-import shared.io.file.write.FileWriter;
-import shared.io.file.write.SimpleWriter;
-import shared.substances.ChemAxonCompound;
 import chemical.classification.Classifier;
 import chemical.classification.ClassifierFactory;
 import chemical.combinator.Combiner;
 import chemical.combinator.CombinerFactory;
 import chemical.epa.ChemTypes;
+import config.ConfigFactory;
+import config.InferenceConfig;
+import shared.io.file.write.FileWriter;
+import shared.io.file.write.SimpleWriter;
+import shared.substances.ChemAxonCompound;
 
 /**
  * @created: 10/2/17
@@ -59,7 +59,7 @@ public abstract class TableCombinator implements Runnable {
 
     // this houses all the reactive groups and their corresponding chemicals.
     protected Map<Integer, Set<ChemAxonCompound>> reactiveGroupToChemicals = new HashMap<>();
-    // List of id's we a
+    // List of idCounter's we a
     protected Set<Integer> reactiveGroupId = new LinkedHashSet<>();
     // Cache the creation of the chemicals.
     protected Map<Long, ChemAxonCompound> chemicalCache = new HashMap<>();
@@ -120,7 +120,7 @@ public abstract class TableCombinator implements Runnable {
 
         logger.info("Beginning building chemicals.");
         for (Chemical chem : input) {
-            //logger.info("On chemical: " + count + " (id: " + chem.pubChemId + ")");
+            //logger.info("On chemical: " + count + " (idCounter: " + chem.pubChemId + ")");
             // If we have seen the chemical before, add to the reactive group
             if (chemicalCache.containsKey(chem.pubChemId)) {
                 chemicalCache.get(chem.pubChemId).addReactiveGroup(chem.reactiveGroup);

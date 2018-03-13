@@ -33,12 +33,6 @@ public class ModuleStatement extends BaseNop {
 
     @Override
     public String toJson(String indent) {
-        StringBuilder sb = new StringBuilder("");
-        sb.append("\"SENSOR_DECLARATION\" : {").append(Statement.NL);
-        sb.append("\"ID\" : ").append(this.id).append(",").append(Statement.NL);
-        sb.append("\"NAME\" : \"").append(this.inputVariables.get(0).getName()).append("\",").append(Statement.NL);
-        sb.append("\"TYPE\" : \"SENSOR\"").append(Statement.NL).append("}").append(Statement.NL);
-        sb.append(",").append(Statement.NL);
-        return sb.toString();
+        return this.inputVariables.get(0).buildDeclaration();
     }
 }

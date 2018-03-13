@@ -2,23 +2,38 @@ package shared.variable;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import chemical.epa.ChemTypes;
 import symboltable.Scope;
+
+import static ir.statements.Statement.NL;
 
 /**
  * @created: 2/5/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Variable implements ScopedVariable, TypedVariable {
+public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
 
     protected String name;
     protected Set<ChemTypes> types = new HashSet<>();
     protected Scope scope;
-    //protected Value value;
+    private static AtomicInteger idCounter = new AtomicInteger(0);
+    protected Value value;
+    protected List<Integer> properties = new ArrayList<>();
+    protected int id;
+
+    {
+        this.id = this.getNewId();
+    }
+    //abstract public String buildReference();
+
+    abstract public String buildDeclaration();
 
     public Variable(String name) {
         this.name = name;
@@ -40,6 +55,10 @@ public class Variable implements ScopedVariable, TypedVariable {
         this.scope = scope;
     }
 
+    private int getNewId() {
+        return idCounter.getAndIncrement();
+    }
+
     public Variable addTypingConstraints(Set<ChemTypes> constraints) {
         this.types.addAll(constraints);
         return this;
@@ -50,14 +69,14 @@ public class Variable implements ScopedVariable, TypedVariable {
         return this;
     }
 
-    /*public Variable setValue(Value value) {
+    public Value getValue() {
+        return this.value;
+    }
+
+    public Variable setValue(Value value) {
         this.value = value;
         return this;
     }
-
-    public Value getValue() {
-        return this.value;
-    }*/
 
     public void addScope(Scope scope) {
         this.scope = scope;
@@ -99,5 +118,54 @@ public class Variable implements ScopedVariable, TypedVariable {
         Variable other = (Variable) obj;
 
         return StringUtils.equals(other.name, this.name) && this.types.equals(other.types);
+    }
+
+    public String addInferredTypes() {
+        StringBuilder sb = new StringBuilder();
+        if (!this.types.isEmpty()) {
+            sb.append("\"INFERRED TYPES\" : [").append(NL);
+            int x = 0;
+            for (ChemTypes t : this.types) {
+                sb.append(t.getValue());
+                if (x < this.types.size() - 1) {
+                    sb.append(", ");
+                }
+                x++;
+            }
+            sb.append(NL);
+            sb.append("]").append(NL);
+        } else {
+            sb.append(NL);
+        }
+        return sb.toString();
+    }
+
+    public String buildInput() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
+        sb.append("\"CHEMICAL\" : {").append(NL);
+        sb.append("\"VARIABLE\" : {").append(NL);
+        sb.append("\"NAME\" : \"").append(this.name).append("\"").append(NL);
+        sb.append("}").append(NL);
+        if (!this.properties.isEmpty()) {
+
+        }
+        sb.append("}").append(NL);
+        return sb.toString();
+    }
+
+    public String buildReference() {
+        return String.format("\"VARIABLE\" : {%s \"NAME\" : \"%s\" %s}", NL, this.name, NL);
+    }
+
+    public String redeclare() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"VARIABLE_DECLARATION\" : {").append(NL);
+        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
+        sb.append("\"TYPE\" : \"VARIABLE\", ").append(NL);
+        sb.append(this.addInferredTypes());
+        sb.append("}").append(NL);
+        return sb.toString();
     }
 }

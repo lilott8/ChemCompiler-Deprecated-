@@ -1,12 +1,15 @@
 package ir.statements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import chemical.epa.ChemTypes;
+import shared.variable.Property;
 import shared.variable.Variable;
 
 /**
@@ -21,8 +24,9 @@ public abstract class BaseStatement implements Statement {
     protected boolean isBranch = false;
     protected boolean fallsThrough = false;
     protected boolean containsInvoke = false;
+    protected Variable outputVariable;
     protected List<Variable> inputVariables = new ArrayList<>();
-    protected List<Variable> properties = new ArrayList<>();
+    protected Map<String, Variable> properties = new HashMap<>();
     protected Set<ChemTypes> types = new HashSet<>();
     protected String name;
     protected int id;
@@ -37,29 +41,39 @@ public abstract class BaseStatement implements Statement {
     }
 
     @Override
-    public void addInputVariable(Variable variable) {
-        this.inputVariables.add(variable);
-        this.types.addAll(variable.getTypes());
-    }
-
-    @Override
     public Set<ChemTypes> getType() {
         return this.types;
     }
 
+
     @Override
-    public List<Variable> getInputVariables() {
-        return null;
+    public void addInputVariable(Variable variable) {
+        this.inputVariables.add(variable);
+        this.types.addAll((Set<ChemTypes>) variable.getTypes());
     }
 
     @Override
-    public List<Variable> getProperties() {
+    public List<Variable> getInputVariables() {
+        return this.inputVariables;
+    }
+
+    @Override
+    public void addOutputVariable(Variable variable) {
+        this.outputVariable = variable;
+    }
+
+    public Variable getOutputVariable() {
+        return outputVariable;
+    }
+
+    @Override
+    public Map<String, Variable> getProperties() {
         return this.properties;
     }
 
     @Override
-    public void addProperty(Variable variable) {
-        this.properties.add(variable);
+    public void addProperty(String name, Variable variable) {
+        this.properties.put(name, variable);
     }
 
     @Override
@@ -99,5 +113,23 @@ public abstract class BaseStatement implements Statement {
 
     public String toString() {
         return String.format("%s-%d", this.name, this.id);
+    }
+
+    protected String propertyToJson(String property) {
+        StringBuilder sb = new StringBuilder();
+        if (this.properties.containsKey(Property.TIME)) {
+            Property time = (Property) this.properties.get(Property.TIME);
+            // The Temp
+            sb.append(",{").append(NL);
+            sb.append("\"INPUT_TYPE\" : \"PROPERTY\",").append(NL);
+            sb.append("\"TIME\" : ");
+            // Temp object.
+            sb.append("{").append(NL);
+            sb.append("\"VALUE\" : ").append(time.getValue()).append(", ").append(NL);
+            sb.append("\"UNITS\" : ").append("\"").append(time.getUnits()).append("\"").append(NL);
+            sb.append("}").append(NL);
+            sb.append("}").append(NL);
+        }
+        return sb.toString();
     }
 }

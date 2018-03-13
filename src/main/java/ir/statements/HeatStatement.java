@@ -1,6 +1,7 @@
 package ir.statements;
 
 
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
@@ -35,6 +36,41 @@ public class HeatStatement extends BaseNop {
     @Override
     public String toJson(String indent) {
         StringBuilder sb = new StringBuilder("");
+
+        sb.append("{").append(NL);
+        sb.append("\"OPERATION\" :").append(NL);
+        sb.append("{").append(NL);
+        sb.append("\"NAME\" : \"HEAT\",").append(NL);
+        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"CLASSIFICATION\" : \"HEAT\",").append(NL);
+        sb.append("\"INPUTS\" : [").append(NL);
+        // The Variable.
+        sb.append("{").append(NL);
+        sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
+        sb.append(this.inputVariables.get(0).buildReference()).append(NL);
+        // Close the Variable.
+        sb.append("},").append(NL);
+
+        // The Temperature.
+        sb.append("{").append(NL);
+        sb.append("\"INPUT_TYPE\" : \"PROPERTY\",").append(NL);
+        sb.append("\"TEMPERATURE\" : ");
+        // Temp object.
+        sb.append("{").append(NL);
+        Property temp = (Property) this.properties.get(Property.TEMP);
+        sb.append("\"VALUE\" : ").append(temp.getValue()).append(", ").append(NL);
+        sb.append("\"UNITS\" : ").append("\"").append(temp.getUnits()).append("\"").append(NL);
+        // Close temp object.
+        sb.append("}").append(NL);
+        // close variable.
+        sb.append("}").append(NL);
+
+        sb.append(this.propertyToJson(Property.TIME));
+
+        sb.append("],").append(NL);
+        sb.append("\"OUTPUTS\" : {}").append(NL);
+        sb.append("}").append(NL);
+        sb.append("}").append(NL);
 
         return sb.toString();
     }

@@ -3,6 +3,7 @@ package shared.variable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +25,7 @@ public class Method {
     protected Set<Variable> parameters = new HashSet<>();
     protected String name;
     protected BlockGraph statements = new BlockGraph();
+    protected List<Statement> instructions = new ArrayList<>();
 
     public Method(String name) {
         this(name, new HashSet<>());
@@ -86,5 +88,13 @@ public class Method {
         sb.append("\tParameters: ").append(this.parameters);
 
         return sb.toString();
+    }
+
+    public List<Statement> getInstructions() {
+        return this.instructions;
+    }
+
+    public void setInstructions(Statement statement) {
+        this.instructions.add(statement);
     }
 }

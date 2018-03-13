@@ -1,6 +1,7 @@
 package ir.statements;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
@@ -17,9 +18,13 @@ public interface Statement extends Vertex, SMTSolver, Exportable {
     String NL = System.lineSeparator();
 
     List<Variable> getInputVariables();
-    List<Variable> getProperties();
+
+    Map<String, Variable> getProperties();
     void addInputVariable(Variable variable);
-    void addProperty(Variable variable);
+
+    void addOutputVariable(Variable variable);
+
+    void addProperty(String name, Variable variable);
 
     Set<ChemTypes> getType();
     void setFallsThrough(boolean fallsThrough);

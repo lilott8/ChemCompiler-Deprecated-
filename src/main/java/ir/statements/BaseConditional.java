@@ -3,6 +3,7 @@ package ir.statements;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import shared.variable.Variable;
@@ -20,6 +21,8 @@ public abstract class BaseConditional extends BaseStatement implements Condition
     protected Statement falseTarget;
     protected String condition;
     protected String scopeName;
+    protected List<Statement> trueBranch = new ArrayList<>();
+    protected List<Statement> falseBranch = new ArrayList<>();
 
     {
         this.isBranch = true;
@@ -79,5 +82,21 @@ public abstract class BaseConditional extends BaseStatement implements Condition
     @Override
     public void setScopeName(String scopeName) {
         this.scopeName = scopeName;
+    }
+
+    public void addTrueBranch(Statement statement) {
+        this.trueBranch.add(statement);
+    }
+
+    public void addFalseBranch(Statement statement) {
+        this.falseBranch.add(statement);
+    }
+
+    public List<Statement> getTrueBranch() {
+        return trueBranch;
+    }
+
+    public List<Statement> getFalseBranch() {
+        return falseBranch;
     }
 }

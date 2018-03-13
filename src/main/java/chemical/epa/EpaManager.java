@@ -21,11 +21,10 @@ import java.util.Set;
 
 import config.ConfigFactory;
 import config.InferenceConfig;
-import shared.ReportingLevel;
+import shared.Tuple;
 import shared.errors.CompatabilityException;
 import shared.io.file.read.FileReader;
 import shared.io.file.read.SimpleReader;
-import shared.Tuple;
 import shared.substances.BaseCompound;
 
 /**

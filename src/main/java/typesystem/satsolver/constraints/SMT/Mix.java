@@ -7,13 +7,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import chemical.combinator.CombinerFactory;
+import chemical.epa.ChemTypes;
+import chemical.epa.EpaManager;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.SMTSolver;
 import typesystem.satsolver.strategies.SolverStrategy;
-import chemical.combinator.CombinerFactory;
-import chemical.epa.ChemTypes;
-import chemical.epa.EpaManager;
 
 import static typesystem.satsolver.strategies.SolverStrategy.NL;
 import static typesystem.satsolver.strategies.SolverStrategy.TAB;
@@ -50,7 +50,7 @@ public class Mix implements SMTSolver {
     public String compose(Variable variable) {
         StringBuilder sb = new StringBuilder();
 
-        for (ChemTypes t : variable.getTypes()) {
+        for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
         }
 
@@ -67,8 +67,8 @@ public class Mix implements SMTSolver {
         boolean killSwitch = false;
         for (Variable input1 : input) {
             for (Variable input2 : input) {
-                for (ChemTypes t1 : input1.getTypes()) {
-                    for (ChemTypes t2 : input2.getTypes()) {
+                for (ChemTypes t1 : (Set<ChemTypes>) input1.getTypes()) {
+                    for (ChemTypes t2 : (Set<ChemTypes>) input2.getTypes()) {
                         if (!CombinerFactory.getCombiner().combine(t1, t2)) {
                             killSwitch = true;
                         }
@@ -162,8 +162,8 @@ public class Mix implements SMTSolver {
         boolean killSwitch = false;
         for (Variable input1 : input) {
             for (Variable input2 : input) {
-                for (ChemTypes t1 : input1.getTypes()) {
-                    for (ChemTypes t2 : input2.getTypes()) {
+                for (ChemTypes t1 : (Set<ChemTypes>) input1.getTypes()) {
+                    for (ChemTypes t2 : (Set<ChemTypes>) input2.getTypes()) {
 
                     }
                 }

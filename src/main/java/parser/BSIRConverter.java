@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
-import org.jgrapht.traverse.DepthFirstIterator;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -42,6 +41,8 @@ import parser.ast.Module;
 import parser.ast.RepeatStatement;
 import parser.ast.Stationary;
 import shared.errors.InvalidSyntaxException;
+import shared.io.strings.Experiment;
+import shared.variable.Property;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
 
@@ -101,7 +102,7 @@ public class BSIRConverter extends BSVisitor {
         // Build the IR data structure.
         ModuleStatement module = new ModuleStatement();
         module.addInputVariable(f1);
-        this.graphs.get(this.methodStack.peek()).addToBlock(module);
+        // this.graphs.get(this.methodStack.peek()).addToBlock(module);
         this.instructions.put(module.getId(), module);
 
         return this;
@@ -122,7 +123,7 @@ public class BSIRConverter extends BSVisitor {
         // Build the IR data structure.
         StationaryStatement stationary = new StationaryStatement();
         stationary.addInputVariable(f2);
-        this.graphs.get(this.methodStack.peek()).addToBlock(stationary);
+        // this.graphs.get(this.methodStack.peek()).addToBlock(stationary);
         this.instructions.put(stationary.getId(), stationary);
 
         return this;
@@ -143,7 +144,7 @@ public class BSIRConverter extends BSVisitor {
         // Build the IR data structure.
         ManifestStatement manifest = new ManifestStatement();
         manifest.addInputVariable(f2);
-        this.graphs.get(this.methodStack.peek()).addToBlock(manifest);
+        // this.graphs.get(this.methodStack.peek()).addToBlock(manifest);
         this.instructions.put(manifest.getId(), manifest);
 
         return this;
@@ -509,13 +510,15 @@ public class BSIRConverter extends BSVisitor {
         Statement mix = new MixStatement();
         mix.addInputVariable(f1);
         mix.addInputVariable(f3);
+        mix.addOutputVariable(this.assignTo);
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            Variable f4 = this.symbolTable.searchScopeHierarchy(this.name,
+            Variable<Integer> f4 = this.symbolTable.searchScopeHierarchy(this.name,
                     this.symbolTable.getScopeByName(this.getCurrentScope()));
+            //f4.setValue(Integer.parseInt(this.value));
             // Add f4 to the data structure.
-            mix.addProperty(f4);
+            mix.addProperty(Property.TIME, f4);
         }
 
         // this.experiment.addInstruction(instruction);
@@ -543,13 +546,15 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
         // Get the name.
         n.f3.accept(this);
-        Variable f3 = this.symbolTable.searchScopeHierarchy(this.name,
+        Variable<Integer> f3 = this.symbolTable.searchScopeHierarchy(this.name,
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
+        // f3.setValue(Integer.parseInt(this.value));
 
         // Build the IR data structure.
         Statement split = new SplitStatement();
         split.addInputVariable(f1);
-        split.addProperty(f3);
+        split.addProperty(Property.QUANTITY, f3);
+        split.addOutputVariable(this.assignTo);
 
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);
@@ -582,14 +587,16 @@ public class BSIRConverter extends BSVisitor {
         Statement detect = new DetectStatement();
         detect.addInputVariable(f1);
         detect.addInputVariable(f3);
+        detect.addOutputVariable(this.assignTo);
 
         if (n.f4.present()) {
             n.f4.accept(this);
             logger.warn("this.getNextIntId is being used in detect");
             Variable f4 = this.symbolTable.searchScopeHierarchy(this.name,
                     this.symbolTable.getScopeByName(this.getCurrentScope()));
+            //f4.setValue(Integer.parseInt(this.value));
             // Add f4 to the data structure.
-            detect.addProperty(f4);
+            detect.addProperty(Property.TIME, f4);
         }
 
         AssignStatement assign = new AssignStatement();
@@ -640,21 +647,23 @@ public class BSIRConverter extends BSVisitor {
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
         // Get the name.
         n.f3.accept(this);
-        Variable f3 = this.symbolTable.searchScopeHierarchy(this.name,
+        Variable<Integer> f3 = this.symbolTable.searchScopeHierarchy(this.name,
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
+        //f3.setValue(Integer.parseInt(this.value));
 
         // Build the IR data structure.
         Statement heat = new HeatStatement(String.format("%s-%d",
                 HeatStatement.INSTRUCTION, this.getNextInstructionId()));
         heat.addInputVariable(f1);
-        heat.addInputVariable(f3);
+        heat.addProperty(Property.TEMP, f3);
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            Variable f4 = this.symbolTable.searchScopeHierarchy(this.name,
+            Variable<Integer> f4 = this.symbolTable.searchScopeHierarchy(this.name,
                     this.symbolTable.getScopeByName(this.getCurrentScope()));
+            //f4.setValue(Integer.parseInt(this.value));
             // Add f4 to the data structure.
-            heat.addProperty(f4);
+            heat.addProperty(Property.TIME, f4);
         }
 
         this.graphs.get(this.methodStack.peek()).addToBlock(heat);
@@ -708,16 +717,6 @@ public class BSIRConverter extends BSVisitor {
     }
 
     public String export() {
-        StringBuilder sb = new StringBuilder("{").append(Statement.NL);
-        for (Map.Entry<String, BlockGraph> entry : this.graphs.entrySet()) {
-            Graph<Statement, Edge> graph = entry.getValue().getGraph();
-            DepthFirstIterator<Statement, Edge> iterator = new DepthFirstIterator<>(graph);
-            Statement statement = null;
-            while (iterator.hasNext()) {
-                sb.append(iterator.next().toJson());
-            }
-        }
-        sb.append("}");
-        return sb.toString();
+        return new Experiment(this.symbolTable, this.graphs).toJson();
     }
 }
