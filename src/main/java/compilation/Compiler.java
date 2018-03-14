@@ -13,6 +13,7 @@ import compilation.datastructures.ssi.StaticSingleInformation;
 import config.Config;
 import config.ConfigFactory;
 import manager.Benchtop;
+import parser.BSVisitor;
 import parser.BioScriptParser;
 import shared.Facade;
 import shared.Phase;

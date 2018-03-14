@@ -1,4 +1,4 @@
-package ir.statements;
+package ir;
 
 import shared.variable.Variable;
 import typesystem.elements.Formula;
@@ -8,11 +8,11 @@ import typesystem.elements.Formula;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class StationaryStatement extends BaseNop {
+public class ManifestStatement extends BaseNop {
 
-    public static final String INSTRUCTION = "STATIONARY";
+    public static final String INSTRUCTION = "MANIFEST";
 
-    public StationaryStatement() {
+    public ManifestStatement() {
         super(INSTRUCTION);
     }
 

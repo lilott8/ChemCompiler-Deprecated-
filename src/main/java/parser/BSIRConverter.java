@@ -2,38 +2,32 @@ package parser;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jcamp.math.Range;
-import org.jgrapht.Graph;
-import org.jgrapht.Graphs;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import ir.graph.BlockGraph;
-import ir.graph.Edge;
-import ir.graph.ListBlock;
-import ir.statements.Assign;
-import ir.statements.AssignStatement;
-import ir.statements.Conditional;
-import ir.statements.DetectStatement;
-import ir.statements.DrainStatement;
-import ir.statements.HeatStatement;
-import ir.statements.InvokeStatement;
-import ir.statements.LoopStatement;
-import ir.statements.ManifestStatement;
-import ir.statements.MixStatement;
-import ir.statements.ModuleStatement;
-import ir.statements.Nop;
-import ir.statements.SinkStatement;
-import ir.statements.SourceStatement;
-import ir.statements.SplitStatement;
-import ir.statements.Statement;
-import ir.statements.StationaryStatement;
+import ir.AssignStatement;
+import ir.Conditional;
+import ir.DetectStatement;
+import ir.DrainStatement;
+import ir.HeatStatement;
+import ir.IfStatement;
+import ir.InvokeStatement;
+import ir.LoopStatement;
+import ir.ManifestStatement;
+import ir.MixStatement;
+import ir.ModuleStatement;
+import ir.Nop;
+import ir.SinkStatement;
+import ir.SourceStatement;
+import ir.SplitStatement;
+import ir.Statement;
+import ir.StatementBlock;
+import ir.StationaryStatement;
 import parser.ast.AssignmentInstruction;
 import parser.ast.BranchStatement;
 import parser.ast.ElseIfStatement;
@@ -70,12 +64,12 @@ public class BSIRConverter extends BSVisitor {
     // Accounting for the methods in this program.
     private Deque<String> methodStack = new ArrayDeque<>();
 
-    private Deque<ListBlock> listBlocks = new ArrayDeque<>();
+    private Deque<StatementBlock> listBlocks = new ArrayDeque<>();
 
     public BSIRConverter(SymbolTable symbolTable) {
         super(symbolTable);
         this.methodStack.push(SymbolTable.DEFAULT_SCOPE);
-        this.listBlocks.push(new ListBlock());
+        this.listBlocks.push(new StatementBlock());
         this.functions.put(SymbolTable.DEFAULT_SCOPE, new ArrayList<>());
     }
 
@@ -104,7 +98,7 @@ public class BSIRConverter extends BSVisitor {
         ModuleStatement module = new ModuleStatement();
         module.addInputVariable(f1);
         instructions.put(module.getId(), module);
-        this.functions.get(SymbolTable.DEFAULT_SCOPE).add(module);
+        // this.functions.get(SymbolTable.DEFAULT_SCOPE).add(module);
 
         return this;
     }
@@ -126,7 +120,7 @@ public class BSIRConverter extends BSVisitor {
         stationary.addInputVariable(f2);
         // this.graphs.get(this.methodStack.peek()).addToBlock(stationary);
         instructions.put(stationary.getId(), stationary);
-        this.functions.get(SymbolTable.DEFAULT_SCOPE).add(stationary);
+        // this.functions.get(SymbolTable.DEFAULT_SCOPE).add(stationary);
 
         return this;
     }
@@ -147,7 +141,7 @@ public class BSIRConverter extends BSVisitor {
         ManifestStatement manifest = new ManifestStatement();
         manifest.addInputVariable(f2);
         instructions.put(manifest.getId(), manifest);
-        this.functions.get(SymbolTable.DEFAULT_SCOPE).add(manifest);
+        // this.functions.get(SymbolTable.DEFAULT_SCOPE).add(manifest);
 
         return this;
     }
@@ -234,7 +228,7 @@ public class BSIRConverter extends BSVisitor {
         n.f1.accept(this);
         this.methodStack.push(this.name);
         this.functions.put(this.name, new ArrayList<>());
-        this.listBlocks.push(new ListBlock());
+        this.listBlocks.push(new StatementBlock());
         // Get a new scope.
         this.newScope(this.name);
         this.methodStack.push(this.name);
@@ -252,8 +246,8 @@ public class BSIRConverter extends BSVisitor {
             n.f8.accept(this);
         }
 
-        ListBlock block = this.listBlocks.pop();
-        for (Map.Entry<Integer, Statement> entry : block.statements.entrySet()) {
+        StatementBlock block = this.listBlocks.pop();
+        for (Map.Entry<Integer, Statement> entry : block.getStatementMap().entrySet()) {
             this.method.addStatement(entry.getValue());
         }
         //this.method.addStatements(this.graphs.get(this.methodStack.peek()));
@@ -291,7 +285,7 @@ public class BSIRConverter extends BSVisitor {
         loop.setTrueTarget(source);
 
         this.controlStack.push(loop);
-        this.listBlocks.push(new ListBlock());
+        this.listBlocks.push(new StatementBlock());
 
         // Get the statements.
         n.f4.accept(this);
@@ -326,13 +320,13 @@ public class BSIRConverter extends BSVisitor {
         Variable f2 = this.symbolTable.searchScopeHierarchy(this.name,
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
-        Conditional branch = new ir.statements.IfStatement(f2.toString());
+        Conditional branch = new IfStatement(f2.toString());
         branch.setScopeName(scopeName);
         instructions.put(branch.getId(), branch);
 
         // Save the scope/control.
         this.controlStack.push(branch);
-        this.listBlocks.push(new ListBlock());
+        this.listBlocks.push(new StatementBlock());
 
         // Get the statement(s).
         n.f5.accept(this);
@@ -349,7 +343,7 @@ public class BSIRConverter extends BSVisitor {
             if (n.f8.present()) {
                 scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
                 this.newScope(scopeName);
-                Conditional elseBranch = new ir.statements.IfStatement("");
+                Conditional elseBranch = new IfStatement("");
                 elseBranch.setScopeName(scopeName);
                 instructions.put(elseBranch.getId(), elseBranch);
 
@@ -359,7 +353,7 @@ public class BSIRConverter extends BSVisitor {
                 elseBranch.setFalseTarget(elseSink);
                 elseBranch.setTrueTarget(elseSource);
 
-                this.listBlocks.push(new ListBlock());
+                this.listBlocks.push(new StatementBlock());
                 this.controlStack.push(elseBranch);
 
                 // Grab the statements.
@@ -403,7 +397,7 @@ public class BSIRConverter extends BSVisitor {
         Variable f2 = this.symbolTable.searchScopeHierarchy(this.name,
                 this.symbolTable.getScopeByName(this.getCurrentScope()));
 
-        Conditional branch = new ir.statements.IfStatement(f2.toString());
+        Conditional branch = new IfStatement(f2.toString());
         branch.setScopeName(this.getCurrentScope());
 
         // Get the statements in the scope.
@@ -600,8 +594,8 @@ public class BSIRConverter extends BSVisitor {
     }
 
     private Conditional addBranches(Conditional conditional, boolean branch) {
-        ListBlock block = this.listBlocks.pop();
-        for (Map.Entry<Integer, Statement> entry : block.statements.entrySet()) {
+        StatementBlock block = this.listBlocks.pop();
+        for (Map.Entry<Integer, Statement> entry : block.getStatementMap().entrySet()) {
             if (branch) {
                 conditional.addToTrueBranch(entry.getValue());
             } else {
@@ -619,18 +613,18 @@ public class BSIRConverter extends BSVisitor {
             Conditional outer = this.controlStack.pop();
             block = this.listBlocks.pop();
             if (branch) {
-                for (Map.Entry<Integer, Statement> entry : block.statements.entrySet()) {
+                for (Map.Entry<Integer, Statement> entry : block.getStatementMap().entrySet()) {
                     outer.addToTrueBranch(entry.getValue());
                 }
                 outer.addToTrueBranch(conditional);
             } else {
-                for (Map.Entry<Integer, Statement> entry : block.statements.entrySet()) {
+                for (Map.Entry<Integer, Statement> entry : block.getStatementMap().entrySet()) {
                     outer.addToFalseBranch(entry.getValue());
                 }
                 outer.addToFalseBranch(conditional);
             }
             this.controlStack.push(outer);
-            block.statements.clear();
+            block.clear();
             this.listBlocks.push(block);
         }
         return null;
@@ -640,8 +634,8 @@ public class BSIRConverter extends BSVisitor {
         if(this.controlStack.isEmpty()) {
             this.functions.get(this.getCurrentScope()).add(statement);
         } else {
-            ListBlock list = this.listBlocks.pop();
-            list.statements.put(statement.getId(), statement);
+            StatementBlock list = this.listBlocks.pop();
+            list.addStatement(statement);
             this.listBlocks.push(list);
         }
     }
@@ -656,5 +650,10 @@ public class BSIRConverter extends BSVisitor {
             sb.append("===========================").append(System.lineSeparator());
         }
         return sb.toString();
+    }
+
+    public String toString() {
+        Experiment experiment = new Experiment(this.symbolTable, this.functions);
+        return experiment.toJson();
     }
 }

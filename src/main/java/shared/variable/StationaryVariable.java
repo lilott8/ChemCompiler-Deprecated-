@@ -3,7 +3,7 @@ package shared.variable;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import ir.statements.Statement;
+import ir.Statement;
 import symboltable.Scope;
 
 /**

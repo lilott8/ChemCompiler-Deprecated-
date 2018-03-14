@@ -40,7 +40,7 @@ public class BSProgram implements Node {
         f0 = n0;
         f1 = n1;
         f2 = n2;
-        f3 = new NodeToken("instructions");
+        f3 = new NodeToken("statements");
         f4 = n3;
         f5 = new NodeToken("");
     }

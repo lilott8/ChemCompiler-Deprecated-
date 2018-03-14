@@ -18,7 +18,7 @@ import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.node.InstructionNode;
-import ir.statements.Statement;
+import ir.Statement;
 import reactivetable.StatisticCombinator;
 import shared.Phase;
 import shared.Tuple;
@@ -65,7 +65,7 @@ public class Inference implements shared.Phase {
     private final Map<String, NodeAnalyzer> basicBlockAnalyzers = new HashMap<>();
     private final Map<String, EdgeAnalyzer> edgeAnalyzers = new HashMap<>();
 
-    // Contains the typing constraints for instructions.
+    // Contains the typing constraints for statements.
     private Map<Integer, Statement> instructions = new HashMap<>();
     // Contains the typing constraints for all terms.
     private Map<String, Variable> variables = new HashMap<>();
@@ -93,7 +93,7 @@ public class Inference implements shared.Phase {
 
         // Iterate the CFG.
         for(Map.Entry<Integer, BasicBlock> block : this.controlFlowGraph.getBasicBlocks().entrySet()) {
-            // Iterate the instructions.
+            // Iterate the statements.
             for(InstructionNode node : block.getValue().getInstructions()) {
                 // If we have an instruction, see what we can infer.
                 if(node.getInstruction() != null) {
@@ -110,7 +110,7 @@ public class Inference implements shared.Phase {
 
         printStatistics();
 
-        // logger.info(this.instructions);
+        // logger.info(this.statements);
         // logger.debug(this.variables);
         return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(this.instructions, this.variables);
     }
@@ -138,7 +138,7 @@ public class Inference implements shared.Phase {
         /*if(this.basicBlockAnalyzers.containsKey(name)) {
             NodeAnalyzer rule = this.basicBlockAnalyzers.get(name);
             rule = (NodeAnalyzer) rule.gatherAllConstraints(instruction);
-            this.addInstructions(rule.getInstructions());
+            this.addInstructions(rule.getStatements());
             this.addTerms(rule.getVariables());
         } else {
             logger.warn("Node Analysis: We don't have a rule for: " + name);
@@ -161,7 +161,7 @@ public class Inference implements shared.Phase {
         if (this.edgeAnalyzers.containsKey(name)) {
             EdgeAnalyzer rule = this.edgeAnalyzers.get(name);
             rule = (EdgeAnalyzer) rule.gatherConstraints(edge);
-            // this.addInstructions(rule.getInstructions());
+            // this.addInstructions(rule.getStatements());
             //this.addTerms(rule.getVariables());
         }
         if (!this.edgeAnalyzers.containsKey(name) && !StringUtils.equalsIgnoreCase(name, "unknown")) {

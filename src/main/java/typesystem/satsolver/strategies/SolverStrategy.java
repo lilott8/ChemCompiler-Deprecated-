@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Map;
 
 import chemical.epa.ChemTypes;
-import ir.statements.Statement;
+import ir.Statement;
 import shared.variable.Variable;
 
 /**

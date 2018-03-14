@@ -1,18 +1,18 @@
-package ir.statements;
+package ir;
 
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
 /**
- * @created: 3/6/18
+ * @created: 3/8/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class ManifestStatement extends BaseNop {
+public class SourceStatement extends BaseNop implements Nop {
 
-    public static final String INSTRUCTION = "MANIFEST";
+    public static final String INSTRUCTION = "SOURCE";
 
-    public ManifestStatement() {
+    public SourceStatement() {
         super(INSTRUCTION);
     }
 
@@ -33,6 +33,6 @@ public class ManifestStatement extends BaseNop {
 
     @Override
     public String toJson(String indent) {
-        return this.inputVariables.get(0).buildDeclaration();
+        return "";
     }
 }

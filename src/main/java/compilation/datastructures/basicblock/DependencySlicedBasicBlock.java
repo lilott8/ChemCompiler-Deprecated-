@@ -22,7 +22,7 @@ import compilation.symboltable.UsageGovernor;
 
 /**
  * Created by Tyson on 4/13/17.
- * Extends a basicblock with data dependence edges between instructions
+ * Extends a basicblock with data dependence edges between statements
  */
 public class DependencySlicedBasicBlock extends BasicBlock {
 
@@ -108,16 +108,16 @@ public class DependencySlicedBasicBlock extends BasicBlock {
         lastInstructions.remove(CFG.getExit());
         lastInstructions.remove(CFG.getEntry());
 
-        //ephemeral instructions from entry node
+        //ephemeral statements from entry node
         for (Integer i = 0; i < CFG.getBasicBlocks().get(0).getInstructions().size(); i++) {
             instructions.remove(0);
         }
-        //ephemeral instructions from exit node
+        //ephemeral statements from exit node
         for (Integer i = 0; i < CFG.getBasicBlock(last).getInstructions().size(); i++) {
             instructions.remove(instructions.size()-1);
         }
 
-        //ephemeral phi and sigma instructions
+        //ephemeral phi and sigma statements
         for (Integer i = instructions.size()-1; i > 0; i--) {
             InstructionNode instr = instructions.get(i);
             if (instr instanceof PHIInstruction || instr instanceof SigmaInstruction) {
@@ -309,7 +309,7 @@ public class DependencySlicedBasicBlock extends BasicBlock {
         for (String outputKey : instruction.getOutputSymbols()) {
             exitTable.add(instruction.getId());
 
-            // currently putting each instructions outputs into the exit table for the basic block,
+            // currently putting each statements outputs into the exit table for the basic block,
             // not necesarily needed, only outputs from last instruction needed
             //bb.getBasicBlockExitTable().put(outputKey, exitTable);
 

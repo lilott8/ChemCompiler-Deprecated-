@@ -1,18 +1,18 @@
-package ir.statements;
+package ir;
 
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
 /**
- * @created: 3/8/18
+ * @created: 3/7/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class SourceStatement extends BaseNop implements Nop {
+public class SinkStatement extends BaseNop {
 
-    public static final String INSTRUCTION = "SOURCE";
+    public static final String INSTRUCTION = "SINK";
 
-    public SourceStatement() {
+    public SinkStatement() {
         super(INSTRUCTION);
     }
 

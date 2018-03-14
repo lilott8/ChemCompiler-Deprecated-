@@ -1,4 +1,4 @@
-package ir.statements;
+package ir;
 
 
 import shared.variable.Property;
@@ -37,8 +37,10 @@ public class HeatStatement extends BaseNop {
     public String toJson(String indent) {
         StringBuilder sb = new StringBuilder("");
 
+        // Open object brace.
         sb.append("{").append(NL);
         sb.append("\"OPERATION\" :").append(NL);
+        // Open operation brace.
         sb.append("{").append(NL);
         sb.append("\"NAME\" : \"HEAT\",").append(NL);
         sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
@@ -69,7 +71,9 @@ public class HeatStatement extends BaseNop {
 
         sb.append("],").append(NL);
         sb.append("\"OUTPUTS\" : {}").append(NL);
+        // Close operation brace.
         sb.append("}").append(NL);
+        // Close object brace.
         sb.append("}").append(NL);
 
         return sb.toString();

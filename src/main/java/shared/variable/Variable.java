@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import chemical.epa.ChemTypes;
 import symboltable.Scope;
 
-import static ir.statements.Statement.NL;
+import static ir.Statement.NL;
 
 /**
  * @created: 2/5/18

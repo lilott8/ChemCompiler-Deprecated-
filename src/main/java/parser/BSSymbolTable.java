@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import ir.statements.Invoke;
-import ir.statements.InvokeStatement;
+import ir.Invoke;
+import ir.InvokeStatement;
 import parser.ast.AssignmentInstruction;
 import parser.ast.BranchStatement;
 import parser.ast.DetectStatement;
@@ -580,7 +580,7 @@ public class BSSymbolTable extends BSVisitor {
 
     public String toString() {
         return this.symbolTable.toString();
-        //return BSVisitor.instructions.toString();
+        //return BSVisitor.statements.toString();
     }
 
 

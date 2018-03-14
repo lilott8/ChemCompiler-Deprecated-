@@ -2,7 +2,7 @@ package shared.variable;
 
 import java.util.Set;
 
-import ir.statements.Statement;
+import ir.Statement;
 import symboltable.Scope;
 
 /**

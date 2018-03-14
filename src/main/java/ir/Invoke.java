@@ -1,4 +1,4 @@
-package ir.statements;
+package ir;
 
 import shared.variable.Method;
 

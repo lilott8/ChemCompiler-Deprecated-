@@ -70,12 +70,12 @@ public class BSTypeChecker extends BSVisitor implements TypeChecker {
     @Override
     public void solve() {
         logger.fatal("solveConstraints is commented out.");
-        //this.z3.solveConstraints(instructions, variables);
+        //this.z3.solveConstraints(statements, variables);
     }
 
     @Override
     public Step run() {
-        //if (!this.z3.solveConstraints(instructions, variables)) {
+        //if (!this.z3.solveConstraints(statements, variables)) {
         //    throw new ChemTrailsException("Program is not type checkable.");
         //}
         return this;

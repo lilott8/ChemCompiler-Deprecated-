@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import ir.graph.BlockGraph;
-import ir.statements.Statement;
+import ir.Statement;
 
 /**
  * @created: 2/8/18
@@ -24,8 +23,7 @@ public class Method {
     protected Set<ChemTypes> types = new HashSet<>();
     protected Set<Variable> parameters = new HashSet<>();
     protected String name;
-    protected BlockGraph statements = new BlockGraph();
-    protected List<Statement> instructions = new ArrayList<>();
+    protected List<Statement> statements = new ArrayList<>();
 
     public Method(String name) {
         this(name, new HashSet<>());
@@ -56,16 +54,12 @@ public class Method {
         return !this.types.isEmpty();
     }
 
-    public BlockGraph getBlockGraph() {
-        return this.statements;
-    }
-
     public void addStatement(Statement statement) {
-        this.statements.addToBlock(statement);
+        this.statements.add(statement);
     }
 
-    public void addStatements(BlockGraph graph) {
-        this.statements = graph;
+    public void addStatements(List<Statement> statementList) {
+        this.statements.addAll(statementList);
     }
 
     public String getName() {
@@ -90,11 +84,11 @@ public class Method {
         return sb.toString();
     }
 
-    public List<Statement> getInstructions() {
-        return this.instructions;
+    public List<Statement> getStatements() {
+        return this.statements;
     }
 
-    public void setInstructions(Statement statement) {
-        this.instructions.add(statement);
+    public void setStatements(Statement statement) {
+        this.statements.add(statement);
     }
 }

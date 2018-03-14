@@ -1,4 +1,4 @@
-package ir.statements;
+package ir;
 
 import shared.variable.Variable;
 import typesystem.elements.Formula;
@@ -34,6 +34,29 @@ public class LoopStatement extends BaseConditional {
     @Override
     public String toJson(String indent) {
         StringBuilder sb = new StringBuilder("");
+        // Open object brace.
+        sb.append("{").append(NL);
+        sb.append("\"NAME\" : \"LOOP\",").append(NL);
+        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"CLASSIFICATION\" : \"CFG_LOOP\",").append(NL);
+        sb.append("\"CONDITION\" : \"").append("x<4").append("\",").append(NL);
+        // Open operations bracket.
+        sb.append("\"OPERATIONS\" : [").append(NL);
+        int x = 0;
+        for (Statement s : this.trueBranch) {
+
+            sb.append(s.toJson()).append(NL);
+
+            if (x < this.trueBranch.size() - 1) {
+                sb.append(",").append(NL);
+            }
+            x++;
+        }
+        // Close operations bracket.
+        sb.append("]").append(NL);
+
+        // Close object brace.
+        sb.append("}").append(NL);
         return sb.toString();
     }
 

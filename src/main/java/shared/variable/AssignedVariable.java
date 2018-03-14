@@ -5,7 +5,7 @@ import java.util.Set;
 import chemical.epa.ChemTypes;
 import symboltable.Scope;
 
-import static ir.statements.Statement.NL;
+import static ir.Statement.NL;
 
 /**
  * @created: 3/12/18

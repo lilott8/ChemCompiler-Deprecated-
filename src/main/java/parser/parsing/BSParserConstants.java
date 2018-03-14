@@ -284,7 +284,7 @@ public interface BSParserConstants {
             "\"-\"",
             "\"*\"",
             "\"||\"",
-            "\"instructions\"",
+            "\"statements\"",
             "\"true\"",
             "\"false\"",
             "\",\"",

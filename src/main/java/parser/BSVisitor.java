@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
-import ir.statements.Statement;
+import ir.Statement;
 import parser.ast.FalseLiteral;
 import parser.ast.Identifier;
 import parser.ast.IntegerLiteral;

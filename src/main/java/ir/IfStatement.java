@@ -1,4 +1,4 @@
-package ir.statements;
+package ir;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,7 +61,49 @@ public class IfStatement extends BaseConditional {
 
     @Override
     public String toJson(String indent) {
-        StringBuilder sb = new StringBuilder("");
+        // Open the object brace.
+        StringBuilder sb = new StringBuilder("{");
+        sb.append("\"OPERATION\" : {").append(NL);
+        sb.append("\"NAME\" : \"IF\",").append(NL);
+        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"CLASSIFICATION\" : \"CFG_BRANCH\",").append(NL);
+        sb.append("\"CONDITION\" : \"").append("x>4").append("\",").append(NL);
+        // Open true branch.
+        sb.append("\"TRUE_BRANCH\" : [").append(NL);
+        int x = 0;
+        for (Statement s : this.trueBranch) {
+            //sb.append("{").append(NL);
+            sb.append(s.toJson());
+            //sb.append("}");
+            if (x < this.trueBranch.size() - 1) {
+                sb.append(",");
+            }
+            sb.append(NL);
+            x++;
+        }
+        // Close true branch.
+        sb.append("]").append(NL);
+        x = 0;
+        if (!this.falseBranch.isEmpty()) {
+            sb.append(",").append(NL);
+            // Open false branch.
+            sb.append("\"FALSE_BRANCH\" : [").append(NL);
+            for (Statement s : this.falseBranch) {
+                //sb.append("{").append(NL);
+                sb.append(s.toJson());
+                //sb.append("}");
+                if (x < this.falseBranch.size() - 1) {
+                    sb.append(",");
+                }
+                sb.append(NL);
+                x++;
+            }
+            // Close false branch.
+            sb.append("]").append(NL);
+        }
+        // Close Operation brace.
+        sb.append("}").append(NL);
+        sb.append("}").append(NL);
         return sb.toString();
     }
 

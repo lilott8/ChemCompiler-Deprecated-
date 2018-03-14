@@ -189,7 +189,7 @@ public class MFSimSSADAG {
                         in.addSuccessor(node.get(instruction.getId()).getID());
                         break;
                     }
-                    //in.addSuccessor(nodes.get(bb.getInstructions().get(0).getId()).getID());
+                    //in.addSuccessor(nodes.get(bb.getStatements().get(0).getId()).getID());
                 }
                 else {
                     Integer succ = 0;

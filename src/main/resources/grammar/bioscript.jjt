@@ -83,7 +83,7 @@ TOKEN : {
 |   <MINUS: "-">
 |   <MULTIPLY: "*">
 |   <OR: "||">
-|   <INSTRUCTIONS: "instructions">
+|   <INSTRUCTIONS: "statements">
 |   <TRUE: "true">
 |   <FALSE: "false">
 |   <COMMA: ",">

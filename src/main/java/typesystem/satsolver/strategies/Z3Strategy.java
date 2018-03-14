@@ -17,8 +17,8 @@ import java.util.Set;
 
 import chemical.epa.ChemTypes;
 import config.ConfigFactory;
-import ir.statements.MixStatement;
-import ir.statements.Statement;
+import ir.MixStatement;
+import ir.Statement;
 import shared.variable.Variable;
 import typesystem.rules.Rule;
 import typesystem.satsolver.constraints.SMT.Assign;
@@ -90,7 +90,7 @@ public class Z3Strategy implements SolverStrategy {
 
         if (ConfigFactory.getConfig().isDebug()) {
             // logger.info(variables);
-            // logger.info(instructions);
+            // logger.info(statements);
             logger.info(sb);
         }
         return this.solveWithSMT2(sb.toString());

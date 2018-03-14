@@ -1,26 +1,19 @@
-package ir.statements;
+package ir;
 
-import shared.variable.Method;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
 /**
- * @created: 3/2/18
+ * @created: 3/6/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class InvokeStatement extends BaseStatement implements Invoke {
+public class StationaryStatement extends BaseNop {
 
-    private Method method;
+    public static final String INSTRUCTION = "STATIONARY";
 
-    public InvokeStatement(Method method) {
-        super(method.getName());
-        this.containsInvoke = true;
-    }
-
-    @Override
-    public Method getMethod() {
-        return this.method;
+    public StationaryStatement() {
+        super(INSTRUCTION);
     }
 
     @Override
@@ -40,9 +33,6 @@ public class InvokeStatement extends BaseStatement implements Invoke {
 
     @Override
     public String toJson(String indent) {
-        StringBuilder sb = new StringBuilder("");
-
-
-        return sb.toString();
+        return this.inputVariables.get(0).buildDeclaration();
     }
 }

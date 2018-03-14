@@ -1,18 +1,18 @@
-package ir.statements;
+package ir;
 
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
 /**
- * @created: 3/7/18
+ * @created: 3/6/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class SinkStatement extends BaseNop {
+public class ModuleStatement extends BaseNop {
 
-    public static final String INSTRUCTION = "SINK";
+    public static final String INSTRUCTION = "MODULE";
 
-    public SinkStatement() {
+    public ModuleStatement() {
         super(INSTRUCTION);
     }
 
@@ -33,6 +33,6 @@ public class SinkStatement extends BaseNop {
 
     @Override
     public String toJson(String indent) {
-        return "";
+        return this.inputVariables.get(0).buildDeclaration();
     }
 }

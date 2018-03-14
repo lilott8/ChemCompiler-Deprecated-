@@ -1,4 +1,4 @@
-package ir.statements;
+package ir;
 
 /**
  * @created: 3/2/18
