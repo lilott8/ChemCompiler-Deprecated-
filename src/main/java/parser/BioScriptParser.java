@@ -62,9 +62,8 @@ public class BioScriptParser implements Phase {
                 //logger.info(this.jsonConverter);
                 //logger.fatal("We are not using the IR");
                 program.accept(this.irConverter);
-                logger.info(this.irConverter);
-                ((BSIRConverter)this.irConverter).writeToDisk();
-                logger.info(((BSIRConverter) this.irConverter).export());
+                // logger.info(this.irConverter);
+                logger.info(((BSIRConverter) this.irConverter).toString(""));
             } catch (ParseException e) {
                 logger.error(e);
                 if (this.config.isDebug()) {

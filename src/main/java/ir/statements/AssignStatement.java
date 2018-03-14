@@ -27,6 +27,7 @@ public class AssignStatement extends BaseStatement implements Assign {
 
     public AssignStatement() {
         super(INSTRUCTION);
+        this.isAssign = true;
     }
 
     @Override

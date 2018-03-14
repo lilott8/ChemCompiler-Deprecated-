@@ -33,4 +33,6 @@ public interface Statement extends Vertex, SMTSolver, Exportable {
 
     boolean fallsThrough();
     boolean isBranch();
+
+    String print(String indent);
 }

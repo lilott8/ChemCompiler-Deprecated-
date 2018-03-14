@@ -84,18 +84,22 @@ public abstract class BaseConditional extends BaseStatement implements Condition
         this.scopeName = scopeName;
     }
 
-    public void addTrueBranch(Statement statement) {
+    @Override
+    public void addToTrueBranch(Statement statement) {
         this.trueBranch.add(statement);
     }
 
-    public void addFalseBranch(Statement statement) {
+    @Override
+    public void addToFalseBranch(Statement statement) {
         this.falseBranch.add(statement);
     }
 
+    @Override
     public List<Statement> getTrueBranch() {
         return trueBranch;
     }
 
+    @Override
     public List<Statement> getFalseBranch() {
         return falseBranch;
     }

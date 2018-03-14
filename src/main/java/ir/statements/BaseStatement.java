@@ -22,6 +22,7 @@ public abstract class BaseStatement implements Statement {
     private static AtomicInteger idCounter = new AtomicInteger(0);
 
     protected boolean isBranch = false;
+    protected boolean isAssign = false;
     protected boolean fallsThrough = false;
     protected boolean containsInvoke = false;
     protected Variable outputVariable;
@@ -111,8 +112,22 @@ public abstract class BaseStatement implements Statement {
         this.fallsThrough = fallsThrough;
     }
 
-    public String toString() {
-        return String.format("%s-%d", this.name, this.id);
+    public String print(String indent) {
+        String name;
+        if (!this.isAssign && !this.isBranch) {
+            if (this.inputVariables.isEmpty()) {
+                name = this.outputVariable.getName();
+            } else {
+                name = this.inputVariables.get(0).getName();
+            }
+        } else {
+            if (isAssign) {
+                name = "assign";
+            } else {
+                name = "branch";
+            }
+        }
+        return String.format("%s%s%s-%d (Input: %s)", indent, "\t", this.name, this.id, name);
     }
 
     protected String propertyToJson(String property) {
