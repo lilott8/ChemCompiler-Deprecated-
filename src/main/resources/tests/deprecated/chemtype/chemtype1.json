@@ -254,7 +254,8 @@
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
                 "NAME" : "a"
-              }            },
+              }
+            },
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {

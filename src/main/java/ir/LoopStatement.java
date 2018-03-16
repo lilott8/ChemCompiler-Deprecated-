@@ -36,6 +36,7 @@ public class LoopStatement extends BaseConditional {
         StringBuilder sb = new StringBuilder("");
         // Open object brace.
         sb.append("{").append(NL);
+        sb.append("\"OPERATION\" : {").append(NL);
         sb.append("\"NAME\" : \"LOOP\",").append(NL);
         sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
         sb.append("\"CLASSIFICATION\" : \"CFG_LOOP\",").append(NL);
@@ -55,6 +56,7 @@ public class LoopStatement extends BaseConditional {
         // Close operations bracket.
         sb.append("]").append(NL);
 
+        sb.append("}").append(NL);
         // Close object brace.
         sb.append("}").append(NL);
         return sb.toString();

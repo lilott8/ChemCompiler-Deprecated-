@@ -51,7 +51,7 @@ public class SplitStatement extends BaseStatement {
         sb.append("\"CLASSIFICATION\" : \"SPLIT\",").append(NL);
         sb.append("\"INPUTS\" : [").append(NL);
         sb.append("{").append(NL);
-        sb.append(this.inputVariables.get(0).buildInput()).append(NL);
+        sb.append(this.inputVariables.get(0).buildUsage()).append(NL);
         sb.append("}").append(NL);
         // Closes the open bracket.
         sb.append("],").append(NL);
@@ -59,12 +59,17 @@ public class SplitStatement extends BaseStatement {
         int splitSize = Integer.parseInt((String) this.properties.get(Property.QUANTITY).getValue());
         for (int x = 0; x <= splitSize; x++) {
             sb.append("{").append(NL);
+            sb.append("\"VARIABLE\" :").append(NL);
+            sb.append("{").append(NL);
             sb.append("\"ID\" : \"").append(this.outputVariable.getName()).append(x).append("\",").append(NL);
             sb.append("\"NAME\" : \"").append(this.outputVariable.getName()).append(x).append("\",").append(NL);
             sb.append("\"TYPE\" : \"CHEMICAL\",").append(NL);
             sb.append(this.inputVariables.get(0).addInferredTypes());
-            sb.append(", ").append(NL);
-            sb.append("\"VOLUME\" : {}");
+            if (this.properties.containsKey(Property.VOLUME)) {
+                sb.append(", ").append(NL);
+                sb.append("\"VOLUME\" : {}");
+            }
+            sb.append("}");
             sb.append("}");
             if (x < splitSize - 1) {
                 sb.append(",").append(NL);

@@ -45,9 +45,7 @@ public class Experiment implements Stringify {
             // Open INPUTS.
             sb.append("\"INPUTS\" : [").append(NL);
             for (int x = 0; x < this.symbols.getInputs().size(); x++) {
-                sb.append("{").append(NL);
                 sb.append(this.symbols.getInputs().get(x).buildDeclaration());
-                sb.append(NL).append("}").append(NL);
                 if (x < this.symbols.getInputs().size() - 1) {
                     sb.append(",").append(NL);
                 }
@@ -77,10 +75,10 @@ public class Experiment implements Stringify {
         // Close the OBJECT.
         sb.append("}");
 
-        //logger.error("You are copying json to the clipboard!");
-        // StringSelection selection = new StringSelection(sb.toString());
-        // java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        // clipboard.setContents(selection, selection);
+        // logger.error("You are copying json to the clipboard!");
+        StringSelection selection = new StringSelection(sb.toString());
+        java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, selection);
         return sb.toString();
     }
 }

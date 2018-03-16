@@ -28,6 +28,7 @@ import parser.ast.RepeatStatement;
 import parser.ast.SplitStatement;
 import parser.ast.Stationary;
 import shared.variable.AssignedVariable;
+import shared.variable.DefinedVariable;
 import shared.variable.Method;
 import shared.variable.Property;
 import shared.variable.SensorVariable;
@@ -125,7 +126,7 @@ public class BSSymbolTable extends BSVisitor {
         n.f2.accept(this);
 
         // Build the symbol.
-        Variable f2 = new AssignedVariable(this.name);
+        Variable f2 = new DefinedVariable(this.name);
         f2.addScope(this.symbolTable.getCurrentScope());
         f2.addTypingConstraints(this.getTypingConstraints(f2));
         addVariable(f2);

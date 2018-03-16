@@ -47,4 +47,9 @@ public class Property<Value> extends Variable<Value> {
     public String buildDeclaration() {
         return null;
     }
+
+    @Override
+    public String buildUsage() {
+        return null;
+    }
 }

@@ -87,7 +87,7 @@ public class DetectStatement extends BaseStatement {
         // Start Operation.
         sb.append("{").append(NL);
         sb.append("\"NAME\" : \"").append(sensor.getName()).append("\", ").append(NL);
-        sb.append("\"ID\" :").append(this.id).append(",").append(NL);
+        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
         sb.append("\"CLASSIFICATION\" : \"DETECT\",").append(NL);
         // Open the input array.
         sb.append("\"INPUTS\" : [").append(NL);
@@ -118,13 +118,14 @@ public class DetectStatement extends BaseStatement {
         sb.append("],").append(NL);
         // Add the outputs (there are none).
         sb.append("\"OUTPUTS\" : [").append(NL);
-        sb.append("{").append(NL);
-        sb.append("\"SENSOR_DECLARATION\" : {").append(NL);
-        sb.append("\"ID\" : \"").append(this.outputVariable.getName()).append("\",").append(NL);
-        sb.append("\"NAME\" : \"").append(this.outputVariable.getName()).append("\",").append(NL);
-        sb.append("\"TYPE\" : \"SENSOR\"").append(NL);
-        sb.append("}").append(NL);
-        sb.append("}").append(NL);
+        // sb.append("{").append(NL);
+        // sb.append("\"SENSOR_DECLARATION\" : {").append(NL);
+        // sb.append("\"ID\" : \"").append(this.outputVariable.getName()).append("\",").append(NL);
+        // sb.append("\"NAME\" : \"").append(this.outputVariable.getName()).append("\",").append(NL);
+        // sb.append("\"TYPE\" : \"SENSOR\"").append(NL);
+        // sb.append("}").append(NL);
+        // sb.append("}").append(NL);
+        sb.append(this.outputVariable.buildDeclaration()).append(NL);
         // Close the output array.
         sb.append("]").append(NL);
         // Close Operation.

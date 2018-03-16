@@ -47,11 +47,17 @@ public class HeatStatement extends BaseNop {
         sb.append("\"CLASSIFICATION\" : \"HEAT\",").append(NL);
         sb.append("\"INPUTS\" : [").append(NL);
         // The Variable.
+        // sb.append("{").append(NL);
+        // sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
         sb.append("{").append(NL);
-        sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
-        sb.append(this.inputVariables.get(0).buildReference()).append(NL);
+        sb.append(this.inputVariables.get(0).buildUsage());
+        // BuildUsage cannot close this.
+        sb.append("}, ").append(NL);
+        //sb.append("\"VARIABLE\" : ").append(NL);
+        //sb.append("\"").append(this.inputVariables.get(0).getName()).append("\"").append(NL);
+
         // Close the Variable.
-        sb.append("},").append(NL);
+        //sb.append("},").append(NL);
 
         // The Temperature.
         sb.append("{").append(NL);
@@ -70,7 +76,7 @@ public class HeatStatement extends BaseNop {
         sb.append(this.propertyToJson(Property.TIME));
 
         sb.append("],").append(NL);
-        sb.append("\"OUTPUTS\" : {}").append(NL);
+        sb.append("\"OUTPUTS\" : []").append(NL);
         // Close operation brace.
         sb.append("}").append(NL);
         // Close object brace.

@@ -62,7 +62,8 @@ public class IfStatement extends BaseConditional {
     @Override
     public String toJson(String indent) {
         // Open the object brace.
-        StringBuilder sb = new StringBuilder("{");
+        StringBuilder sb = new StringBuilder("");
+        sb.append("{").append(NL);
         sb.append("\"OPERATION\" : {").append(NL);
         sb.append("\"NAME\" : \"IF\",").append(NL);
         sb.append("\"ID\" : ").append(this.id).append(",").append(NL);

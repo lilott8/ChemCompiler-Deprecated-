@@ -27,11 +27,13 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
     protected Value value;
     protected List<Integer> properties = new ArrayList<>();
     protected int id;
+    protected boolean isVariable = false;
 
     {
         this.id = this.getNewId();
     }
     //abstract public String buildReference();
+    abstract public String buildUsage();
 
     abstract public String buildDeclaration();
 
@@ -98,6 +100,10 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
         return this.types;
     }
 
+    public boolean isVariable() {
+        return isVariable;
+    }
+
     public String toString() {
         String ret = this.name + "\t" + this.types;
         if (this.scope != null) {
@@ -155,7 +161,16 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
     }
 
     public String buildReference() {
-        return String.format("\"VARIABLE\" : {%s \"NAME\" : \"%s\" %s}", NL, this.name, NL);
+        StringBuilder sb = new StringBuilder();
+        sb.append("{").append(NL);
+        sb.append("\"INPUT_TYPE\" : \"VARIABLE\", ").append(NL);
+        sb.append("\"VARIABLE\" : ").append(NL);
+        sb.append("{").append(NL);
+        sb.append("\"NAME\" : \"").append(this.name).append("\"").append(NL);
+        sb.append("}").append(NL);
+        sb.append("}").append(NL);
+
+        return sb.toString();
     }
 
     public String redeclare() {

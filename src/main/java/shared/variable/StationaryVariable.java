@@ -3,7 +3,7 @@ package shared.variable;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import ir.Statement;
+import static ir.Statement.NL;
 import symboltable.Scope;
 
 /**
@@ -32,13 +32,25 @@ public class StationaryVariable<Value> extends Variable<Value> {
     @Override
     public String buildDeclaration() {
         StringBuilder sb = new StringBuilder();
-
-        sb.append("\"VARIABLE_DECLARATION\" : {").append(Statement.NL);
-        sb.append("\"ID\" : ").append(this.id).append(",").append(Statement.NL);
-        sb.append("\"NAME\" : \"").append(this.name).append("\",").append(Statement.NL);
+        sb.append("{").append(NL);
+        sb.append("\"VARIABLE_DECLARATION\" : {").append(NL);
+        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"TYPE\" : \"STATIONARY\", ");
         sb.append(this.addInferredTypes());
-        sb.append("}").append(Statement.NL);
+        sb.append("}").append(NL);
+        sb.append("}").append(NL);
+
+        return sb.toString();
+    }
+
+    public String buildUsage() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
+        sb.append("\"STATIONARY\" : {").append(NL);
+        sb.append("\"NAME\" : \"").append(this.name).append("\"").append(NL);
+        sb.append("}").append(NL);
 
         return sb.toString();
     }

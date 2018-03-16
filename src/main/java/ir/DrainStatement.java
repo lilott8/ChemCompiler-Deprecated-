@@ -58,16 +58,20 @@ public class DrainStatement extends BaseStatement {
         // Start Operation.
         sb.append("{").append(NL);
         sb.append("\"NAME\" : \"DRAIN\", ").append(NL);
-        sb.append("\"ID\" :").append(this.id).append(",").append(NL);
+        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
         sb.append("\"CLASSIFICATION\" : \"OUTPUT\",").append(NL);
         // Open the input array.
         sb.append("\"INPUTS\" : [").append(NL);
         sb.append("{").append(NL);
-        sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
-        sb.append("\"STATIONARY\" : {").append(NL);
-        sb.append("\"NAME\" : \"").append(this.inputVariables.get(0).getName()).append("\"").append(NL);
+        sb.append(this.inputVariables.get(0).buildUsage()).append(NL);
+        // buildUsage cannot close this tag.
         sb.append("}").append(NL);
-        sb.append("}").append(NL);
+        // sb.append("{").append(NL);
+        // sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
+        // sb.append("\"STATIONARY\" : {").append(NL);
+        // sb.append("\"NAME\" : \"").append(this.inputVariables.get(0).getName()).append("\"").append(NL);
+        // sb.append("}").append(NL);
+        //sb.append("}").append(NL);
         // Close the input array.
         sb.append("],").append(NL);
         // Add the outputs (there are none).

@@ -8,8 +8,8 @@ instructions
 ab = detect test on y for 30
 
 if (ab < 3) {
-    heat a at 30
-    heat b at 50 for 90
+    heat chemical1 at 30
+    heat chemical2 at 50 for 90
 }
 
 heat x at 40

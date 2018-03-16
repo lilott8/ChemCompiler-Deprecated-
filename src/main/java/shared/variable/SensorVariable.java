@@ -2,7 +2,7 @@ package shared.variable;
 
 import java.util.Set;
 
-import ir.Statement;
+import static ir.Statement.NL;
 import symboltable.Scope;
 
 /**
@@ -32,13 +32,20 @@ public class SensorVariable<Value> extends Variable<Value> {
     public String buildDeclaration() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\"SENSOR_DECLARATION\" : {").append(Statement.NL);
-        sb.append("\"ID\" : ").append(this.id).append(",").append(Statement.NL);
-        sb.append("\"NAME\" : \"").append(this.name).append("\",").append(Statement.NL);
-        sb.append("\"TYPE\" : \"SENSOR\", ").append(Statement.NL);
+        sb.append("{").append(NL);
+        sb.append("\"SENSOR_DECLARATION\" : {").append(NL);
+        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
+        sb.append("\"TYPE\" : \"SENSOR\", ").append(NL);
         sb.append(this.addInferredTypes());
-        sb.append("}").append(Statement.NL);
+        sb.append("}").append(NL);
+        sb.append("}").append(NL);
 
         return sb.toString();
+    }
+
+    @Override
+    public String buildUsage() {
+        return null;
     }
 }
