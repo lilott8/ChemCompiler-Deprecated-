@@ -41,8 +41,8 @@ public class BSTypeChecker extends BSVisitor implements TypeChecker {
     // How we solve constraints.
     private SolverStrategy z3 = new Z3Strategy();
 
-    public BSTypeChecker(SymbolTable symbolTable) {
-        super(symbolTable);
+    public BSTypeChecker() {
+        super();
 
         StringBuilder sb = new StringBuilder();
 
@@ -52,14 +52,14 @@ public class BSTypeChecker extends BSVisitor implements TypeChecker {
             sb.append("(declare-const ").append(chemtype.getValue()).append(" Bool)").append(NL);
         }
 
-        for (Map.Entry<String, Variable> entry : this.symbolTable.getSymbols().entrySet()) {
+        for (Map.Entry<String, Variable> entry : SymbolTable.INSTANCE.getSymbols().entrySet()) {
             sb.append("; Initialize declares for: ").append(SolverStrategy.getSMTName(entry.getValue().getName())).append(NL);
             for (Map.Entry<Integer, ChemTypes> types : ChemTypes.getIntegerChemTypesMap().entrySet()) {
                 sb.append("(declare-const ").append(SolverStrategy.getSMTName(entry.getValue().getScopedName(), types.getValue())).append(" Bool)").append(NL);
             }
         }
 
-        for (Map.Entry<String, Variable> i : this.symbolTable.getSymbols().entrySet()) {
+        for (Map.Entry<String, Variable> i : SymbolTable.INSTANCE.getSymbols().entrySet()) {
             sb.append(this.buildAssertsForNumberMaterial(i.getValue()));
         }
 

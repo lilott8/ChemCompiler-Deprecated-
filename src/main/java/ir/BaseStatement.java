@@ -53,6 +53,16 @@ public abstract class BaseStatement implements Statement {
         this.types.addAll((Set<ChemTypes>) variable.getTypes());
     }
 
+    public void addInputVariables(List<Variable> variables) {
+        for (Variable v : variables) {
+            this.addInputVariable(v);
+        }
+    }
+
+    public void clearInputVariables() {
+        this.inputVariables.clear();
+    }
+
     @Override
     public List<Variable> getInputVariables() {
         return this.inputVariables;

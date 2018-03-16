@@ -53,8 +53,6 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
 
     private AtomicInteger instructionId = new AtomicInteger(0);
 
-    protected SymbolTable symbolTable = new SymbolTable();
-
     private Deque<String> scope = new ArrayDeque<>();
 
     public static final Logger logger = LogManager.getLogger(BSVisitor.class);
@@ -85,14 +83,6 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     }
 
     public BSVisitor() {}
-
-    public BSVisitor(SymbolTable symbolTable) {
-        this.symbolTable = symbolTable;
-    }
-
-    public SymbolTable getSymbolTable() {
-        return this.symbolTable;
-    }
 
     protected String getCurrentScope() {
         return this.scope.peek();
@@ -139,7 +129,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     @Override
     public BSVisitor visit(IntegerLiteral n) {
         this.name = String.format("%s_%s", CONST, n.f0.toString());
-        this.constant = new Property<Integer>(this.name, this.symbolTable.getScopeByName(this.getCurrentScope()));
+        this.constant = new Property<Integer>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
         this.value = n.f0.toString();
         this.constant.setValue(Integer.parseInt(n.f0.toString()));
         this.constant.addTypingConstraint(NAT);

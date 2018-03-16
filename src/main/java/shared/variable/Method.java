@@ -5,7 +5,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
@@ -21,7 +23,7 @@ public class Method {
     public static final Logger logger = LogManager.getLogger(Method.class);
 
     protected Set<ChemTypes> types = new HashSet<>();
-    protected Set<Variable> parameters = new HashSet<>();
+    protected Map<String, Variable> parameters = new LinkedHashMap<>();
     protected String name;
     protected List<Statement> statements = new ArrayList<>();
     protected Statement returnStatement;
@@ -36,15 +38,19 @@ public class Method {
     }
 
     public void addParameter(Variable var) {
-        this.parameters.add(var);
+        this.parameters.put(var.getName(), var);
     }
 
     public void addParameters(List<Variable> vars) {
-        this.parameters.addAll(vars);
+        for (Variable v : vars) {
+            this.addParameter(v);
+        }
     }
 
     public void addParameters(Set<Variable> vars) {
-        this.parameters.addAll(vars);
+        for (Variable v : vars) {
+            this.addParameter(v);
+        }
     }
 
     public void addReturnTypes(Set<ChemTypes> ret) {
@@ -79,7 +85,7 @@ public class Method {
         return this.types;
     }
 
-    public Set<Variable> getParameters() {
+    public Map<String, Variable> getParameters() {
         return this.parameters;
     }
 

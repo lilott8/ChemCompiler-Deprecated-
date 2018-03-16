@@ -37,9 +37,9 @@ public class Experiment implements Stringify {
         StringBuilder sb = new StringBuilder("{").append(NL);
         // Open the EXPERIMENT.
         sb.append("\"EXPERIMENT\" : {").append(NL);
-        for (Map.Entry<String, List<Statement>> entry : this.statements.entrySet()) {
-            sb.append("\"NAME\" : \"").append(entry.getKey()).append("\",").append(NL);
-            List<Statement> method = entry.getValue();
+        //for (Map.Entry<String, List<Statement>> entry : this.statements.entrySet()) {
+            sb.append("\"NAME\" : \"").append(SymbolTable.DEFAULT_SCOPE).append("\",").append(NL);
+            List<Statement> method = this.statements.get(SymbolTable.DEFAULT_SCOPE);
             Statement statement;
 
             // Open INPUTS.
@@ -68,7 +68,7 @@ public class Experiment implements Stringify {
             }
             // Closes INSTRUCTIONS.
             sb.append("]").append(NL);
-        }
+        //}
         //sb.append("]").append(NL);
         // Close the EXPERIMENT.
         sb.append("}").append(NL);

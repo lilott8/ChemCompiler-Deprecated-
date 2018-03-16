@@ -49,14 +49,14 @@ public class BioScriptParser implements Phase {
                 program.accept(this.symbolTable);
                 logger.info(this.symbolTable);
                 if (!this.config.getErrorLevel().disabled()) {
-                    this.typeChecker = new BSTypeChecker(this.symbolTable.getSymbolTable());
+                    this.typeChecker = new BSTypeChecker();
                     program.accept(this.typeChecker);
                     this.typeChecker.run();
                     ((TypeChecker) this.typeChecker).solve();
                 } else {
                     logger.error("Type checking has been disabled.");
                 }
-                this.irConverter = new BSIRConverter(this.symbolTable.getSymbolTable());
+                this.irConverter = new BSIRConverter();
                 program.accept(this.irConverter);
                 logger.info(this.irConverter);
             } catch (ParseException e) {

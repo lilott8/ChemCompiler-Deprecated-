@@ -20,7 +20,8 @@ import shared.variable.Variable;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class SymbolTable {
+public enum SymbolTable {
+    INSTANCE;
 
     public static final String DEFAULT_SCOPE = "DEFAULT";
 
@@ -38,7 +39,7 @@ public class SymbolTable {
     // List of input variables.  These are treated differently.
     private List<Variable> inputs = new ArrayList<>();
 
-    public SymbolTable() {
+    SymbolTable() {
         // Add the default scope to the stack; it has no parent.
         Scope origins = new Scope(DEFAULT_SCOPE);
         // Push the scope to the stack.
@@ -100,6 +101,18 @@ public class SymbolTable {
 
         // Push it back onto the stack!
         this.scopeStack.push(s);
+    }
+
+    @Nullable
+    public Scope findScopeForVar(Variable var) {
+        Scope s = null;
+        for (Map.Entry<String, Scope> entry : this.scopes.entrySet()) {
+            if (entry.getValue().getVariables().containsKey(var.getName())) {
+                s = entry.getValue();
+                break;
+            }
+        }
+        return s;
     }
 
     public void addMethod(Method method) {
