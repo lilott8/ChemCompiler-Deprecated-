@@ -10,7 +10,13 @@ import java.util.Map;
  * @project: ChemicalCompiler
  */
 public class StatementBlock {
+
+    private String scope;
     private Map<Integer, Statement> statements = new LinkedHashMap<>();
+
+    public StatementBlock(String scope) {
+        this.scope = scope;
+    }
 
     public void addStatement(Statement s) {
         this.statements.put(s.getId(), s);
@@ -32,5 +38,9 @@ public class StatementBlock {
 
     public void clear() {
         this.statements.clear();
+    }
+
+    public String getScope() {
+        return this.scope;
     }
 }

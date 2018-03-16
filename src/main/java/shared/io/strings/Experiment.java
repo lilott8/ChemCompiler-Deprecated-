@@ -76,9 +76,9 @@ public class Experiment implements Stringify {
         sb.append("}");
 
         // logger.error("You are copying json to the clipboard!");
-        StringSelection selection = new StringSelection(sb.toString());
-        java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(selection, selection);
+        // StringSelection selection = new StringSelection(sb.toString());
+        // java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        // clipboard.setContents(selection, selection);
         return sb.toString();
     }
 }

@@ -19,6 +19,8 @@ public interface Statement extends Vertex, SMTSolver, Exportable {
 
     List<Variable> getInputVariables();
 
+    Variable getOutputVariable();
+
     Map<String, Variable> getProperties();
     void addInputVariable(Variable variable);
 

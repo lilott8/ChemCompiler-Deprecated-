@@ -24,6 +24,7 @@ public class Method {
     protected Set<Variable> parameters = new HashSet<>();
     protected String name;
     protected List<Statement> statements = new ArrayList<>();
+    protected Statement returnStatement;
 
     public Method(String name) {
         this(name, new HashSet<>());
@@ -60,6 +61,14 @@ public class Method {
 
     public void addStatements(List<Statement> statementList) {
         this.statements.addAll(statementList);
+    }
+
+    public Statement getReturnStatement() {
+        return returnStatement;
+    }
+
+    public void setReturnStatement(Statement returnStatement) {
+        this.returnStatement = returnStatement;
     }
 
     public String getName() {

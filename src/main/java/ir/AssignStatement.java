@@ -88,38 +88,11 @@ public class AssignStatement extends BaseStatement implements Assign {
         if (this.rightOp.containsInvoke()) {
             logger.warn("not addressing invocations yet.");
         }
-        /*
-              {
-        "OPERATION" : {
-          "NAME" : "Mix",
-          "ID" : "1294012199300654748",
-          "CLASSIFICATION" : "MIX",
-          "INPUTS" : [
-            {
-              "INPUT_TYPE" : "VARIABLE",
-              "VARIABLE" : {
-                "NAME" : "Cycloheptatriene2"
-              }
-            },
-            {
-              "INPUT_TYPE" : "VARIABLE",
-              "VARIABLE" : {
-                "NAME" : "Ammonium Dichromate"
-              }
-            }
-          ],
-          "OUTPUTS" : [
-            {
-              "VARIABLE_DECLARATION" : {
-                "ID" : "d",
-                "TYPE" : "VARIABLE",
-                "NAME" : "d"
-              }
-            }
-          ]
+
+        if (this.containsInvoke) {
+            logger.error("We have a function call!");
         }
-      }
-         */
+
         return this.rightOp.toJson();
     }
 }

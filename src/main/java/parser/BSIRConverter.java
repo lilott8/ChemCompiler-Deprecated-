@@ -22,6 +22,7 @@ import ir.ManifestStatement;
 import ir.MixStatement;
 import ir.ModuleStatement;
 import ir.Nop;
+import ir.ReturnStatement;
 import ir.SinkStatement;
 import ir.SourceStatement;
 import ir.SplitStatement;
@@ -69,7 +70,7 @@ public class BSIRConverter extends BSVisitor {
     public BSIRConverter(SymbolTable symbolTable) {
         super(symbolTable);
         this.methodStack.push(SymbolTable.DEFAULT_SCOPE);
-        this.listBlocks.push(new StatementBlock());
+        this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
         this.functions.put(SymbolTable.DEFAULT_SCOPE, new ArrayList<>());
     }
 
@@ -183,7 +184,7 @@ public class BSIRConverter extends BSVisitor {
         // Get the name.
         n.f0.accept(this);
 
-        this.method = this.symbolTable.getMethods().get(this.name);
+        this.method.addStatements(this.functions.get(this.name));
 
         Statement invoke = new InvokeStatement(this.method);
 
@@ -197,6 +198,7 @@ public class BSIRConverter extends BSVisitor {
          * Set the last statement
          */
         if (this.isAssign) {
+            invoke.addOutputVariable(this.assignTo);
             AssignStatement assign = new AssignStatement();
             assign.setLeftOp(this.assignTo);
             assign.setRightOp(invoke);
@@ -228,12 +230,14 @@ public class BSIRConverter extends BSVisitor {
         n.f1.accept(this);
         this.methodStack.push(this.name);
         this.functions.put(this.name, new ArrayList<>());
-        this.listBlocks.push(new StatementBlock());
         // Get a new scope.
         this.newScope(this.name);
+        this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
         this.methodStack.push(this.name);
         // Build the method.
         this.method = this.symbolTable.getMethods().get(this.name);
+
+        this.functions.put(this.name, new ArrayList<>());
 
         // Because we have too.
         n.f3.accept(this);
@@ -244,13 +248,18 @@ public class BSIRConverter extends BSVisitor {
 
         if (n.f8.present()) {
             n.f8.accept(this);
+            Statement ret = new ReturnStatement();
+            ret.addOutputVariable(this.symbolTable.searchScopesForVariable(this.name));
+            ret.addInputVariable(this.symbolTable.searchScopesForVariable(this.name));
+            this.method.setReturnStatement(ret);
         }
 
         StatementBlock block = this.listBlocks.pop();
         for (Map.Entry<Integer, Statement> entry : block.getStatementMap().entrySet()) {
             this.method.addStatement(entry.getValue());
         }
-        //this.method.addStatements(this.graphs.get(this.methodStack.peek()));
+
+        this.functions.get(this.method.getName()).addAll(this.method.getStatements());
         this.endScope();
         this.methodStack.pop();
         return this;
@@ -285,7 +294,7 @@ public class BSIRConverter extends BSVisitor {
         loop.setTrueTarget(source);
 
         this.controlStack.push(loop);
-        this.listBlocks.push(new StatementBlock());
+        this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
 
         // Get the statements.
         n.f4.accept(this);
@@ -326,7 +335,7 @@ public class BSIRConverter extends BSVisitor {
 
         // Save the scope/control.
         this.controlStack.push(branch);
-        this.listBlocks.push(new StatementBlock());
+        this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
 
         // Get the statement(s).
         n.f5.accept(this);
@@ -353,7 +362,7 @@ public class BSIRConverter extends BSVisitor {
                 elseBranch.setFalseTarget(elseSink);
                 elseBranch.setTrueTarget(elseSource);
 
-                this.listBlocks.push(new StatementBlock());
+                this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
                 this.controlStack.push(elseBranch);
 
                 // Grab the statements.
