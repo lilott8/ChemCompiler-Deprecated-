@@ -8,25 +8,29 @@ import parser.visitor.*;
 
 /**
  * Grammar production:
- * f0 -> <LPAREN>
- * f1 -> Expression()
- * f2 -> <RPAREN>
+ * f0 -> <ELSE>
+ * f1 -> <LBRACE>
+ * f2 -> Statements()
+ * f3 -> <RBRACE>
  */
-public class ParenthesisExpression implements Node {
+public class ElseBranchStatement implements Node {
    public NodeToken f0;
-   public Expression f1;
-   public NodeToken f2;
+   public NodeToken f1;
+   public Statements f2;
+   public NodeToken f3;
 
-   public ParenthesisExpression(NodeToken n0, Expression n1, NodeToken n2) {
+   public ElseBranchStatement(NodeToken n0, NodeToken n1, Statements n2, NodeToken n3) {
       f0 = n0;
       f1 = n1;
       f2 = n2;
+      f3 = n3;
    }
 
-   public ParenthesisExpression(Expression n0) {
-      f0 = new NodeToken("(");
-      f1 = n0;
-      f2 = new NodeToken(")");
+   public ElseBranchStatement(Statements n0) {
+      f0 = new NodeToken("else");
+      f1 = new NodeToken("{");
+      f2 = n0;
+      f3 = new NodeToken("}");
    }
 
    public void accept(Visitor v) {

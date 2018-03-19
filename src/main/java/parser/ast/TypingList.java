@@ -4,11 +4,7 @@
 
 package parser.ast;
 
-import parser.visitor.GJNoArguVisitor;
-import parser.visitor.GJVisitor;
-import parser.visitor.GJVoidVisitor;
-import parser.visitor.Visitor;
-
+import parser.visitor.*;
 
 /**
  * Grammar production:
@@ -16,28 +12,25 @@ import parser.visitor.Visitor;
  * f1 -> ( TypingRest() )*
  */
 public class TypingList implements Node {
-    public Type f0;
-    public NodeListOptional f1;
+   public Type f0;
+   public NodeListOptional f1;
 
-    public TypingList(Type n0, NodeListOptional n1) {
-        f0 = n0;
-        f1 = n1;
-    }
+   public TypingList(Type n0, NodeListOptional n1) {
+      f0 = n0;
+      f1 = n1;
+   }
 
-    public void accept(Visitor v) {
-        v.visit(this);
-    }
-
-    public <R, A> R accept(GJVisitor<R, A> v, A argu) {
-        return v.visit(this, argu);
-    }
-
-    public <R> R accept(GJNoArguVisitor<R> v) {
-        return v.visit(this);
-    }
-
-    public <A> void accept(GJVoidVisitor<A> v, A argu) {
-        v.visit(this, argu);
-    }
+   public void accept(Visitor v) {
+      v.visit(this);
+   }
+   public <R,A> R accept(GJVisitor<R,A> v, A argu) {
+      return v.visit(this,argu);
+   }
+   public <R> R accept(GJNoArguVisitor<R> v) {
+      return v.visit(this);
+   }
+   public <A> void accept(GJVoidVisitor<A> v, A argu) {
+      v.visit(this,argu);
+   }
 }
 

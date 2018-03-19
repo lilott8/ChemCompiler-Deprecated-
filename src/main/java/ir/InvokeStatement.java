@@ -56,14 +56,24 @@ public class InvokeStatement extends BaseStatement implements Invoke {
     public String toJson(String indent) {
         StringBuilder sb = new StringBuilder("");
 
+        if (this.inputVariables.isEmpty()) {
+            logger.warn("Input variables to invoke is empty???");
+        } else { logger.info(this.inputVariables);}
+
         for (Statement s : this.method.getStatements()) {
+            if (this.inputVariables.size() != s.getInputVariables().size()) {
+                logger.fatal("How are the invocation inputs not the same size");
+            }
             // Mutate the statement here!
             List<Variable> variables = new ArrayList<>();
-            for (Variable input : s.getInputVariables()) {
-                if (this.method.getParameters().containsKey(input.getName())) {
-                    
+            List<Variable> inputs = s.getInputVariables();
+            for (int x = 0; x < s.getInputVariables().size(); x++) {
+                logger.info(String.format("Input: %s", inputs.get(x).getName()));
+                if (this.method.getParameters().containsKey(inputs.get(x).getName())) {
+                    logger.info(String.format("Converting: %s to %s", inputs.get(x).getName(), this.method.getParameters().get(inputs.get(x).getName())));
+                    variables.add(this.method.getParameters().get(inputs.get(x).getName()));
                 } else {
-                    variables.add(input);
+                    variables.add(inputs.get(x));
                 }
             }
             s.clearInputVariables();

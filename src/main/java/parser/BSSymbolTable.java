@@ -15,10 +15,10 @@ import parser.ast.AssignmentInstruction;
 import parser.ast.BranchStatement;
 import parser.ast.DetectStatement;
 import parser.ast.DrainStatement;
-import parser.ast.ElseIfStatement;
-import parser.ast.ElseStatement;
+import parser.ast.ElseBranchStatement;
+import parser.ast.ElseIfBranchStatement;
 import parser.ast.FormalParameter;
-import parser.ast.Function;
+import parser.ast.FunctionDefinition;
 import parser.ast.FunctionInvoke;
 import parser.ast.HeatStatement;
 import parser.ast.Manifest;
@@ -162,7 +162,6 @@ public class BSSymbolTable extends BSVisitor {
                 n.f0.accept(this);
                 f1.addTypingConstraints(this.getTypingConstraints(f1));
             }
-            SymbolTable.INSTANCE.addLocal(f1);
         }
 
         if (this.instruction instanceof Invoke) {
@@ -171,6 +170,7 @@ public class BSSymbolTable extends BSVisitor {
             f1.addTypingConstraints(this.getTypingConstraints(f1));
         }
         addVariable(f1);
+        SymbolTable.INSTANCE.addLocal(f1);
         this.types.clear();
         return this;
     }
@@ -210,7 +210,7 @@ public class BSSymbolTable extends BSVisitor {
      * f9 -> <RBRACE>
      */
     @Override
-    public BSVisitor visit(Function n) {
+    public BSVisitor visit(FunctionDefinition n) {
         // Lets us know if we have a typed function,
         // If we do, then there must be a return statement.
         boolean needReturn = false;
@@ -385,7 +385,7 @@ public class BSSymbolTable extends BSVisitor {
      * f6 -> <RBRACE>
      */
     @Override
-    public BSVisitor visit(ElseIfStatement n) {
+    public BSVisitor visit(ElseIfBranchStatement n) {
         // super.visit(n);
         String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
         SymbolTable.INSTANCE.newScope(scopeName);
@@ -415,7 +415,7 @@ public class BSSymbolTable extends BSVisitor {
      * f3 -> <RBRACE>
      */
     @Override
-    public BSVisitor visit(ElseStatement n) {
+    public BSVisitor visit(ElseBranchStatement n) {
         // super.visit(n);
         String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
         SymbolTable.INSTANCE.newScope(scopeName);
