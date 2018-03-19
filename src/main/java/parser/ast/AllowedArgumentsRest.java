@@ -8,25 +8,21 @@ import parser.visitor.*;
 
 /**
  * Grammar production:
- * f0 -> <LPAREN>
- * f1 -> Expression()
- * f2 -> <RPAREN>
+ * f0 -> <COMMA>
+ * f1 -> AllowedArguments()
  */
-public class ParenthesisExpression implements Node {
+public class AllowedArgumentsRest implements Node {
    public NodeToken f0;
-   public Expression f1;
-   public NodeToken f2;
+   public AllowedArguments f1;
 
-   public ParenthesisExpression(NodeToken n0, Expression n1, NodeToken n2) {
+   public AllowedArgumentsRest(NodeToken n0, AllowedArguments n1) {
       f0 = n0;
       f1 = n1;
-      f2 = n2;
    }
 
-   public ParenthesisExpression(Expression n0) {
-      f0 = new NodeToken("(");
+   public AllowedArgumentsRest(AllowedArguments n0) {
+      f0 = new NodeToken(",");
       f1 = n0;
-      f2 = new NodeToken(")");
    }
 
    public void accept(Visitor v) {

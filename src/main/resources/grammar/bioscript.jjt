@@ -58,6 +58,8 @@ TOKEN :
 |   <MODULE: "module">
 |   <ARRAY: "array">
 |   <RETURN: "return">
+|   <FUNCTIONS: "functions">
+|   <INSTRUCTIONS: "instructions">
 }
 
 
@@ -83,7 +85,6 @@ TOKEN : {
 |   <MINUS: "-">
 |   <MULTIPLY: "*">
 |   <OR: "||">
-|   <INSTRUCTIONS: "statements">
 |   <TRUE: "true">
 |   <FALSE: "false">
 |   <COMMA: ",">
@@ -146,8 +147,10 @@ void BSProgram() :
     ( Module() )*
     ( Stationary() ) *
     ( Manifest() )+
+    <FUNCTIONS>
+    ( FunctionDefinition() )*
     <INSTRUCTIONS>
-    ( Sequence() )+
+    ( Statements() )+
     <EOF>
 }
 
@@ -169,14 +172,16 @@ void Manifest() :
     <MANIFEST> (TypingList())? PrimaryExpression()
 }
 
-void Sequence() :
+void FunctionDefinition() :
 {}
 {
-    Function()
-    |   Statement()
+    <FUNCTION> Identifier() <LPAREN> (FormalParameterList())* <RPAREN> (<COLON> TypingList())? <LBRACE>
+        (Statements())*
+        (<RETURN> Expression())?
+    <RBRACE>
 }
 
-void Statement() :
+void Statements() :
 {}
 {
     LOOKAHEAD(AssignmentInstruction())
@@ -192,15 +197,6 @@ void AssignmentInstruction() :
 {}
 {
     (TypingList())* Identifier() <ASSIGN> Expression()
-}
-
-void Function() :
-{}
-{
-    <FUNCTION> Identifier() <LPAREN> (FormalParameterList())* <RPAREN> (<COLON> TypingList())? <LBRACE>
-        (Statement())*
-        (<RETURN> Expression())?
-    <RBRACE>
 }
 
 void TypingList() :
@@ -277,15 +273,27 @@ void DetectStatement() :
 void RepeatStatement() :
 {}
 {
-    <REPEAT> IntegerLiteral() <TIMES> <LBRACE> Statement() <RBRACE>
+    <REPEAT> IntegerLiteral() <TIMES> <LBRACE> Statements() <RBRACE>
 }
 
 void BranchStatement() :
 {}
 {
-    <IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
-    | <ELSE_IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statement() <RBRACE>
-    | <ELSE> <LBRACE> Statement() <RBRACE>
+    <IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statements() <RBRACE>
+    ( ElseIfBranchStatement() )*
+    ( ElseBranchStatement() ) ?
+}
+
+void ElseIfBranchStatement() :
+{}
+{
+    <ELSE_IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statements() <RBRACE>
+}
+
+void ElseBranchStatement() :
+{}
+{
+    <ELSE> <LBRACE> Statements() <RBRACE>
 }
 
 void Expression() :
@@ -324,19 +332,19 @@ void Expression() :
 void FunctionInvoke() :
 {}
 {
-  Identifier() <LPAREN> ( ExpressionList() )? <RPAREN>
+  Identifier() <LPAREN> ( ArgumentList() )? <RPAREN>
 }
 
-void ExpressionList() :
+void ArgumentList() :
 {}
 {
-  Expression() ( ExpressionRest() )*
+  AllowedArguments() ( AllowedArgumentsRest() )*
 }
 
-void ExpressionRest() :
+void AllowedArgumentsRest() :
 {}
 {
-  <COMMA> Expression()
+  <COMMA> AllowedArguments()
 }
 
 void InstructionAssignment() :
@@ -477,4 +485,20 @@ void ParenthesisExpression() :
 {}
 {
   <LPAREN> Expression() <RPAREN>
+}
+
+void AllowedArguments() :
+{}
+{
+    Identifier()
+    |   Primatives()
+}
+
+void Primatives() :
+{}
+{
+    IntegerLiteral()
+    | RealLiteral()
+    | TrueLiteral()
+    | FalseLiteral()
 }

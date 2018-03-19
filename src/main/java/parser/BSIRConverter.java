@@ -3,16 +3,12 @@ package parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import sun.jvm.hotspot.debugger.cdbg.Sym;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import ir.AssignStatement;
 import ir.Conditional;
@@ -33,14 +29,17 @@ import ir.SplitStatement;
 import ir.Statement;
 import ir.StatementBlock;
 import ir.StationaryStatement;
+import parser.ast.AllowedArguments;
+import parser.ast.AllowedArgumentsRest;
+import parser.ast.ArgumentList;
 import parser.ast.AssignmentInstruction;
 import parser.ast.BranchStatement;
-import parser.ast.ElseIfStatement;
-import parser.ast.ElseStatement;
+import parser.ast.ElseBranchStatement;
+import parser.ast.ElseIfBranchStatement;
 import parser.ast.FormalParameter;
 import parser.ast.FormalParameterList;
 import parser.ast.FormalParameterRest;
-import parser.ast.Function;
+import parser.ast.FunctionDefinition;
 import parser.ast.FunctionInvoke;
 import parser.ast.Manifest;
 import parser.ast.Module;
@@ -71,7 +70,6 @@ public class BSIRConverter extends BSVisitor {
     private Deque<Conditional> controlStack = new ArrayDeque<>();
     // Accounting for the methods in this program.
     private Deque<String> methodStack = new ArrayDeque<>();
-    private List<Variable> parameters = new ArrayList<>();
 
     private Deque<StatementBlock> listBlocks = new ArrayDeque<>();
 
@@ -181,10 +179,11 @@ public class BSIRConverter extends BSVisitor {
         return this;
     }
 
+
     /**
      * f0 -> Identifier()
      * f1 -> <LPAREN>
-     * f2 -> ( ExpressionList() )?
+     * f2 -> ( ArgumentList() )?
      * f3 -> <RPAREN>
      */
     @Override
@@ -195,6 +194,16 @@ public class BSIRConverter extends BSVisitor {
         this.method.addStatements(this.functions.get(this.name));
 
         Statement invoke = new InvokeStatement(this.method);
+
+        // We don't want to include the name of the function,
+        // Just the parameters, thus we mark true here.
+        this.inInvoke = true;
+
+        if (n.f2.present()) {
+            n.f2.accept(this);
+            logger.info("Input for invocation: " + this.parameters);
+            invoke.addInputVariables(this.parameters);
+        }
 
         // Expand the function into the current tree.
         /*
@@ -216,6 +225,7 @@ public class BSIRConverter extends BSVisitor {
             this.addStatement(invoke);
         }
         instructions.put(invoke.getId(), invoke);
+        this.inInvoke = false;
         return this;
     }
 
@@ -232,7 +242,7 @@ public class BSIRConverter extends BSVisitor {
      * f9 -> <RBRACE>
      */
     @Override
-    public BSVisitor visit(Function n) {
+    public BSVisitor visit(FunctionDefinition n) {
         // super.visit(n);
         // Get the name of the method.
         n.f1.accept(this);
@@ -262,6 +272,8 @@ public class BSIRConverter extends BSVisitor {
             ret.addOutputVariable(SymbolTable.INSTANCE.searchScopesForVariable(this.name));
             ret.addInputVariable(SymbolTable.INSTANCE.searchScopesForVariable(this.name));
             this.method.setReturnStatement(ret);
+        } else {
+            logger.fatal("Add exception for no return statement.");
         }
 
         StatementBlock block = this.listBlocks.pop();
@@ -316,6 +328,40 @@ public class BSIRConverter extends BSVisitor {
     @Override
     public BSVisitor visit(FormalParameterRest n) {
         n.f1.accept(this);
+        return this;
+    }
+
+    /**
+     * f0 -> AllowedArguments()
+     * f1 -> ( AllowedArgumentsRest() )*
+     */
+    @Override
+    public BSVisitor visit(ArgumentList n) {
+        n.f0.accept(this);
+
+        if(n.f1.present()) {
+            n.f1.accept(this);
+        }
+        return this;
+    }
+
+    /**
+     * f0 -> <COMMA>
+     * f1 -> AllowedArguments()
+     */
+    @Override
+    public BSVisitor visit(AllowedArgumentsRest n) {
+        n.f1.accept(this);
+        return this;
+    }
+
+    /**
+     * f0 -> Identifier()
+     * | Primatives()
+     */
+    @Override
+    public BSVisitor visit(AllowedArguments n) {
+        n.f0.accept(this);
         return this;
     }
 
@@ -448,11 +494,11 @@ public class BSIRConverter extends BSVisitor {
      * f2 -> Expression()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
-     * f5 -> ( Statement() )+
+     * f5 -> Statement()
      * f6 -> <RBRACE>
      */
     @Override
-    public BSVisitor visit(ElseIfStatement n) {
+    public BSVisitor visit(ElseIfBranchStatement n) {
         logger.warn("Not parsing expression");
         // n.f2.accept(this);
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
@@ -472,11 +518,11 @@ public class BSIRConverter extends BSVisitor {
     /**
      * f0 -> <ELSE>
      * f1 -> <LBRACE>
-     * f2 -> ( Statement() )+
+     * f2 -> Statement()
      * f3 -> <RBRACE>
      */
     @Override
-    public BSVisitor visit(ElseStatement n) {
+    public BSVisitor visit(ElseBranchStatement n) {
         // Get the statements
         n.f2.accept(this);
         return this;

@@ -4,11 +4,7 @@
 
 package parser.ast;
 
-import parser.visitor.GJNoArguVisitor;
-import parser.visitor.GJVisitor;
-import parser.visitor.GJVoidVisitor;
-import parser.visitor.Visitor;
-
+import parser.visitor.*;
 
 /**
  * Grammar production:
@@ -17,60 +13,57 @@ import parser.visitor.Visitor;
  * f2 -> Expression()
  * f3 -> <RPAREN>
  * f4 -> <LBRACE>
- * f5 -> ( Statement() )+
+ * f5 -> Statements()
  * f6 -> <RBRACE>
- * f7 -> ( ElseIfStatement() )*
- * f8 -> ( ElseStatement() )?
+ * f7 -> ( ElseIfBranchStatement() )*
+ * f8 -> ( ElseBranchStatement() )?
  */
 public class BranchStatement implements Node {
-    public NodeToken f0;
-    public NodeToken f1;
-    public Expression f2;
-    public NodeToken f3;
-    public NodeToken f4;
-    public NodeList f5;
-    public NodeToken f6;
-    public NodeListOptional f7;
-    public NodeOptional f8;
+   public NodeToken f0;
+   public NodeToken f1;
+   public Expression f2;
+   public NodeToken f3;
+   public NodeToken f4;
+   public Statements f5;
+   public NodeToken f6;
+   public NodeListOptional f7;
+   public NodeOptional f8;
 
-    public BranchStatement(NodeToken n0, NodeToken n1, Expression n2, NodeToken n3, NodeToken n4, NodeList n5, NodeToken n6, NodeListOptional n7, NodeOptional n8) {
-        f0 = n0;
-        f1 = n1;
-        f2 = n2;
-        f3 = n3;
-        f4 = n4;
-        f5 = n5;
-        f6 = n6;
-        f7 = n7;
-        f8 = n8;
-    }
+   public BranchStatement(NodeToken n0, NodeToken n1, Expression n2, NodeToken n3, NodeToken n4, Statements n5, NodeToken n6, NodeListOptional n7, NodeOptional n8) {
+      f0 = n0;
+      f1 = n1;
+      f2 = n2;
+      f3 = n3;
+      f4 = n4;
+      f5 = n5;
+      f6 = n6;
+      f7 = n7;
+      f8 = n8;
+   }
 
-    public BranchStatement(Expression n0, NodeList n1, NodeListOptional n2, NodeOptional n3) {
-        f0 = new NodeToken("if");
-        f1 = new NodeToken("(");
-        f2 = n0;
-        f3 = new NodeToken(")");
-        f4 = new NodeToken("{");
-        f5 = n1;
-        f6 = new NodeToken("}");
-        f7 = n2;
-        f8 = n3;
-    }
+   public BranchStatement(Expression n0, Statements n1, NodeListOptional n2, NodeOptional n3) {
+      f0 = new NodeToken("if");
+      f1 = new NodeToken("(");
+      f2 = n0;
+      f3 = new NodeToken(")");
+      f4 = new NodeToken("{");
+      f5 = n1;
+      f6 = new NodeToken("}");
+      f7 = n2;
+      f8 = n3;
+   }
 
-    public void accept(Visitor v) {
-        v.visit(this);
-    }
-
-    public <R, A> R accept(GJVisitor<R, A> v, A argu) {
-        return v.visit(this, argu);
-    }
-
-    public <R> R accept(GJNoArguVisitor<R> v) {
-        return v.visit(this);
-    }
-
-    public <A> void accept(GJVoidVisitor<A> v, A argu) {
-        v.visit(this, argu);
-    }
+   public void accept(Visitor v) {
+      v.visit(this);
+   }
+   public <R,A> R accept(GJVisitor<R,A> v, A argu) {
+      return v.visit(this,argu);
+   }
+   public <R> R accept(GJNoArguVisitor<R> v) {
+      return v.visit(this);
+   }
+   public <A> void accept(GJVoidVisitor<A> v, A argu) {
+      v.visit(this,argu);
+   }
 }
 

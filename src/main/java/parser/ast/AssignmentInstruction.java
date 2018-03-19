@@ -4,11 +4,7 @@
 
 package parser.ast;
 
-import parser.visitor.GJNoArguVisitor;
-import parser.visitor.GJVisitor;
-import parser.visitor.GJVoidVisitor;
-import parser.visitor.Visitor;
-
+import parser.visitor.*;
 
 /**
  * Grammar production:
@@ -18,39 +14,36 @@ import parser.visitor.Visitor;
  * f3 -> Expression()
  */
 public class AssignmentInstruction implements Node {
-    public NodeListOptional f0;
-    public Identifier f1;
-    public NodeToken f2;
-    public Expression f3;
+   public NodeListOptional f0;
+   public Identifier f1;
+   public NodeToken f2;
+   public Expression f3;
 
-    public AssignmentInstruction(NodeListOptional n0, Identifier n1, NodeToken n2, Expression n3) {
-        f0 = n0;
-        f1 = n1;
-        f2 = n2;
-        f3 = n3;
-    }
+   public AssignmentInstruction(NodeListOptional n0, Identifier n1, NodeToken n2, Expression n3) {
+      f0 = n0;
+      f1 = n1;
+      f2 = n2;
+      f3 = n3;
+   }
 
-    public AssignmentInstruction(NodeListOptional n0, Identifier n1, Expression n2) {
-        f0 = n0;
-        f1 = n1;
-        f2 = new NodeToken("=");
-        f3 = n2;
-    }
+   public AssignmentInstruction(NodeListOptional n0, Identifier n1, Expression n2) {
+      f0 = n0;
+      f1 = n1;
+      f2 = new NodeToken("=");
+      f3 = n2;
+   }
 
-    public void accept(Visitor v) {
-        v.visit(this);
-    }
-
-    public <R, A> R accept(GJVisitor<R, A> v, A argu) {
-        return v.visit(this, argu);
-    }
-
-    public <R> R accept(GJNoArguVisitor<R> v) {
-        return v.visit(this);
-    }
-
-    public <A> void accept(GJVoidVisitor<A> v, A argu) {
-        v.visit(this, argu);
-    }
+   public void accept(Visitor v) {
+      v.visit(this);
+   }
+   public <R,A> R accept(GJVisitor<R,A> v, A argu) {
+      return v.visit(this,argu);
+   }
+   public <R> R accept(GJNoArguVisitor<R> v) {
+      return v.visit(this);
+   }
+   public <A> void accept(GJVoidVisitor<A> v, A argu) {
+      v.visit(this,argu);
+   }
 }
 

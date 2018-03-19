@@ -3,61 +3,8 @@
 //
 
 package parser.visitor;
-
-import parser.ast.AndExpression;
-import parser.ast.AssignmentInstruction;
-import parser.ast.BSProgram;
-import parser.ast.BranchStatement;
-import parser.ast.DetectStatement;
-import parser.ast.DrainStatement;
-import parser.ast.ElseIfStatement;
-import parser.ast.ElseStatement;
-import parser.ast.EqualityExpression;
-import parser.ast.Expression;
-import parser.ast.ExpressionList;
-import parser.ast.ExpressionRest;
-import parser.ast.FalseLiteral;
-import parser.ast.FormalParameter;
-import parser.ast.FormalParameterList;
-import parser.ast.FormalParameterRest;
-import parser.ast.Function;
-import parser.ast.FunctionInvoke;
-import parser.ast.GreaterThanEqualExpression;
-import parser.ast.GreaterThanExpression;
-import parser.ast.HeatStatement;
-import parser.ast.Identifier;
-import parser.ast.InstructionAssignment;
-import parser.ast.IntegerLiteral;
-import parser.ast.LessThanEqualExpression;
-import parser.ast.LessThanExpression;
-import parser.ast.Manifest;
-import parser.ast.MatLiteral;
-import parser.ast.MinusExpression;
-import parser.ast.MixStatement;
-import parser.ast.Module;
-import parser.ast.NatLiteral;
-import parser.ast.NodeList;
-import parser.ast.NodeListOptional;
-import parser.ast.NodeOptional;
-import parser.ast.NodeSequence;
-import parser.ast.NodeToken;
-import parser.ast.NotEqualExpression;
-import parser.ast.NotExpression;
-import parser.ast.OrExpression;
-import parser.ast.ParenthesisExpression;
-import parser.ast.PlusExpression;
-import parser.ast.PrimaryExpression;
-import parser.ast.RealLiteral;
-import parser.ast.RepeatStatement;
-import parser.ast.Sequence;
-import parser.ast.SplitStatement;
-import parser.ast.Statement;
-import parser.ast.Stationary;
-import parser.ast.TimesExpression;
-import parser.ast.TrueLiteral;
-import parser.ast.Type;
-import parser.ast.TypingList;
-import parser.ast.TypingRest;
+import parser.ast.*;
+import java.util.*;
 
 /**
  * All GJ visitors with no argument must implement this interface.
@@ -65,391 +12,397 @@ import parser.ast.TypingRest;
 
 public interface GJNoArguVisitor<R> {
 
-    //
-    // GJ Auto class visitors with no argument
-    //
+   //
+   // GJ Auto class visitors with no argument
+   //
 
-    R visit(NodeList n);
+   public R visit(NodeList n);
+   public R visit(NodeListOptional n);
+   public R visit(NodeOptional n);
+   public R visit(NodeSequence n);
+   public R visit(NodeToken n);
 
-    R visit(NodeListOptional n);
+   //
+   // User-generated visitor methods below
+   //
 
-    R visit(NodeOptional n);
+   /**
+    * f0 -> ( Module() )*
+    * f1 -> ( Stationary() )*
+    * f2 -> ( Manifest() )+
+    * f3 -> <FUNCTIONS>
+    * f4 -> ( FunctionDefinition() )*
+    * f5 -> <INSTRUCTIONS>
+    * f6 -> ( Statements() )+
+    * f7 -> <EOF>
+    */
+   public R visit(BSProgram n);
 
-    R visit(NodeSequence n);
+   /**
+    * f0 -> <MODULE>
+    * f1 -> Identifier()
+    */
+   public R visit(Module n);
 
-    R visit(NodeToken n);
+   /**
+    * f0 -> <STATIONARY>
+    * f1 -> ( TypingList() )?
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(Stationary n);
 
-    //
-    // User-generated visitor methods below
-    //
+   /**
+    * f0 -> <MANIFEST>
+    * f1 -> ( TypingList() )?
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(Manifest n);
 
-    /**
-     * f0 -> ( Module() )*
-     * f1 -> ( Stationary() )*
-     * f2 -> ( Manifest() )+
-     * f3 -> <INSTRUCTIONS>
-     * f4 -> ( Sequence() )+
-     * f5 -> <EOF>
-     */
-    R visit(BSProgram n);
+   /**
+    * f0 -> <FUNCTION>
+    * f1 -> Identifier()
+    * f2 -> <LPAREN>
+    * f3 -> ( FormalParameterList() )*
+    * f4 -> <RPAREN>
+    * f5 -> ( <COLON> TypingList() )?
+    * f6 -> <LBRACE>
+    * f7 -> ( Statements() )*
+    * f8 -> ( <RETURN> Expression() )?
+    * f9 -> <RBRACE>
+    */
+   public R visit(FunctionDefinition n);
 
-    /**
-     * f0 -> <MODULE>
-     * f1 -> Identifier()
-     */
-    R visit(Module n);
+   /**
+    * f0 -> AssignmentInstruction()
+    *       | BranchStatement()
+    *       | RepeatStatement()
+    *       | HeatStatement()
+    *       | DrainStatement()
+    *       | FunctionInvoke()
+    */
+   public R visit(Statements n);
 
-    /**
-     * f0 -> <STATIONARY>
-     * f1 -> ( TypingList() )?
-     * f2 -> PrimaryExpression()
-     */
-    R visit(Stationary n);
+   /**
+    * f0 -> ( TypingList() )*
+    * f1 -> Identifier()
+    * f2 -> <ASSIGN>
+    * f3 -> Expression()
+    */
+   public R visit(AssignmentInstruction n);
 
-    /**
-     * f0 -> <MANIFEST>
-     * f1 -> ( TypingList() )?
-     * f2 -> PrimaryExpression()
-     */
-    R visit(Manifest n);
+   /**
+    * f0 -> Type()
+    * f1 -> ( TypingRest() )*
+    */
+   public R visit(TypingList n);
 
-    /**
-     * f0 -> Function()
-     * | Statement()
-     */
-    R visit(Sequence n);
+   /**
+    * f0 -> MatLiteral()
+    *       | NatLiteral()
+    *       | RealLiteral()
+    */
+   public R visit(Type n);
 
-    /**
-     * f0 -> AssignmentInstruction()
-     * | BranchStatement()
-     * | RepeatStatement()
-     * | HeatStatement()
-     * | DrainStatement()
-     * | FunctionInvoke()
-     */
-    R visit(Statement n);
+   /**
+    * f0 -> <COMMA>
+    * f1 -> Type()
+    */
+   public R visit(TypingRest n);
 
-    /**
-     * f0 -> ( TypingList() )*
-     * f1 -> Identifier()
-     * f2 -> <ASSIGN>
-     * f3 -> Expression()
-     */
-    R visit(AssignmentInstruction n);
+   /**
+    * f0 -> FormalParameter()
+    * f1 -> ( FormalParameterRest() )*
+    */
+   public R visit(FormalParameterList n);
 
-    /**
-     * f0 -> <FUNCTION>
-     * f1 -> Identifier()
-     * f2 -> <LPAREN>
-     * f3 -> ( FormalParameterList() )*
-     * f4 -> <RPAREN>
-     * f5 -> ( <COLON> TypingList() )?
-     * f6 -> <LBRACE>
-     * f7 -> ( Statement() )+
-     * f8 -> ( <RETURN> Expression() )?
-     * f9 -> <RBRACE>
-     */
-    R visit(Function n);
+   /**
+    * f0 -> ( TypingList() )*
+    * f1 -> Identifier()
+    */
+   public R visit(FormalParameter n);
 
-    /**
-     * f0 -> Type()
-     * f1 -> ( TypingRest() )*
-     */
-    R visit(TypingList n);
+   /**
+    * f0 -> <COMMA>
+    * f1 -> FormalParameter()
+    */
+   public R visit(FormalParameterRest n);
 
-    /**
-     * f0 -> MatLiteral()
-     * | NatLiteral()
-     * | RealLiteral()
-     */
-    R visit(Type n);
+   /**
+    * f0 -> <MIX>
+    * f1 -> PrimaryExpression()
+    * f2 -> <WITH>
+    * f3 -> PrimaryExpression()
+    * f4 -> ( <FOR> IntegerLiteral() )?
+    */
+   public R visit(MixStatement n);
 
-    /**
-     * f0 -> <COMMA>
-     * f1 -> Type()
-     */
-    R visit(TypingRest n);
+   /**
+    * f0 -> <SPLIT>
+    * f1 -> PrimaryExpression()
+    * f2 -> <INTO>
+    * f3 -> IntegerLiteral()
+    */
+   public R visit(SplitStatement n);
 
-    /**
-     * f0 -> FormalParameter()
-     * f1 -> ( FormalParameterRest() )*
-     */
-    R visit(FormalParameterList n);
+   /**
+    * f0 -> <DRAIN>
+    * f1 -> PrimaryExpression()
+    */
+   public R visit(DrainStatement n);
 
-    /**
-     * f0 -> ( TypingList() )*
-     * f1 -> Identifier()
-     */
-    R visit(FormalParameter n);
+   /**
+    * f0 -> <HEAT>
+    * f1 -> PrimaryExpression()
+    * f2 -> <AT>
+    * f3 -> IntegerLiteral()
+    * f4 -> ( <FOR> IntegerLiteral() )?
+    */
+   public R visit(HeatStatement n);
 
-    /**
-     * f0 -> <COMMA>
-     * f1 -> FormalParameter()
-     */
-    R visit(FormalParameterRest n);
+   /**
+    * f0 -> <DETECT>
+    * f1 -> PrimaryExpression()
+    * f2 -> <ON>
+    * f3 -> PrimaryExpression()
+    * f4 -> ( <FOR> IntegerLiteral() )?
+    */
+   public R visit(DetectStatement n);
 
-    /**
-     * f0 -> <MIX>
-     * f1 -> PrimaryExpression()
-     * f2 -> <WITH>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
-     */
-    R visit(MixStatement n);
+   /**
+    * f0 -> <REPEAT>
+    * f1 -> IntegerLiteral()
+    * f2 -> <TIMES>
+    * f3 -> <LBRACE>
+    * f4 -> Statements()
+    * f5 -> <RBRACE>
+    */
+   public R visit(RepeatStatement n);
 
-    /**
-     * f0 -> <SPLIT>
-     * f1 -> PrimaryExpression()
-     * f2 -> <INTO>
-     * f3 -> IntegerLiteral()
-     */
-    R visit(SplitStatement n);
+   /**
+    * f0 -> <IF>
+    * f1 -> <LPAREN>
+    * f2 -> Expression()
+    * f3 -> <RPAREN>
+    * f4 -> <LBRACE>
+    * f5 -> Statements()
+    * f6 -> <RBRACE>
+    * f7 -> ( ElseIfBranchStatement() )*
+    * f8 -> ( ElseBranchStatement() )?
+    */
+   public R visit(BranchStatement n);
 
-    /**
-     * f0 -> <DRAIN>
-     * f1 -> PrimaryExpression()
-     */
-    R visit(DrainStatement n);
+   /**
+    * f0 -> <ELSE_IF>
+    * f1 -> <LPAREN>
+    * f2 -> Expression()
+    * f3 -> <RPAREN>
+    * f4 -> <LBRACE>
+    * f5 -> Statements()
+    * f6 -> <RBRACE>
+    */
+   public R visit(ElseIfBranchStatement n);
 
-    /**
-     * f0 -> <HEAT>
-     * f1 -> PrimaryExpression()
-     * f2 -> <AT>
-     * f3 -> IntegerLiteral()
-     * f4 -> ( <FOR> IntegerLiteral() )?
-     */
-    R visit(HeatStatement n);
+   /**
+    * f0 -> <ELSE>
+    * f1 -> <LBRACE>
+    * f2 -> Statements()
+    * f3 -> <RBRACE>
+    */
+   public R visit(ElseBranchStatement n);
 
-    /**
-     * f0 -> <DETECT>
-     * f1 -> PrimaryExpression()
-     * f2 -> <ON>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
-     */
-    R visit(DetectStatement n);
+   /**
+    * f0 -> AndExpression()
+    *       | LessThanExpression()
+    *       | LessThanEqualExpression()
+    *       | GreaterThanExpression()
+    *       | GreaterThanEqualExpression()
+    *       | NotEqualExpression()
+    *       | EqualityExpression()
+    *       | OrExpression()
+    *       | PlusExpression()
+    *       | MinusExpression()
+    *       | TimesExpression()
+    *       | FunctionInvoke()
+    *       | PrimaryExpression()
+    *       | InstructionAssignment()
+    */
+   public R visit(Expression n);
 
-    /**
-     * f0 -> <REPEAT>
-     * f1 -> IntegerLiteral()
-     * f2 -> <TIMES>
-     * f3 -> <LBRACE>
-     * f4 -> ( Statement() )+
-     * f5 -> <RBRACE>
-     */
-    R visit(RepeatStatement n);
+   /**
+    * f0 -> Identifier()
+    * f1 -> <LPAREN>
+    * f2 -> ( ArgumentList() )?
+    * f3 -> <RPAREN>
+    */
+   public R visit(FunctionInvoke n);
 
-    /**
-     * f0 -> <IF>
-     * f1 -> <LPAREN>
-     * f2 -> Expression()
-     * f3 -> <RPAREN>
-     * f4 -> <LBRACE>
-     * f5 -> ( Statement() )+
-     * f6 -> <RBRACE>
-     * f7 -> ( ElseIfStatement() )*
-     * f8 -> ( ElseStatement() )?
-     */
-    R visit(BranchStatement n);
+   /**
+    * f0 -> AllowedArguments()
+    * f1 -> ( AllowedArgumentsRest() )*
+    */
+   public R visit(ArgumentList n);
 
-    /**
-     * f0 -> <ELSE_IF>
-     * f1 -> <LPAREN>
-     * f2 -> Expression()
-     * f3 -> <RPAREN>
-     * f4 -> <LBRACE>
-     * f5 -> ( Statement() )+
-     * f6 -> <RBRACE>
-     */
-    R visit(ElseIfStatement n);
+   /**
+    * f0 -> <COMMA>
+    * f1 -> AllowedArguments()
+    */
+   public R visit(AllowedArgumentsRest n);
 
-    /**
-     * f0 -> <ELSE>
-     * f1 -> <LBRACE>
-     * f2 -> ( Statement() )+
-     * f3 -> <RBRACE>
-     */
-    R visit(ElseStatement n);
+   /**
+    * f0 -> MixStatement()
+    *       | DetectStatement()
+    *       | SplitStatement()
+    *       | FunctionInvoke()
+    */
+   public R visit(InstructionAssignment n);
 
-    /**
-     * f0 -> AndExpression()
-     * | LessThanExpression()
-     * | LessThanEqualExpression()
-     * | GreaterThanExpression()
-     * | GreaterThanEqualExpression()
-     * | NotEqualExpression()
-     * | EqualityExpression()
-     * | OrExpression()
-     * | PlusExpression()
-     * | MinusExpression()
-     * | TimesExpression()
-     * | FunctionInvoke()
-     * | PrimaryExpression()
-     * | InstructionAssignment()
-     */
-    R visit(Expression n);
+   /**
+    * f0 -> Identifier()
+    *       | TrueLiteral()
+    *       | FalseLiteral()
+    *       | ParenthesisExpression()
+    *       | IntegerLiteral()
+    */
+   public R visit(PrimaryExpression n);
 
-    /**
-     * f0 -> Identifier()
-     * f1 -> <LPAREN>
-     * f2 -> ( ExpressionList() )?
-     * f3 -> <RPAREN>
-     */
-    R visit(FunctionInvoke n);
+   /**
+    * f0 -> <INTEGER_LITERAL>
+    */
+   public R visit(IntegerLiteral n);
 
-    /**
-     * f0 -> Expression()
-     * f1 -> ( ExpressionRest() )*
-     */
-    R visit(ExpressionList n);
+   /**
+    * f0 -> <NAT>
+    */
+   public R visit(NatLiteral n);
 
-    /**
-     * f0 -> <COMMA>
-     * f1 -> Expression()
-     */
-    R visit(ExpressionRest n);
+   /**
+    * f0 -> <MAT>
+    */
+   public R visit(MatLiteral n);
 
-    /**
-     * f0 -> MixStatement()
-     * | DetectStatement()
-     * | SplitStatement()
-     * | FunctionInvoke()
-     */
-    R visit(InstructionAssignment n);
+   /**
+    * f0 -> <REAL>
+    */
+   public R visit(RealLiteral n);
 
-    /**
-     * f0 -> Identifier()
-     * | TrueLiteral()
-     * | FalseLiteral()
-     * | ParenthesisExpression()
-     * | IntegerLiteral()
-     */
-    R visit(PrimaryExpression n);
+   /**
+    * f0 -> <TRUE>
+    */
+   public R visit(TrueLiteral n);
 
-    /**
-     * f0 -> <INTEGER_LITERAL>
-     */
-    R visit(IntegerLiteral n);
+   /**
+    * f0 -> <FALSE>
+    */
+   public R visit(FalseLiteral n);
 
-    /**
-     * f0 -> <NAT>
-     */
-    R visit(NatLiteral n);
+   /**
+    * f0 -> <IDENTIFIER>
+    */
+   public R visit(Identifier n);
 
-    /**
-     * f0 -> <MAT>
-     */
-    R visit(MatLiteral n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <AND>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(AndExpression n);
 
-    /**
-     * f0 -> <REAL>
-     */
-    R visit(RealLiteral n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <LESSTHAN>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(LessThanExpression n);
 
-    /**
-     * f0 -> <TRUE>
-     */
-    R visit(TrueLiteral n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <LESSTHANEQUAL>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(LessThanEqualExpression n);
 
-    /**
-     * f0 -> <FALSE>
-     */
-    R visit(FalseLiteral n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <GREATERTHAN>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(GreaterThanExpression n);
 
-    /**
-     * f0 -> <IDENTIFIER>
-     */
-    R visit(Identifier n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <GREATERTHANEQUAL>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(GreaterThanEqualExpression n);
 
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <AND>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(AndExpression n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <NOTEQUAL>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(NotEqualExpression n);
 
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <LESSTHAN>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(LessThanExpression n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <OR>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(EqualityExpression n);
 
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <LESSTHANEQUAL>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(LessThanEqualExpression n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <LESSTHAN>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(OrExpression n);
 
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <GREATERTHAN>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(GreaterThanExpression n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <ADD>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(PlusExpression n);
 
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <GREATERTHANEQUAL>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(GreaterThanEqualExpression n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <MINUS>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(MinusExpression n);
 
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <NOTEQUAL>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(NotEqualExpression n);
+   /**
+    * f0 -> PrimaryExpression()
+    * f1 -> <MULTIPLY>
+    * f2 -> PrimaryExpression()
+    */
+   public R visit(TimesExpression n);
 
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <OR>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(EqualityExpression n);
+   /**
+    * f0 -> <BANG>
+    * f1 -> Expression()
+    */
+   public R visit(NotExpression n);
 
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <LESSTHAN>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(OrExpression n);
+   /**
+    * f0 -> <LPAREN>
+    * f1 -> Expression()
+    * f2 -> <RPAREN>
+    */
+   public R visit(ParenthesisExpression n);
 
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <ADD>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(PlusExpression n);
+   /**
+    * f0 -> Identifier()
+    *       | Primatives()
+    */
+   public R visit(AllowedArguments n);
 
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <MINUS>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(MinusExpression n);
-
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> <MULTIPLY>
-     * f2 -> PrimaryExpression()
-     */
-    R visit(TimesExpression n);
-
-    /**
-     * f0 -> <BANG>
-     * f1 -> Expression()
-     */
-    R visit(NotExpression n);
-
-    /**
-     * f0 -> <LPAREN>
-     * f1 -> Expression()
-     * f2 -> <RPAREN>
-     */
-    R visit(ParenthesisExpression n);
+   /**
+    * f0 -> IntegerLiteral()
+    *       | RealLiteral()
+    *       | TrueLiteral()
+    *       | FalseLiteral()
+    */
+   public R visit(Primatives n);
 
 }
 

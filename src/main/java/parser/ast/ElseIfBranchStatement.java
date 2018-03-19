@@ -8,29 +8,41 @@ import parser.visitor.*;
 
 /**
  * Grammar production:
- * f0 -> Identifier()
+ * f0 -> <ELSE_IF>
  * f1 -> <LPAREN>
- * f2 -> ( ArgumentList() )?
+ * f2 -> Expression()
  * f3 -> <RPAREN>
+ * f4 -> <LBRACE>
+ * f5 -> Statements()
+ * f6 -> <RBRACE>
  */
-public class FunctionInvoke implements Node {
-   public Identifier f0;
+public class ElseIfBranchStatement implements Node {
+   public NodeToken f0;
    public NodeToken f1;
-   public NodeOptional f2;
+   public Expression f2;
    public NodeToken f3;
+   public NodeToken f4;
+   public Statements f5;
+   public NodeToken f6;
 
-   public FunctionInvoke(Identifier n0, NodeToken n1, NodeOptional n2, NodeToken n3) {
+   public ElseIfBranchStatement(NodeToken n0, NodeToken n1, Expression n2, NodeToken n3, NodeToken n4, Statements n5, NodeToken n6) {
       f0 = n0;
       f1 = n1;
       f2 = n2;
       f3 = n3;
+      f4 = n4;
+      f5 = n5;
+      f6 = n6;
    }
 
-   public FunctionInvoke(Identifier n0, NodeOptional n1) {
-      f0 = n0;
+   public ElseIfBranchStatement(Expression n0, Statements n1) {
+      f0 = new NodeToken("else if");
       f1 = new NodeToken("(");
-      f2 = n1;
+      f2 = n0;
       f3 = new NodeToken(")");
+      f4 = new NodeToken("{");
+      f5 = n1;
+      f6 = new NodeToken("}");
    }
 
    public void accept(Visitor v) {

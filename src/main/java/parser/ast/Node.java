@@ -4,22 +4,15 @@
 
 package parser.ast;
 
-import parser.visitor.GJNoArguVisitor;
-import parser.visitor.GJVisitor;
-import parser.visitor.GJVoidVisitor;
-import parser.visitor.Visitor;
-
+import parser.visitor.*;
 
 /**
  * The interface which all syntax tree classes must implement.
  */
 public interface Node extends java.io.Serializable {
-    void accept(Visitor v);
-
-    <R, A> R accept(GJVisitor<R, A> v, A argu);
-
-    <R> R accept(GJNoArguVisitor<R> v);
-
-    <A> void accept(GJVoidVisitor<A> v, A argu);
+   public void accept(Visitor v);
+   public <R,A> R accept(GJVisitor<R,A> v, A argu);
+   public <R> R accept(GJNoArguVisitor<R> v);
+   public <A> void accept(GJVoidVisitor<A> v, A argu);
 }
 

@@ -8,291 +8,182 @@ package parser.parsing;
  */
 public interface BSParserConstants {
 
-    /**
-     * End of File.
-     */
-    int EOF = 0;
-    /**
-     * RegularExpression Id.
-     */
-    int MIX = 6;
-    /**
-     * RegularExpression Id.
-     */
-    int SPLIT = 7;
-    /**
-     * RegularExpression Id.
-     */
-    int DRAIN = 8;
-    /**
-     * RegularExpression Id.
-     */
-    int HEAT = 9;
-    /**
-     * RegularExpression Id.
-     */
-    int FOR = 10;
-    /**
-     * RegularExpression Id.
-     */
-    int AT = 11;
-    /**
-     * RegularExpression Id.
-     */
-    int DETECT = 12;
-    /**
-     * RegularExpression Id.
-     */
-    int REPEAT = 13;
-    /**
-     * RegularExpression Id.
-     */
-    int IF = 14;
-    /**
-     * RegularExpression Id.
-     */
-    int ELSE_IF = 15;
-    /**
-     * RegularExpression Id.
-     */
-    int ELSE = 16;
-    /**
-     * RegularExpression Id.
-     */
-    int STATIONARY = 17;
-    /**
-     * RegularExpression Id.
-     */
-    int MANIFEST = 18;
-    /**
-     * RegularExpression Id.
-     */
-    int TIMES = 19;
-    /**
-     * RegularExpression Id.
-     */
-    int WITH = 20;
-    /**
-     * RegularExpression Id.
-     */
-    int ON = 21;
-    /**
-     * RegularExpression Id.
-     */
-    int INTO = 22;
-    /**
-     * RegularExpression Id.
-     */
-    int FUNCTION = 23;
-    /**
-     * RegularExpression Id.
-     */
-    int REAL = 24;
-    /**
-     * RegularExpression Id.
-     */
-    int NAT = 25;
-    /**
-     * RegularExpression Id.
-     */
-    int MAT = 26;
-    /**
-     * RegularExpression Id.
-     */
-    int MODULE = 27;
-    /**
-     * RegularExpression Id.
-     */
-    int ARRAY = 28;
-    /**
-     * RegularExpression Id.
-     */
-    int RETURN = 29;
-    /**
-     * RegularExpression Id.
-     */
-    int LPAREN = 30;
-    /**
-     * RegularExpression Id.
-     */
-    int RPAREN = 31;
-    /**
-     * RegularExpression Id.
-     */
-    int LBRACKET = 32;
-    /**
-     * RegularExpression Id.
-     */
-    int RBRACKET = 33;
-    /**
-     * RegularExpression Id.
-     */
-    int LBRACE = 34;
-    /**
-     * RegularExpression Id.
-     */
-    int RBRACE = 35;
-    /**
-     * RegularExpression Id.
-     */
-    int DOT = 36;
-    /**
-     * RegularExpression Id.
-     */
-    int ADD = 37;
-    /**
-     * RegularExpression Id.
-     */
-    int AND = 38;
-    /**
-     * RegularExpression Id.
-     */
-    int ASSIGN = 39;
-    /**
-     * RegularExpression Id.
-     */
-    int BANG = 40;
-    /**
-     * RegularExpression Id.
-     */
-    int NOTEQUAL = 41;
-    /**
-     * RegularExpression Id.
-     */
-    int LESSTHAN = 42;
-    /**
-     * RegularExpression Id.
-     */
-    int LESSTHANEQUAL = 43;
-    /**
-     * RegularExpression Id.
-     */
-    int GREATERTHAN = 44;
-    /**
-     * RegularExpression Id.
-     */
-    int GREATERTHANEQUAL = 45;
-    /**
-     * RegularExpression Id.
-     */
-    int EQUALITY = 46;
-    /**
-     * RegularExpression Id.
-     */
-    int MINUS = 47;
-    /**
-     * RegularExpression Id.
-     */
-    int MULTIPLY = 48;
-    /**
-     * RegularExpression Id.
-     */
-    int OR = 49;
-    /**
-     * RegularExpression Id.
-     */
-    int INSTRUCTIONS = 50;
-    /**
-     * RegularExpression Id.
-     */
-    int TRUE = 51;
-    /**
-     * RegularExpression Id.
-     */
-    int FALSE = 52;
-    /**
-     * RegularExpression Id.
-     */
-    int COMMA = 53;
-    /**
-     * RegularExpression Id.
-     */
-    int COLON = 54;
-    /**
-     * RegularExpression Id.
-     */
-    int INTEGER_LITERAL = 55;
-    /**
-     * RegularExpression Id.
-     */
-    int IDENTIFIER = 56;
-    /**
-     * RegularExpression Id.
-     */
-    int LETTER = 57;
-    /**
-     * RegularExpression Id.
-     */
-    int DIGIT = 58;
+  /** End of File. */
+  int EOF = 0;
+  /** RegularExpression Id. */
+  int MIX = 6;
+  /** RegularExpression Id. */
+  int SPLIT = 7;
+  /** RegularExpression Id. */
+  int DRAIN = 8;
+  /** RegularExpression Id. */
+  int HEAT = 9;
+  /** RegularExpression Id. */
+  int FOR = 10;
+  /** RegularExpression Id. */
+  int AT = 11;
+  /** RegularExpression Id. */
+  int DETECT = 12;
+  /** RegularExpression Id. */
+  int REPEAT = 13;
+  /** RegularExpression Id. */
+  int IF = 14;
+  /** RegularExpression Id. */
+  int ELSE_IF = 15;
+  /** RegularExpression Id. */
+  int ELSE = 16;
+  /** RegularExpression Id. */
+  int STATIONARY = 17;
+  /** RegularExpression Id. */
+  int MANIFEST = 18;
+  /** RegularExpression Id. */
+  int TIMES = 19;
+  /** RegularExpression Id. */
+  int WITH = 20;
+  /** RegularExpression Id. */
+  int ON = 21;
+  /** RegularExpression Id. */
+  int INTO = 22;
+  /** RegularExpression Id. */
+  int FUNCTION = 23;
+  /** RegularExpression Id. */
+  int REAL = 24;
+  /** RegularExpression Id. */
+  int NAT = 25;
+  /** RegularExpression Id. */
+  int MAT = 26;
+  /** RegularExpression Id. */
+  int MODULE = 27;
+  /** RegularExpression Id. */
+  int ARRAY = 28;
+  /** RegularExpression Id. */
+  int RETURN = 29;
+  /** RegularExpression Id. */
+  int FUNCTIONS = 30;
+  /** RegularExpression Id. */
+  int INSTRUCTIONS = 31;
+  /** RegularExpression Id. */
+  int LPAREN = 32;
+  /** RegularExpression Id. */
+  int RPAREN = 33;
+  /** RegularExpression Id. */
+  int LBRACKET = 34;
+  /** RegularExpression Id. */
+  int RBRACKET = 35;
+  /** RegularExpression Id. */
+  int LBRACE = 36;
+  /** RegularExpression Id. */
+  int RBRACE = 37;
+  /** RegularExpression Id. */
+  int DOT = 38;
+  /** RegularExpression Id. */
+  int ADD = 39;
+  /** RegularExpression Id. */
+  int AND = 40;
+  /** RegularExpression Id. */
+  int ASSIGN = 41;
+  /** RegularExpression Id. */
+  int BANG = 42;
+  /** RegularExpression Id. */
+  int NOTEQUAL = 43;
+  /** RegularExpression Id. */
+  int LESSTHAN = 44;
+  /** RegularExpression Id. */
+  int LESSTHANEQUAL = 45;
+  /** RegularExpression Id. */
+  int GREATERTHAN = 46;
+  /** RegularExpression Id. */
+  int GREATERTHANEQUAL = 47;
+  /** RegularExpression Id. */
+  int EQUALITY = 48;
+  /** RegularExpression Id. */
+  int MINUS = 49;
+  /** RegularExpression Id. */
+  int MULTIPLY = 50;
+  /** RegularExpression Id. */
+  int OR = 51;
+  /** RegularExpression Id. */
+  int TRUE = 52;
+  /** RegularExpression Id. */
+  int FALSE = 53;
+  /** RegularExpression Id. */
+  int COMMA = 54;
+  /** RegularExpression Id. */
+  int COLON = 55;
+  /** RegularExpression Id. */
+  int INTEGER_LITERAL = 56;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 57;
+  /** RegularExpression Id. */
+  int LETTER = 58;
+  /** RegularExpression Id. */
+  int DIGIT = 59;
 
-    /**
-     * Lexical state.
-     */
-    int DEFAULT = 0;
+  /** Lexical state. */
+  int DEFAULT = 0;
 
-    /**
-     * Literal token values.
-     */
-    String[] tokenImage = {
-            "<EOF>",
-            "\" \"",
-            "\"\\t\"",
-            "\"\\n\"",
-            "\"\\r\"",
-            "\"\\f\"",
-            "\"mix\"",
-            "\"split\"",
-            "\"drain\"",
-            "\"heat\"",
-            "\"for\"",
-            "\"at\"",
-            "\"detect\"",
-            "\"repeat\"",
-            "\"if\"",
-            "\"else if\"",
-            "\"else\"",
-            "\"stationary\"",
-            "\"manifest\"",
-            "\"times\"",
-            "\"with\"",
-            "\"on\"",
-            "\"into\"",
-            "\"function\"",
-            "\"real\"",
-            "\"nat\"",
-            "\"mat\"",
-            "\"module\"",
-            "\"array\"",
-            "\"return\"",
-            "\"(\"",
-            "\")\"",
-            "\"[\"",
-            "\"]\"",
-            "\"{\"",
-            "\"}\"",
-            "\".\"",
-            "\"+\"",
-            "\"&&\"",
-            "\"=\"",
-            "\"!\"",
-            "\"!=\"",
-            "\"<\"",
-            "\"<=\"",
-            "\">\"",
-            "\">=\"",
-            "\"==\"",
-            "\"-\"",
-            "\"*\"",
-            "\"||\"",
-            "\"statements\"",
-            "\"true\"",
-            "\"false\"",
-            "\",\"",
-            "\":\"",
-            "<INTEGER_LITERAL>",
-            "<IDENTIFIER>",
-            "<LETTER>",
-            "<DIGIT>",
-    };
+  /** Literal token values. */
+  String[] tokenImage = {
+    "<EOF>",
+    "\" \"",
+    "\"\\t\"",
+    "\"\\n\"",
+    "\"\\r\"",
+    "\"\\f\"",
+    "\"mix\"",
+    "\"split\"",
+    "\"drain\"",
+    "\"heat\"",
+    "\"for\"",
+    "\"at\"",
+    "\"detect\"",
+    "\"repeat\"",
+    "\"if\"",
+    "\"else if\"",
+    "\"else\"",
+    "\"stationary\"",
+    "\"manifest\"",
+    "\"times\"",
+    "\"with\"",
+    "\"on\"",
+    "\"into\"",
+    "\"function\"",
+    "\"real\"",
+    "\"nat\"",
+    "\"mat\"",
+    "\"module\"",
+    "\"array\"",
+    "\"return\"",
+    "\"functions\"",
+    "\"instructions\"",
+    "\"(\"",
+    "\")\"",
+    "\"[\"",
+    "\"]\"",
+    "\"{\"",
+    "\"}\"",
+    "\".\"",
+    "\"+\"",
+    "\"&&\"",
+    "\"=\"",
+    "\"!\"",
+    "\"!=\"",
+    "\"<\"",
+    "\"<=\"",
+    "\">\"",
+    "\">=\"",
+    "\"==\"",
+    "\"-\"",
+    "\"*\"",
+    "\"||\"",
+    "\"true\"",
+    "\"false\"",
+    "\",\"",
+    "\":\"",
+    "<INTEGER_LITERAL>",
+    "<IDENTIFIER>",
+    "<LETTER>",
+    "<DIGIT>",
+  };
 
 }

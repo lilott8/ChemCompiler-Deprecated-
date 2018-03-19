@@ -5,10 +5,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -74,6 +76,10 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     protected Set<ChemTypes> types = new HashSet<>();
     // Current method to work on.
     protected Method method;
+    // Used for arguments or defining a method.
+    protected List<Variable> parameters = new ArrayList<>();
+    // Lets us know where to put the argument, if we are invoking.
+    protected boolean inInvoke = false;
 
     // Ability to identify stuff.
     protected chemical.identification.Identifier identifier = IdentifierFactory.getIdentifier();
@@ -133,6 +139,8 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
         this.value = n.f0.toString();
         this.constant.setValue(Integer.parseInt(n.f0.toString()));
         this.constant.addTypingConstraint(NAT);
+        this.types.add(NAT);
+        SymbolTable.INSTANCE.addLocal(this.constant);
         return this;
     }
 
@@ -168,8 +176,13 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
      */
     @Override
     public BSVisitor visit(TrueLiteral n) {
-        this.types.add(ChemTypes.BOOL);
+        this.name = String.format("%s_%s", CONST, n.f0.toString());
+        this.constant = new Property<Boolean>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
         this.value = "true";
+        this.constant.setValue(true);
+        this.constant.addTypingConstraint(BOOL);
+        this.types.add(ChemTypes.BOOL);
+        SymbolTable.INSTANCE.addLocal(this.constant);
         return this;
     }
 
@@ -178,8 +191,14 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
      */
     @Override
     public BSVisitor visit(FalseLiteral n) {
-        this.types.add(ChemTypes.BOOL);
+        this.name = String.format("%s_%s", CONST, n.f0.toString());
+        this.constant = new Property<Boolean>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
         this.value = "false";
+        this.constant.setValue(false);
+        this.constant.addTypingConstraint(BOOL);
+        this.types.add(ChemTypes.BOOL);
+        SymbolTable.INSTANCE.addLocal(this.constant);
+        this.types.add(ChemTypes.BOOL);
         return this;
     }
 
@@ -196,6 +215,17 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
             this.name = String.format("%s_%d", BOOLEAN, booleanId++);
         } else {
             this.name = n.f0.toString();
+        }
+
+
+        // This allows us to save arguments to functions.
+        if (this.inInvoke) {
+            String varName = String.format("%s_%s", this.getCurrentScope(), this.name);
+            logger.warn(varName);
+            logger.warn(SymbolTable.INSTANCE.getSymbols());
+            Variable v = SymbolTable.INSTANCE.getSymbol(varName);
+            logger.info("In inInvoke, thus adding: " + v.getName());
+            this.parameters.add(v);
         }
         return this;
     }
