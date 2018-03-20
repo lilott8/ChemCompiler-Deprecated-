@@ -20,10 +20,10 @@ import static ir.Statement.NL;
  */
 public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
 
+    private static AtomicInteger idCounter = new AtomicInteger(0);
     protected String name;
     protected Set<ChemTypes> types = new HashSet<>();
     protected Scope scope;
-    private static AtomicInteger idCounter = new AtomicInteger(0);
     protected Value value;
     protected List<Integer> properties = new ArrayList<>();
     protected int id;
@@ -32,18 +32,14 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
     {
         this.id = this.getNewId();
     }
-    //abstract public String buildReference();
-    abstract public String buildUsage();
-
-    abstract public String buildDeclaration();
 
     public Variable(String name) {
         this.name = name;
     }
 
     public Variable(String name, Set<ChemTypes> type) {
-       this.name = name;
-       this.types.addAll(type);
+        this.name = name;
+        this.types.addAll(type);
     }
 
     public Variable(String name, Scope scope) {
@@ -56,6 +52,11 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
         this.types.addAll(type);
         this.scope = scope;
     }
+
+    //abstract public String buildReference();
+    abstract public String buildUsage();
+
+    abstract public String buildDeclaration();
 
     private int getNewId() {
         return idCounter.getAndIncrement();

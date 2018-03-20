@@ -2,10 +2,8 @@ package chemical.classification;
 
 import java.util.Set;
 
-import config.ConfigFactory;
-import config.InferenceConfig;
-import shared.substances.BaseCompound;
 import chemical.epa.ChemTypes;
+import shared.substances.BaseCompound;
 
 /**
  * @created: 9/13/17

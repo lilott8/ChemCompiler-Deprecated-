@@ -22,7 +22,9 @@ public interface Statement extends Vertex, SMTSolver, Exportable {
     Variable getOutputVariable();
 
     Map<String, Variable> getProperties();
+
     void addInputVariable(Variable variable);
+
     void addInputVariables(List<Variable> variables);
 
     void clearInputVariables();
@@ -32,11 +34,13 @@ public interface Statement extends Vertex, SMTSolver, Exportable {
     void addProperty(String name, Variable variable);
 
     Set<ChemTypes> getType();
+
     void setFallsThrough(boolean fallsThrough);
 
     boolean containsInvoke();
 
     boolean fallsThrough();
+
     boolean isBranch();
 
     String print(String indent);

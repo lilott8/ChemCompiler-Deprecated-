@@ -4,49 +4,51 @@ import java.util.ArrayList;
 
 import compilation.datastructures.node.InstructionNode;
 
-public class PHIInstruction extends  InstructionNode{
+public class PHIInstruction extends InstructionNode {
 
-    private  String oringinalSymbol;
-   // protected String __outputSymbol;
+    // protected String __outputSymbol;
     protected ArrayList<String> joinedSymbols = new ArrayList<>();
+    private String oringinalSymbol;
 
 
-    public PHIInstruction(String symbol, Integer numJoined){
-        super(-1,null);
+    public PHIInstruction(String symbol, Integer numJoined) {
+        super(-1, null);
         oringinalSymbol = symbol;
         this.outputSymbols.add(symbol);
-       // this.__outputSymbol = symbol;
-        while(numJoined-- > 0) {
+        // this.__outputSymbol = symbol;
+        while (numJoined-- > 0) {
             this.joinedSymbols.add(symbol);
             this.inputSymbols.add(symbol);
         }
     }
 
-    public void insertNodeAtIndex(Integer index, String symbol){
+    public void insertNodeAtIndex(Integer index, String symbol) {
         while (index >= joinedSymbols.size()) {
             joinedSymbols.add("");
         }
-        joinedSymbols.set(index,symbol);
+        joinedSymbols.set(index, symbol);
     }
 
-    public String getOriginalName() { return this.oringinalSymbol; }
-   // public void setPHIName(String symbol) { this.__outputSymbol = symbol; }
+    public String getOriginalName() {
+        return this.oringinalSymbol;
+    }
+    // public void setPHIName(String symbol) { this.__outputSymbol = symbol; }
 
-    public String toString(){
+    public String toString() {
         return this.toString("");
     }
 
     public String toString(String indentBuffer) {
 
-        String ret = indentBuffer ;
+        String ret = indentBuffer;
         //this should only ever be one.
-        for(String inputSymbol : this.getOutputSymbols())
+        for (String inputSymbol : this.getOutputSymbols())
             ret += inputSymbol;
-        ret+= " = PHI(";
-        for(String joined : joinedSymbols){
-            ret+= joined + " ";
+        ret += " = PHI(";
+        for (String joined : joinedSymbols) {
+            ret += joined + " ";
         }
-        ret+= ") ";
+        ret += ") ";
         return ret;
     }
 }

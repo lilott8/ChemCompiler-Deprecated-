@@ -12,14 +12,21 @@ public interface Conditional extends Statement {
     String getCondition();
 
     void setCondition(String condition);
+
     Statement getTrueTarget();
-    List<Statement> getTrueBranch();
-    void addToTrueBranch(Statement s);
 
     void setTrueTarget(Statement target);
+
+    List<Statement> getTrueBranch();
+
+    void addToTrueBranch(Statement s);
+
     Statement getFalseTarget();
+
     void setFalseTarget(Statement target);
+
     List<Statement> getFalseBranch();
+
     void addToFalseBranch(Statement s);
 
     String getScopeName();

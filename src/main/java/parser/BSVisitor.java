@@ -43,27 +43,16 @@ import static chemical.epa.ChemTypes.REAL;
  */
 public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements Step {
 
+    public static final Logger logger = LogManager.getLogger(BSVisitor.class);
     protected static final String REPEAT = "REPEAT";
     protected static final String BRANCH = "BRANCH";
     protected static final String INTEGER = "INTEGER";
     protected static final String BOOLEAN = "BOOLEAN";
     protected static final String CONST = "CONST";
-    private int scopeId = 0;
-    private int realId = 0;
-    private int booleanId = 0;
-    private int integerId = 0;
-
-    private AtomicInteger instructionId = new AtomicInteger(0);
-
-    private Deque<String> scope = new ArrayDeque<>();
-
-    public static final Logger logger = LogManager.getLogger(BSVisitor.class);
-
     // Keep track of the instruction idCounter to input/outputs
     protected static Map<Integer, Statement> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
     protected Map<String, Statement> controlInstructions = new HashMap<>();
-
     // Current instruction to work on.
     protected Statement instruction;
     // Current name to work on.
@@ -80,15 +69,21 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     protected List<Variable> parameters = new ArrayList<>();
     // Lets us know where to put the argument, if we are invoking.
     protected boolean inInvoke = false;
-
     // Ability to identify stuff.
     protected chemical.identification.Identifier identifier = IdentifierFactory.getIdentifier();
+    private int scopeId = 0;
+    private int realId = 0;
+    private int booleanId = 0;
+    private int integerId = 0;
+    private AtomicInteger instructionId = new AtomicInteger(0);
+    private Deque<String> scope = new ArrayDeque<>();
 
     {
         this.newScope(SymbolTable.DEFAULT_SCOPE);
     }
 
-    public BSVisitor() {}
+    public BSVisitor() {
+    }
 
     protected String getCurrentScope() {
         return this.scope.peek();
@@ -217,16 +212,6 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
             this.name = n.f0.toString();
         }
 
-
-        // This allows us to save arguments to functions.
-        if (this.inInvoke) {
-            String varName = String.format("%s_%s", this.getCurrentScope(), this.name);
-            logger.warn(varName);
-            logger.warn(SymbolTable.INSTANCE.getSymbols());
-            Variable v = SymbolTable.INSTANCE.getSymbol(varName);
-            logger.info("In inInvoke, thus adding: " + v.getName());
-            this.parameters.add(v);
-        }
         return this;
     }
 

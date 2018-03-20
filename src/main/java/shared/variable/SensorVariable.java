@@ -2,8 +2,9 @@ package shared.variable;
 
 import java.util.Set;
 
-import static ir.Statement.NL;
 import symboltable.Scope;
+
+import static ir.Statement.NL;
 
 /**
  * @created: 3/12/18

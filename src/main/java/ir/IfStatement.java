@@ -112,7 +112,7 @@ public class IfStatement extends BaseConditional {
         indent += "\t";
         StringBuilder sb = new StringBuilder("");
         sb.append(indent).append("If True Branch(").append(this.id).append("): ").append(NL);
-        for(Statement s : this.trueBranch) {
+        for (Statement s : this.trueBranch) {
             sb.append("(").append(this.id).append(") ").append(s.print(indent)).append(NL);
         }
         if (!this.falseBranch.isEmpty()) {

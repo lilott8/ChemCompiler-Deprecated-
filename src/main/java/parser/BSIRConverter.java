@@ -201,8 +201,8 @@ public class BSIRConverter extends BSVisitor {
 
         if (n.f2.present()) {
             n.f2.accept(this);
-            logger.info("Input for invocation: " + this.parameters);
             invoke.addInputVariables(this.parameters);
+            this.parameters.clear();
         }
 
         // Expand the function into the current tree.
@@ -220,8 +220,7 @@ public class BSIRConverter extends BSVisitor {
             assign.setLeftOp(this.assignTo);
             assign.setRightOp(invoke);
             this.addStatement(assign);
-        }
-        else {
+        } else {
             this.addStatement(invoke);
         }
         instructions.put(invoke.getId(), invoke);
@@ -257,11 +256,11 @@ public class BSIRConverter extends BSVisitor {
 
         this.functions.put(this.name, new ArrayList<>());
 
-        // Because we have too.
-        n.f3.accept(this);
-        logger.info("Adding parameters: " + this.parameters);
-        this.method.addParameters(this.parameters);
-        this.parameters.clear();
+        if (n.f3.present()) {
+            n.f3.accept(this);
+            //this.method.addParameters(this.parameters);
+            this.parameters.clear();
+        }
 
         // Get the statements
         n.f7.accept(this);
@@ -289,25 +288,6 @@ public class BSIRConverter extends BSVisitor {
     }
 
     /**
-     * f0 -> ( TypingList() )*
-     * f1 -> Identifier()
-     */
-    @Override
-    public BSVisitor visit(FormalParameter n) {
-        n.f1.accept(this);
-        Variable v = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
-        if (n.f0.present()) {
-            n.f0.accept(this);
-            if(v != null && v.getTypes().isEmpty()) {
-                v.addTypingConstraints(this.types);
-                this.types.clear();
-            }
-        }
-        this.parameters.add(v);
-        return this;
-    }
-
-    /**
      * f0 -> FormalParameter()
      * f1 -> ( FormalParameterRest() )*
      */
@@ -315,7 +295,7 @@ public class BSIRConverter extends BSVisitor {
     public BSVisitor visit(FormalParameterList n) {
         n.f0.accept(this);
 
-        if(n.f1.present()) {
+        if (n.f1.present()) {
             n.f1.accept(this);
         }
         return this;
@@ -331,6 +311,26 @@ public class BSIRConverter extends BSVisitor {
         return this;
     }
 
+
+    /**
+     * f0 -> ( TypingList() )*
+     * f1 -> Identifier()
+     */
+    @Override
+    public BSVisitor visit(FormalParameter n) {
+        n.f1.accept(this);
+        Variable v = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        if (n.f0.present()) {
+            n.f0.accept(this);
+            if (v != null && v.getTypes().isEmpty()) {
+                v.addTypingConstraints(this.types);
+                this.types.clear();
+            }
+        }
+        this.parameters.add(v);
+        return this;
+    }
+
     /**
      * f0 -> AllowedArguments()
      * f1 -> ( AllowedArgumentsRest() )*
@@ -339,7 +339,7 @@ public class BSIRConverter extends BSVisitor {
     public BSVisitor visit(ArgumentList n) {
         n.f0.accept(this);
 
-        if(n.f1.present()) {
+        if (n.f1.present()) {
             n.f1.accept(this);
         }
         return this;
@@ -362,6 +362,10 @@ public class BSIRConverter extends BSVisitor {
     @Override
     public BSVisitor visit(AllowedArguments n) {
         n.f0.accept(this);
+
+        Variable v = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        this.parameters.add(v);
+
         return this;
     }
 
@@ -563,7 +567,8 @@ public class BSIRConverter extends BSVisitor {
         assign.setLeftOp(this.assignTo);
         assign.setRightOp(mix);
         instructions.put(assign.getId(), assign);
-        this.addStatement(assign);
+        // this.addStatement(assign);
+        this.addStatement(mix);
 
         return this;
     }
@@ -595,8 +600,8 @@ public class BSIRConverter extends BSVisitor {
         assign.setLeftOp(this.assignTo);
         assign.setRightOp(split);
         instructions.put(assign.getId(), assign);
-        this.addStatement(assign);
-
+        // this.addStatement(assign);
+        this.addStatement(split);
 
         return this;
     }
@@ -637,7 +642,8 @@ public class BSIRConverter extends BSVisitor {
         assign.setLeftOp(this.assignTo);
         assign.setRightOp(detect);
         instructions.put(assign.getId(), assign);
-        this.addStatement(assign);
+        // this.addStatement(assign);
+        this.addStatement(detect);
 
         return this;
     }
@@ -713,7 +719,7 @@ public class BSIRConverter extends BSVisitor {
         }
 
         // This is a control in the main.
-        if(this.controlStack.size() <= 1) {
+        if (this.controlStack.size() <= 1) {
             this.functions.get(this.methodStack.peek()).add(conditional);
             controlStack.pop();
         } else {
@@ -740,7 +746,7 @@ public class BSIRConverter extends BSVisitor {
     }
 
     public void addStatement(Statement statement) {
-        if(this.controlStack.isEmpty()) {
+        if (this.controlStack.isEmpty()) {
             this.functions.get(this.getCurrentScope()).add(statement);
         } else {
             StatementBlock list = this.listBlocks.pop();
@@ -751,7 +757,7 @@ public class BSIRConverter extends BSVisitor {
 
     public String toString(String indent) {
         StringBuilder sb = new StringBuilder();
-        for(Map.Entry<String, List<Statement>> entry : this.functions.entrySet()) {
+        for (Map.Entry<String, List<Statement>> entry : this.functions.entrySet()) {
             sb.append(entry.getKey()).append(": ").append(System.lineSeparator());
             for (Statement s : entry.getValue()) {
                 sb.append(s.print(indent)).append(System.lineSeparator());

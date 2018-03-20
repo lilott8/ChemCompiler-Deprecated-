@@ -57,7 +57,6 @@ public class Group {
         this.chemGroup = ChemTypes.getTypeFromId(id);
 
 
-
         Evaluator evaluator = null;
         try {
             evaluator = new Evaluator();
@@ -66,12 +65,12 @@ public class Group {
             return;
         }
         //evaluator.setVerbose(true);
-        if(config.buildFilters()) {
+        if (config.buildFilters()) {
             for (Tuple<EpaManager.Type, String> t : this.attributes.get(EpaManager.Type.SMARTS)) {
                 try {
                     if (config.smartsLength() == -1) {
                         evaluators.add(evaluator.compile(String.format("match('%s')", t.getRight()), MolContext.class));
-                    } else if(t.getRight().length() >= config.smartsLength()) {
+                    } else if (t.getRight().length() >= config.smartsLength()) {
                         evaluators.add(evaluator.compile(String.format("match('%s')", t.getRight()), MolContext.class));
                     }
                 } catch (Exception e) {
@@ -87,7 +86,7 @@ public class Group {
         sb.append("getId: ").append(this.groupId).append("\t").append("Name: ").append(this.groupName).append("\n");
         for (Map.Entry<EpaManager.Type, List<Tuple>> entry : this.attributes.entrySet()) {
             sb.append(entry.getKey().toString()).append("\n");
-            for(Tuple a : entry.getValue()) {
+            for (Tuple a : entry.getValue()) {
                 sb.append(a.toString()).append("\n");
             }
         }

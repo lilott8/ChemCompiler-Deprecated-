@@ -9,7 +9,7 @@ import executable.instructions.Store;
 /**
  * Created by chriscurtis on 10/28/16.
  */
-public class MFSimSSAStorage extends MFSimSSANode{
+public class MFSimSSAStorage extends MFSimSSANode {
     private static final Logger logger = LogManager.getLogger(MFSimSSAStorage.class);
 
     public MFSimSSAStorage(Integer id, Store storeNode) {

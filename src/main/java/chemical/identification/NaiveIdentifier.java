@@ -53,6 +53,6 @@ public class NaiveIdentifier extends Identifier {
     }
 
     private int getModulo(long x) {
-        return (int) x%ChemTypes.NUM_REACTIVE_GROUPS;
+        return (int) x % ChemTypes.NUM_REACTIVE_GROUPS;
     }
 }

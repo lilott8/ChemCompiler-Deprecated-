@@ -11,6 +11,8 @@ import chemical.epa.ChemTypes;
  */
 public interface TypedVariable {
     TypedVariable addTypingConstraints(Set<ChemTypes> constraints);
+
     TypedVariable addTypingConstraint(ChemTypes constraint);
+
     Set<ChemTypes> getTypes();
 }

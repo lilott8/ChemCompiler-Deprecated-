@@ -10,6 +10,8 @@ import config.TranslateConfig;
  */
 public interface Translator {
     Translator setConfig(TranslateConfig config);
+
     Translator runTranslation(CFG controlFlowGraph);
+
     void toFile(String output);
 }

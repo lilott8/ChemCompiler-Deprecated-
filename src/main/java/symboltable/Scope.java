@@ -15,19 +15,14 @@ import shared.variable.Variable;
  */
 public class Scope {
 
-    public enum Visibility {
-        FUNCTION, GLOBAL, LOOP, BRANCH
-    }
-
+    Map<String, Variable> symbols = new HashMap<>();
+    Map<String, Method> methods = new HashMap<>();
     private Scope parentScope = null;
     private String name;
     // Will probably never be used, but jic.
     private int frameSize = 0;
     // Will probably never be used, but jic.
     private Visibility type = Visibility.GLOBAL;
-    Map<String, Variable> symbols = new HashMap<>();
-    Map<String, Method> methods = new HashMap<>();
-
     public Scope(String name) {
         this.name = name;
     }
@@ -88,5 +83,9 @@ public class Scope {
         }
 
         return sb.toString();
+    }
+
+    public enum Visibility {
+        FUNCTION, GLOBAL, LOOP, BRANCH
     }
 }

@@ -26,39 +26,20 @@ import typesystem.elements.Formula;
  */
 public abstract class Rule {
 
-    public enum InstructionType {
-        ASSIGN, DETECT, HEAT, BRANCH, MIX, SPLIT, OUTPUT, STATIONARY, LOOP, FUNCTION, MANIFEST, DRAIN, MODULE
-    }
-
-    protected InferenceType type;
-
-    protected final Logger logger;
-
-    protected InferenceConfig config = ConfigFactory.getConfig();
-
     // Keep track of the instruction id to input/outputs
     protected static Map<Integer, Formula> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
-
+    protected final Logger logger;
+    protected InferenceType type;
+    protected InferenceConfig config = ConfigFactory.getConfig();
     protected Rule(InferenceType type) {
         this.type = type;
         this.logger = LogManager.getLogger(Rule.class);
     }
+
     protected Rule(InferenceType type, Class<? extends Rule> clazz) {
         this.type = type;
         logger = LogManager.getLogger(clazz);
-    }
-
-    public InferenceType getType() {
-        return type;
-    }
-
-    public Map<String, Variable> getVariables() {
-        return variables;
-    }
-
-    public Map<Integer, Formula> getInstructions() {
-        return instructions;
     }
 
     protected static void addInstruction(Formula i) {
@@ -91,16 +72,8 @@ public abstract class Rule {
         try {
             Float.parseFloat(value);
             return true;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
-        }
-    }
-
-    protected Set<ChemTypes> getTypingConstraints(Variable input) {
-        if (variables.containsKey(input.getName())) {
-            return variables.get(input.getName()).getTypes();
-        } else {
-            return IdentifierFactory.getIdentifier().identifyCompoundForTypes(input.getName());
         }
     }
 
@@ -119,7 +92,7 @@ public abstract class Rule {
                 sb.insert(0, "a");
             }
             return sb.toString();
-        } catch(NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             input = "a" + input;
             return input;
         }
@@ -127,5 +100,29 @@ public abstract class Rule {
 
     public static boolean isMaterial(String value) {
         return true;
+    }
+
+    public InferenceType getType() {
+        return type;
+    }
+
+    public Map<String, Variable> getVariables() {
+        return variables;
+    }
+
+    public Map<Integer, Formula> getInstructions() {
+        return instructions;
+    }
+
+    protected Set<ChemTypes> getTypingConstraints(Variable input) {
+        if (variables.containsKey(input.getName())) {
+            return variables.get(input.getName()).getTypes();
+        } else {
+            return IdentifierFactory.getIdentifier().identifyCompoundForTypes(input.getName());
+        }
+    }
+
+    public enum InstructionType {
+        ASSIGN, DETECT, HEAT, BRANCH, MIX, SPLIT, OUTPUT, STATIONARY, LOOP, FUNCTION, MANIFEST, DRAIN, MODULE
     }
 }

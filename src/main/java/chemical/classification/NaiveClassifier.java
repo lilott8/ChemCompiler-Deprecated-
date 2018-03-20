@@ -2,8 +2,8 @@ package chemical.classification;
 
 import java.util.Set;
 
-import shared.substances.BaseCompound;
 import chemical.epa.ChemTypes;
+import shared.substances.BaseCompound;
 
 /**
  * @created: 9/13/17
@@ -12,7 +12,8 @@ import chemical.epa.ChemTypes;
  */
 public class NaiveClassifier implements Classifier {
 
-    NaiveClassifier() {}
+    NaiveClassifier() {
+    }
 
     @Override
     public Set<ChemTypes> classify(BaseCompound compound) {

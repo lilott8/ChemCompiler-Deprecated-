@@ -36,14 +36,14 @@ public enum EpaManager {
     INSTANCE;
 
     public static final Logger logger = LogManager.getLogger(EpaManager.class);
+    // Config object for convenience.
+    private final InferenceConfig config = ConfigFactory.getConfig();
+    private final Table<Integer, Integer, Set<Integer>> reactionMatrix = HashBasedTable.create();
     // Maps reactive group id to the manifested group replete with classifier data.
     public Map<ChemTypes, Group> groupMap = new HashMap<>();
     // Sparse matrix of reactive group to reactions.
     //public Map<ChemTypes, HashMap<ChemTypes, Reaction>> reactionMap = new HashMap<>();
     public Table<ChemTypes, ChemTypes, Reaction> reactionTable = HashBasedTable.create();
-    // Config object for convenience.
-    private final InferenceConfig config = ConfigFactory.getConfig();
-    private final Table<Integer, Integer, Set<Integer>> reactionMatrix = HashBasedTable.create();
 
     /**
      * Instantiates the EpaManager and parses the XML file that contains all* the chemical groups
@@ -147,7 +147,7 @@ public enum EpaManager {
                 // to make lookups easier by eating the space overhead
                 for (Map.Entry<ChemTypes, Reaction> entry : outcomes.entrySet()) {
                     //if (!this.reactionMap.containsKey(entry.getKey())) {
-                        //this.reactionMap.put(entry.getKey(), new HashMap<>());
+                    //this.reactionMap.put(entry.getKey(), new HashMap<>());
                     //}
                     // Lower half
                     this.reactionTable.put(chemType, entry.getKey(), entry.getValue());
@@ -323,7 +323,7 @@ public enum EpaManager {
 
 
         boolean throwException = false;
-        if (this.reactionTable.get(x,y) != null) {
+        if (this.reactionTable.get(x, y) != null) {
             Reaction reaction = this.reactionTable.get(x, y);
             // We are not ignoring warnings.
             if (config.getErrorLevel().warn()) {

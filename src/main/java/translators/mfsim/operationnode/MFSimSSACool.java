@@ -18,10 +18,11 @@ public class MFSimSSACool extends MFSimSSANode {
         time = getTime(reactNode);
     }
 
-    public MFSimSSACool(Integer id, Heat heatNode){
+    public MFSimSSACool(Integer id, Heat heatNode) {
         super(id, OperationClassifier.COOL, heatNode.getName());
         time = getTime(heatNode);
     }
+
     public String toString() {
         String ret = "NODE (" + this.nodeID + ", " + this.opType + ", " + time + ", " + this.nodeName + ")\n";
 

@@ -34,12 +34,11 @@ public abstract class BaseCompound<T> {
     }
 
     public abstract T getRepresentation();
+
     public abstract void setRepresentation(T representation);
 
     /**
      * Add a reactive group to the set of reactive groups
-     *
-     * @param group
      */
     public void addReactiveGroup(int group) {
         this.reactiveGroups.add(ChemTypes.getTypeFromId(group));
@@ -51,7 +50,6 @@ public abstract class BaseCompound<T> {
 
     /**
      * Add a set of reactive groups to the current set
-     * @param groups
      */
     public void addReactiveGroup(Set<ChemTypes> groups) {
         this.reactiveGroups.addAll(groups);
@@ -59,6 +57,7 @@ public abstract class BaseCompound<T> {
 
     /**
      * Gets the getId of the compound
+     *
      * @return the pubchem idCounter
      */
     public long getId() {
@@ -67,6 +66,7 @@ public abstract class BaseCompound<T> {
 
     /**
      * Returns the reactive groups the compound belongs to
+     *
      * @return set of ints that represent reactive groups
      */
     public Set<ChemTypes> getReactiveGroups() {
@@ -75,21 +75,24 @@ public abstract class BaseCompound<T> {
 
     /**
      * Returns the name of the compound
+     *
      * @return string name
      */
     public String getName() {
         return name;
     }
 
+    public String getSmiles() {
+        return this.smiles;
+    }
+
     public void setSmiles(String smiles) {
         this.smiles = smiles;
     }
 
-    public String getSmiles() {
-        return this.smiles;
-    }
     /**
      * toString method
+     *
      * @return string representation of compound
      */
     public String toString() {

@@ -176,7 +176,7 @@ void FunctionDefinition() :
 {}
 {
     <FUNCTION> Identifier() <LPAREN> (FormalParameterList())* <RPAREN> (<COLON> TypingList())? <LBRACE>
-        (Statements())*
+        (Statements())+
         (<RETURN> Expression())?
     <RBRACE>
 }
@@ -273,13 +273,13 @@ void DetectStatement() :
 void RepeatStatement() :
 {}
 {
-    <REPEAT> IntegerLiteral() <TIMES> <LBRACE> Statements() <RBRACE>
+    <REPEAT> IntegerLiteral() <TIMES> <LBRACE> (Statements())+ <RBRACE>
 }
 
 void BranchStatement() :
 {}
 {
-    <IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statements() <RBRACE>
+    <IF> <LPAREN> Expression() <RPAREN> <LBRACE> (Statements())+ <RBRACE>
     ( ElseIfBranchStatement() )*
     ( ElseBranchStatement() ) ?
 }
@@ -287,13 +287,13 @@ void BranchStatement() :
 void ElseIfBranchStatement() :
 {}
 {
-    <ELSE_IF> <LPAREN> Expression() <RPAREN> <LBRACE> Statements() <RBRACE>
+    <ELSE_IF> <LPAREN> Expression() <RPAREN> <LBRACE> (Statements())+ <RBRACE>
 }
 
 void ElseBranchStatement() :
 {}
 {
-    <ELSE> <LBRACE> Statements() <RBRACE>
+    <ELSE> <LBRACE> (Statements())+ <RBRACE>
 }
 
 void Expression() :

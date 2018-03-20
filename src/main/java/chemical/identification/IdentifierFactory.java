@@ -5,8 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 import config.Config;
 import config.ConfigFactory;
-import config.DatabaseConfig;
-import config.InferenceConfig;
 
 /**
  * @created: 9/13/17
@@ -15,9 +13,9 @@ import config.InferenceConfig;
  */
 public class IdentifierFactory {
 
+    public static final Logger logger = LogManager.getLogger(IdentifierFactory.class);
     private static final Identifier identifier;
     private static final Config config = ConfigFactory.getConfig();
-    public static final Logger logger = LogManager.getLogger(IdentifierFactory.class);
 
     static {
         String message = "";

@@ -18,9 +18,6 @@ public interface SolverStrategy {
     String NL = System.lineSeparator();
     String TAB = "\t";
 
-    // boolean solveConstraints(Map<String, SMTSolver> constraints);
-    boolean solveConstraints(Map<Integer, Statement> instructions, Map<String, Variable> variables);
-
     static String getSMTName(String key, ChemTypes t) {
         key = StringUtils.replaceAll(key, "[^A-Za-z0-9]", "_");
         key = StringUtils.replace(key, "-", "_");
@@ -33,4 +30,7 @@ public interface SolverStrategy {
         key = StringUtils.replace(key, "-", "_");
         return key;
     }
+
+    // boolean solveConstraints(Map<String, SMTSolver> constraints);
+    boolean solveConstraints(Map<Integer, Statement> instructions, Map<String, Variable> variables);
 }

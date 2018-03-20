@@ -4,6 +4,7 @@ import java.util.Set;
 
 import chemical.epa.ChemTypes;
 import symboltable.Scope;
+
 import static ir.Statement.NL;
 
 /**

@@ -8,5 +8,6 @@ package ir;
 public interface Exportable {
 
     String toJson();
+
     String toJson(String indent);
 }

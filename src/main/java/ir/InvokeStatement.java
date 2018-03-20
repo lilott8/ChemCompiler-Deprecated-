@@ -1,5 +1,6 @@
 package ir;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import chemical.epa.ChemTypes;
-import shared.errors.InvalidSyntaxException;
 import shared.variable.Method;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
@@ -56,29 +56,41 @@ public class InvokeStatement extends BaseStatement implements Invoke {
     public String toJson(String indent) {
         StringBuilder sb = new StringBuilder("");
 
-        if (this.inputVariables.isEmpty()) {
-            logger.warn("Input variables to invoke is empty???");
-        } else { logger.info(this.inputVariables);}
+        logger.info(this.inputVariables);
+        logger.info(this.method.getIndexedParameters());
 
+        int comma = 0;
         for (Statement s : this.method.getStatements()) {
-            if (this.inputVariables.size() != s.getInputVariables().size()) {
-                logger.fatal("How are the invocation inputs not the same size");
-            }
-            // Mutate the statement here!
+            logger.info("Inputs: " + s);
+            // The list of new variables to be used.
             List<Variable> variables = new ArrayList<>();
-            List<Variable> inputs = s.getInputVariables();
+            // Easy way to iterate the statements input variables.
             for (int x = 0; x < s.getInputVariables().size(); x++) {
-                logger.info(String.format("Input: %s", inputs.get(x).getName()));
-                if (this.method.getParameters().containsKey(inputs.get(x).getName())) {
-                    logger.info(String.format("Converting: %s to %s", inputs.get(x).getName(), this.method.getParameters().get(inputs.get(x).getName())));
-                    variables.add(this.method.getParameters().get(inputs.get(x).getName()));
+                // We know that if it is in the parameters, then we need to replace it.
+                if (this.method.getParameters().containsKey(s.getInputVariables().get(x).getName())) {
+                    int counter = 0;
+                    for (Variable getIndex : this.method.getIndexedParameters()) {
+                        if (StringUtils.equalsIgnoreCase(getIndex.getName(), s.getInputVariables().get(x).getName())) {
+                            logger.info("Found a match: " + getIndex.getName() + "/" + s.getInputVariables().get(x).getName() + " with count @: " + counter);
+                            variables.add(this.inputVariables.get(counter));
+                            logger.warn("Replacing: " + s.getInputVariables().get(x).getName() + " with: " + this.inputVariables.get(counter).getName());
+                        } else {
+                            logger.info(getIndex.getName() + " is not equal to: " + s.getInputVariables().get(x).getName());
+                        }
+                        counter++;
+                    }
                 } else {
-                    variables.add(inputs.get(x));
+                    logger.info("We can't find: " + s.getInputVariables().get(x));
+                    variables.add(s.getInputVariables().get(x));
                 }
             }
             s.clearInputVariables();
             s.addInputVariables(variables);
             sb.append(s.toJson());
+            if (comma < this.method.getStatements().size() - 1) {
+                sb.append(",").append(NL);
+                comma++;
+            }
         }
 
         if (!this.method.getReturnStatement().getOutputVariable().getTypes().contains(ChemTypes.getNums())) {
@@ -89,8 +101,6 @@ public class InvokeStatement extends BaseStatement implements Invoke {
             statement.addOutputVariable(this.outputVariable);
             sb.append(statement.toJson());
         }
-
-        //logger.info(sb.toString());
 
         return sb.toString();
     }

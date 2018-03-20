@@ -4,8 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 import java.util.List;
 import java.util.Map;
 
@@ -38,36 +36,35 @@ public class Experiment implements Stringify {
         // Open the EXPERIMENT.
         sb.append("\"EXPERIMENT\" : {").append(NL);
         //for (Map.Entry<String, List<Statement>> entry : this.statements.entrySet()) {
-            sb.append("\"NAME\" : \"").append(SymbolTable.DEFAULT_SCOPE).append("\",").append(NL);
-            List<Statement> method = this.statements.get(SymbolTable.DEFAULT_SCOPE);
-            Statement statement;
+        sb.append("\"NAME\" : \"").append(SymbolTable.DEFAULT_SCOPE).append("\",").append(NL);
+        List<Statement> method = this.statements.get(SymbolTable.DEFAULT_SCOPE);
 
-            // Open INPUTS.
-            sb.append("\"INPUTS\" : [").append(NL);
-            for (int x = 0; x < this.symbols.getInputs().size(); x++) {
-                sb.append(this.symbols.getInputs().get(x).buildDeclaration());
-                if (x < this.symbols.getInputs().size() - 1) {
+        // Open INPUTS.
+        sb.append("\"INPUTS\" : [").append(NL);
+        for (int x = 0; x < this.symbols.getInputs().size(); x++) {
+            sb.append(this.symbols.getInputs().get(x).buildDeclaration());
+            if (x < this.symbols.getInputs().size() - 1) {
+                sb.append(",").append(NL);
+            }
+        }
+        // Closes INPUTS.
+        sb.append("],").append(NL);
+        // Open INSTRUCTIONS.
+        sb.append("\"INSTRUCTIONS\" : [").append(NL);
+
+        int x = 0;
+        for (Statement s : method) {
+            String output = s.toJson();
+            if (!StringUtils.isEmpty(output)) {
+                sb.append(output);
+                if (x < method.size() - 1) {
                     sb.append(",").append(NL);
                 }
             }
-            // Closes INPUTS.
-            sb.append("],").append(NL);
-            // Open INSTRUCTIONS.
-            sb.append("\"INSTRUCTIONS\" : [").append(NL);
-
-            int x = 0;
-            for (Statement s : method) {
-                String output = s.toJson();
-                if (!StringUtils.isEmpty(output)) {
-                    sb.append(output);
-                    if (x < method.size()-1) {
-                        sb.append(",").append(NL);
-                    }
-                }
-                x++;
-            }
-            // Closes INSTRUCTIONS.
-            sb.append("]").append(NL);
+            x++;
+        }
+        // Closes INSTRUCTIONS.
+        sb.append("]").append(NL);
         //}
         //sb.append("]").append(NL);
         // Close the EXPERIMENT.

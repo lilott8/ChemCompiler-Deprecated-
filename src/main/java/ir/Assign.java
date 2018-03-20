@@ -13,8 +13,10 @@ import shared.variable.Variable;
 public interface Assign extends Statement {
 
     void setLeftOp(Variable variable);
+
     void setRightOp(Statement statement);
 
     Variable getOutputVariable();
+
     Set<ChemTypes> getTypes();
 }

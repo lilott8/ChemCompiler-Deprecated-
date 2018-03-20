@@ -162,7 +162,7 @@ public enum SymbolTable {
     }
 
     public Variable searchScopesForVariable(String name) {
-        for(Map.Entry<String, Scope> scope : this.scopes.entrySet()) {
+        for (Map.Entry<String, Scope> scope : this.scopes.entrySet()) {
             if (scope.getValue().getVariables().containsKey(name)) {
                 return scope.getValue().getVariables().get(name);
             }
@@ -173,8 +173,10 @@ public enum SymbolTable {
     /**
      * Recursive function looking for a definition of a
      * variable in parent scope(s).
+     *
      * @param name name of variable
-     * @param s scope
+     * @param s    scope
+     *
      * @return variable or null
      */
     @Nullable

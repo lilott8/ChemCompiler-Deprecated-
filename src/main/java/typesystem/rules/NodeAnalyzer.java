@@ -4,15 +4,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import chemical.epa.ChemTypes;
-import compilation.datastructures.node.InstructionNode;
-import typesystem.Inference.InferenceType;
-import typesystem.elements.Formula;
-import substance.Property;
 import chemical.combinator.Combiner;
 import chemical.combinator.CombinerFactory;
+import chemical.epa.ChemTypes;
 import chemical.identification.Identifier;
 import chemical.identification.IdentifierFactory;
+import compilation.datastructures.node.InstructionNode;
+import substance.Property;
+import typesystem.Inference.InferenceType;
+import typesystem.elements.Formula;
 
 import static chemical.epa.ChemTypes.REAL;
 
@@ -23,12 +23,17 @@ import static chemical.epa.ChemTypes.REAL;
  */
 public abstract class NodeAnalyzer extends Rule {
 
+    protected final Set<ChemTypes> propertyTypes = new HashSet<>();
     protected Identifier identifier;
     protected Combiner combiner;
-    protected final Set<ChemTypes> propertyTypes = new HashSet<>();
 
     {
         propertyTypes.add(REAL);
+    }
+
+    {
+        this.identifier = IdentifierFactory.getIdentifier();
+        this.combiner = CombinerFactory.getCombiner();
     }
 
     protected NodeAnalyzer(InferenceType type) {
@@ -37,11 +42,6 @@ public abstract class NodeAnalyzer extends Rule {
 
     protected NodeAnalyzer(InferenceType type, Class<? extends NodeAnalyzer> clazz) {
         super(type, clazz);
-    }
-
-    {
-        this.identifier = IdentifierFactory.getIdentifier();
-        this.combiner = CombinerFactory.getCombiner();
     }
 
     public abstract Rule gatherAllConstraints(InstructionNode node);

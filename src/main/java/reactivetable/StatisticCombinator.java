@@ -23,11 +23,11 @@ import shared.substances.ChemAxonCompound;
  */
 public class StatisticCombinator extends TableCombinator {
 
-    private FileReader reader;
     public static final FileWriter writer = new SimpleWriter("stats.txt");
-    private Map<Integer, Set<Long>> output = new HashMap<>();
     //private FileWriter writer;
     Map<Integer, Set<Long>> reactiveGroupsToDistinctChemicals = new HashMap<>();
+    private FileReader reader;
+    private Map<Integer, Set<Long>> output = new HashMap<>();
 
     public StatisticCombinator(FileWriter handler) {
         super(handler);
@@ -40,7 +40,7 @@ public class StatisticCombinator extends TableCombinator {
 
     private void parseFile() {
         String line;
-        while((line = this.reader.nextLine()) != null) {
+        while ((line = this.reader.nextLine()) != null) {
             String[] array = StringUtils.split(line, "|_|");
             int x = Integer.parseInt(array[0]);
             long y = Long.parseLong(array[1]);
@@ -117,11 +117,11 @@ public class StatisticCombinator extends TableCombinator {
 
     private boolean allowedToAdd(long id) {
         boolean result = true;
-            for (Map.Entry<Integer, Set<Long>> entry : this.output.entrySet()) {
-                if (entry.getValue().contains(id)) {
-                    result = false;
-                    break;
-                }
+        for (Map.Entry<Integer, Set<Long>> entry : this.output.entrySet()) {
+            if (entry.getValue().contains(id)) {
+                result = false;
+                break;
+            }
         }
 
         return result;
@@ -132,7 +132,7 @@ public class StatisticCombinator extends TableCombinator {
         int numGroups = 0;
         int max = 0;
         int maxReactiveGroup = 0;
-        for(Map.Entry<Integer, Set<Long>> entry : this.reactiveGroupsToDistinctChemicals.entrySet()) {
+        for (Map.Entry<Integer, Set<Long>> entry : this.reactiveGroupsToDistinctChemicals.entrySet()) {
             StringBuilder sb = new StringBuilder();
             sb.append(entry.getKey()).append(": ").append(entry.getValue().size());
             logger.info(sb);
@@ -153,7 +153,7 @@ public class StatisticCombinator extends TableCombinator {
         int numGroups = 0;
         int max = 0;
         int maxReactiveGroup = 0;
-        for(Map.Entry<Integer, Set<ChemAxonCompound>> entry : this.reactiveGroupToChemicals.entrySet()) {
+        for (Map.Entry<Integer, Set<ChemAxonCompound>> entry : this.reactiveGroupToChemicals.entrySet()) {
             StringBuilder sb = new StringBuilder();
             sb.append(entry.getKey()).append(": ").append(entry.getValue().size());
             logger.info(sb);

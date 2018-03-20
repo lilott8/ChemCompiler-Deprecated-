@@ -9,13 +9,13 @@ import java.util.Set;
 
 import chemaxon.formats.MolExporter;
 import chemaxon.struc.Molecule;
-import config.ConfigFactory;
-import config.InferenceConfig;
-import shared.substances.ChemAxonCompound;
-import shared.substances.BaseCompound;
 import chemical.classification.Classifier;
 import chemical.classification.ClassifierFactory;
 import chemical.epa.ChemTypes;
+import config.ConfigFactory;
+import config.InferenceConfig;
+import shared.substances.BaseCompound;
+import shared.substances.ChemAxonCompound;
 
 /**
  * @created: 9/13/17
@@ -24,13 +24,12 @@ import chemical.epa.ChemTypes;
  */
 public class ChemAxonCombiner implements Combiner {
 
+    public static final Logger logger = LogManager.getLogger(ChemAxonCombiner.class);
     private InferenceConfig config = ConfigFactory.getConfig();
-
     private Classifier classifier = ClassifierFactory.getClassifier();
 
-    public static final Logger logger = LogManager.getLogger(ChemAxonCombiner.class);
-
-    ChemAxonCombiner() {}
+    ChemAxonCombiner() {
+    }
 
     @Override
     public ChemAxonCompound combine(BaseCompound a, BaseCompound b) {
@@ -54,7 +53,8 @@ public class ChemAxonCombiner implements Combiner {
             molecule.fuse(compoundB.getRepresentation());
             try {
                 //molecule.aromatize();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
             try {
                 // We export the SMILES representation to the compound as the name
                 compound = new ChemAxonCompound(-1, (String) MolExporter.exportToObject(molecule, "smiles"));

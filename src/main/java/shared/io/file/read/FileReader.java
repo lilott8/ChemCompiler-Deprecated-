@@ -28,7 +28,7 @@ public class FileReader {
     protected void open() {
         try {
             this.handler = new BufferedReader(new java.io.FileReader(this.fileName));
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Error opening file.");
             logger.error(e);
         }
@@ -41,7 +41,7 @@ public class FileReader {
                 return null;
             }
             return line;
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error("Error reading line.");
             logger.error(e);
         }
@@ -51,7 +51,7 @@ public class FileReader {
     public List<String> allLines() {
         List<String> results = new ArrayList<>();
         String line;
-        while((line = this.nextLine()) != null) {
+        while ((line = this.nextLine()) != null) {
             results.add(line);
         }
 
@@ -61,7 +61,7 @@ public class FileReader {
     public void close() {
         try {
             this.handler.close();
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Error closing file.");
             logger.error(e);
         }

@@ -11,13 +11,13 @@ import chemaxon.jep.ChemJEP;
 import chemaxon.jep.context.MolContext;
 import chemaxon.nfunk.jep.ParseException;
 import chemaxon.struc.Molecule;
-import config.ConfigFactory;
-import config.InferenceConfig;
-import shared.substances.ChemAxonCompound;
-import shared.substances.BaseCompound;
 import chemical.epa.ChemTypes;
 import chemical.epa.EpaManager;
 import chemical.epa.Group;
+import config.ConfigFactory;
+import config.InferenceConfig;
+import shared.substances.BaseCompound;
+import shared.substances.ChemAxonCompound;
 
 /**
  * @created: 9/13/17
@@ -29,7 +29,8 @@ public class ChemAxonClassifier implements Classifier {
     public static final Logger logger = LogManager.getLogger(Classifier.class);
     private InferenceConfig config = ConfigFactory.getConfig();
 
-    ChemAxonClassifier() {}
+    ChemAxonClassifier() {
+    }
 
     @Override
     public Set<ChemTypes> classify(BaseCompound a) {

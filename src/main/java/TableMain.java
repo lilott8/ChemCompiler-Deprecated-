@@ -5,11 +5,11 @@ import java.util.concurrent.TimeUnit;
 
 import cli.CliWrapper;
 import config.ConfigFactory;
-import shared.io.file.write.FileWriter;
-import shared.io.file.write.SimpleWriter;
 import reactivetable.ChemicalCombinator;
 import reactivetable.TableCombinator;
 import reactivetable.ThreadManager;
+import shared.io.file.write.FileWriter;
+import shared.io.file.write.SimpleWriter;
 
 /**
  * @created: 9/14/17
@@ -20,7 +20,7 @@ public class TableMain {
 
     public static final Logger logger = LogManager.getLogger(TableMain.class);
 
-    public static void main(String... args) throws Exception {
+    public static void main(String... args) {
         CliWrapper cli = new CliWrapper();
         cli.parseCommandLine(args);
 
@@ -48,7 +48,8 @@ public class TableMain {
 
         long start = System.currentTimeMillis();
         // block anything else from happening!
-        while(!threadManager.isDone()) {}
+        while (!threadManager.isDone()) {
+        }
         // write the table to disk.
         //combo.writeToDisk();
 

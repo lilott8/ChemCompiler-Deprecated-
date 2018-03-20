@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import chemical.epa.ChemTypes;
+import chemical.epa.EpaManager;
 import config.ConfigFactory;
 import shared.substances.BaseCompound;
 import shared.substances.NaiveCompound;
-import chemical.epa.ChemTypes;
-import chemical.epa.EpaManager;
 
 /**
  * @created: 9/13/17

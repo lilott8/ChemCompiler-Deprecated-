@@ -52,7 +52,7 @@ public class AssignStatement extends BaseStatement implements Assign {
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", super.toString(), this.rightOp.getName());
+        return String.format("%s (%s)", super.toString(), this.rightOp.toString());
     }
 
     @Override

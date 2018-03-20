@@ -20,14 +20,13 @@ import config.ConfigFactory;
 public class StaticSingleInformation extends StaticSingleAssignment {
 
     private static final Logger logger = LogManager.getLogger(StaticSingleInformation.class);
-
-    private PostDominatorTree postDominatorTree;
     protected HashMap<String, HashSet<Integer>> sigmaPlacedAt;
+    private PostDominatorTree postDominatorTree;
 
 
-   // HashMap<Integer, Integer> hasAlready = new HashMap<Integer, Integer>();
+    // HashMap<Integer, Integer> hasAlready = new HashMap<Integer, Integer>();
 
-    public StaticSingleInformation(CFG controlFlowGraph){
+    public StaticSingleInformation(CFG controlFlowGraph) {
         super(controlFlowGraph);
         postDominatorTree = new PostDominatorTree(controlFlowGraph);
         sigmaPlacedAt = new HashMap<>();
@@ -35,7 +34,7 @@ public class StaticSingleInformation extends StaticSingleAssignment {
         createBasicBlockSymbolDefinitionAndUseTables();
 
         Boolean changesMade = true;
-        while (changesMade){
+        while (changesMade) {
             changesMade = this.placePhiNodes();
             if (this.placeSigmaNodes())
                 changesMade = true;

@@ -35,27 +35,19 @@ import typesystem.satsolver.strategies.Z3Strategy;
  * @project: ChemicalCompiler
  *
  * Because it is too cumbersome to implement a `Visitor` pattern here,
- *  we just rely on the base constructs that exists...
+ * we just rely on the base constructs that exists...
  *
- *  We rely on annotations to dynamically load any typesystem rules and
- *  then associate those with their instruction within the compiler.
+ * We rely on annotations to dynamically load any typesystem rules and
+ * then associate those with their instruction within the compiler.
  */
 public class Inference implements shared.Phase {
 
-    // Enum to determine what type the node in the CFG is.
-    public enum InferenceType {
-        TERM, INSTRUCTION, BRANCH
-    }
-
-    public final String NODE_ANALYSIS = "NODE";
-    public final String EDGE_ANALYSIS = "EDGE";
-
     // Logging mechanism.
     public static final Logger logger = LogManager.getLogger(Inference.class);
-
     // Package for where to look for annotated rules.
     public static final String INFERENCE_PACKAGE = "typesystem.rules";
-
+    public final String NODE_ANALYSIS = "NODE";
+    public final String EDGE_ANALYSIS = "EDGE";
     /**
      * We have two because the differences between graph
      * and edges are stark.  So this enforces guarantees that
@@ -64,18 +56,14 @@ public class Inference implements shared.Phase {
      */
     private final Map<String, NodeAnalyzer> basicBlockAnalyzers = new HashMap<>();
     private final Map<String, EdgeAnalyzer> edgeAnalyzers = new HashMap<>();
-
     // Contains the typing constraints for statements.
     private Map<Integer, Statement> instructions = new HashMap<>();
     // Contains the typing constraints for all terms.
     private Map<String, Variable> variables = new HashMap<>();
-
     // This is for human readability and testing only.  This will be removed for production.
     private Map<Tuple<String, String>, Set<ChemTypes>> testingConstraints = new HashMap<Tuple<String, String>, Set<ChemTypes>>();
-
     // How are we going to solve this type typesystem problem?
     private SatSolver solver = new SatSolver();
-
     // Control flow statements needed to infer types from.
     private CFG controlFlowGraph;
 
@@ -86,17 +74,16 @@ public class Inference implements shared.Phase {
 
     /**
      * Run the typesystem phase of the compilation process.
-     * @param controlFlowGraph
      */
     public boolean runPhase(CFG controlFlowGraph) {
         this.controlFlowGraph = controlFlowGraph;
 
         // Iterate the CFG.
-        for(Map.Entry<Integer, BasicBlock> block : this.controlFlowGraph.getBasicBlocks().entrySet()) {
+        for (Map.Entry<Integer, BasicBlock> block : this.controlFlowGraph.getBasicBlocks().entrySet()) {
             // Iterate the statements.
-            for(InstructionNode node : block.getValue().getInstructions()) {
+            for (InstructionNode node : block.getValue().getInstructions()) {
                 // If we have an instruction, see what we can infer.
-                if(node.getInstruction() != null) {
+                if (node.getInstruction() != null) {
                     // This will give us the typing of all the constraints in the instruction.
                     this.inferConstraints(StringUtils.upperCase(node.getInstruction().getClassification()), node);
                 }
@@ -104,7 +91,7 @@ public class Inference implements shared.Phase {
         }
 
         // Iterate the edges, we need the branch conditions to infer...
-        for(BasicBlockEdge edge : this.controlFlowGraph.getBasicBlockEdges()) {
+        for (BasicBlockEdge edge : this.controlFlowGraph.getBasicBlockEdges()) {
             this.inferConstraints(StringUtils.upperCase(edge.getClassification()), edge);
         }
 
@@ -127,12 +114,11 @@ public class Inference implements shared.Phase {
 
     /**
      * Infer the constraint from the instruction.
-     * @param name
-     *   Name of the instruction.
-     * @param instruction
-     *   getInstruction to be inferred.
-     * @return
-     *   A mapping of id to what was inferred.
+     *
+     * @param name        Name of the instruction.
+     * @param instruction getInstruction to be inferred.
+     *
+     * @return A mapping of id to what was inferred.
      */
     public void inferConstraints(String name, InstructionNode instruction) {
         /*if(this.basicBlockAnalyzers.containsKey(name)) {
@@ -150,12 +136,10 @@ public class Inference implements shared.Phase {
      * Infer constraints from edges.
      * This handles if/elseif/else and repeats
      *
-     * @param name
-     *   Name of the instruction.
-     * @param edge
-     *   Edge between basic graph.
-     * @return
-     *   A mapping of id to what was inferred.
+     * @param name Name of the instruction.
+     * @param edge Edge between basic graph.
+     *
+     * @return A mapping of id to what was inferred.
      */
     public void inferConstraints(String name, BasicBlockEdge edge) {
         if (this.edgeAnalyzers.containsKey(name)) {
@@ -184,8 +168,7 @@ public class Inference implements shared.Phase {
     }
 
     /**
-     * @return
-     *   String representation.
+     * @return String representation.
      */
     public String toString() {
         return super.toString() + this.instructions;
@@ -200,7 +183,7 @@ public class Inference implements shared.Phase {
         Reflections reflection = new Reflections(INFERENCE_PACKAGE);
         Set<Class<?>> annotated = reflection.getTypesAnnotatedWith(InferenceRule.class);
 
-        for(Class<?> clazz : annotated) {
+        for (Class<?> clazz : annotated) {
             try {
                 // For obvious reasons we assume the ruleName is set.
                 String name = StringUtils.upperCase(clazz.getAnnotation(InferenceRule.class).ruleName());
@@ -214,13 +197,13 @@ public class Inference implements shared.Phase {
                     this.edgeAnalyzers.put(name, newInstance);
                 }
                 // Just in case we need it, we store the rule type the class represents.
-            } catch(InstantiationException ie) {
+            } catch (InstantiationException ie) {
                 logger.warn(String.format("Cannot Instantiate: [%s]", clazz.getName()));
-            } catch(IllegalAccessException iae) {
+            } catch (IllegalAccessException iae) {
                 logger.warn(String.format("IllegalAccess: The class: [%s] could not be instantiated", clazz.getName()));
-            } catch(NoSuchMethodException nsme) {
+            } catch (NoSuchMethodException nsme) {
                 logger.warn(String.format("We cannot find the correct instructor for: %s", clazz.getName()));
-            } catch(InvocationTargetException ite) {
+            } catch (InvocationTargetException ite) {
                 logger.warn(String.format("We cannot invoke that dark magic (%s)", clazz.getName()));
             }
         }
@@ -253,5 +236,10 @@ public class Inference implements shared.Phase {
         Collections.sort(nums);
         int middle = Math.floorDiv(nums.size(), 2);
         return nums.get(middle);
+    }
+
+    // Enum to determine what type the node in the CFG is.
+    public enum InferenceType {
+        TERM, INSTRUCTION, BRANCH
     }
 }

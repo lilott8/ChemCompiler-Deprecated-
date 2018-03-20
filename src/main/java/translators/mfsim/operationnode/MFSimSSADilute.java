@@ -8,7 +8,7 @@ import executable.instructions.Combine;
 /**
  * Created by chriscurtis on 10/28/16.
  */
-public class MFSimSSADilute extends MFSimSSANode{
+public class MFSimSSADilute extends MFSimSSANode {
     public static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
     private Integer numMix;
     private Long time;

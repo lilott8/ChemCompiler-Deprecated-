@@ -65,7 +65,7 @@ public class DependencySlicedBasicBlock extends BasicBlock {
 
         Integer index = 0;
         if (instructions.size() > 0) {
-            index = instructions.size()-1;
+            index = instructions.size() - 1;
             for (String exitKey : instructions.get(index).getOutSet()) {
                 CFG.getBasicBlock(bb.getId()).getBasicBlockExitTable().put(exitKey, new HashSet<>(instructions.get(index).getId()));
             }
@@ -94,8 +94,8 @@ public class DependencySlicedBasicBlock extends BasicBlock {
                     break;
                 }
             }
-            lastInstructions.put(bb, bb.getInstructions().get(bb.getInstructions().size()-1));
-            for (Integer index = bb.getInstructions().size()-1; index >-1; index--) {
+            lastInstructions.put(bb, bb.getInstructions().get(bb.getInstructions().size() - 1));
+            for (Integer index = bb.getInstructions().size() - 1; index > -1; index--) {
                 InstructionNode i = bb.getInstructions().get(index);
                 if (!(i instanceof SigmaInstruction) && !(i instanceof PHIInstruction)) {
                     lastInstructions.put(bb, i);
@@ -114,11 +114,11 @@ public class DependencySlicedBasicBlock extends BasicBlock {
         }
         //ephemeral statements from exit node
         for (Integer i = 0; i < CFG.getBasicBlock(last).getInstructions().size(); i++) {
-            instructions.remove(instructions.size()-1);
+            instructions.remove(instructions.size() - 1);
         }
 
         //ephemeral phi and sigma statements
-        for (Integer i = instructions.size()-1; i > 0; i--) {
+        for (Integer i = instructions.size() - 1; i > 0; i--) {
             InstructionNode instr = instructions.get(i);
             if (instr instanceof PHIInstruction || instr instanceof SigmaInstruction) {
                 instructions.remove(instr);
@@ -135,17 +135,14 @@ public class DependencySlicedBasicBlock extends BasicBlock {
                 if (instr.getInstruction() != null) {
                     _defs.addAll(instr.getInstruction().getOutputs().keySet());
                     _uses.addAll(instr.getInstruction().getInputs().keySet());
-                }
-                else {
+                } else {
                     if (instr instanceof PHIInstruction) {
                         _defs.add(((PHIInstruction) instr).getOriginalName());
                         _uses.add(((PHIInstruction) instr).getOriginalName());
-                    }
-                    else if (instr instanceof SigmaInstruction) {
+                    } else if (instr instanceof SigmaInstruction) {
                         _defs.add(instr.getInputSymbols().get(0));
                         _defs.add(instr.getInputSymbols().get(0));
-                    }
-                    else {
+                    } else {
                         logger.error("Can't discern is this is a Phi or Sigma instruction.");
                     }
                 }
@@ -237,7 +234,7 @@ public class DependencySlicedBasicBlock extends BasicBlock {
         }
 
 
-        for (BasicBlock bb: CFG.getBasicBlocks().values()) {
+        for (BasicBlock bb : CFG.getBasicBlocks().values()) {
             InstructionNode firstInstruction = firstInstructions.get(bb);
             InstructionNode lastInstruction = lastInstructions.get(bb);
 
@@ -291,7 +288,7 @@ public class DependencySlicedBasicBlock extends BasicBlock {
     private void processInstructionInput(InstructionNode instruction, List<InstructionEdge> update, BasicBlock bb, Integer index, StaticSingleAssignment CFG) {
         // loop through all inputs (reads)
         for (String inputKey : instruction.getInputSymbols()) {
-            for (Integer successorIndex=index+1; successorIndex < bb.getInstructions().size(); ++successorIndex) {
+            for (Integer successorIndex = index + 1; successorIndex < bb.getInstructions().size(); ++successorIndex) {
                 InstructionNode successor = bb.getInstructions().get(successorIndex);
                 //check if input is used by successor
                 if (successor.getInputSymbols().contains(inputKey) && successor.getId() != -1) {
@@ -313,7 +310,7 @@ public class DependencySlicedBasicBlock extends BasicBlock {
             // not necesarily needed, only outputs from last instruction needed
             //bb.getBasicBlockExitTable().put(outputKey, exitTable);
 
-            for (Integer successorIndex=index+1; successorIndex < bb.getInstructions().size(); ++successorIndex) {
+            for (Integer successorIndex = index + 1; successorIndex < bb.getInstructions().size(); ++successorIndex) {
                 InstructionNode successor = bb.getInstructions().get(successorIndex);
                 //check if output is used by successor (read)
                 if (successor.getInputSymbols().contains(outputKey) && successor.getId() != -1) {
@@ -367,7 +364,7 @@ public class DependencySlicedBasicBlock extends BasicBlock {
         }
 
         //update instructionEdge list
-        for (Integer i = update.size()-1; i > -1; i--) {
+        for (Integer i = update.size() - 1; i > -1; i--) {
             Integer source = update.get(i).getSource();
             if (!sourceDestsMap.get(source).contains(update.get(i).getDestination())) {
                 update.remove(i.intValue());
@@ -376,7 +373,7 @@ public class DependencySlicedBasicBlock extends BasicBlock {
 
         //remove repeat edges
         for (Integer i = 0; i < update.size(); i++) {
-            for (Integer j = i+1; j < update.size(); j++) {
+            for (Integer j = i + 1; j < update.size(); j++) {
                 if (update.get(i).equals(update.get(j))) {
                     update.remove(j.intValue());
                     j--;
@@ -395,7 +392,7 @@ public class DependencySlicedBasicBlock extends BasicBlock {
             }
             destinations.add(edge.getDestination());
             //get all destinations of source
-            for (Integer destIndex = edgeIndex+1; destIndex < edges.size(); ++destIndex) {
+            for (Integer destIndex = edgeIndex + 1; destIndex < edges.size(); ++destIndex) {
                 InstructionEdge destNode = edges.get(destIndex);
                 if (destNode.getSource().equals(source)) {
                     ++edgeIndex;

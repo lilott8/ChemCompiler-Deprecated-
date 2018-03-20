@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Created by chriscurtis on 10/28/16.
  */
-public class MFSimSSAGeneral extends MFSimSSANode{
+public class MFSimSSAGeneral extends MFSimSSANode {
     private static final Logger logger = LogManager.getLogger(MFSimSSAGeneral.class);
 
     public MFSimSSAGeneral(Integer id, String name) {

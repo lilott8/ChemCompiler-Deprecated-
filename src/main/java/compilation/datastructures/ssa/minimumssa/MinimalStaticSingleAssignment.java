@@ -11,7 +11,7 @@ import compilation.datastructures.ssa.StaticSingleAssignment;
 
 public class MinimalStaticSingleAssignment extends StaticSingleAssignment {
 
-    public MinimalStaticSingleAssignment(CFG controlFlowGraph){
+    public MinimalStaticSingleAssignment(CFG controlFlowGraph) {
         super(controlFlowGraph);
 
         this.createBasicBlockSymbolDefinitionAndUseTables();

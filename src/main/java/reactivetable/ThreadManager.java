@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import config.ConfigFactory;
-import config.DatabaseConfig;
 import config.InferenceConfig;
 
 /**
@@ -20,17 +19,11 @@ import config.InferenceConfig;
 public class ThreadManager {
 
     public static final Logger logger = LogManager.getLogger(ThreadManager.class);
-
-    private int numThreads;
-
     private static final int MAXTHREADS = 100;
-
     private static int currentThreadId = 0;
-
-    private ThreadPoolExecutor executor;
-
     protected ConcurrentLinkedQueue<Thread> workers = new ConcurrentLinkedQueue<Thread>();
-
+    private int numThreads;
+    private ThreadPoolExecutor executor;
     private InferenceConfig config = ConfigFactory.getConfig();
 
     public ThreadManager() {
@@ -44,7 +37,7 @@ public class ThreadManager {
     }
 
     public void runExecutor() {
-        for(Thread t : workers) {
+        for (Thread t : workers) {
             executor.execute(t);
             logger.info("Executing thread: " + t.getId());
         }
@@ -57,14 +50,14 @@ public class ThreadManager {
 
     public int getNextId() {
         currentThreadId += 1;
-        return currentThreadId-1;
+        return currentThreadId - 1;
     }
 
     public int getNumThreadsExecuting() {
         return executor.getActiveCount();
     }
 
-    public boolean isDone(){
+    public boolean isDone() {
         return this.executor.isTerminated();
     }
 }

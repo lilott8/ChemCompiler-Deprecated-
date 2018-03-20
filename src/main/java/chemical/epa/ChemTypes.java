@@ -89,6 +89,7 @@ public enum ChemTypes {
     NULL(-1),
     FALSE(-1);
 
+    public static final int NUM_REACTIVE_GROUPS;
     private static Map<Integer, ChemTypes> integerChemTypesMap = new HashMap<>();
     private static Set<ChemTypes> materials = new HashSet<>();
     private static Set<ChemTypes> numbers = new HashSet<>();
@@ -253,7 +254,11 @@ public enum ChemTypes {
         allTypes.addAll(numbers);
     }
 
-    public static final int NUM_REACTIVE_GROUPS;
+    private int value;
+
+    ChemTypes(int value) {
+        this.value = value;
+    }
 
     public static Set<ChemTypes> getMaterials() {
         return materials;
@@ -267,22 +272,12 @@ public enum ChemTypes {
         return allTypes;
     }
 
-    private int value;
-
     public static boolean isMaterial(ChemTypes t) {
         return materials.contains(t);
     }
 
     public static boolean isNumber(ChemTypes t) {
         return numbers.contains(t);
-    }
-
-    ChemTypes(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return this.value;
     }
 
     public static ChemTypes getTypeFromId(int id) {
@@ -294,6 +289,10 @@ public enum ChemTypes {
 
     public static Map<Integer, ChemTypes> getIntegerChemTypesMap() {
         return integerChemTypesMap;
+    }
+
+    public int getValue() {
+        return this.value;
     }
 
     public String toString(ChemTypes t) {

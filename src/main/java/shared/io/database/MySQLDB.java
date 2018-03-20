@@ -31,11 +31,11 @@ public class MySQLDB extends DatabaseConnector {
             String url = String.format("jdbc:mysql://%s/%s?" +
                             "useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
                     config.getDBAddr(), config.getDBUser());
-            if(config.isDebug()) {
+            if (config.isDebug()) {
                 logger.debug(url);
             }
             connection = DriverManager.getConnection(url, config.getDBUser(), config.getDBPassword());
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.fatal(e.toString());
         }
     }
@@ -47,8 +47,8 @@ public class MySQLDB extends DatabaseConnector {
     /**
      * Allows updating of record
      *
-     * @param query
-     * 		string that is an update
+     * @param query string that is an update
+     *
      * @return number of records affected
      */
     public int update(String query) {
@@ -67,7 +67,9 @@ public class MySQLDB extends DatabaseConnector {
 
     /**
      * General query to the shared.io.database
+     *
      * @param query string that is a query
+     *
      * @return ResultSet object that is the results of your query
      */
     public ResultSet query(String query) {
@@ -78,7 +80,7 @@ public class MySQLDB extends DatabaseConnector {
             }
             this.lastQuery = query;
             return this.statement.executeQuery(query);
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             logger.error(e.toString());
             return null;
         }
@@ -86,8 +88,11 @@ public class MySQLDB extends DatabaseConnector {
 
     /**
      * Get a prepared statement for the query you want to run
+     *
      * @param query prepared statement form of a query
+     *
      * @return prepared statement for use in querying shared.io.database
+     *
      * @throws SQLException ...
      */
     public PreparedStatement prepareStatement(String query) throws SQLException {
@@ -97,7 +102,7 @@ public class MySQLDB extends DatabaseConnector {
     public void closeConnection(Connection connection) {
         try {
             connection.close();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             logger.error(e.toString());
         }
     }

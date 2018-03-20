@@ -24,6 +24,7 @@ public class Method {
 
     protected Set<ChemTypes> types = new HashSet<>();
     protected Map<String, Variable> parameters = new LinkedHashMap<>();
+    protected List<Variable> indexedParameters = new ArrayList<>();
     protected String name;
     protected List<Statement> statements = new ArrayList<>();
     protected Statement returnStatement;
@@ -39,6 +40,7 @@ public class Method {
 
     public void addParameter(Variable var) {
         this.parameters.put(var.getName(), var);
+        this.indexedParameters.add(var);
     }
 
     public void addParameters(List<Variable> vars) {
@@ -87,6 +89,10 @@ public class Method {
 
     public Map<String, Variable> getParameters() {
         return this.parameters;
+    }
+
+    public List<Variable> getIndexedParameters() {
+        return this.indexedParameters;
     }
 
     public String toString() {

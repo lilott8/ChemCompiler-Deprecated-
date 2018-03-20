@@ -48,7 +48,7 @@ public class SimpleWriter extends FileWriter {
     public void flush() {
         try {
             this.writer.flush();
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error("Could not flush to disk.");
             logger.error(e);
         }

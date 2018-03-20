@@ -14,7 +14,7 @@ public class SemiPrunedStaticSingleAssignment extends StaticSingleAssignment {
     private HashSet<String> nonLocals = new HashSet<>();
 
 
-    public SemiPrunedStaticSingleAssignment(CFG controlFlow){
+    public SemiPrunedStaticSingleAssignment(CFG controlFlow) {
         super(controlFlow);
 
         this.createBasicBlockSymbolDefinitionAndUseTables();
@@ -24,21 +24,20 @@ public class SemiPrunedStaticSingleAssignment extends StaticSingleAssignment {
     }
 
 
-
-    private void calculateNonLocalVariables(){
+    private void calculateNonLocalVariables() {
 
         this.nonLocals.clear();
 
-        for(BasicBlock bb : this.basicBlocks.values()){
+        for (BasicBlock bb : this.basicBlocks.values()) {
             bb.getKilledSet().clear();
 
-            for(InstructionNode node : bb.getInstructions()) {
-                for (String symbol : node.getInputSymbols()){
+            for (InstructionNode node : bb.getInstructions()) {
+                for (String symbol : node.getInputSymbols()) {
                     if (!bb.getKilledSet().contains(symbol))
                         this.nonLocals.add(symbol);
                 }
 
-                for(String symbol: node.getOutputSymbols()){
+                for (String symbol : node.getOutputSymbols()) {
                     bb.getKilledSet().add(symbol);
                 }
             }

@@ -12,9 +12,16 @@ function doThis(mat chem) : mat {
 
 function doThis2(mat chem, mat chem3, chem4) {
     drain chem3
-    return a
+    a = mix chem with chem3
+    b = mix a with chem4
+    repeat 4 times {
+        drain a
+        drain chem
+    }
+    return b
 }
 
 instructions
 
-a = doThis(chemical1)
+awesome = mix test2 with chemical1
+a = doThis2(chemical1, chemical2, awesome)

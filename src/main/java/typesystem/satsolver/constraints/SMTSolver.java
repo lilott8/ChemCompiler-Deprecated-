@@ -18,6 +18,7 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
 public interface SMTSolver {
 
     String compose(Formula instruction);
+
     String compose(Variable variable);
 
     default String killSwitch() {

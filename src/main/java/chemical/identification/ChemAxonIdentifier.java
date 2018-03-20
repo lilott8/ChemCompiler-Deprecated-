@@ -26,47 +26,49 @@ public class ChemAxonIdentifier extends Identifier {
 
     public static final Logger logger = LogManager.getLogger(ChemAxonIdentifier.class);
 
-    ChemAxonIdentifier() {}
+    ChemAxonIdentifier() {
+    }
 
     public ChemAxonCompound identifyCompound(String name) {
         ChemAxonCompound compound;
-            switch(config.getClassificationLevel()) {
-                // pubchem
-                case 16:
-                    try {
-                        long x = Long.parseLong(name);
-                        compound = this.searchByPubChemId(x);
-                        break;
-                    } catch(NumberFormatException e) {}
-                // cas-number
-                case 8:
-                    if (isCasNumber(name)) {
-                        compound = this.searchByCasNumber(name);
-                        if (compound != null) {
-                            break;
-                        }
-                    }
-                // inchl-key
-                case 4:
-                    if (isInChIKey(name)) {
-                        compound = this.searchByInCHLKey(name);
-                        if (compound != null) {
-                            break;
-                        }
-                    }
-                // smiles
-                case 2:
-                    if (isSmiles(name)) {
-                        compound = this.searchBySmiles(name);
-                        if (compound != null) {
-                            break;
-                        }
-                    }
-                default:
-                // naive name approach
-                case 1:
-                    compound = this.searchByAliases(name);
+        switch (config.getClassificationLevel()) {
+            // pubchem
+            case 16:
+                try {
+                    long x = Long.parseLong(name);
+                    compound = this.searchByPubChemId(x);
                     break;
+                } catch (NumberFormatException e) {
+                }
+                // cas-number
+            case 8:
+                if (isCasNumber(name)) {
+                    compound = this.searchByCasNumber(name);
+                    if (compound != null) {
+                        break;
+                    }
+                }
+                // inchl-key
+            case 4:
+                if (isInChIKey(name)) {
+                    compound = this.searchByInCHLKey(name);
+                    if (compound != null) {
+                        break;
+                    }
+                }
+                // smiles
+            case 2:
+                if (isSmiles(name)) {
+                    compound = this.searchBySmiles(name);
+                    if (compound != null) {
+                        break;
+                    }
+                }
+            default:
+                // naive name approach
+            case 1:
+                compound = this.searchByAliases(name);
+                break;
         }
         return compound;
     }
@@ -87,21 +89,19 @@ public class ChemAxonIdentifier extends Identifier {
 
     /**
      * set the identification method for this run
-     * @param s
-     * @return
      */
     public Identifier identify(String s) {
         if (Identifier.isSmiles(s)) {
             //this.representation = Representation.SMILES;
         } else if (Identifier.isInChIKey(s)) {
-           // this.representation = Representation.INCHIKEY;
+            // this.representation = Representation.INCHIKEY;
         } else if (Identifier.isCasNumber(s)) {
             logger.fatal("Cas numbers cannot be used yet");
-           // throw new NotImplementedException();
+            // throw new NotImplementedException();
         } else if (Identifier.isChemicalFormula(s)) {
-           // this.representation = Representation.FORMULA;
+            // this.representation = Representation.FORMULA;
         } else {
-           // this.representation = Representation.NAME;
+            // this.representation = Representation.NAME;
         }
         return this;
     }

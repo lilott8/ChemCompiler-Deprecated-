@@ -9,26 +9,27 @@ public class SigmaInstruction extends InstructionNode {
 
     private String originalSymbol;
 
-    public SigmaInstruction(String symbol, Integer successors){
-        super(-1,null);
+    public SigmaInstruction(String symbol, Integer successors) {
+        super(-1, null);
         originalSymbol = symbol;
         this.inputSymbols.add(symbol);
-        while(successors-- >0)
+        while (successors-- > 0)
             this.outputSymbols.add(symbol);
     }
 
 
-    public String toString(){
+    public String toString() {
         return this.toString("");
     }
-    public String toString(String indentBuffer){
+
+    public String toString(String indentBuffer) {
         String ret = indentBuffer;
 
-        for(String s: this.getOutputSymbols()){
+        for (String s : this.getOutputSymbols()) {
             ret += s + " ";
         }
 
-        ret+= "= SIGMA( " + this.getInputSymbols().get(0) + ")" + originalSymbol;
+        ret += "= SIGMA( " + this.getInputSymbols().get(0) + ")" + originalSymbol;
         return ret;
     }
 }

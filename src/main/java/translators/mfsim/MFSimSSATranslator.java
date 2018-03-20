@@ -16,7 +16,8 @@ public class MFSimSSATranslator implements Translator {
 
     private IDGen uniqueIDGen;
     private MFSimSSACFG controlFLow;
-    private MFSimSSATranslator(CFG controlFlowGraph){
+
+    private MFSimSSATranslator(CFG controlFlowGraph) {
         uniqueIDGen = new IDGen();
         controlFLow = new MFSimSSACFG(controlFlowGraph, uniqueIDGen);
     }
@@ -24,8 +25,16 @@ public class MFSimSSATranslator implements Translator {
     public MFSimSSATranslator() {
     }
 
-    public void toFile(String output){
+    public void toFile(String output) {
         controlFLow.toFile(output);
+    }
+
+    public Translator setConfig(TranslateConfig config) {
+        return this;
+    }
+
+    public Translator runTranslation(CFG controlFlowGraph) {
+        return new MFSimSSATranslator(controlFlowGraph);
     }
 
     public class IDGen {
@@ -39,13 +48,5 @@ public class MFSimSSATranslator implements Translator {
             return uniqueIDGen++;
         }
 
-    }
-
-    public Translator setConfig(TranslateConfig config) {
-        return this;
-    }
-
-    public Translator runTranslation(CFG controlFlowGraph) {
-        return new MFSimSSATranslator(controlFlowGraph);
     }
 }

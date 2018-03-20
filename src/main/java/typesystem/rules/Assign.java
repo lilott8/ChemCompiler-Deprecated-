@@ -8,7 +8,6 @@ import typesystem.elements.Formula;
  * @created: 7/27/17
  * @since: 0.1
  * @project: ChemicalCompiler
- *
  */
 
 @InferenceRule(ruleName = "assign", ruleType = "term")
@@ -21,9 +20,9 @@ public class Assign extends NodeAnalyzer {
     @Override
     public Rule gatherAllConstraints(InstructionNode node) {
         if (this.config.isDebug()) {
-             //logger.trace(node);
-             //logger.trace("Input: " + node.getInputSymbols());
-             //logger.trace("Output: " + node.getOutputSymbols());
+            //logger.trace(node);
+            //logger.trace("Input: " + node.getInputSymbols());
+            //logger.trace("Output: " + node.getOutputSymbols());
         }
 
         Formula instruction = new Formula(InstructionType.ASSIGN);

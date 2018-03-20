@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 
 import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
+import chemical.epa.ChemTypes;
 import config.ConfigFactory;
 import config.InferenceConfig;
 import shared.substances.BaseCompound;
-import chemical.epa.ChemTypes;
 
 /**
  * @created: 9/13/17
@@ -30,18 +30,14 @@ public abstract class Identifier {
 
     protected InferenceConfig config = ConfigFactory.getConfig();
 
-    Identifier() {}
-
-    public abstract BaseCompound identifyCompound(String name);
-    public abstract BaseCompound identifyCompound(long id);
-    public abstract Set<ChemTypes> identifyCompoundForTypes(String name);
-    public abstract Set<ChemTypes> identifyCompoundForTypes(long id);
+    Identifier() {
+    }
 
     /**
      * Test for a CAS number, eg 1354-53-6
      *
-     * @param chemical
-     * 		String that could be a CAS number
+     * @param chemical String that could be a CAS number
+     *
      * @return boolean denoting the input as a CAS or not
      * todo: implement the checksum algorithm for CAS numbers for better handling
      */
@@ -65,8 +61,8 @@ public abstract class Identifier {
     /**
      * Test for a chemical formula, eg HCl, CH3OOH
      *
-     * @param chemical
-     * 		String that could be a chemical formula
+     * @param chemical String that could be a chemical formula
+     *
      * @return boolean denoting the input as a chemical formula or not
      */
     public static boolean isChemicalFormula(String chemical) {
@@ -79,8 +75,8 @@ public abstract class Identifier {
     /**
      * Test to determine whether the string is a smiles
      *
-     * @param chemical
-     * 		String that could be a SMILES
+     * @param chemical String that could be a SMILES
+     *
      * @return boolean denoting the input as a SMILES
      */
     public static boolean isSmiles(String chemical) {
@@ -95,8 +91,8 @@ public abstract class Identifier {
     /**
      * Test for an InChIKey
      *
-     * @param chemical
-     * 		string that could be a inchikey
+     * @param chemical string that could be a inchikey
+     *
      * @return boolean denoting the input as a inchikey or not
      */
     public static boolean isInChIKey(String chemical) {
@@ -107,6 +103,14 @@ public abstract class Identifier {
                 && StringUtils.equals(Character.toString(chemical.charAt(14)), "-")
                 && matcher.find());
     }
+
+    public abstract BaseCompound identifyCompound(String name);
+
+    public abstract BaseCompound identifyCompound(long id);
+
+    public abstract Set<ChemTypes> identifyCompoundForTypes(String name);
+
+    public abstract Set<ChemTypes> identifyCompoundForTypes(long id);
 
     /**
      * How is the identifier identifying the chemical

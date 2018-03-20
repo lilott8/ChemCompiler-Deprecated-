@@ -21,7 +21,7 @@ public class Formula {
     private List<Variable> properties = new ArrayList<>();
 
 
-    public Formula(Rule.InstructionType type){
+    public Formula(Rule.InstructionType type) {
         this.type = type;
         this.id = instructionCounter++;
     }

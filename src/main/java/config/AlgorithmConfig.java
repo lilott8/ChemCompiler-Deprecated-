@@ -8,6 +8,7 @@ package config;
 interface AlgorithmConfig extends CommonConfig {
 
     boolean runSSA();
+
     boolean runSSI();
 
 }

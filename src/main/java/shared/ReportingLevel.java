@@ -13,11 +13,11 @@ package shared;
 public enum ReportingLevel {
     ERROR(100), WARNING(10), NONE(0);
 
+    private int level;
+
     ReportingLevel(int value) {
         this.level = value;
     }
-
-    private int level;
 
     public boolean warn() {
         return this.level == WARNING.level || this.level == NONE.level;

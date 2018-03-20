@@ -10,6 +10,8 @@ import symboltable.Scope;
 public interface ScopedVariable {
 
     Scope getScope();
+
     void addScope(Scope scope);
+
     String getScopedName();
 }

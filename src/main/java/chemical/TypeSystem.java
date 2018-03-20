@@ -134,8 +134,6 @@ public class TypeSystem {
      * A helper function that that allows us to search for a resolution
      * of a string.  It allows the system to know exactly what a
      * reference is comprise of
-     * @param s
-     * @return
      */
     private BaseCompound resolveInput(String s) {
         logger.info("Given: " + s);

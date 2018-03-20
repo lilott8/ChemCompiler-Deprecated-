@@ -12,9 +12,9 @@ import config.InferenceConfig;
  * @project: ChemicalCompiler
  */
 public class ClassifierFactory {
-    private static InferenceConfig config = ConfigFactory.getConfig();
-    private static final Classifier classifier;
     public static final Logger logger = LogManager.getLogger(ClassifierFactory.class);
+    private static final Classifier classifier;
+    private static InferenceConfig config = ConfigFactory.getConfig();
 
     static {
         String message = "";

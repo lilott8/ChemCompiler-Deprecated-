@@ -8,6 +8,8 @@ package ir;
 public interface Vertex {
 
     String getName();
+
     int getId();
+
     String getIdAsString();
 }

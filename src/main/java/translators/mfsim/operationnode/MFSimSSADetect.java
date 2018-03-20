@@ -9,7 +9,7 @@ import executable.instructions.Detect;
 /**
  * Created by chriscurtis on 10/28/16.
  */
-public class MFSimSSADetect extends MFSimSSANode{
+public class MFSimSSADetect extends MFSimSSANode {
     private static final Logger logger = LogManager.getLogger(MFSimSSADetect.class);
     private Integer numDetect;
     private Long time;

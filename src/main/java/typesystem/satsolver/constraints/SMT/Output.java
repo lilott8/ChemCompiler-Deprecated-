@@ -29,7 +29,7 @@ public class Output implements SMTSolver {
             sb.append(compose(v));
         }
 
-        for (Variable v: instruction.getProperties()) {
+        for (Variable v : instruction.getProperties()) {
             sb.append(compose(v));
         }
 

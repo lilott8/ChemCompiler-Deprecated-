@@ -28,6 +28,7 @@ public class ChemAxonCompound extends BaseCompound<Molecule> {
 
     /**
      * Returns the ChemAxon molecule object
+     *
      * @return molecule object
      */
     @Override
@@ -42,6 +43,7 @@ public class ChemAxonCompound extends BaseCompound<Molecule> {
 
     /**
      * Set the molecule for the compound
+     *
      * @param molecule molecule object
      */
     public void setMolecule(Molecule molecule) {

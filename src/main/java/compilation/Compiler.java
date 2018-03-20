@@ -8,16 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import compilation.datastructures.CFGBuilder;
-import compilation.datastructures.basicblock.BasicBlock;
-import compilation.datastructures.basicblock.DependencySlicedBasicBlock;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.ssi.StaticSingleInformation;
 import config.Config;
 import config.ConfigFactory;
-import executable.Experiment;
 import manager.Benchtop;
-import parser.BSVisitor;
 import parser.BioScriptParser;
 import shared.Facade;
 import shared.Phase;

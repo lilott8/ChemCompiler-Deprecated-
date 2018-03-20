@@ -47,7 +47,7 @@ public class BioScriptParser implements Phase {
             try {
                 BSProgram program = this.parser.BSProgram();
                 program.accept(this.symbolTable);
-                logger.info(this.symbolTable);
+                // logger.info(this.symbolTable);
                 if (!this.config.getErrorLevel().disabled()) {
                     this.typeChecker = new BSTypeChecker();
                     program.accept(this.typeChecker);
