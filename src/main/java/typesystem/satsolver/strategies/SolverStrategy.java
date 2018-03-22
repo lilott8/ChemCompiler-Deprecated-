@@ -5,8 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Map;
 
 import chemical.epa.ChemTypes;
-import ir.Statement;
 import shared.variable.Variable;
+import typesystem.elements.Formula;
 
 /**
  * @created: 8/24/17
@@ -32,5 +32,5 @@ public interface SolverStrategy {
     }
 
     // boolean solveConstraints(Map<String, SMTSolver> constraints);
-    boolean solveConstraints(Map<Integer, Statement> instructions, Map<String, Variable> variables);
+    boolean solveConstraints(Map<Integer, Formula> instructions, Map<String, Variable> variables);
 }

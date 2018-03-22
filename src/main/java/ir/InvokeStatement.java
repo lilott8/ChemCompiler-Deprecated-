@@ -59,8 +59,8 @@ public class InvokeStatement extends BaseStatement implements Invoke {
     public String toJson(String indent) {
         StringBuilder sb = new StringBuilder("");
 
-        logger.info(this.inputVariables);
-        logger.info(this.method.getIndexedParameters());
+        // logger.info(this.inputVariables);
+        // logger.info(this.method.getIndexedParameters());
 
         int comma = 0;
         for (Statement s : this.method.getStatements()) {

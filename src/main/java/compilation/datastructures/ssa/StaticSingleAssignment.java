@@ -16,14 +16,13 @@ import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.dominatortree.DominatorTree;
 import compilation.datastructures.node.InstructionNode;
 import compilation.datastructures.ssi.SigmaInstruction;
-import compilation.datastructures.ssi.StaticSingleInformation;
 import config.ConfigFactory;
 
 /**
  * Created by chriscurtis on 3/13/17.
  */
 public abstract class StaticSingleAssignment extends CFG {
-    private static final Logger logger = LogManager.getLogger(StaticSingleInformation.class);
+    private static final Logger logger = LogManager.getLogger(StaticSingleAssignment.class);
     public static Boolean DEBUGPHI = false;
     public static Boolean DEBUGLHS = false;
     public static Boolean DEBUGRHS = false;
@@ -67,7 +66,6 @@ public abstract class StaticSingleAssignment extends CFG {
             if (instructionNode instanceof GlobalAssignment) {
 
                 for (String symbol : instructionNode.getOutputSymbols()) {
-                    logger.info(symbol);
                     if (this.basicBlockSymbolDefinitionTable.containsKey(symbol)) {
                         this.basicBlockSymbolDefinitionTable.get(symbol).add(this.entry.getId());
                     } else {
@@ -147,7 +145,6 @@ public abstract class StaticSingleAssignment extends CFG {
                         // logger.debug("Changing RHS: " + symbol + " to " + variableStack.get(symbol).peek());
                     }
                     int index = instruction.getInputSymbols().indexOf(symbol);
-                    logger.info(instruction);
                     instruction.getInputSymbols().set(index, variableStack.get(symbol).peek().getVariable(whichSucc(bb.getId(), variableStack.get(symbol).peek().getOriginID())));
 //                    instruction.getInstruction().getInputs().put(variableStack.get(symbol).peek(),instruction.getInstruction().getInputs().get(symbol));
 //                    instruction.getInstruction().getInputs().remove(symbol);

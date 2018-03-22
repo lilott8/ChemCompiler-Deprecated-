@@ -17,9 +17,8 @@ import java.util.Set;
 
 import chemical.epa.ChemTypes;
 import config.ConfigFactory;
-import ir.MixStatement;
-import ir.Statement;
 import shared.variable.Variable;
+import typesystem.elements.Formula;
 import typesystem.rules.Rule;
 import typesystem.satsolver.constraints.SMT.Assign;
 import typesystem.satsolver.constraints.SMT.Branch;
@@ -42,7 +41,7 @@ public class Z3Strategy implements SolverStrategy {
 
     public static final Logger logger = LogManager.getLogger(Z3Strategy.class);
 
-    private Map<Integer, Statement> instructions;
+    private Map<Integer, Formula> instructions;
     private Map<String, Variable> variables;
 
     private Map<Rule.InstructionType, SMTSolver> composers = new HashMap<>();
@@ -58,7 +57,7 @@ public class Z3Strategy implements SolverStrategy {
     }
 
     @Override
-    public boolean solveConstraints(Map<Integer, Statement> instructions, Map<String, Variable> variables) {
+    public boolean solveConstraints(Map<Integer, Formula> instructions, Map<String, Variable> variables) {
         this.instructions = instructions;
         this.variables = variables;
 
@@ -79,13 +78,13 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(this.buildAssertsForNumberMaterial(i.getValue()));
         }
 
-        for (Map.Entry<Integer, Statement> instruction : this.instructions.entrySet()) {
-            if (instruction instanceof MixStatement) {
-                //if (instruction.getValue().type == Rule.InstructionType.MIX) {
-                logger.fatal("need to redo solveConstrains");
-                //sb.append(this.composers.get(instruction.getValue().type).compose(instruction.getValue()));
-                //}
+        for (Map.Entry<Integer, Formula> instruction : this.instructions.entrySet()) {
+            // if (instruction instanceof MixStatement) {
+            if (instruction.getValue().type == Rule.InstructionType.MIX) {
+                //logger.fatal("need to redo solveConstrains");
+                sb.append(this.composers.get(instruction.getValue().type).compose(instruction.getValue()));
             }
+            // }
         }
 
         if (ConfigFactory.getConfig().isDebug()) {
@@ -108,7 +107,7 @@ public class Z3Strategy implements SolverStrategy {
 
         sb.append("; Initialize declares for: ").append(SolverStrategy.getSMTName(v.getName())).append(NL);
         for (Entry<Integer, ChemTypes> types : ChemTypes.getIntegerChemTypesMap().entrySet()) {
-            sb.append("(declare-const ").append(SolverStrategy.getSMTName(v.getScopedName(), types.getValue())).append(" Bool)").append(NL);
+            sb.append("(declare-const ").append(SolverStrategy.getSMTName(v.getName(), types.getValue())).append(" Bool)").append(NL);
         }
 
         return sb.toString();
@@ -155,9 +154,9 @@ public class Z3Strategy implements SolverStrategy {
             sb.append(TAB).append("(not").append(NL);
         }
         sb.append(TAB + TAB).append("(or").append(NL)
-                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getScopedName(), REAL))
+                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getName(), REAL))
                 .append(" true)").append(NL)
-                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getScopedName(), NAT))
+                .append(TAB + TAB + TAB).append("(= ").append(SolverStrategy.getSMTName(v.getName(), NAT))
                 .append(" true)").append(NL);
         if (isMat) {
             sb.append(TAB + TAB).append(")").append(NL);

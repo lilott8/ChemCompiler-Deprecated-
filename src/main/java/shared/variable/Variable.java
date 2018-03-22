@@ -62,6 +62,10 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
         return idCounter.getAndIncrement();
     }
 
+    public String getVarName() {
+        return this.name;
+    }
+
     public Variable addTypingConstraints(Set<ChemTypes> constraints) {
         this.types.addAll(constraints);
         return this;
@@ -98,6 +102,10 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
     }
 
     public Set<ChemTypes> getTypes() {
+        return this.types;
+    }
+
+    public Set<ChemTypes> getTypingConstraints() {
         return this.types;
     }
 

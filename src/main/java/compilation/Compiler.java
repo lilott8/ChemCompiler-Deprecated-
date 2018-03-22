@@ -22,6 +22,7 @@ import parsing.BioScript.BenchtopParser;
 import shared.Facade;
 import shared.Phase;
 import translators.TranslatorFacade;
+import typesystem.Inference;
 
 /**
  * Created by chriscurtis on 9/29/16.
@@ -80,10 +81,20 @@ public class Compiler {
             e.printStackTrace();
         }
 
-        //runPhases();
+        runPhases();
         //runTranslations();
 
     }
+
+    public void runPhases() {
+        if (!this.config.getErrorLevel().disabled()) {
+            for (CFG experiment : this.experimentControlFlowGraphs) {
+                Inference phase = new Inference();
+                phase.runPhase(experiment);
+            }
+        }
+    }
+
 
     public void runAllOps() {
         this.runTranslations();

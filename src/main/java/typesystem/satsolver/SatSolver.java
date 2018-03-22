@@ -5,8 +5,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-import ir.Statement;
 import shared.variable.Variable;
+import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
 
 /**
@@ -29,7 +29,7 @@ public class SatSolver {
         return this;
     }
 
-    public boolean solveConstraints(Map<Integer, Statement> instructions, Map<String, Variable> variables) {
+    public boolean solveConstraints(Map<Integer, Formula> instructions, Map<String, Variable> variables) {
         return this.strategy.solveConstraints(instructions, variables);
     }
 

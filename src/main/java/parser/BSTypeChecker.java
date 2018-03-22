@@ -63,13 +63,14 @@ public class BSTypeChecker extends BSVisitor implements TypeChecker {
             sb.append(this.buildAssertsForNumberMaterial(i.getValue()));
         }
 
-        logger.info(sb.toString());
+        //logger.info(sb.toString());
     }
 
 
     @Override
     public void solve() {
         logger.fatal("solveConstraints is commented out.");
+        logger.fatal("You are still using constraint generation from typesystem.Inference.");
         //this.z3.solveConstraints(statements, variables);
     }
 

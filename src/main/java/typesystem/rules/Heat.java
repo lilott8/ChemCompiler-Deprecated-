@@ -1,7 +1,13 @@
 package typesystem.rules;
 
 import compilation.datastructures.node.InstructionNode;
+import shared.variable.AssignedVariable;
+import shared.variable.Variable;
+import substance.Property;
 import typesystem.Inference.InferenceType;
+import typesystem.elements.Formula;
+
+import static chemical.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/27/17
@@ -19,12 +25,12 @@ public class Heat extends NodeAnalyzer {
     public Rule gatherAllConstraints(InstructionNode node) {
 
         //Formula instruction = new Formula(node.getId(), InstructionType.HEAT);
-        /*Formula instruction = new Formula(InstructionType.HEAT);
+        Formula instruction = new Formula(InstructionType.HEAT);
 
         Variable input = null;
         // There is only ever one input.
         for (String s : node.getUse()) {
-            input = new Term(s);
+            input = new AssignedVariable(s);
             input.addTypingConstraints(getTypingConstraints(input));
             instruction.addInputVariable(input);
             addVariable(input);
@@ -36,13 +42,13 @@ public class Heat extends NodeAnalyzer {
         addVariable(output);
 
         for (Property p : node.getInstruction().getProperties()) {
-            Variable prop = new Term(Rule.createHash(p.toString()), this.propertyTypes);
+            Variable prop = new shared.variable.Property(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addVariable(prop);
         }
 
-        addInstruction(instruction);*/
+        addInstruction(instruction);
         return this;
     }
 }

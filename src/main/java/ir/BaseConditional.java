@@ -114,13 +114,13 @@ public abstract class BaseConditional extends BaseStatement implements Condition
     @Override
     public void alphaConversion(List<Variable> params) {
         for (Statement s : this.trueBranch) {
-            if (s instanceof DrainStatement) {
+            /*if (s instanceof DrainStatement) {
                 logger.info("Drain before alpha conversion: " + s.getInputVariables());
-            }
+            }*/
             s.alphaConversion(params);
-            if (s instanceof DrainStatement) {
+            /*if (s instanceof DrainStatement) {
                 logger.info("Drain after alpha conversion: " + s.getInputVariables());
-            }
+            }*/
         }
 
         if (!falseBranch.isEmpty()) {

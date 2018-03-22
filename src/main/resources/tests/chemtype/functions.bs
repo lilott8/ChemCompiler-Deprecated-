@@ -2,6 +2,8 @@ module test
 stationary test2
 manifest mat chemical1
 manifest chemical2
+manifest x
+manifest y
 
 functions
 

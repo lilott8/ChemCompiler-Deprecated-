@@ -78,7 +78,6 @@ public class BSIRConverter extends BSVisitor {
         this.methodStack.push(SymbolTable.DEFAULT_SCOPE);
         this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
         this.functions.put(SymbolTable.DEFAULT_SCOPE, new ArrayList<>());
-        logger.warn(SymbolTable.INSTANCE.getSymbols());
     }
 
     @Override
@@ -227,6 +226,7 @@ public class BSIRConverter extends BSVisitor {
         }
         instructions.put(invoke.getId(), invoke);
         this.inInvoke = false;
+        this.types.clear();
         return this;
     }
 

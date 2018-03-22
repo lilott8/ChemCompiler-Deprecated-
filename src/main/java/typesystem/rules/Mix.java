@@ -1,7 +1,19 @@
 package typesystem.rules;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import chemical.epa.ChemTypes;
+import chemical.epa.EpaManager;
 import compilation.datastructures.node.InstructionNode;
+import shared.variable.AssignedVariable;
+import shared.variable.DefinedVariable;
+import shared.variable.Variable;
+import substance.Property;
 import typesystem.Inference.InferenceType;
+import typesystem.elements.Formula;
+
+import static chemical.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/27/17
@@ -21,14 +33,14 @@ public class Mix extends NodeAnalyzer {
     public Rule gatherAllConstraints(InstructionNode node) {
 
         //Formula instruction = new Formula(node.getId(), InstructionType.MIX);
-        /*Formula instruction = new Formula(InstructionType.MIX);
+        Formula instruction = new Formula(InstructionType.MIX);
 
         Set<ChemTypes> groupings = new HashSet<>();
 
         Variable input = null;
         // Right hand side values (a = mix input with input)
         for (String in : node.getUse()) {
-            input = new Term(in);
+            input = new AssignedVariable(in);
             // If we have seen this before, we can just pull the old types.
             if (variables.containsKey(input.getVarName())) {
                 input.addTypingConstraints(variables.get(input.getVarName()).getTypingConstraints());
@@ -48,14 +60,14 @@ public class Mix extends NodeAnalyzer {
         if (!node.getDef().isEmpty()) {
             // There will only ever be one def for a mix.
             for (String out : node.getDef()) {
-                output = new Term(out);
+                output = new DefinedVariable(out);
                 output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
                 instruction.addOutputVariable(output);
                 addVariable(output);
             }
         } else {
             // Otherwise, get the last use.
-            output = new Term(input.getVarName());
+            output = new DefinedVariable(input.getVarName());
             output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
             instruction.addOutputVariable(output);
             addVariable(output);
@@ -63,13 +75,13 @@ public class Mix extends NodeAnalyzer {
 
         // Get the properties of the instruction if they exist
         for (Property p : node.getInstruction().getProperties()) {
-            Variable prop = new Term(Rule.createHash(p.toString()), this.propertyTypes);
+            Variable prop = new shared.variable.Property(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addVariable(prop);
         }
 
-        addInstruction(instruction);*/
+        addInstruction(instruction);
         // logger.trace("=======================");
         return this;
     }
