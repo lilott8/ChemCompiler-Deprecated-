@@ -1,7 +1,5 @@
 package config;
 
-import java.util.List;
-
 /**
  * @created: 9/5/17
  * @since: 0.1
@@ -13,7 +11,7 @@ public interface CommonConfig {
 
     boolean clean();
 
-    List<String> getFilesForCompilation();
+    String getInputFile();
 
     boolean checkForChemAxon();
 

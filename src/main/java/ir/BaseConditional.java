@@ -103,4 +103,30 @@ public abstract class BaseConditional extends BaseStatement implements Condition
     public List<Statement> getFalseBranch() {
         return falseBranch;
     }
+
+    /**
+     * Run alpha conversion for all the statements that
+     * Exist in the branch, this will work recursively,
+     * Because nested branches will result in landing here.
+     *
+     * @param params list of parameters to reference.
+     */
+    @Override
+    public void alphaConversion(List<Variable> params) {
+        for (Statement s : this.trueBranch) {
+            if (s instanceof DrainStatement) {
+                logger.info("Drain before alpha conversion: " + s.getInputVariables());
+            }
+            s.alphaConversion(params);
+            if (s instanceof DrainStatement) {
+                logger.info("Drain after alpha conversion: " + s.getInputVariables());
+            }
+        }
+
+        if (!falseBranch.isEmpty()) {
+            for (Statement s : this.falseBranch) {
+                s.alphaConversion(params);
+            }
+        }
+    }
 }

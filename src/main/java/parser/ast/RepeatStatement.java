@@ -15,7 +15,7 @@ import parser.visitor.Visitor;
  * f1 -> IntegerLiteral()
  * f2 -> <TIMES>
  * f3 -> <LBRACE>
- * f4 -> Statements()
+ * f4 -> ( Statements() )+
  * f5 -> <RBRACE>
  */
 public class RepeatStatement implements Node {
@@ -23,10 +23,10 @@ public class RepeatStatement implements Node {
     public IntegerLiteral f1;
     public NodeToken f2;
     public NodeToken f3;
-    public Statements f4;
+    public NodeList f4;
     public NodeToken f5;
 
-    public RepeatStatement(NodeToken n0, IntegerLiteral n1, NodeToken n2, NodeToken n3, Statements n4, NodeToken n5) {
+    public RepeatStatement(NodeToken n0, IntegerLiteral n1, NodeToken n2, NodeToken n3, NodeList n4, NodeToken n5) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
@@ -35,7 +35,7 @@ public class RepeatStatement implements Node {
         f5 = n5;
     }
 
-    public RepeatStatement(IntegerLiteral n0, Statements n1) {
+    public RepeatStatement(IntegerLiteral n0, NodeList n1) {
         f0 = new NodeToken("repeat");
         f1 = n0;
         f2 = new NodeToken("times");

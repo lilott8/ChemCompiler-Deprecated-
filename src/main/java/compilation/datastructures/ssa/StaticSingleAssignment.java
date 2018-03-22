@@ -147,6 +147,7 @@ public abstract class StaticSingleAssignment extends CFG {
                         // logger.debug("Changing RHS: " + symbol + " to " + variableStack.get(symbol).peek());
                     }
                     int index = instruction.getInputSymbols().indexOf(symbol);
+                    logger.info(instruction);
                     instruction.getInputSymbols().set(index, variableStack.get(symbol).peek().getVariable(whichSucc(bb.getId(), variableStack.get(symbol).peek().getOriginID())));
 //                    instruction.getInstruction().getInputs().put(variableStack.get(symbol).peek(),instruction.getInstruction().getInputs().get(symbol));
 //                    instruction.getInstruction().getInputs().remove(symbol);

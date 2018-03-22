@@ -491,10 +491,10 @@ void AllowedArguments() :
 {}
 {
     Identifier()
-    |   Primatives()
+    |   Primitives()
 }
 
-void Primatives() :
+void Primitives() :
 {}
 {
     IntegerLiteral()

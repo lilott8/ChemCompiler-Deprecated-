@@ -12,7 +12,7 @@ import parser.visitor.Visitor;
 /**
  * Grammar production:
  * f0 -> Identifier()
- * | Primatives()
+ * | Primitives()
  */
 public class AllowedArguments implements Node {
     public NodeChoice f0;

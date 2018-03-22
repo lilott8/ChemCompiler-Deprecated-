@@ -8,12 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import compilation.datastructures.CFGBuilder;
+import compilation.datastructures.basicblock.BasicBlock;
+import compilation.datastructures.basicblock.DependencySlicedBasicBlock;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.ssi.StaticSingleInformation;
 import config.Config;
 import config.ConfigFactory;
+import executable.Experiment;
 import manager.Benchtop;
 import parser.BioScriptParser;
+import parsing.BioScript.BenchtopParser;
 import shared.Facade;
 import shared.Phase;
 import translators.TranslatorFacade;
@@ -33,15 +38,14 @@ public class Compiler {
     private StaticSingleInformation SSI;
     private CFG controlFlow;
 
+    private Config config;
+
     private Map<String, List<Phase>> phases = new HashMap<>();
 
     public Compiler(Config config) {
-        for (String file : config.getFilesForCompilation()) {
-            this.phases.put(file, new ArrayList<>());
-            this.phases.get(file).add(new BioScriptParser(file));
-            //this.phases.get(file).add(new IRConverter());
-            //this.phases.get(file).add(new DataFlow());
-        }
+        this.config = config;
+        this.phases.put(this.config.getInputFile(), new ArrayList<>());
+        this.phases.get(this.config.getInputFile()).add(new BioScriptParser(this.config.getInputFile()));
     }
 
     public void compile() {
@@ -54,7 +58,9 @@ public class Compiler {
             }
         }
 
-        /*try {
+        BenchtopParser.parseFromString(this.phases.get(this.config.getInputFile()).get(0).getOutput());
+        this.benchtop = Benchtop.INSTANCE;
+        try {
             for (String experimentKey : this.benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
                     this.controlFlow = CFGBuilder.buildControlFlowGraph(experiment);
@@ -72,7 +78,7 @@ public class Compiler {
         } catch (Exception e) {
             logger.fatal(e);
             e.printStackTrace();
-        }*/
+        }
 
         //runPhases();
         //runTranslations();

@@ -13,7 +13,7 @@ import typesystem.satsolver.constraints.SMTSolver;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public interface Statement extends Vertex, SMTSolver, Exportable {
+public interface Statement extends Vertex, SMTSolver, Exportable, Convertable {
 
     String NL = System.lineSeparator();
 
@@ -22,6 +22,10 @@ public interface Statement extends Vertex, SMTSolver, Exportable {
     Variable getOutputVariable();
 
     Map<String, Variable> getProperties();
+
+    String getMethodName();
+
+    void setMethodName(String name);
 
     void addInputVariable(Variable variable);
 

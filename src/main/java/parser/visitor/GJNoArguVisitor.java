@@ -48,7 +48,7 @@ import parser.ast.OrExpression;
 import parser.ast.ParenthesisExpression;
 import parser.ast.PlusExpression;
 import parser.ast.PrimaryExpression;
-import parser.ast.Primatives;
+import parser.ast.Primitives;
 import parser.ast.RealLiteral;
 import parser.ast.RepeatStatement;
 import parser.ast.SplitStatement;
@@ -124,7 +124,7 @@ public interface GJNoArguVisitor<R> {
      * f4 -> <RPAREN>
      * f5 -> ( <COLON> TypingList() )?
      * f6 -> <LBRACE>
-     * f7 -> ( Statements() )*
+     * f7 -> ( Statements() )+
      * f8 -> ( <RETURN> Expression() )?
      * f9 -> <RBRACE>
      */
@@ -231,7 +231,7 @@ public interface GJNoArguVisitor<R> {
      * f1 -> IntegerLiteral()
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
-     * f4 -> Statements()
+     * f4 -> ( Statements() )+
      * f5 -> <RBRACE>
      */
     R visit(RepeatStatement n);
@@ -242,7 +242,7 @@ public interface GJNoArguVisitor<R> {
      * f2 -> Expression()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
-     * f5 -> Statements()
+     * f5 -> ( Statements() )+
      * f6 -> <RBRACE>
      * f7 -> ( ElseIfBranchStatement() )*
      * f8 -> ( ElseBranchStatement() )?
@@ -255,7 +255,7 @@ public interface GJNoArguVisitor<R> {
      * f2 -> Expression()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
-     * f5 -> Statements()
+     * f5 -> ( Statements() )+
      * f6 -> <RBRACE>
      */
     R visit(ElseIfBranchStatement n);
@@ -263,7 +263,7 @@ public interface GJNoArguVisitor<R> {
     /**
      * f0 -> <ELSE>
      * f1 -> <LBRACE>
-     * f2 -> Statements()
+     * f2 -> ( Statements() )+
      * f3 -> <RBRACE>
      */
     R visit(ElseBranchStatement n);
@@ -450,7 +450,7 @@ public interface GJNoArguVisitor<R> {
 
     /**
      * f0 -> Identifier()
-     * | Primatives()
+     * | Primitives()
      */
     R visit(AllowedArguments n);
 
@@ -460,7 +460,7 @@ public interface GJNoArguVisitor<R> {
      * | TrueLiteral()
      * | FalseLiteral()
      */
-    R visit(Primatives n);
+    R visit(Primitives n);
 
 }
 

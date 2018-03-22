@@ -1,8 +1,5 @@
 package utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import config.CommonConfig;
 
 /**
@@ -12,15 +9,15 @@ import config.CommonConfig;
  */
 public class TestConfig implements CommonConfig {
 
-    List<String> files = new ArrayList<>();
+    String file;
 
     public TestConfig(String file) {
-        files.add(file);
+        this.file = file;
     }
 
     @Override
-    public List<String> getFilesForCompilation() {
-        return files;
+    public String getInputFile() {
+        return file;
     }
 
     @Override

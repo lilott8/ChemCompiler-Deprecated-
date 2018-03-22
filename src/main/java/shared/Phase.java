@@ -15,4 +15,6 @@ public interface Phase {
     Phase run();
 
     String getName();
+
+    String getOutput();
 }

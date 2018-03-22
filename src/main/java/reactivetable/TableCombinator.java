@@ -81,7 +81,7 @@ public abstract class TableCombinator implements Runnable {
         List<Chemical> results = new ArrayList<>();
         logger.info("Beginning parsing file.");
         try {
-            File file = new File(this.config.getFilesForCompilation().get(0));
+            File file = new File(this.config.getInputFile());
             reader = new BufferedReader(new FileReader(file));
 
             String line;

@@ -18,6 +18,8 @@ import parser.ast.DrainStatement;
 import parser.ast.ElseBranchStatement;
 import parser.ast.ElseIfBranchStatement;
 import parser.ast.FormalParameter;
+import parser.ast.FormalParameterList;
+import parser.ast.FormalParameterRest;
 import parser.ast.FunctionDefinition;
 import parser.ast.FunctionInvoke;
 import parser.ast.HeatStatement;
@@ -27,6 +29,7 @@ import parser.ast.Module;
 import parser.ast.RepeatStatement;
 import parser.ast.SplitStatement;
 import parser.ast.Stationary;
+import shared.errors.InvalidSyntaxException;
 import shared.variable.AssignedVariable;
 import shared.variable.DefinedVariable;
 import shared.variable.Method;
@@ -188,8 +191,8 @@ public class BSSymbolTable extends BSVisitor {
         // Get the method.
         Method method = SymbolTable.INSTANCE.getMethods().get(this.name);
         if (method == null) {
-            logger.fatal("Undeclared function: " + this.name);
-            return this;
+            throw new InvalidSyntaxException("Function: " + this.name + " is undeclared.");
+            // return this;
         }
 
         this.instruction = new InvokeStatement(method);
@@ -235,13 +238,9 @@ public class BSSymbolTable extends BSVisitor {
         if (n.f5.present()) {
             n.f5.accept(this);
             this.method.addReturnTypes(this.types);
-            this.types.clear();
             needReturn = true;
-        } else {
-            this.types.add(ChemTypes.NULL);
-            this.method.addReturnTypes(this.types);
-            this.types.clear();
         }
+        this.types.clear();
 
         // Get the list of statements.
         n.f7.accept(this);
@@ -251,8 +250,8 @@ public class BSSymbolTable extends BSVisitor {
             n.f8.accept(this);
             // If this symbol has already been processed, we don't have to do anything.
             // If there is a return type, then we must add that to the variable name.
-            if (!BSVisitor.variables.containsKey(SymbolTable.INSTANCE.getCurrentScope().getName() + "_" + this.name)) {
-                Variable ret = checkForOrCreateVariable(); // new Variable(this.name, SymbolTable.INSTANCE.getCurrentScope());
+            if (SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getCurrentScope()) == null) {
+                Variable ret = checkForOrCreateVariable();
                 ret.addTypingConstraints(method.getTypes());
                 SymbolTable.INSTANCE.addLocal(ret);
                 addVariable(ret);
@@ -260,12 +259,13 @@ public class BSSymbolTable extends BSVisitor {
 
             // This will associate the type of the function with the type of what is being returned.
             if (!method.hasReturnTypes()) {
-                method.addReturnTypes(BSVisitor.variables.get(SymbolTable.INSTANCE.getCurrentScope().getName() + "_" + this.name).getTypes());
+                method.addReturnTypes(SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getCurrentScope()).getTypes());
             }
         } else {
             if (needReturn) {
                 logger.fatal("You need a return statement!");
             }
+            throw new IllegalStateException("You must include a return statement for a function.");
         }
 
         SymbolTable.INSTANCE.addMethod(this.method);
@@ -274,6 +274,30 @@ public class BSSymbolTable extends BSVisitor {
         SymbolTable.INSTANCE.endScope();
         // Remove the lock for functions.
 
+        return this;
+    }
+
+    /**
+     * f0 -> FormalParameter()
+     * f1 -> ( FormalParameterRest() )*
+     */
+    @Override
+    public BSVisitor visit(FormalParameterList n) {
+        n.f0.accept(this);
+
+        if (n.f1.present()) {
+            n.f1.accept(this);
+        }
+        return this;
+    }
+
+    /**
+     * f0 -> <COMMA>
+     * f1 -> FormalParameter()
+     */
+    @Override
+    public BSVisitor visit(FormalParameterRest n) {
+        n.f1.accept(this);
         return this;
     }
 
@@ -288,9 +312,9 @@ public class BSSymbolTable extends BSVisitor {
         n.f0.accept(this);
         // Go fetch the name
         n.f1.accept(this);
-        // save the record.
         Variable f1 = new AssignedVariable(this.name, this.types, SymbolTable.INSTANCE.getCurrentScope());
-        // this.arguments.add(v);
+        f1.addTypingConstraints(this.types);
+        // save the record.
         SymbolTable.INSTANCE.addLocal(f1);
 
         this.arguments.add(f1);
@@ -344,7 +368,7 @@ public class BSSymbolTable extends BSVisitor {
     @Override
     public BSVisitor visit(BranchStatement n) {
         // Build the instruction.
-        logger.fatal("You need to reset the instruction in If");
+        // logger.fatal("You need to reset the instruction in If");
         // Build the name.
         String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
         // Create a new scope.

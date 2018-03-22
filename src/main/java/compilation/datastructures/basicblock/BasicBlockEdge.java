@@ -52,7 +52,7 @@ public class BasicBlockEdge implements Serializable {
 
     private String evaluateCondition(String expression, String type) {
         String ret = "";
-        if (type.equals("REPEAT")) {
+        if (type.equals("REPEAT") || type.equals("LOOP")) {
             this.type = repeat;
         } else if (type.equals("WHILE") || type.equals("IF")) {
             this.type = evaluateBoolean(expression);

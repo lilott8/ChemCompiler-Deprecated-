@@ -242,4 +242,8 @@ public class Inference implements shared.Phase {
     public enum InferenceType {
         TERM, INSTRUCTION, BRANCH
     }
+
+    public String getOutput() {
+        return "";
+    }
 }

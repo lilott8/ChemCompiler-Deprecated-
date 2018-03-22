@@ -76,6 +76,9 @@ public class Method {
     }
 
     public void setReturnStatement(Statement returnStatement) {
+        if (this.types.isEmpty()) {
+            this.types.addAll(returnStatement.getOutputVariable().getTypes());
+        }
         this.returnStatement = returnStatement;
     }
 
@@ -98,9 +101,10 @@ public class Method {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(super.toString());
-
-        sb.append("\tParameters: ").append(this.parameters);
+        sb.append("==========================").append(Statement.NL);
+        sb.append(this.name).append(" Return type(s): ").append(this.types).append(Statement.NL);
+        sb.append("\tParameters: ").append(this.parameters).append(Statement.NL);
+        sb.append("==========================").append(Statement.NL);
 
         return sb.toString();
     }

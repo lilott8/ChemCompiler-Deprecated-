@@ -6,22 +6,23 @@ manifest chemical2
 functions
 
 function doThis(mat chem) : mat {
+    drain chem3
+    drain a
     drain chem
-    return b
+    return chem
 }
 
 function doThis2(mat chem, mat chem3, chem4) {
-    drain chem3
     a = mix chem with chem3
-    b = mix a with chem4
     repeat 4 times {
-        drain a
         drain chem
     }
+    b = mix a with chem4
     return b
 }
 
 instructions
 
-awesome = mix test2 with chemical1
+awesome = mix x with y
 a = doThis2(chemical1, chemical2, awesome)
+awesome = mix a with b

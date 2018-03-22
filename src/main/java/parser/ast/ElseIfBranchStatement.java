@@ -16,7 +16,7 @@ import parser.visitor.Visitor;
  * f2 -> Expression()
  * f3 -> <RPAREN>
  * f4 -> <LBRACE>
- * f5 -> Statements()
+ * f5 -> ( Statements() )+
  * f6 -> <RBRACE>
  */
 public class ElseIfBranchStatement implements Node {
@@ -25,10 +25,10 @@ public class ElseIfBranchStatement implements Node {
     public Expression f2;
     public NodeToken f3;
     public NodeToken f4;
-    public Statements f5;
+    public NodeList f5;
     public NodeToken f6;
 
-    public ElseIfBranchStatement(NodeToken n0, NodeToken n1, Expression n2, NodeToken n3, NodeToken n4, Statements n5, NodeToken n6) {
+    public ElseIfBranchStatement(NodeToken n0, NodeToken n1, Expression n2, NodeToken n3, NodeToken n4, NodeList n5, NodeToken n6) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
@@ -38,7 +38,7 @@ public class ElseIfBranchStatement implements Node {
         f6 = n6;
     }
 
-    public ElseIfBranchStatement(Expression n0, Statements n1) {
+    public ElseIfBranchStatement(Expression n0, NodeList n1) {
         f0 = new NodeToken("else if");
         f1 = new NodeToken("(");
         f2 = n0;

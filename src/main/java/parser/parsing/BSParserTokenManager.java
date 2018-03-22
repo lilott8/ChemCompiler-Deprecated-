@@ -69,7 +69,6 @@ public class BSParserTokenManager implements BSParserConstants {
     int jjround;
     int jjmatchedPos;
     int jjmatchedKind;
-
     /**
      * Constructor.
      */
@@ -80,7 +79,6 @@ public class BSParserTokenManager implements BSParserConstants {
 
         input_stream = stream;
     }
-
     /**
      * Constructor.
      */

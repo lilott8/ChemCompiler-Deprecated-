@@ -3,6 +3,8 @@ stationary test2
 manifest mat chemical1
 manifest chemical2
 
+functions
+
 instructions
 
 function doThis(mat chem) : mat {

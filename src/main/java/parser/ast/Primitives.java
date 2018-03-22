@@ -16,10 +16,10 @@ import parser.visitor.Visitor;
  * | TrueLiteral()
  * | FalseLiteral()
  */
-public class Primatives implements Node {
+public class Primitives implements Node {
     public NodeChoice f0;
 
-    public Primatives(NodeChoice n0) {
+    public Primitives(NodeChoice n0) {
         f0 = n0;
     }
 

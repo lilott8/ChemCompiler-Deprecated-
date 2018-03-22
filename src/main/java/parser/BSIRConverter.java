@@ -78,6 +78,7 @@ public class BSIRConverter extends BSVisitor {
         this.methodStack.push(SymbolTable.DEFAULT_SCOPE);
         this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
         this.functions.put(SymbolTable.DEFAULT_SCOPE, new ArrayList<>());
+        logger.warn(SymbolTable.INSTANCE.getSymbols());
     }
 
     @Override
@@ -214,6 +215,7 @@ public class BSIRConverter extends BSVisitor {
          * Add the last instruction to the right op
          * Set the last statement
          */
+        invoke.setMethodName(this.methodStack.peek());
         if (this.isAssign) {
             invoke.addOutputVariable(this.assignTo);
             AssignStatement assign = new AssignStatement();
@@ -268,8 +270,8 @@ public class BSIRConverter extends BSVisitor {
         if (n.f8.present()) {
             n.f8.accept(this);
             Statement ret = new ReturnStatement();
-            ret.addOutputVariable(SymbolTable.INSTANCE.searchScopesForVariable(this.name));
-            ret.addInputVariable(SymbolTable.INSTANCE.searchScopesForVariable(this.name));
+            ret.addOutputVariable(SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope())));
+            ret.addInputVariable(SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope())));
             this.method.setReturnStatement(ret);
         } else {
             logger.fatal("Add exception for no return statement.");
@@ -357,7 +359,7 @@ public class BSIRConverter extends BSVisitor {
 
     /**
      * f0 -> Identifier()
-     * | Primatives()
+     * | Primitives()
      */
     @Override
     public BSVisitor visit(AllowedArguments n) {
@@ -365,6 +367,7 @@ public class BSIRConverter extends BSVisitor {
 
         Variable v = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
         this.parameters.add(v);
+        this.types.clear();
 
         return this;
     }
@@ -379,9 +382,6 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(RepeatStatement n) {
-        Nop source = new SourceStatement();
-        Nop sink = new SinkStatement();
-
         String scopeName = String.format("%s_%d", REPEAT, this.getNextScopeId());
         this.newScope(scopeName);
 
@@ -392,10 +392,8 @@ public class BSIRConverter extends BSVisitor {
         // Build the new IR data structure.
         LoopStatement loop = new LoopStatement(f1.toString());
         loop.setScopeName(scopeName);
-
-        // Make sure we set the false target to the sink.
-        loop.setFalseTarget(sink);
-        loop.setTrueTarget(source);
+        loop.setMethodName(this.methodStack.peek());
+        this.types.clear();
 
         this.controlStack.push(loop);
         this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
@@ -435,6 +433,7 @@ public class BSIRConverter extends BSVisitor {
 
         Conditional branch = new IfStatement(f2.toString());
         branch.setScopeName(scopeName);
+        branch.setMethodName(this.methodStack.peek());
         instructions.put(branch.getId(), branch);
 
         // Save the scope/control.
@@ -458,6 +457,7 @@ public class BSIRConverter extends BSVisitor {
                 this.newScope(scopeName);
                 Conditional elseBranch = new IfStatement("");
                 elseBranch.setScopeName(scopeName);
+                branch.setMethodName(this.methodStack.peek());
                 instructions.put(elseBranch.getId(), elseBranch);
 
                 Nop elseSource = new SourceStatement();
@@ -512,6 +512,7 @@ public class BSIRConverter extends BSVisitor {
 
         Conditional branch = new IfStatement(f2.toString());
         branch.setScopeName(this.getCurrentScope());
+        branch.setMethodName(this.methodStack.peek());
 
         // Get the statements in the scope.
         n.f5.accept(this);
@@ -566,6 +567,8 @@ public class BSIRConverter extends BSVisitor {
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);
         assign.setRightOp(mix);
+        mix.setMethodName(this.methodStack.peek());
+
         instructions.put(assign.getId(), assign);
         // this.addStatement(assign);
         this.addStatement(mix);
@@ -599,6 +602,7 @@ public class BSIRConverter extends BSVisitor {
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);
         assign.setRightOp(split);
+        split.setMethodName(this.methodStack.peek());
         instructions.put(assign.getId(), assign);
         // this.addStatement(assign);
         this.addStatement(split);
@@ -641,6 +645,7 @@ public class BSIRConverter extends BSVisitor {
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);
         assign.setRightOp(detect);
+        detect.setMethodName(this.methodStack.peek());
         instructions.put(assign.getId(), assign);
         // this.addStatement(assign);
         this.addStatement(detect);
@@ -663,6 +668,7 @@ public class BSIRConverter extends BSVisitor {
         Statement drain = new DrainStatement(String.format("%s-%d",
                 DrainStatement.INSTRUCTION, this.getNextInstructionId()));
         drain.addInputVariable(f1);
+        drain.setMethodName(this.methodStack.peek());
         // We can add the statement immediately.
         instructions.put(drain.getId(), drain);
         this.addStatement(drain);
@@ -701,6 +707,7 @@ public class BSIRConverter extends BSVisitor {
             // Add f4 to the data structure.
             heat.addProperty(Property.TIME, f4);
         }
+        heat.setMethodName(this.methodStack.peek());
 
         instructions.put(heat.getId(), heat);
         this.addStatement(heat);

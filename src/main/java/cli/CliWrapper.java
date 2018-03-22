@@ -7,6 +7,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,7 +89,7 @@ public class CliWrapper {
         Config config = ConfigFactory.buildConfig(cmd);
 
         // add any initializing statements derived from the command line here.
-        if (config.getFilesForCompilation().size() == 0) {
+        if (StringUtils.isEmpty(config.getInputFile())) {
             throw new ConfigurationException("We have no valid file(s) for input");
         }
 
@@ -107,7 +108,7 @@ public class CliWrapper {
         String desc = "Compile the source file(s)\n" +
                 "Usage: -c /path/to/file_to_compile.json";
         options.addOption(Option.builder("c").longOpt("compile")
-                .desc(desc).hasArgs().required().type(ArrayList.class)
+                .desc(desc).hasArgs().required().numberOfArgs(1).type(String.class)
                 .argName("compile").build());
 
         // Testing mode
