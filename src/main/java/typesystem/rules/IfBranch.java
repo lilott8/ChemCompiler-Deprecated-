@@ -29,6 +29,7 @@ public class IfBranch extends EdgeAnalyzer {
 
         Variable output = new shared.variable.Property(Rule.createHash(edge.getConditional().toString()));
         output.addTypingConstraint(NAT);
+        addVariable(output);
 
         Variable left;
         if (isNumeric(edge.getConditional().getLeftOperand())) {

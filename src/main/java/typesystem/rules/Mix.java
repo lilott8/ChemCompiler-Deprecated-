@@ -55,23 +55,26 @@ public class Mix extends NodeAnalyzer {
             addVariable(input);
         }
 
-        Variable output;
+        Variable output = null;
         // If we have a def, we can get it.
         if (!node.getDef().isEmpty()) {
             // There will only ever be one def for a mix.
             for (String out : node.getDef()) {
                 output = new DefinedVariable(out);
                 output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
-                instruction.addOutputVariable(output);
-                addVariable(output);
             }
         } else {
             // Otherwise, get the last use.
             output = new DefinedVariable(input.getVarName());
             output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
-            instruction.addOutputVariable(output);
-            addVariable(output);
         }
+
+        if (!output.getTypingConstraints().contains(ChemTypes.getMaterials())) {
+            output.addTypingConstraint(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
+        }
+
+        instruction.addOutputVariable(output);
+        addVariable(output);
 
         // Get the properties of the instruction if they exist
         for (Property p : node.getInstruction().getProperties()) {

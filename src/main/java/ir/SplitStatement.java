@@ -56,7 +56,7 @@ public class SplitStatement extends BaseStatement {
         // Closes the open bracket.
         sb.append("],").append(NL);
         sb.append("\"OUTPUTS\" : [").append(NL);
-        int splitSize = Integer.parseInt((String) this.properties.get(Property.QUANTITY).getValue());
+        int splitSize = (int) this.properties.get(Property.QUANTITY).getValue();
         for (int x = 0; x <= splitSize; x++) {
             sb.append("{").append(NL);
             sb.append("\"VARIABLE\" :").append(NL);

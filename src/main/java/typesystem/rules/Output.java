@@ -30,7 +30,7 @@ public class Output extends NodeAnalyzer {
         Variable input = null;
         for (String s : node.getUse()) {
             input = new DefinedVariable(s);
-            input.addTypingConstraints(getTypingConstraints(input));
+            input.addTypingConstraints(this.getTypingConstraints(input));
             instruction.addInputVariable(input);
             addVariable(input);
         }

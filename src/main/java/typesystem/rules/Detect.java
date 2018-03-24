@@ -1,5 +1,10 @@
 package typesystem.rules;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import chemical.epa.ChemTypes;
+import chemical.identification.IdentifierFactory;
 import compilation.datastructures.node.InstructionNode;
 import shared.variable.AssignedVariable;
 import shared.variable.DefinedVariable;
@@ -32,7 +37,14 @@ public class Detect extends NodeAnalyzer {
         Variable input = null;
         for (String s : node.getUse()) {
             input = new AssignedVariable(s);
-            input.addTypingConstraints(getTypingConstraints(input));
+            Set<ChemTypes> set = new HashSet<>();
+            set.addAll(this.getTypingConstraints(input));
+            if (set.isEmpty()) {
+                input.addTypingConstraints(IdentifierFactory.getIdentifier().identifyCompoundForTypes(input.getName()));
+            } else {
+                input.addTypingConstraints(set);
+            }
+            input.addTypingConstraints(this.getTypingConstraints(input));
             instruction.addInputVariable(input);
             addVariable(input);
         }

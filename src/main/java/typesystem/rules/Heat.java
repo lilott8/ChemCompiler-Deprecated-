@@ -31,7 +31,7 @@ public class Heat extends NodeAnalyzer {
         // There is only ever one input.
         for (String s : node.getUse()) {
             input = new AssignedVariable(s);
-            input.addTypingConstraints(getTypingConstraints(input));
+            input.addTypingConstraints(this.getTypingConstraints(input));
             instruction.addInputVariable(input);
             addVariable(input);
         }

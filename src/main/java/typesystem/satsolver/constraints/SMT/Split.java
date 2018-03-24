@@ -1,5 +1,8 @@
 package typesystem.satsolver.constraints.SMT;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
@@ -16,6 +19,8 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
  * @project: ChemicalCompiler
  */
 public class Split implements SMTSolver {
+
+    public static final Logger logger = LogManager.getLogger(Split.class);
 
     @Override
     public String compose(Formula instruction) {
@@ -40,8 +45,12 @@ public class Split implements SMTSolver {
     public String compose(Variable variable) {
         StringBuilder sb = new StringBuilder();
 
+        if (variable.getTypes().contains(ChemTypes.getMaterials()) && variable.getTypes().contains(ChemTypes.getNums())) {
+            sb.append(killSwitch());
+        }
+
         for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
-            sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
+            sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getName(), t)).append(" true))").append(NL);
         }
 
         return sb.toString();

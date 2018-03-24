@@ -104,7 +104,7 @@ public class Mix implements SMTSolver {
             sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(output.getName(), t)).append(" true)").append(NL);
         }
         sb.append(TAB + TAB).append(")").append(NL);
-        //logger.info(String.format("(assert \n\t(=> \n\t\t(and \n\t\t\t(= %s %s) \n\t\t\t(= %s %s)) \n\t\t(and \n\t\t\t(= %s %s)))", getSMTName(input1.getScopedName(), t1), getSMTName(output.getScopedName(), t1), getSMTName(input2.getScopedName(), t2), getSMTName(output.getScopedName(), t2), EpaManager.INSTANCE.lookUp(t1, t2), "?"));
+        //logger.info(String.format("(assert \n\t(=> \n\t\t(and \n\t\t\t(= %s %s) \n\t\t\t(= %s %s)) \n\t\t(and \n\t\t\t(= %s %s)))", getSMTName(input1.getName(), t1), getSMTName(output.getName(), t1), getSMTName(input2.getName(), t2), getSMTName(output.getName(), t2), EpaManager.INSTANCE.lookUp(t1, t2), "?"));
         sb.append(TAB).append(")").append(NL);
         sb.append(")").append(NL);
 
@@ -137,7 +137,7 @@ public class Mix implements SMTSolver {
             sb.append(TAB + TAB + TAB).append("(= ").append(getSMTName(output.getName(), t)).append(" false)").append(NL);
         }
         sb.append(TAB + TAB).append(")").append(NL);
-        //logger.info(String.format("(assert \n\t(=> \n\t\t(and \n\t\t\t(= %s %s) \n\t\t\t(= %s %s)) \n\t\t(and \n\t\t\t(= %s %s)))", getSMTName(input1.getScopedName(), t1), getSMTName(output.getScopedName(), t1), getSMTName(input2.getScopedName(), t2), getSMTName(output.getScopedName(), t2), EpaManager.INSTANCE.lookUp(t1, t2), "?"));
+        //logger.info(String.format("(assert \n\t(=> \n\t\t(and \n\t\t\t(= %s %s) \n\t\t\t(= %s %s)) \n\t\t(and \n\t\t\t(= %s %s)))", getSMTName(input1.getName(), t1), getSMTName(output.getName(), t1), getSMTName(input2.getName(), t2), getSMTName(output.getName(), t2), EpaManager.INSTANCE.lookUp(t1, t2), "?"));
         sb.append(TAB).append(")").append(NL);
         sb.append(")").append(NL);
 

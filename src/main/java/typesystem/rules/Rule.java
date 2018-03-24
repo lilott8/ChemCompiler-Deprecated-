@@ -7,12 +7,12 @@ import org.apache.logging.log4j.Logger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import chemical.identification.IdentifierFactory;
 import config.ConfigFactory;
 import config.InferenceConfig;
 import shared.variable.Variable;
@@ -50,8 +50,6 @@ public abstract class Rule {
         if (!variables.containsKey(t.getName())) {
             variables.put(t.getName(), t);
         } else {
-            if (variables.get(t.getName()).equals(t)) {
-            }
         }
     }
 
@@ -118,7 +116,8 @@ public abstract class Rule {
         if (variables.containsKey(input.getName())) {
             return variables.get(input.getName()).getTypes();
         } else {
-            return IdentifierFactory.getIdentifier().identifyCompoundForTypes(input.getName());
+            // return IdentifierFactory.getIdentifier().identifyCompoundForTypes(input.getName());
+            return new HashSet<>();
         }
     }
 

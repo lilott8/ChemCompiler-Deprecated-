@@ -1,3 +1,4 @@
+module test1
 manifest y
 
 functions
@@ -7,7 +8,10 @@ instructions
 x = 4 + 3
 
 if (x < 4) {
-    y = x +3
+    t = x +3
 }
 
-b = mix x with y
+z = detect test1 on y
+
+
+a = split y into 4

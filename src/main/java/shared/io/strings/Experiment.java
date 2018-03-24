@@ -76,7 +76,7 @@ public class Experiment implements Stringify {
         // StringSelection selection = new StringSelection(sb.toString());
         // java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         // clipboard.setContents(selection, selection);
-        logger.info(sb.toString());
+        // logger.info(sb.toString());
         return sb.toString();
     }
 }

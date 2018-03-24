@@ -2,7 +2,6 @@ package typesystem.rules;
 
 import compilation.datastructures.node.InstructionNode;
 import typesystem.Inference.InferenceType;
-import typesystem.elements.Formula;
 
 /**
  * @created: 7/27/17
@@ -25,7 +24,7 @@ public class Assign extends NodeAnalyzer {
             //logger.trace("Output: " + node.getOutputSymbols());
         }
 
-        Formula instruction = new Formula(InstructionType.ASSIGN);
+        //Formula instruction = new Formula(InstructionType.ASSIGN);
 
         // Output Symbol        Input Symbol
         // Allyl Ethyl Ether = C=CCOC1=CC=CC=C1

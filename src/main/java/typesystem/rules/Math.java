@@ -1,5 +1,9 @@
 package typesystem.rules;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import chemical.epa.ChemTypes;
 import compilation.datastructures.node.InstructionNode;
 import shared.variable.AssignedVariable;
 import shared.variable.DefinedVariable;
@@ -26,11 +30,20 @@ public class Math extends NodeAnalyzer {
     public Rule gatherAllConstraints(InstructionNode node) {
         Formula instruction = new Formula(InstructionType.MATH);
 
+        Set<ChemTypes> outputTypes = new HashSet<>();
         // There can be only one input variable.
         Variable input = null;
         for (String s : node.getUse()) {
             input = new DefinedVariable(s);
-            input.addTypingConstraints(getTypingConstraints(input));
+            Set<ChemTypes> set = new HashSet<>();
+            set.addAll(this.getTypingConstraints(input));
+            if (set.isEmpty()) {
+                input.addTypingConstraint(REAL);
+                input.addTypingConstraint(NAT);
+            } else {
+                input.addTypingConstraints(set);
+            }
+            outputTypes.addAll(input.getTypingConstraints());
             instruction.addInputVariable(input);
             addVariable(input);
         }
@@ -41,6 +54,7 @@ public class Math extends NodeAnalyzer {
             output = new AssignedVariable(s);
             output.addTypingConstraint(REAL);
             output.addTypingConstraint(NAT);
+            output.addTypingConstraints(outputTypes);
             instruction.addOutputVariable(output);
             addVariable(output);
         }

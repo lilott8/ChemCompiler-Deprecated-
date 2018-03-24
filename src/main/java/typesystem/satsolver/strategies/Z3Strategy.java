@@ -24,6 +24,7 @@ import typesystem.satsolver.constraints.SMT.Assign;
 import typesystem.satsolver.constraints.SMT.Branch;
 import typesystem.satsolver.constraints.SMT.Detect;
 import typesystem.satsolver.constraints.SMT.Heat;
+import typesystem.satsolver.constraints.SMT.Math;
 import typesystem.satsolver.constraints.SMT.Mix;
 import typesystem.satsolver.constraints.SMT.Output;
 import typesystem.satsolver.constraints.SMT.Split;
@@ -54,6 +55,7 @@ public class Z3Strategy implements SolverStrategy {
         composers.put(Rule.InstructionType.MIX, new Mix());
         composers.put(Rule.InstructionType.OUTPUT, new Output());
         composers.put(Rule.InstructionType.SPLIT, new Split());
+        composers.put(Rule.InstructionType.MATH, new Math());
     }
 
     @Override
@@ -80,17 +82,17 @@ public class Z3Strategy implements SolverStrategy {
 
         for (Map.Entry<Integer, Formula> instruction : this.instructions.entrySet()) {
             // if (instruction instanceof MixStatement) {
-            if (instruction.getValue().type == Rule.InstructionType.MIX) {
+            // if (instruction.getValue().type == Rule.InstructionType.MIX) {
                 //logger.fatal("need to redo solveConstrains");
                 sb.append(this.composers.get(instruction.getValue().type).compose(instruction.getValue()));
-            }
+            // }
             // }
         }
 
         if (ConfigFactory.getConfig().isDebug()) {
             // logger.info(variables);
             // logger.info(statements);
-            logger.info(sb);
+            //logger.info(sb);
         }
         return this.solveWithSMT2(sb.toString());
     }

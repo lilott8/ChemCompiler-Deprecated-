@@ -34,7 +34,7 @@ public class Assign implements SMTSolver {
         StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
-            sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
+            sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getName(), t)).append(" true))").append(NL);
         }
 
         return sb.toString();
