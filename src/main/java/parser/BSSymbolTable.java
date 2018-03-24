@@ -11,7 +11,7 @@ import java.util.Set;
 import chemical.epa.ChemTypes;
 import ir.Invoke;
 import ir.InvokeStatement;
-import parser.ast.AssignmentInstruction;
+import parser.ast.AssignmentStatement;
 import parser.ast.BranchStatement;
 import parser.ast.DetectStatement;
 import parser.ast.DrainStatement;
@@ -24,11 +24,15 @@ import parser.ast.FunctionDefinition;
 import parser.ast.FunctionInvoke;
 import parser.ast.HeatStatement;
 import parser.ast.Manifest;
+import parser.ast.MinusExpression;
 import parser.ast.MixStatement;
 import parser.ast.Module;
+import parser.ast.PlusExpression;
 import parser.ast.RepeatStatement;
 import parser.ast.SplitStatement;
 import parser.ast.Stationary;
+import parser.ast.TimesExpression;
+import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
 import shared.variable.AssignedVariable;
 import shared.variable.DefinedVariable;
@@ -147,10 +151,10 @@ public class BSSymbolTable extends BSVisitor {
      * f0 -> ( TypingList() )*
      * f1 -> Identifier()
      * f2 -> <ASSIGN>
-     * f3 -> Expression()
+     * f3 -> RightOp()
      */
     @Override
-    public BSVisitor visit(AssignmentInstruction n) {
+    public BSVisitor visit(AssignmentStatement n) {
         // Get the expression done before we get the identifier.
         // That way we can set the appropriate instruction.
         n.f3.accept(this);
@@ -326,10 +330,10 @@ public class BSSymbolTable extends BSVisitor {
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> IntegerLiteral()
+     * f1 -> ( IntegerLiteral() | Identifier() )
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
-     * f4 -> ( Statement() )+
+     * f4 -> ( Statements() )+
      * f5 -> <RBRACE>
      */
     @Override
@@ -350,6 +354,24 @@ public class BSSymbolTable extends BSVisitor {
         n.f4.accept(this);
         // Return back to old scoping.
         SymbolTable.INSTANCE.endScope();
+
+        return this;
+    }
+
+    /**
+     * f0 -> <WHILE>
+     * f1 -> <LPAREN>
+     * f2 -> Conditional()
+     * f3 -> <RPAREN>
+     * f4 -> <LBRACE>
+     * f5 -> ( Statements() )+
+     * f6 -> <RBRACE>
+     */
+    @Override
+    public BSVisitor visit(WhileStatement n) {
+        logger.warn("While statements are not being parsed completely.");
+        // Get the statements.
+        n.f4.accept(this);
 
         return this;
     }
@@ -415,7 +437,6 @@ public class BSSymbolTable extends BSVisitor {
         SymbolTable.INSTANCE.newScope(scopeName);
 
         // Begin type checking.
-        logger.fatal("You need to reset the instruction in ElseIf");
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
         logger.warn(String.format("Symbol Table elseif: %s_%s", SymbolTable.INSTANCE.getCurrentScope().getName(), this.name));
         Variable term = new AssignedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
@@ -558,6 +579,50 @@ public class BSSymbolTable extends BSVisitor {
             this.checkForOrCreateProperty("SECONDS");
 
         }
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <ADD>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(PlusExpression n) {
+        n.f0.accept(this);
+        checkForOrCreateVariable(this.types);
+        n.f2.accept(this);
+        checkForOrCreateVariable(this.types);
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <MINUS>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(MinusExpression n) {
+        n.f0.accept(this);
+        checkForOrCreateVariable(this.types);
+        n.f2.accept(this);
+        checkForOrCreateVariable(this.types);
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <MULTIPLY>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(TimesExpression n) {
+        Set<ChemTypes> type = new HashSet<>();
+
+        n.f0.accept(this);
+        checkForOrCreateVariable(this.types);
+        n.f2.accept(this);
+        checkForOrCreateVariable(this.types);
         return this;
     }
 

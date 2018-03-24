@@ -11,37 +11,41 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> <REPEAT>
- * f1 -> ( IntegerLiteral() | Identifier() )
- * f2 -> <TIMES>
- * f3 -> <LBRACE>
- * f4 -> ( Statements() )+
- * f5 -> <RBRACE>
+ * f0 -> <WHILE>
+ * f1 -> <LPAREN>
+ * f2 -> Conditional()
+ * f3 -> <RPAREN>
+ * f4 -> <LBRACE>
+ * f5 -> ( Statements() )+
+ * f6 -> <RBRACE>
  */
-public class RepeatStatement implements Node {
+public class WhileStatement implements Node {
     public NodeToken f0;
-    public NodeChoice f1;
-    public NodeToken f2;
+    public NodeToken f1;
+    public Conditional f2;
     public NodeToken f3;
-    public NodeList f4;
-    public NodeToken f5;
+    public NodeToken f4;
+    public NodeList f5;
+    public NodeToken f6;
 
-    public RepeatStatement(NodeToken n0, NodeChoice n1, NodeToken n2, NodeToken n3, NodeList n4, NodeToken n5) {
+    public WhileStatement(NodeToken n0, NodeToken n1, Conditional n2, NodeToken n3, NodeToken n4, NodeList n5, NodeToken n6) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
         f3 = n3;
         f4 = n4;
         f5 = n5;
+        f6 = n6;
     }
 
-    public RepeatStatement(NodeChoice n0, NodeList n1) {
-        f0 = new NodeToken("repeat");
-        f1 = n0;
-        f2 = new NodeToken("times");
-        f3 = new NodeToken("{");
-        f4 = n1;
-        f5 = new NodeToken("}");
+    public WhileStatement(Conditional n0, NodeList n1) {
+        f0 = new NodeToken("while");
+        f1 = new NodeToken("(");
+        f2 = n0;
+        f3 = new NodeToken(")");
+        f4 = new NodeToken("{");
+        f5 = n1;
+        f6 = new NodeToken("}");
     }
 
     public void accept(Visitor v) {

@@ -11,26 +11,25 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> AndExpression()
- * | LessThanExpression()
- * | LessThanEqualExpression()
- * | GreaterThanExpression()
- * | GreaterThanEqualExpression()
- * | NotEqualExpression()
- * | EqualityExpression()
- * | OrExpression()
- * | PlusExpression()
- * | MinusExpression()
- * | TimesExpression()
- * | FunctionInvoke()
- * | PrimaryExpression()
- * | InstructionAssignment()
+ * f0 -> <LPAREN>
+ * f1 -> MathStatement()
+ * f2 -> <RPAREN>
  */
-public class Expression implements Node {
-    public NodeChoice f0;
+public class MathParenthesis implements Node {
+    public NodeToken f0;
+    public MathStatement f1;
+    public NodeToken f2;
 
-    public Expression(NodeChoice n0) {
+    public MathParenthesis(NodeToken n0, MathStatement n1, NodeToken n2) {
         f0 = n0;
+        f1 = n1;
+        f2 = n2;
+    }
+
+    public MathParenthesis(MathStatement n0) {
+        f0 = new NodeToken("(");
+        f1 = n0;
+        f2 = new NodeToken(")");
     }
 
     public void accept(Visitor v) {

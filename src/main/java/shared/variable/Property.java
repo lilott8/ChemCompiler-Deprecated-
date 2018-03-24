@@ -50,6 +50,7 @@ public class Property<Value> extends Variable<Value> {
 
     @Override
     public String buildUsage() {
-        return null;
+        StringBuilder sb = new StringBuilder("");
+        return sb.toString();
     }
 }

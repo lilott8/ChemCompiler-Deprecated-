@@ -19,6 +19,7 @@ import ir.IfStatement;
 import ir.InvokeStatement;
 import ir.LoopStatement;
 import ir.ManifestStatement;
+import ir.MathStatement;
 import ir.MixStatement;
 import ir.ModuleStatement;
 import ir.Nop;
@@ -32,7 +33,7 @@ import ir.StationaryStatement;
 import parser.ast.AllowedArguments;
 import parser.ast.AllowedArgumentsRest;
 import parser.ast.ArgumentList;
-import parser.ast.AssignmentInstruction;
+import parser.ast.AssignmentStatement;
 import parser.ast.BranchStatement;
 import parser.ast.ElseBranchStatement;
 import parser.ast.ElseIfBranchStatement;
@@ -42,9 +43,13 @@ import parser.ast.FormalParameterRest;
 import parser.ast.FunctionDefinition;
 import parser.ast.FunctionInvoke;
 import parser.ast.Manifest;
+import parser.ast.MinusExpression;
 import parser.ast.Module;
+import parser.ast.PlusExpression;
 import parser.ast.RepeatStatement;
 import parser.ast.Stationary;
+import parser.ast.TimesExpression;
+import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
 import shared.io.strings.Experiment;
 import shared.variable.Property;
@@ -155,14 +160,13 @@ public class BSIRConverter extends BSVisitor {
 
 
     /**
-     * f0 -> ( TypingList() )?
+     * f0 -> ( TypingList() )*
      * f1 -> Identifier()
      * f2 -> <ASSIGN>
-     * f3 -> Expression()
+     * f3 -> RightOp()
      */
     @Override
-    public BSVisitor visit(AssignmentInstruction n) {
-
+    public BSVisitor visit(AssignmentStatement n) {
         // Get the name.
         n.f1.accept(this);
         this.assignTo = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
@@ -170,7 +174,7 @@ public class BSIRConverter extends BSVisitor {
 
         this.isAssign = true;
 
-        // Get the expression.
+        // Get the RightOp.
         n.f3.accept(this);
 
         this.isAssign = false;
@@ -178,7 +182,6 @@ public class BSIRConverter extends BSVisitor {
         this.assignTo = null;
         return this;
     }
-
 
     /**
      * f0 -> Identifier()
@@ -374,7 +377,7 @@ public class BSIRConverter extends BSVisitor {
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> IntegerLiteral()
+     * f1 -> ( IntegerLiteral() | Identifier() )
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statement() )+
@@ -385,12 +388,11 @@ public class BSIRConverter extends BSVisitor {
         String scopeName = String.format("%s_%d", REPEAT, this.getNextScopeId());
         this.newScope(scopeName);
 
-        n.f1.accept(this);
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
 
         // Build the new IR data structure.
-        LoopStatement loop = new LoopStatement(f1.toString());
+        LoopStatement loop = new LoopStatement(f1.getVarName());
         loop.setScopeName(scopeName);
         loop.setMethodName(this.methodStack.peek());
         this.types.clear();
@@ -404,6 +406,43 @@ public class BSIRConverter extends BSVisitor {
         this.endScope();
         this.addBranches(loop, true);
         return this;
+    }
+
+    /**
+     * f0 -> <WHILE>
+     * f1 -> <LPAREN>
+     * f2 -> Conditional()
+     * f3 -> <RPAREN>
+     * f4 -> <LBRACE>
+     * f5 -> ( Statements() )+
+     * f6 -> <RBRACE>
+     */
+    @Override
+    public BSVisitor visit(WhileStatement n) {
+        String scopeName = String.format("%s_%d", REPEAT, this.getNextScopeId());
+        this.newScope(scopeName);
+        n.f1.accept(this);
+
+        logger.warn("While conditional is not being parse completely.");
+        n.f2.accept(this);
+        //Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
+        //        SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+
+        // Build the new IR data structure.
+        LoopStatement loop = new LoopStatement(this.conditional);
+        loop.setScopeName(scopeName);
+        loop.setMethodName(this.methodStack.peek());
+        this.types.clear();
+
+        this.controlStack.push(loop);
+        this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
+
+        // Get the statements.
+        n.f4.accept(this);
+
+        this.endScope();
+        this.addBranches(loop, true);
+        return super.visit(n);
     }
 
     /**
@@ -424,14 +463,16 @@ public class BSIRConverter extends BSVisitor {
         // Create a new scope.
         this.newScope(scopeName);
         // Get the expression.
-        logger.warn("Not parsing expression");
-        // n.f2.accept(this);
+        this.inConditional = true;
+        n.f2.accept(this);
+        this.inConditional = false;
+
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
 
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
 
-        Conditional branch = new IfStatement(f2.toString());
+        Conditional branch = new IfStatement(this.conditional);
         branch.setScopeName(scopeName);
         branch.setMethodName(this.methodStack.peek());
         instructions.put(branch.getId(), branch);
@@ -503,14 +544,15 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(ElseIfBranchStatement n) {
-        logger.warn("Not parsing expression");
-        // n.f2.accept(this);
+        this.inConditional = true;
+        n.f2.accept(this);
+        this.inConditional = false;
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
         // Build a false variable for the expression, for now.
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
 
-        Conditional branch = new IfStatement(f2.toString());
+        Conditional branch = new IfStatement(this.conditional);
         branch.setScopeName(this.getCurrentScope());
         branch.setMethodName(this.methodStack.peek());
 
@@ -715,6 +757,76 @@ public class BSIRConverter extends BSVisitor {
         return this;
     }
 
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <ADD>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(PlusExpression n) {
+        n.f0.accept(this);
+        Variable a = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        n.f2.accept(this);
+        Variable b = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+
+        Statement math = new MathStatement();
+        math.addInputVariable(a);
+        math.addInputVariable(b);
+        math.addOutputVariable(this.assignTo);
+        math.setMethodName(this.methodStack.peek());
+        this.addStatement(math);
+
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <MINUS>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(MinusExpression n) {
+        n.f0.accept(this);
+        Variable a = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        n.f2.accept(this);
+        Variable b = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+
+        Statement math = new MathStatement();
+        math.addInputVariable(a);
+        math.addInputVariable(b);
+        math.addOutputVariable(this.assignTo);
+        math.setMethodName(this.methodStack.peek());
+        this.addStatement(math);
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <MULTIPLY>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(TimesExpression n) {
+        n.f0.accept(this);
+        Variable a = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        n.f2.accept(this);
+        Variable b = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+
+        Statement math = new MathStatement();
+        math.addInputVariable(a);
+        math.addInputVariable(b);
+        math.addOutputVariable(this.assignTo);
+        math.setMethodName(this.methodStack.peek());
+        this.addStatement(math);
+        return this;
+    }
+
+
+    /**
+     * Determines how to add a branch to the list of instructions.
+     * If there is no nested control, it simply adds it to the list.
+     * Otherwise, it must be added to the stack and continue on.
+     */
     private Conditional addBranches(Conditional conditional, boolean branch) {
         StatementBlock block = this.listBlocks.pop();
         for (Map.Entry<Integer, Statement> entry : block.getStatementMap().entrySet()) {
@@ -724,7 +836,6 @@ public class BSIRConverter extends BSVisitor {
                 conditional.addToFalseBranch(entry.getValue());
             }
         }
-
         // This is a control in the main.
         if (this.controlStack.size() <= 1) {
             this.functions.get(this.methodStack.peek()).add(conditional);

@@ -11,21 +11,25 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> <BANG>
- * f1 -> PrimaryExpression()
+ * f0 -> <LPAREN>
+ * f1 -> Conditional()
+ * f2 -> <RPAREN>
  */
-public class NotExpression implements Node {
+public class ConditionalParenthesis implements Node {
     public NodeToken f0;
-    public PrimaryExpression f1;
+    public Conditional f1;
+    public NodeToken f2;
 
-    public NotExpression(NodeToken n0, PrimaryExpression n1) {
+    public ConditionalParenthesis(NodeToken n0, Conditional n1, NodeToken n2) {
         f0 = n0;
         f1 = n1;
+        f2 = n2;
     }
 
-    public NotExpression(PrimaryExpression n0) {
-        f0 = new NodeToken("!");
+    public ConditionalParenthesis(Conditional n0) {
+        f0 = new NodeToken("(");
         f1 = n0;
+        f2 = new NodeToken(")");
     }
 
     public void accept(Visitor v) {

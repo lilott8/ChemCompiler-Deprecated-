@@ -11,21 +11,17 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> <BANG>
- * f1 -> PrimaryExpression()
+ * f0 -> MixStatement()
+ * | DetectStatement()
+ * | SplitStatement()
+ * | FunctionInvoke()
+ * | MathStatement()
  */
-public class NotExpression implements Node {
-    public NodeToken f0;
-    public PrimaryExpression f1;
+public class RightOp implements Node {
+    public NodeChoice f0;
 
-    public NotExpression(NodeToken n0, PrimaryExpression n1) {
+    public RightOp(NodeChoice n0) {
         f0 = n0;
-        f1 = n1;
-    }
-
-    public NotExpression(PrimaryExpression n0) {
-        f0 = new NodeToken("!");
-        f1 = n0;
     }
 
     public void accept(Visitor v) {

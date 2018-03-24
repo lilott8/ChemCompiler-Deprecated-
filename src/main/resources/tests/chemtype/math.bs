@@ -1,0 +1,13 @@
+manifest y
+
+functions
+
+instructions
+
+x = 4 + 3
+
+if (x < 4) {
+    y = x +3
+}
+
+b = mix x with y

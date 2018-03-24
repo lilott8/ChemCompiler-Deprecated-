@@ -68,7 +68,7 @@ public class IfStatement extends BaseConditional {
         sb.append("\"NAME\" : \"IF\",").append(NL);
         sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
         sb.append("\"CLASSIFICATION\" : \"CFG_BRANCH\",").append(NL);
-        sb.append("\"CONDITION\" : \"").append("x>4").append("\",").append(NL);
+        sb.append("\"CONDITION\" : \"").append(this.condition).append("\",").append(NL);
         // Open true branch.
         sb.append("\"TRUE_BRANCH\" : [").append(NL);
         int x = 0;

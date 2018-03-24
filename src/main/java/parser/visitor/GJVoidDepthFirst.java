@@ -10,15 +10,17 @@ import parser.ast.AllowedArguments;
 import parser.ast.AllowedArgumentsRest;
 import parser.ast.AndExpression;
 import parser.ast.ArgumentList;
-import parser.ast.AssignmentInstruction;
+import parser.ast.AssignmentStatement;
 import parser.ast.BSProgram;
 import parser.ast.BranchStatement;
+import parser.ast.Conditional;
+import parser.ast.ConditionalParenthesis;
 import parser.ast.DetectStatement;
+import parser.ast.DivideExpression;
 import parser.ast.DrainStatement;
 import parser.ast.ElseBranchStatement;
 import parser.ast.ElseIfBranchStatement;
 import parser.ast.EqualityExpression;
-import parser.ast.Expression;
 import parser.ast.FalseLiteral;
 import parser.ast.FormalParameter;
 import parser.ast.FormalParameterList;
@@ -29,12 +31,13 @@ import parser.ast.GreaterThanEqualExpression;
 import parser.ast.GreaterThanExpression;
 import parser.ast.HeatStatement;
 import parser.ast.Identifier;
-import parser.ast.InstructionAssignment;
 import parser.ast.IntegerLiteral;
 import parser.ast.LessThanEqualExpression;
 import parser.ast.LessThanExpression;
 import parser.ast.Manifest;
 import parser.ast.MatLiteral;
+import parser.ast.MathParenthesis;
+import parser.ast.MathStatement;
 import parser.ast.MinusExpression;
 import parser.ast.MixStatement;
 import parser.ast.Module;
@@ -48,12 +51,12 @@ import parser.ast.NodeToken;
 import parser.ast.NotEqualExpression;
 import parser.ast.NotExpression;
 import parser.ast.OrExpression;
-import parser.ast.ParenthesisExpression;
 import parser.ast.PlusExpression;
 import parser.ast.PrimaryExpression;
 import parser.ast.Primitives;
 import parser.ast.RealLiteral;
 import parser.ast.RepeatStatement;
+import parser.ast.RightOp;
 import parser.ast.SplitStatement;
 import parser.ast.Statements;
 import parser.ast.Stationary;
@@ -62,6 +65,7 @@ import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
+import parser.ast.WhileStatement;
 
 /**
  * Provides default methods which visit each node in the tree in depth-first
@@ -170,7 +174,7 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
      * f5 -> ( <COLON> TypingList() )?
      * f6 -> <LBRACE>
      * f7 -> ( Statements() )+
-     * f8 -> ( <RETURN> Expression() )?
+     * f8 -> ( <RETURN> Identifier() )?
      * f9 -> <RBRACE>
      */
     public void visit(FunctionDefinition n, A argu) {
@@ -187,9 +191,10 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
     }
 
     /**
-     * f0 -> AssignmentInstruction()
+     * f0 -> AssignmentStatement()
      * | BranchStatement()
      * | RepeatStatement()
+     * | WhileStatement()
      * | HeatStatement()
      * | DrainStatement()
      * | FunctionInvoke()
@@ -202,9 +207,9 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
      * f0 -> ( TypingList() )*
      * f1 -> Identifier()
      * f2 -> <ASSIGN>
-     * f3 -> Expression()
+     * f3 -> RightOp()
      */
-    public void visit(AssignmentInstruction n, A argu) {
+    public void visit(AssignmentStatement n, A argu) {
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         n.f2.accept(this, argu);
@@ -334,7 +339,7 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> IntegerLiteral()
+     * f1 -> ( IntegerLiteral() | Identifier() )
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statements() )+
@@ -350,9 +355,28 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
     }
 
     /**
+     * f0 -> <WHILE>
+     * f1 -> <LPAREN>
+     * f2 -> Conditional()
+     * f3 -> <RPAREN>
+     * f4 -> <LBRACE>
+     * f5 -> ( Statements() )+
+     * f6 -> <RBRACE>
+     */
+    public void visit(WhileStatement n, A argu) {
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
+        n.f2.accept(this, argu);
+        n.f3.accept(this, argu);
+        n.f4.accept(this, argu);
+        n.f5.accept(this, argu);
+        n.f6.accept(this, argu);
+    }
+
+    /**
      * f0 -> <IF>
      * f1 -> <LPAREN>
-     * f2 -> Expression()
+     * f2 -> Conditional()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
      * f5 -> ( Statements() )+
@@ -375,7 +399,7 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
     /**
      * f0 -> <ELSE_IF>
      * f1 -> <LPAREN>
-     * f2 -> Expression()
+     * f2 -> Conditional()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
      * f5 -> ( Statements() )+
@@ -405,7 +429,8 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
     }
 
     /**
-     * f0 -> AndExpression()
+     * f0 -> ConditionalParenthesis()
+     * | AndExpression()
      * | LessThanExpression()
      * | LessThanEqualExpression()
      * | GreaterThanExpression()
@@ -413,14 +438,19 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
      * | NotEqualExpression()
      * | EqualityExpression()
      * | OrExpression()
+     */
+    public void visit(Conditional n, A argu) {
+        n.f0.accept(this, argu);
+    }
+
+    /**
+     * f0 -> MathParenthesis()
      * | PlusExpression()
      * | MinusExpression()
      * | TimesExpression()
-     * | FunctionInvoke()
-     * | PrimaryExpression()
-     * | InstructionAssignment()
+     * | DivideExpression()
      */
-    public void visit(Expression n, A argu) {
+    public void visit(MathStatement n, A argu) {
         n.f0.accept(this, argu);
     }
 
@@ -460,8 +490,9 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
      * | DetectStatement()
      * | SplitStatement()
      * | FunctionInvoke()
+     * | MathStatement()
      */
-    public void visit(InstructionAssignment n, A argu) {
+    public void visit(RightOp n, A argu) {
         n.f0.accept(this, argu);
     }
 
@@ -469,8 +500,8 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
      * f0 -> Identifier()
      * | TrueLiteral()
      * | FalseLiteral()
-     * | ParenthesisExpression()
      * | IntegerLiteral()
+     * | RealLiteral()
      */
     public void visit(PrimaryExpression n, A argu) {
         n.f0.accept(this, argu);
@@ -647,8 +678,19 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
     }
 
     /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <DIVIDE>
+     * f2 -> PrimaryExpression()
+     */
+    public void visit(DivideExpression n, A argu) {
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
+        n.f2.accept(this, argu);
+    }
+
+    /**
      * f0 -> <BANG>
-     * f1 -> Expression()
+     * f1 -> PrimaryExpression()
      */
     public void visit(NotExpression n, A argu) {
         n.f0.accept(this, argu);
@@ -657,10 +699,21 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
 
     /**
      * f0 -> <LPAREN>
-     * f1 -> Expression()
+     * f1 -> Conditional()
      * f2 -> <RPAREN>
      */
-    public void visit(ParenthesisExpression n, A argu) {
+    public void visit(ConditionalParenthesis n, A argu) {
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
+        n.f2.accept(this, argu);
+    }
+
+    /**
+     * f0 -> <LPAREN>
+     * f1 -> MathStatement()
+     * f2 -> <RPAREN>
+     */
+    public void visit(MathParenthesis n, A argu) {
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
         n.f2.accept(this, argu);

@@ -7,9 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import chemical.epa.ChemTypes;
+import parser.BSVisitor;
+import shared.variable.DefinedVariable;
 import shared.variable.Method;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
+
+import static chemical.epa.ChemTypes.NAT;
 
 /**
  * @created: 3/2/18
@@ -83,7 +87,18 @@ public class InvokeStatement extends BaseStatement implements Invoke {
             statement.addInputVariable(this.method.getReturnStatement().getOutputVariable());
             statement.addOutputVariable(this.outputVariable);
             sb.append(statement.toJson());
+        } else {
+            sb.append(",").append(NL);
+            MathStatement statement = new MathStatement();
+            statement.addInputVariable(this.method.getReturnStatement().getOutputVariable());
+            Variable v = new DefinedVariable<Integer>(BSVisitor.CONST + "_0");
+            v.addTypingConstraint(NAT);
+            v.setValue(0);
+            statement.addInputVariable(v);
+            statement.addOutputVariable(this.outputVariable);
+            sb.append(statement.toJson());
         }
+
 
         return sb.toString();
     }

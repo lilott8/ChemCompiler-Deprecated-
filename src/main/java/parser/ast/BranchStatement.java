@@ -13,7 +13,7 @@ import parser.visitor.Visitor;
  * Grammar production:
  * f0 -> <IF>
  * f1 -> <LPAREN>
- * f2 -> Expression()
+ * f2 -> Conditional()
  * f3 -> <RPAREN>
  * f4 -> <LBRACE>
  * f5 -> ( Statements() )+
@@ -24,7 +24,7 @@ import parser.visitor.Visitor;
 public class BranchStatement implements Node {
     public NodeToken f0;
     public NodeToken f1;
-    public Expression f2;
+    public Conditional f2;
     public NodeToken f3;
     public NodeToken f4;
     public NodeList f5;
@@ -32,7 +32,7 @@ public class BranchStatement implements Node {
     public NodeListOptional f7;
     public NodeOptional f8;
 
-    public BranchStatement(NodeToken n0, NodeToken n1, Expression n2, NodeToken n3, NodeToken n4, NodeList n5, NodeToken n6, NodeListOptional n7, NodeOptional n8) {
+    public BranchStatement(NodeToken n0, NodeToken n1, Conditional n2, NodeToken n3, NodeToken n4, NodeList n5, NodeToken n6, NodeListOptional n7, NodeOptional n8) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
@@ -44,7 +44,7 @@ public class BranchStatement implements Node {
         f8 = n8;
     }
 
-    public BranchStatement(Expression n0, NodeList n1, NodeListOptional n2, NodeOptional n3) {
+    public BranchStatement(Conditional n0, NodeList n1, NodeListOptional n2, NodeOptional n3) {
         f0 = new NodeToken("if");
         f1 = new NodeToken("(");
         f2 = n0;

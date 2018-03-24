@@ -118,13 +118,6 @@ public class DetectStatement extends BaseStatement {
         sb.append("],").append(NL);
         // Add the outputs (there are none).
         sb.append("\"OUTPUTS\" : [").append(NL);
-        // sb.append("{").append(NL);
-        // sb.append("\"SENSOR_DECLARATION\" : {").append(NL);
-        // sb.append("\"ID\" : \"").append(this.outputVariable.getName()).append("\",").append(NL);
-        // sb.append("\"NAME\" : \"").append(this.outputVariable.getName()).append("\",").append(NL);
-        // sb.append("\"TYPE\" : \"SENSOR\"").append(NL);
-        // sb.append("}").append(NL);
-        // sb.append("}").append(NL);
         sb.append(this.outputVariable.buildDeclaration()).append(NL);
         // Close the output array.
         sb.append("]").append(NL);

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import parser.ast.AssignmentInstruction;
+import parser.ast.AssignmentStatement;
 import parser.ast.BranchStatement;
 import parser.ast.DetectStatement;
 import parser.ast.Manifest;
@@ -120,10 +120,10 @@ public class BSTypeChecker extends BSVisitor implements TypeChecker {
      * f0 -> ( TypingList() )*
      * f1 -> Identifier()
      * f2 -> <ASSIGN>
-     * f3 -> Expression()
+     * f3 -> RightOp()
      */
     @Override
-    public BSVisitor visit(AssignmentInstruction n) {
+    public BSVisitor visit(AssignmentStatement n) {
         return super.visit(n);
     }
 

@@ -19,7 +19,7 @@ import parser.visitor.Visitor;
  * f5 -> ( <COLON> TypingList() )?
  * f6 -> <LBRACE>
  * f7 -> ( Statements() )+
- * f8 -> ( <RETURN> Expression() )?
+ * f8 -> ( <RETURN> Identifier() )?
  * f9 -> <RBRACE>
  */
 public class FunctionDefinition implements Node {

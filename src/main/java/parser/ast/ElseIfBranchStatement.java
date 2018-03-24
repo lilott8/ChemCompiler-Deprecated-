@@ -13,7 +13,7 @@ import parser.visitor.Visitor;
  * Grammar production:
  * f0 -> <ELSE_IF>
  * f1 -> <LPAREN>
- * f2 -> Expression()
+ * f2 -> Conditional()
  * f3 -> <RPAREN>
  * f4 -> <LBRACE>
  * f5 -> ( Statements() )+
@@ -22,13 +22,13 @@ import parser.visitor.Visitor;
 public class ElseIfBranchStatement implements Node {
     public NodeToken f0;
     public NodeToken f1;
-    public Expression f2;
+    public Conditional f2;
     public NodeToken f3;
     public NodeToken f4;
     public NodeList f5;
     public NodeToken f6;
 
-    public ElseIfBranchStatement(NodeToken n0, NodeToken n1, Expression n2, NodeToken n3, NodeToken n4, NodeList n5, NodeToken n6) {
+    public ElseIfBranchStatement(NodeToken n0, NodeToken n1, Conditional n2, NodeToken n3, NodeToken n4, NodeList n5, NodeToken n6) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
@@ -38,7 +38,7 @@ public class ElseIfBranchStatement implements Node {
         f6 = n6;
     }
 
-    public ElseIfBranchStatement(Expression n0, NodeList n1) {
+    public ElseIfBranchStatement(Conditional n0, NodeList n1) {
         f0 = new NodeToken("else if");
         f1 = new NodeToken("(");
         f2 = n0;

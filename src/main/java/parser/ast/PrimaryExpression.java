@@ -14,7 +14,6 @@ import parser.visitor.Visitor;
  * f0 -> Identifier()
  * | TrueLiteral()
  * | FalseLiteral()
- * | ParenthesisExpression()
  * | IntegerLiteral()
  */
 public class PrimaryExpression implements Node {

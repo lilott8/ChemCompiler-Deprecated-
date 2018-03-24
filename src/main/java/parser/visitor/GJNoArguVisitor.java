@@ -8,15 +8,17 @@ import parser.ast.AllowedArguments;
 import parser.ast.AllowedArgumentsRest;
 import parser.ast.AndExpression;
 import parser.ast.ArgumentList;
-import parser.ast.AssignmentInstruction;
+import parser.ast.AssignmentStatement;
 import parser.ast.BSProgram;
 import parser.ast.BranchStatement;
+import parser.ast.Conditional;
+import parser.ast.ConditionalParenthesis;
 import parser.ast.DetectStatement;
+import parser.ast.DivideExpression;
 import parser.ast.DrainStatement;
 import parser.ast.ElseBranchStatement;
 import parser.ast.ElseIfBranchStatement;
 import parser.ast.EqualityExpression;
-import parser.ast.Expression;
 import parser.ast.FalseLiteral;
 import parser.ast.FormalParameter;
 import parser.ast.FormalParameterList;
@@ -27,12 +29,13 @@ import parser.ast.GreaterThanEqualExpression;
 import parser.ast.GreaterThanExpression;
 import parser.ast.HeatStatement;
 import parser.ast.Identifier;
-import parser.ast.InstructionAssignment;
 import parser.ast.IntegerLiteral;
 import parser.ast.LessThanEqualExpression;
 import parser.ast.LessThanExpression;
 import parser.ast.Manifest;
 import parser.ast.MatLiteral;
+import parser.ast.MathParenthesis;
+import parser.ast.MathStatement;
 import parser.ast.MinusExpression;
 import parser.ast.MixStatement;
 import parser.ast.Module;
@@ -45,12 +48,12 @@ import parser.ast.NodeToken;
 import parser.ast.NotEqualExpression;
 import parser.ast.NotExpression;
 import parser.ast.OrExpression;
-import parser.ast.ParenthesisExpression;
 import parser.ast.PlusExpression;
 import parser.ast.PrimaryExpression;
 import parser.ast.Primitives;
 import parser.ast.RealLiteral;
 import parser.ast.RepeatStatement;
+import parser.ast.RightOp;
 import parser.ast.SplitStatement;
 import parser.ast.Statements;
 import parser.ast.Stationary;
@@ -59,6 +62,7 @@ import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
+import parser.ast.WhileStatement;
 
 /**
  * All GJ visitors with no argument must implement this interface.
@@ -125,15 +129,16 @@ public interface GJNoArguVisitor<R> {
      * f5 -> ( <COLON> TypingList() )?
      * f6 -> <LBRACE>
      * f7 -> ( Statements() )+
-     * f8 -> ( <RETURN> Expression() )?
+     * f8 -> ( <RETURN> Identifier() )?
      * f9 -> <RBRACE>
      */
     R visit(FunctionDefinition n);
 
     /**
-     * f0 -> AssignmentInstruction()
+     * f0 -> AssignmentStatement()
      * | BranchStatement()
      * | RepeatStatement()
+     * | WhileStatement()
      * | HeatStatement()
      * | DrainStatement()
      * | FunctionInvoke()
@@ -144,9 +149,9 @@ public interface GJNoArguVisitor<R> {
      * f0 -> ( TypingList() )*
      * f1 -> Identifier()
      * f2 -> <ASSIGN>
-     * f3 -> Expression()
+     * f3 -> RightOp()
      */
-    R visit(AssignmentInstruction n);
+    R visit(AssignmentStatement n);
 
     /**
      * f0 -> Type()
@@ -228,7 +233,7 @@ public interface GJNoArguVisitor<R> {
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> IntegerLiteral()
+     * f1 -> ( IntegerLiteral() | Identifier() )
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statements() )+
@@ -237,9 +242,20 @@ public interface GJNoArguVisitor<R> {
     R visit(RepeatStatement n);
 
     /**
+     * f0 -> <WHILE>
+     * f1 -> <LPAREN>
+     * f2 -> Conditional()
+     * f3 -> <RPAREN>
+     * f4 -> <LBRACE>
+     * f5 -> ( Statements() )+
+     * f6 -> <RBRACE>
+     */
+    R visit(WhileStatement n);
+
+    /**
      * f0 -> <IF>
      * f1 -> <LPAREN>
-     * f2 -> Expression()
+     * f2 -> Conditional()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
      * f5 -> ( Statements() )+
@@ -252,7 +268,7 @@ public interface GJNoArguVisitor<R> {
     /**
      * f0 -> <ELSE_IF>
      * f1 -> <LPAREN>
-     * f2 -> Expression()
+     * f2 -> Conditional()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
      * f5 -> ( Statements() )+
@@ -269,7 +285,8 @@ public interface GJNoArguVisitor<R> {
     R visit(ElseBranchStatement n);
 
     /**
-     * f0 -> AndExpression()
+     * f0 -> ConditionalParenthesis()
+     * | AndExpression()
      * | LessThanExpression()
      * | LessThanEqualExpression()
      * | GreaterThanExpression()
@@ -277,14 +294,17 @@ public interface GJNoArguVisitor<R> {
      * | NotEqualExpression()
      * | EqualityExpression()
      * | OrExpression()
+     */
+    R visit(Conditional n);
+
+    /**
+     * f0 -> MathParenthesis()
      * | PlusExpression()
      * | MinusExpression()
      * | TimesExpression()
-     * | FunctionInvoke()
-     * | PrimaryExpression()
-     * | InstructionAssignment()
+     * | DivideExpression()
      */
-    R visit(Expression n);
+    R visit(MathStatement n);
 
     /**
      * f0 -> Identifier()
@@ -311,15 +331,16 @@ public interface GJNoArguVisitor<R> {
      * | DetectStatement()
      * | SplitStatement()
      * | FunctionInvoke()
+     * | MathStatement()
      */
-    R visit(InstructionAssignment n);
+    R visit(RightOp n);
 
     /**
      * f0 -> Identifier()
      * | TrueLiteral()
      * | FalseLiteral()
-     * | ParenthesisExpression()
      * | IntegerLiteral()
+     * | RealLiteral()
      */
     R visit(PrimaryExpression n);
 
@@ -436,17 +457,31 @@ public interface GJNoArguVisitor<R> {
     R visit(TimesExpression n);
 
     /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <DIVIDE>
+     * f2 -> PrimaryExpression()
+     */
+    R visit(DivideExpression n);
+
+    /**
      * f0 -> <BANG>
-     * f1 -> Expression()
+     * f1 -> PrimaryExpression()
      */
     R visit(NotExpression n);
 
     /**
      * f0 -> <LPAREN>
-     * f1 -> Expression()
+     * f1 -> Conditional()
      * f2 -> <RPAREN>
      */
-    R visit(ParenthesisExpression n);
+    R visit(ConditionalParenthesis n);
+
+    /**
+     * f0 -> <LPAREN>
+     * f1 -> MathStatement()
+     * f2 -> <RPAREN>
+     */
+    R visit(MathParenthesis n);
 
     /**
      * f0 -> Identifier()

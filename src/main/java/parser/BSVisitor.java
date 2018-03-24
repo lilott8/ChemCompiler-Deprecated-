@@ -18,17 +18,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
 import ir.Statement;
+import parser.ast.AndExpression;
+import parser.ast.ConditionalParenthesis;
+import parser.ast.EqualityExpression;
 import parser.ast.FalseLiteral;
+import parser.ast.GreaterThanEqualExpression;
+import parser.ast.GreaterThanExpression;
 import parser.ast.Identifier;
 import parser.ast.IntegerLiteral;
+import parser.ast.LessThanEqualExpression;
+import parser.ast.LessThanExpression;
 import parser.ast.MatLiteral;
+import parser.ast.MathParenthesis;
 import parser.ast.NatLiteral;
+import parser.ast.NotEqualExpression;
+import parser.ast.NotExpression;
+import parser.ast.OrExpression;
 import parser.ast.RealLiteral;
 import parser.ast.TrueLiteral;
 import parser.visitor.GJNoArguDepthFirst;
 import shared.Step;
+import shared.variable.ConstVariable;
 import shared.variable.Method;
-import shared.variable.Property;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
 
@@ -44,11 +55,12 @@ import static chemical.epa.ChemTypes.REAL;
 public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements Step {
 
     public static final Logger logger = LogManager.getLogger(BSVisitor.class);
-    protected static final String REPEAT = "REPEAT";
-    protected static final String BRANCH = "BRANCH";
-    protected static final String INTEGER = "INTEGER";
-    protected static final String BOOLEAN = "BOOLEAN";
-    protected static final String CONST = "CONST";
+    public static final String REPEAT = "REPEAT";
+    public static final String BRANCH = "BRANCH";
+    public static final String INTEGER = "INTEGER";
+    public static final String BOOLEAN = "BOOLEAN";
+    public static final String CONST = "CONST";
+    protected List<Variable> constants = new ArrayList<>();
     // Keep track of the instruction idCounter to input/outputs
     protected static Map<Integer, Statement> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
@@ -69,6 +81,10 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     protected List<Variable> parameters = new ArrayList<>();
     // Lets us know where to put the argument, if we are invoking.
     protected boolean inInvoke = false;
+    // Lets us know if we are parsing a conditional.
+    protected boolean inConditional = false;
+    // String for the conditional itself.
+    protected String conditional = "";
     // Ability to identify stuff.
     protected chemical.identification.Identifier identifier = IdentifierFactory.getIdentifier();
     private int scopeId = 0;
@@ -83,6 +99,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     }
 
     public BSVisitor() {
+        logger.warn("INTEGER/TRUE/FALSE literals are adding themselves to both locals and constants.");
     }
 
     protected String getCurrentScope() {
@@ -130,12 +147,13 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     @Override
     public BSVisitor visit(IntegerLiteral n) {
         this.name = String.format("%s_%s", CONST, n.f0.toString());
-        this.constant = new Property<Integer>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        this.constant = new ConstVariable<Integer>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
         this.value = n.f0.toString();
         this.constant.setValue(Integer.parseInt(n.f0.toString()));
         this.constant.addTypingConstraint(NAT);
         this.types.add(NAT);
         SymbolTable.INSTANCE.addLocal(this.constant);
+        SymbolTable.INSTANCE.addInput(this.constant);
         return this;
     }
 
@@ -172,12 +190,14 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     @Override
     public BSVisitor visit(TrueLiteral n) {
         this.name = String.format("%s_%s", CONST, n.f0.toString());
-        this.constant = new Property<Boolean>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        this.constant = new ConstVariable<Boolean>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
         this.value = "true";
         this.constant.setValue(true);
         this.constant.addTypingConstraint(BOOL);
         this.types.add(ChemTypes.BOOL);
         SymbolTable.INSTANCE.addLocal(this.constant);
+        SymbolTable.INSTANCE.addInput(this.constant);
+        this.constants.add(this.constant);
         return this;
     }
 
@@ -187,13 +207,15 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     @Override
     public BSVisitor visit(FalseLiteral n) {
         this.name = String.format("%s_%s", CONST, n.f0.toString());
-        this.constant = new Property<Boolean>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        this.constant = new ConstVariable<Boolean>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
         this.value = "false";
         this.constant.setValue(false);
         this.constant.addTypingConstraint(BOOL);
         this.types.add(ChemTypes.BOOL);
         SymbolTable.INSTANCE.addLocal(this.constant);
+        SymbolTable.INSTANCE.addInput(this.constant);
         this.types.add(ChemTypes.BOOL);
+        this.constants.add(this.constant);
         return this;
     }
 
@@ -202,16 +224,190 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
      */
     @Override
     public BSVisitor visit(Identifier n) {
-        if (this.types.contains(REAL)) {
+        this.name = "";
+        try {
+            Float.parseFloat(n.f0.toString());
             this.name = String.format("%s_%d", REAL, realId++);
-        } else if (this.types.contains(NAT)) {
-            this.name = String.format("%s_%d", INTEGER, integerId++);
-        } else if (this.types.contains(BOOL)) {
-            this.name = String.format("%s_%d", BOOLEAN, booleanId++);
-        } else {
-            this.name = n.f0.toString();
+        } catch (NumberFormatException e) {
         }
 
+        try {
+            Integer.parseInt(n.f0.toString());
+            this.name = String.format("%s_%d", INTEGER, integerId++);
+        } catch (NumberFormatException e) {
+        }
+
+        if (StringUtils.isEmpty(this.name)) {
+            if (StringUtils.equalsIgnoreCase("true", n.f0.toString()) ||
+                    StringUtils.equalsIgnoreCase("false", n.f0.toString())) {
+                this.name = String.format("%s_%d", BOOLEAN, booleanId++);
+            } else {
+                this.name = n.f0.toString();
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <AND>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(AndExpression n) {
+        n.f0.accept(this);
+        this.conditional += this.name;
+        this.conditional += "&&";
+        n.f2.accept(this);
+        this.conditional += this.name;
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <LESSTHAN>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(LessThanExpression n) {
+        n.f0.accept(this);
+        this.conditional += this.name;
+        this.conditional += "<";
+        n.f2.accept(this);
+        this.conditional += this.name;
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <LESSTHANEQUAL>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(LessThanEqualExpression n) {
+        n.f0.accept(this);
+        this.conditional += this.name;
+        this.conditional += "<=";
+        n.f2.accept(this);
+        this.conditional += this.name;
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <GREATERTHAN>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(GreaterThanExpression n) {
+        n.f0.accept(this);
+        this.conditional += this.name;
+        this.conditional += ">";
+        n.f2.accept(this);
+        this.conditional += this.name;
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <GREATERTHANEQUAL>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(GreaterThanEqualExpression n) {
+        n.f0.accept(this);
+        this.conditional += this.name;
+        this.conditional += ">=";
+        n.f2.accept(this);
+        this.conditional += this.name;
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <NOTEQUAL>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(NotEqualExpression n) {
+        n.f0.accept(this);
+        this.conditional += this.name;
+        this.conditional += "!=";
+        n.f2.accept(this);
+        this.conditional += this.name;
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <OR>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(EqualityExpression n) {
+        n.f0.accept(this);
+        this.conditional += this.name;
+        this.conditional += "==";
+        n.f2.accept(this);
+        this.conditional += this.name;
+        return this;
+    }
+
+    /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <LESSTHAN>
+     * f2 -> PrimaryExpression()
+     */
+    @Override
+    public BSVisitor visit(OrExpression n) {
+        n.f0.accept(this);
+        this.conditional += this.name;
+        this.conditional += "<";
+        n.f2.accept(this);
+        this.conditional += this.name;
+        return this;
+    }
+
+    /**
+     * f0 -> <BANG>
+     * f1 -> Expression()
+     */
+    @Override
+    public BSVisitor visit(NotExpression n) {
+        this.conditional += "!";
+        n.f1.accept(this);
+        this.conditional += this.name;
+        return this;
+    }
+
+
+    /**
+     * f0 -> <LPAREN>
+     * f1 -> Conditional()
+     * f2 -> <RPAREN>
+     */
+    @Override
+    public BSVisitor visit(ConditionalParenthesis n) {
+        this.conditional += "(";
+        n.f1.accept(this);
+        this.conditional += this.name;
+        this.conditional += ")";
+        return this;
+    }
+
+    /**
+     * f0 -> <LPAREN>
+     * f1 -> MathStatement()
+     * f2 -> <RPAREN>
+     */
+    @Override
+    public BSVisitor visit(MathParenthesis n) {
+        logger.warn("need to change math parenths");
+        this.conditional += "(";
+        n.f1.accept(this);
+        this.conditional += this.name;
+        this.conditional += ")";
         return this;
     }
 

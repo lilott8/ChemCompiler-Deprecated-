@@ -35,6 +35,7 @@ public enum SymbolTable {
     private Map<String, Method> methods = new HashMap<>();
     // Keep tabs of depth of stack.
     private Deque<Scope> scopeStack = new ArrayDeque<>();
+    private Map<String, Variable> constants = new HashMap<>();
 
     // List of input variables.  These are treated differently.
     private List<Variable> inputs = new ArrayList<>();
@@ -85,6 +86,10 @@ public enum SymbolTable {
 
         // Push it back onto the stack!
         this.scopeStack.push(s);
+    }
+
+    public void addConstant(Variable symbol) {
+        this.constants.put(symbol.getScopedName(), symbol);
     }
 
     public void addLocals(List<Variable> symbols) {
@@ -149,6 +154,10 @@ public enum SymbolTable {
 
     public List<Variable> getInputs() {
         return this.inputs;
+    }
+
+    public Map<String, Variable> getConstants() {
+        return this.constants;
     }
 
     public Variable getScopedSymbol(String scope, String varName) {

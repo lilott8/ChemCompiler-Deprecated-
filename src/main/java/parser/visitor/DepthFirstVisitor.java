@@ -10,15 +10,17 @@ import parser.ast.AllowedArguments;
 import parser.ast.AllowedArgumentsRest;
 import parser.ast.AndExpression;
 import parser.ast.ArgumentList;
-import parser.ast.AssignmentInstruction;
+import parser.ast.AssignmentStatement;
 import parser.ast.BSProgram;
 import parser.ast.BranchStatement;
+import parser.ast.Conditional;
+import parser.ast.ConditionalParenthesis;
 import parser.ast.DetectStatement;
+import parser.ast.DivideExpression;
 import parser.ast.DrainStatement;
 import parser.ast.ElseBranchStatement;
 import parser.ast.ElseIfBranchStatement;
 import parser.ast.EqualityExpression;
-import parser.ast.Expression;
 import parser.ast.FalseLiteral;
 import parser.ast.FormalParameter;
 import parser.ast.FormalParameterList;
@@ -29,12 +31,13 @@ import parser.ast.GreaterThanEqualExpression;
 import parser.ast.GreaterThanExpression;
 import parser.ast.HeatStatement;
 import parser.ast.Identifier;
-import parser.ast.InstructionAssignment;
 import parser.ast.IntegerLiteral;
 import parser.ast.LessThanEqualExpression;
 import parser.ast.LessThanExpression;
 import parser.ast.Manifest;
 import parser.ast.MatLiteral;
+import parser.ast.MathParenthesis;
+import parser.ast.MathStatement;
 import parser.ast.MinusExpression;
 import parser.ast.MixStatement;
 import parser.ast.Module;
@@ -48,12 +51,12 @@ import parser.ast.NodeToken;
 import parser.ast.NotEqualExpression;
 import parser.ast.NotExpression;
 import parser.ast.OrExpression;
-import parser.ast.ParenthesisExpression;
 import parser.ast.PlusExpression;
 import parser.ast.PrimaryExpression;
 import parser.ast.Primitives;
 import parser.ast.RealLiteral;
 import parser.ast.RepeatStatement;
+import parser.ast.RightOp;
 import parser.ast.SplitStatement;
 import parser.ast.Statements;
 import parser.ast.Stationary;
@@ -62,6 +65,7 @@ import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
+import parser.ast.WhileStatement;
 
 /**
  * Provides default methods which visit each node in the tree in depth-first
@@ -160,7 +164,7 @@ public class DepthFirstVisitor implements Visitor {
      * f5 -> ( <COLON> TypingList() )?
      * f6 -> <LBRACE>
      * f7 -> ( Statements() )+
-     * f8 -> ( <RETURN> Expression() )?
+     * f8 -> ( <RETURN> Identifier() )?
      * f9 -> <RBRACE>
      */
     public void visit(FunctionDefinition n) {
@@ -177,9 +181,10 @@ public class DepthFirstVisitor implements Visitor {
     }
 
     /**
-     * f0 -> AssignmentInstruction()
+     * f0 -> AssignmentStatement()
      * | BranchStatement()
      * | RepeatStatement()
+     * | WhileStatement()
      * | HeatStatement()
      * | DrainStatement()
      * | FunctionInvoke()
@@ -192,9 +197,9 @@ public class DepthFirstVisitor implements Visitor {
      * f0 -> ( TypingList() )*
      * f1 -> Identifier()
      * f2 -> <ASSIGN>
-     * f3 -> Expression()
+     * f3 -> RightOp()
      */
-    public void visit(AssignmentInstruction n) {
+    public void visit(AssignmentStatement n) {
         n.f0.accept(this);
         n.f1.accept(this);
         n.f2.accept(this);
@@ -324,7 +329,7 @@ public class DepthFirstVisitor implements Visitor {
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> IntegerLiteral()
+     * f1 -> ( IntegerLiteral() | Identifier() )
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statements() )+
@@ -340,9 +345,28 @@ public class DepthFirstVisitor implements Visitor {
     }
 
     /**
+     * f0 -> <WHILE>
+     * f1 -> <LPAREN>
+     * f2 -> Conditional()
+     * f3 -> <RPAREN>
+     * f4 -> <LBRACE>
+     * f5 -> ( Statements() )+
+     * f6 -> <RBRACE>
+     */
+    public void visit(WhileStatement n) {
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+        n.f3.accept(this);
+        n.f4.accept(this);
+        n.f5.accept(this);
+        n.f6.accept(this);
+    }
+
+    /**
      * f0 -> <IF>
      * f1 -> <LPAREN>
-     * f2 -> Expression()
+     * f2 -> Conditional()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
      * f5 -> ( Statements() )+
@@ -365,7 +389,7 @@ public class DepthFirstVisitor implements Visitor {
     /**
      * f0 -> <ELSE_IF>
      * f1 -> <LPAREN>
-     * f2 -> Expression()
+     * f2 -> Conditional()
      * f3 -> <RPAREN>
      * f4 -> <LBRACE>
      * f5 -> ( Statements() )+
@@ -395,7 +419,8 @@ public class DepthFirstVisitor implements Visitor {
     }
 
     /**
-     * f0 -> AndExpression()
+     * f0 -> ConditionalParenthesis()
+     * | AndExpression()
      * | LessThanExpression()
      * | LessThanEqualExpression()
      * | GreaterThanExpression()
@@ -403,14 +428,19 @@ public class DepthFirstVisitor implements Visitor {
      * | NotEqualExpression()
      * | EqualityExpression()
      * | OrExpression()
+     */
+    public void visit(Conditional n) {
+        n.f0.accept(this);
+    }
+
+    /**
+     * f0 -> MathParenthesis()
      * | PlusExpression()
      * | MinusExpression()
      * | TimesExpression()
-     * | FunctionInvoke()
-     * | PrimaryExpression()
-     * | InstructionAssignment()
+     * | DivideExpression()
      */
-    public void visit(Expression n) {
+    public void visit(MathStatement n) {
         n.f0.accept(this);
     }
 
@@ -450,8 +480,9 @@ public class DepthFirstVisitor implements Visitor {
      * | DetectStatement()
      * | SplitStatement()
      * | FunctionInvoke()
+     * | MathStatement()
      */
-    public void visit(InstructionAssignment n) {
+    public void visit(RightOp n) {
         n.f0.accept(this);
     }
 
@@ -459,8 +490,8 @@ public class DepthFirstVisitor implements Visitor {
      * f0 -> Identifier()
      * | TrueLiteral()
      * | FalseLiteral()
-     * | ParenthesisExpression()
      * | IntegerLiteral()
+     * | RealLiteral()
      */
     public void visit(PrimaryExpression n) {
         n.f0.accept(this);
@@ -637,8 +668,19 @@ public class DepthFirstVisitor implements Visitor {
     }
 
     /**
+     * f0 -> PrimaryExpression()
+     * f1 -> <DIVIDE>
+     * f2 -> PrimaryExpression()
+     */
+    public void visit(DivideExpression n) {
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+    }
+
+    /**
      * f0 -> <BANG>
-     * f1 -> Expression()
+     * f1 -> PrimaryExpression()
      */
     public void visit(NotExpression n) {
         n.f0.accept(this);
@@ -647,10 +689,21 @@ public class DepthFirstVisitor implements Visitor {
 
     /**
      * f0 -> <LPAREN>
-     * f1 -> Expression()
+     * f1 -> Conditional()
      * f2 -> <RPAREN>
      */
-    public void visit(ParenthesisExpression n) {
+    public void visit(ConditionalParenthesis n) {
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+    }
+
+    /**
+     * f0 -> <LPAREN>
+     * f1 -> MathStatement()
+     * f2 -> <RPAREN>
+     */
+    public void visit(MathParenthesis n) {
         n.f0.accept(this);
         n.f1.accept(this);
         n.f2.accept(this);

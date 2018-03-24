@@ -11,7 +11,7 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> AssignmentInstruction()
+ * f0 -> AssignmentStatement()
  * | BranchStatement()
  * | RepeatStatement()
  * | HeatStatement()
