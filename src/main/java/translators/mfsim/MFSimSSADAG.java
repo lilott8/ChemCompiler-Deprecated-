@@ -51,18 +51,18 @@ public class MFSimSSADAG {
     private Map<Integer, ArrayList<MFSimSSATransferIn>> transIn = new HashMap<>();
     private List<MFSimSSADispense> dispense = new ArrayList<>();
 
-    public MFSimSSADAG(BasicBlock bb, MFSimSSATranslator.IDGen parentsIDGen, Map<String, Stack<RenamedVariableNode>> variableStack){
+    public MFSimSSADAG(BasicBlock bb, MFSimSSATranslator.IDGen parentsIDGen, Map<String, Stack<RenamedVariableNode>> variableStack) {
         uniqueIdGen = parentsIDGen;
         name = "DAG" + bb.getId().toString();
 
-        for(String transferInDroplet: bb.getBasicBlockEntryTable().keySet()){
-            if(bb.getSymbolTable().contains(transferInDroplet) && bb.getSymbolTable().get(transferInDroplet).IsStationary())
+        for (String transferInDroplet : bb.getBasicBlockEntryTable().keySet()) {
+            if (bb.getSymbolTable().contains(transferInDroplet) && bb.getSymbolTable().get(transferInDroplet).IsStationary())
                 continue;
 
             // set of
             Set<Integer> predecessorSet = bb.getBasicBlockEntryTable().get(transferInDroplet);
-            for( Integer predecessorID : predecessorSet) {
-                if ( predecessorID != -2 ) {
+            for (Integer predecessorID : predecessorSet) {
+                if (predecessorID != -2) {
                     MFSimSSATransferIn transIn = new MFSimSSATransferIn(uniqueIdGen.getNextID(), transferInDroplet, transferInDroplet);
                     //nodes.put(predecessorID,transIn);
                     if (this.transIn.get(predecessorID) == null) {
@@ -101,20 +101,18 @@ public class MFSimSSADAG {
                     n = new MFSimSSAOutput(uniqueIdGen.getNextID(), (Output) instruction);
                 } else if (instruction instanceof React) {
                     n = new MFSimSSACool(uniqueIdGen.getNextID(), (React) instruction);
-                }
-                else if (instruction instanceof Dispense) {
-                    Instance input = (Instance)instruction.getInputs().values().toArray()[0];
-                    Instance output = (Instance)instruction.getOutputs().values().toArray()[0];
+                } else if (instruction instanceof Dispense) {
+                    Instance input = (Instance) instruction.getInputs().values().toArray()[0];
+                    Instance output = (Instance) instruction.getOutputs().values().toArray()[0];
                     n = new MFSimSSADispense(uniqueIdGen.getNextID(), output.getName(), input.getName(), Math.round(input.getSubstance().getVolume().getQuantity()));
-                }
-                else {
+                } else {
                     logger.fatal("Unknown Conversion for: " + instruction.toString());
                     n = null;
                 }
             }
 
-            for(String dispense : instructionNode.getDispenseSymbols()){
-                if(instructionNode.getInstruction().getInputs().get(dispense) instanceof Instance
+            for (String dispense : instructionNode.getDispenseSymbols()) {
+                if (instructionNode.getInstruction().getInputs().get(dispense) instanceof Instance
                         && ((Instance) instructionNode.getInstruction().getInputs().get(dispense)).getIsStationary())
                     continue;
 
@@ -123,12 +121,12 @@ public class MFSimSSADAG {
                 Boolean changed = false;
                 for (String input : instruction.getInputs().keySet()) {
                     if (variableStack.containsKey(input)) {
-                                    if (instruction.getInputs().get(input) instanceof Instance) {
-                                        if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
-                                            amount = (int) ((Instance) instruction.getInputs().get(input)).getSubstance().getVolume().getQuantity();
-                                            changed = true;
-                                        }
-                                    }
+                        if (instruction.getInputs().get(input) instanceof Instance) {
+                            if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
+                                amount = (int) ((Instance) instruction.getInputs().get(input)).getSubstance().getVolume().getQuantity();
+                                changed = true;
+                            }
+                        }
                     }
 
                 }
@@ -147,16 +145,14 @@ public class MFSimSSADAG {
 
         }
 
-        for (String transferOutDroplet: bb.getBasicBlockExitTable().keySet()) {
-            InstructionNode instr = bb.getInstructions().get(bb.getInstructions().size()-1);
+        for (String transferOutDroplet : bb.getBasicBlockExitTable().keySet()) {
+            InstructionNode instr = bb.getInstructions().get(bb.getInstructions().size() - 1);
             if (instr instanceof SigmaInstruction || instr instanceof PHIInstruction) {
                 //continue;
-            }
-            else if (instr.getInstruction().getInputs().containsKey(transferOutDroplet) && instr.getInstruction().getInputs().get(transferOutDroplet) instanceof Instance &&
+            } else if (instr.getInstruction().getInputs().containsKey(transferOutDroplet) && instr.getInstruction().getInputs().get(transferOutDroplet) instanceof Instance &&
                     ((Instance) instr.getInstruction().getInputs().get(transferOutDroplet)).getIsStationary()) {
                 continue;
-            }
-            else if (instr.getInstruction() instanceof Output) {
+            } else if (instr.getInstruction() instanceof Output) {
                 continue;
             }
             MFSimSSATransferOut transOut = new MFSimSSATransferOut(uniqueIdGen.getNextID(), transferOutDroplet, transferOutDroplet);
@@ -166,16 +162,16 @@ public class MFSimSSADAG {
             this.transOut.get(transOut.getID()).add(transOut);
         }
 
-        for(InstructionEdge edge: bb.getEdges()){
+        for (InstructionEdge edge : bb.getEdges()) {
             if (node.containsKey(edge.getDestination())) {//I am a child of
                 Integer destination = node.get(edge.getDestination()).getID();
                 if (node.containsKey(edge.getSource())) { //another node
                     MFSimSSANode node = this.node.get(edge.getSource());
-                    if(node.getID() < destination)
+                    if (node.getID() < destination)
                         node.addSuccessor(destination);
                 } else if (transIn.containsKey(edge.getSource())) {
                     MFSimSSATransferIn node = transIn.get(edge.getSource()).get(destination);
-                    if(node.getID() < destination )
+                    if (node.getID() < destination)
                         node.addSuccessor(destination);
                 }
             }
@@ -189,9 +185,8 @@ public class MFSimSSADAG {
                         in.addSuccessor(node.get(instruction.getId()).getID());
                         break;
                     }
-                    //in.addSuccessor(nodes.get(bb.getInstructions().get(0).getId()).getID());
-                }
-                else {
+                    //in.addSuccessor(nodes.get(bb.getStatements().get(0).getId()).getID());
+                } else {
                     Integer succ = 0;
                     for (Integer transOut : transOut.keySet()) {
                         succ = transOut;
@@ -205,16 +200,15 @@ public class MFSimSSADAG {
         for (ArrayList<MFSimSSATransferOut> transOut : transOut.values()) {
             for (MFSimSSATransferOut out : transOut) {
                 if (node.size() > 0) {
-                    for (Integer instrIndex = bb.getInstructions().size()-1; ; --instrIndex) {
+                    for (Integer instrIndex = bb.getInstructions().size() - 1; ; --instrIndex) {
                         InstructionNode instruction = bb.getInstructions().get(instrIndex);
                         if (instruction.getId() > 0) {
                             node.get(instruction.getId()).addSuccessor(out.getID());
                             break;
                         }
                     }
-                }
-                else {
-                   // do nothing, transIn should take care of the edge between the two
+                } else {
+                    // do nothing, transIn should take care of the edge between the two
                 }
             }
         }
@@ -237,7 +231,7 @@ public class MFSimSSADAG {
         return this.name;
     }
 
-    public String toString(){
+    public String toString() {
         String ret = "DagName (" + this.name + ")\n";
         for (ArrayList<MFSimSSATransferIn> tin : this.transIn.values()) {
             for (MFSimSSATransferIn ttin : tin) {

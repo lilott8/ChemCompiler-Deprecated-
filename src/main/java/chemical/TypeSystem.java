@@ -10,11 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import compilation.datastructures.node.InstructionNode;
-import config.ConfigFactory;
-import config.InferenceConfig;
-import shared.substances.BaseCompound;
-import translators.typesystem.TypeSystemTranslator;
 import chemical.classification.Classifier;
 import chemical.classification.ClassifierFactory;
 import chemical.combinator.Combiner;
@@ -22,6 +17,11 @@ import chemical.combinator.CombinerFactory;
 import chemical.epa.EpaManager;
 import chemical.identification.Identifier;
 import chemical.identification.IdentifierFactory;
+import compilation.datastructures.node.InstructionNode;
+import config.ConfigFactory;
+import config.InferenceConfig;
+import shared.substances.BaseCompound;
+import translators.typesystem.TypeSystemTranslator;
 import variable.Variable;
 
 /**
@@ -61,7 +61,7 @@ public class TypeSystem {
 
     /**
      * the run implementation of our system, this runs through the three phases for the generated chemical interaction
-     * graph
+     * statements
      */
     public void run() {
         // find and identify the literal compounds
@@ -73,7 +73,7 @@ public class TypeSystem {
     }
 
     /**
-     * Take the chemical interaction graph and build the ordered operations that have inputs and resolve them
+     * Take the chemical interaction statements and build the ordered operations that have inputs and resolve them
      * appropriately for running through the phases
      */
     private void buildMaps() {
@@ -134,8 +134,6 @@ public class TypeSystem {
      * A helper function that that allows us to search for a resolution
      * of a string.  It allows the system to know exactly what a
      * reference is comprise of
-     * @param s
-     * @return
      */
     private BaseCompound resolveInput(String s) {
         logger.info("Given: " + s);

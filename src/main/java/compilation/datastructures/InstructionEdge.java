@@ -15,18 +15,25 @@ public class InstructionEdge extends DefaultEdge implements Serializable {
     public InstructionEdge(Integer source, Integer destination) {
         this.source = source;
         this.destination = destination;
-        id = source*destination;
+        id = source * destination;
     }
 
     public String toString() {
         return this.toString("");
     }
+
     public String toString(String indentBuffer) {
         return indentBuffer + source.toString() + "->" + destination;
     }
 
-    public Integer getSource() { return source; }
-    public Integer getDestination() { return destination; }
+    public Integer getSource() {
+        return source;
+    }
+
+    public Integer getDestination() {
+        return destination;
+    }
+
     public Integer getId() {
         return id;
     }

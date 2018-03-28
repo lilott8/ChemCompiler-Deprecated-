@@ -15,19 +15,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import chemical.epa.ChemTypes;
 import config.ConfigFactory;
-import shared.Variable;
+import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.rules.Rule;
-import typesystem.satsolver.constraints.Composer;
 import typesystem.satsolver.constraints.SMT.Assign;
 import typesystem.satsolver.constraints.SMT.Branch;
 import typesystem.satsolver.constraints.SMT.Detect;
 import typesystem.satsolver.constraints.SMT.Heat;
+import typesystem.satsolver.constraints.SMT.Math;
 import typesystem.satsolver.constraints.SMT.Mix;
 import typesystem.satsolver.constraints.SMT.Output;
 import typesystem.satsolver.constraints.SMT.Split;
-import chemical.epa.ChemTypes;
+import typesystem.satsolver.constraints.SMTSolver;
 
 import static chemical.epa.ChemTypes.NAT;
 import static chemical.epa.ChemTypes.REAL;
@@ -44,7 +45,7 @@ public class Z3Strategy implements SolverStrategy {
     private Map<Integer, Formula> instructions;
     private Map<String, Variable> variables;
 
-    private Map<Rule.InstructionType, Composer> composers = new HashMap<>();
+    private Map<Rule.InstructionType, SMTSolver> composers = new HashMap<>();
 
     public Z3Strategy() {
         composers.put(Rule.InstructionType.ASSIGN, new Assign());
@@ -54,6 +55,7 @@ public class Z3Strategy implements SolverStrategy {
         composers.put(Rule.InstructionType.MIX, new Mix());
         composers.put(Rule.InstructionType.OUTPUT, new Output());
         composers.put(Rule.InstructionType.SPLIT, new Split());
+        composers.put(Rule.InstructionType.MATH, new Math());
     }
 
     @Override
@@ -79,15 +81,18 @@ public class Z3Strategy implements SolverStrategy {
         }
 
         for (Map.Entry<Integer, Formula> instruction : this.instructions.entrySet()) {
-            if (instruction.getValue().type == Rule.InstructionType.MIX) {
+            // if (instruction instanceof MixStatement) {
+            // if (instruction.getValue().type == Rule.InstructionType.MIX) {
+                //logger.fatal("need to redo solveConstrains");
                 sb.append(this.composers.get(instruction.getValue().type).compose(instruction.getValue()));
-            }
+            // }
+            // }
         }
 
         if (ConfigFactory.getConfig().isDebug()) {
             // logger.info(variables);
-            // logger.info(instructions);
-            logger.info(sb);
+            // logger.info(statements);
+            //logger.info(sb);
         }
         return this.solveWithSMT2(sb.toString());
     }

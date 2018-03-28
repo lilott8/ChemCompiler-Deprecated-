@@ -8,7 +8,7 @@ import typesystem.Inference;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-@InferenceRule(ruleName="vortex", ruleType="instruction")
+@InferenceRule(ruleName = "vortex", ruleType = "instruction")
 public class Vortex extends NodeAnalyzer {
 
     NodeAnalyzer mix = new Mix(Inference.InferenceType.INSTRUCTION);

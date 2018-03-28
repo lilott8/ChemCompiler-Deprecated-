@@ -12,11 +12,11 @@ import typesystem.Inference.InferenceType;
 @InferenceRule(ruleName = "elseif", ruleType = "instruction", analyze = "edge")
 public class ElseIfBranch extends EdgeAnalyzer {
 
+    private IfBranch branch = new IfBranch(InferenceType.INSTRUCTION);
+
     public ElseIfBranch(InferenceType type) {
         super(type, ElseIfBranch.class);
     }
-
-    private IfBranch branch = new IfBranch(InferenceType.INSTRUCTION);
 
     @Override
     public Rule gatherConstraints(BasicBlockEdge edge) {

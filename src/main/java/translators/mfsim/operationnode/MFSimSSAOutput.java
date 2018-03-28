@@ -9,14 +9,14 @@ import executable.instructions.Output;
 /**
  * Created by chriscurtis on 10/28/16.
  */
-public class MFSimSSAOutput extends MFSimSSANode{
+public class MFSimSSAOutput extends MFSimSSANode {
     private static final Logger logger = LogManager.getLogger(MFSimSSAOutput.class);
     private String sink;
 
     public MFSimSSAOutput(Integer id, Output outputNode) {
         super(id, OperationClassifier.OUTPUT, outputNode.getName());
 
-        for(String output: outputNode.getOutputs().keySet()){
+        for (String output : outputNode.getOutputs().keySet()) {
             sink = output;
         }
     }

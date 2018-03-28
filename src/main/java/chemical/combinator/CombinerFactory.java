@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 import config.Config;
 import config.ConfigFactory;
-import config.InferenceConfig;
 
 /**
  * @created: 9/13/17
@@ -14,9 +13,9 @@ import config.InferenceConfig;
  */
 public class CombinerFactory {
 
-    private static Config config = ConfigFactory.getConfig();
-    private static final Combiner combiner;
     public static final Logger logger = LogManager.getLogger(CombinerFactory.class);
+    private static final Combiner combiner;
+    private static Config config = ConfigFactory.getConfig();
 
     static {
         String message = "";

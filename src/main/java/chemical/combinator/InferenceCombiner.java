@@ -6,9 +6,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashSet;
 import java.util.Set;
 
-import config.ConfigFactory;
 import chemical.epa.ChemTypes;
 import chemical.epa.EpaManager;
+import config.ConfigFactory;
 
 /**
  * @created: 10/17/17
@@ -24,7 +24,7 @@ public class InferenceCombiner implements Combiner {
         Set<ChemTypes> chemTypes = new HashSet<>();
 
         for (ChemTypes t1 : a) {
-            for (ChemTypes t2: b) {
+            for (ChemTypes t2 : b) {
                 if (ConfigFactory.getConfig().isDebug()) {
                     chemTypes.addAll(EpaManager.INSTANCE.lookUp(t1, t2));
                     if (!EpaManager.INSTANCE.test(t1, t2) && ConfigFactory.getConfig().isDebug()) {

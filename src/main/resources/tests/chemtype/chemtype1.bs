@@ -3,12 +3,14 @@ stationary test2
 manifest mat chemical1
 manifest chemical2
 
+functions
+
 instructions
 
 function doThis(mat chem) : mat {
     a = mix chemical1 with chemical2
     b = mix a with chemical2 for 30
-    nat c = detect something on somethingelse
+    nat c = detect something on somethingelse for 20
 }
 
 function doThis2(mat chem, mat chem3, chem4) {
@@ -18,17 +20,18 @@ function doThis2(mat chem, mat chem3, chem4) {
 
 doThis(a)
 
-aa = doThis(a)
+aa = doThis2(a)
 
 aaa = mix chemical1 with chemical2
 
 if (1 < 2) {
     a= mix b with c
-} else if (2 < 1) {
-    a = mix c with d
+    b = mix a with c
 } else {
     c = mix d with f
 }
+
+heat a at 34
 
 repeat 5 times {
     a = mix a with b

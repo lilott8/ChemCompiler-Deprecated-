@@ -3,18 +3,47 @@ stationary test2
 manifest mat chemical1
 manifest chemical2
 
+functions
+
 instructions
 
 ab = detect test on y for 30
 
 if (ab < 3) {
-    heat a at 30
+    heat chemical1 at 30
+    heat chemical2 at 50 for 90
 }
+
+heat x at 40
+
+repeat 3 times {
+    drain x
+    drain y
+    drain z
+}
+
+drain another
 
 if (ab < 3) {
     heat a at 30
-} else if (ab > 3) {
-    heat a at 30
+    heat c at 30
+    if (ab > 4) {
+        a = split x into 4
+        b = mix c with four
+    }
 } else {
-    heat a at 50
+    heat a at 55
+    if (l < 2) {
+        drain innerelseif
+        repeat 4 times {
+            drain arepeat
+            drain brepeat
+            repeat 3 times {
+                heat xxxxxx at 30
+            }
+        }
+        a = mix a with b
+        b = detect x on y
+    }
 }
+heat bbbbbb at 30

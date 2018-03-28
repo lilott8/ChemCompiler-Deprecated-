@@ -3,7 +3,7 @@ package typesystem.elements;
 import java.util.ArrayList;
 import java.util.List;
 
-import shared.Variable;
+import shared.variable.Variable;
 import typesystem.rules.Rule;
 
 /**
@@ -21,7 +21,7 @@ public class Formula {
     private List<Variable> properties = new ArrayList<>();
 
 
-    public Formula(Rule.InstructionType type){
+    public Formula(Rule.InstructionType type) {
         this.type = type;
         this.id = instructionCounter++;
     }
@@ -71,7 +71,7 @@ public class Formula {
         StringBuilder sb = new StringBuilder();
 
         sb.append("===================").append(System.lineSeparator());
-        sb.append("getId: ").append(this.id).append("\tVisibility: ").append(this.type).append(System.lineSeparator());
+        sb.append("getId: ").append(this.id).append("\tInstruction Type: ").append(this.type).append(System.lineSeparator());
         sb.append("Inputs: ").append(this.input).append(System.lineSeparator());
         sb.append("Outputs: ").append(this.output).append(System.lineSeparator());
         sb.append("===================").append(System.lineSeparator());

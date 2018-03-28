@@ -20,11 +20,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class ThreadedWriter extends FileWriter {
 
+    public static final Logger logger = LogManager.getLogger(ThreadedWriter.class);
     private Queue<String> queue = new ConcurrentLinkedQueue<>();
     private boolean receivedDone = false;
-
-
-    public static final Logger logger = LogManager.getLogger(ThreadedWriter.class);
 
     public ThreadedWriter() {
         super();
@@ -72,7 +70,7 @@ public class ThreadedWriter extends FileWriter {
                 }
                 currentWrite++;
                 // Change the file if we've reached max writes.
-                if(currentWrite == MAX_WRITES) {
+                if (currentWrite == MAX_WRITES) {
                     this.changeFile();
                     // Reset our counter to 0!
                     currentWrite = 0;
@@ -84,7 +82,8 @@ public class ThreadedWriter extends FileWriter {
     }
 
     @Override
-    public void flush() {}
+    public void flush() {
+    }
 
     @Override
     public void writeTable(Table<Integer, Integer, Set<Integer>> table) {

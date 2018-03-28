@@ -19,20 +19,14 @@ import config.InferenceConfig;
  * @project: ChemicalCompiler
  */
 public abstract class FileWriter extends Thread {
+    protected final int MAX_WRITES = 100;
     protected String outputDir;
     protected String baseFile;
-    protected final int MAX_WRITES = 100;
     protected BufferedWriter writer;
     protected int fileNumber = 1;
     protected long invalid = 0;
     protected boolean useNumbering = false;
     private Logger logger = LogManager.getLogger(FileWriter.class);
-
-    //abstract void openFile();
-    public abstract void push(String string);
-    public abstract void sendDoneSignal();
-    public abstract void writeTable(Table<Integer, Integer, Set<Integer>> table);
-    public abstract void flush();
 
     {
         InferenceConfig config = ConfigFactory.getConfig();
@@ -55,6 +49,15 @@ public abstract class FileWriter extends Thread {
         this.openFile();
     }
 
+    //abstract void openFile();
+    public abstract void push(String string);
+
+    public abstract void sendDoneSignal();
+
+    public abstract void writeTable(Table<Integer, Integer, Set<Integer>> table);
+
+    public abstract void flush();
+
     public void changeFile() {
         this.closeFile();
         this.openFile();
@@ -64,7 +67,7 @@ public abstract class FileWriter extends Thread {
     protected void openFile() {
         try {
             this.writer = new BufferedWriter(new java.io.FileWriter(this.getCurrentFile()));
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error(String.format("Error opening: %s", this.getCurrentFile()));
             logger.error(e.toString());
         }
@@ -75,7 +78,7 @@ public abstract class FileWriter extends Thread {
             this.writer.close();
             // increment after close!
             this.fileNumber++;
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error(String.format("Error closing: %s", this.getCurrentFile()));
             logger.error(e.toString());
         }
@@ -102,7 +105,7 @@ public abstract class FileWriter extends Thread {
             this.writer.write(item);
             this.writer.newLine();
             return true;
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error(String.format("Error writing to: %s", this.getCurrentFile()));
             logger.info("With data: " + item);
             logger.error(e.toString());
@@ -111,7 +114,7 @@ public abstract class FileWriter extends Thread {
     }
 
     protected void write(Table<Integer, Integer, Set<Integer>> comboTable) {
-        for (Table.Cell<Integer, Integer, Set<Integer>> cell: comboTable.cellSet()){
+        for (Table.Cell<Integer, Integer, Set<Integer>> cell : comboTable.cellSet()) {
             StringBuilder sb = new StringBuilder();
             sb.append(cell.getRowKey()).append("|").append(cell.getColumnKey()).append("|");
             for (int type : cell.getValue()) {

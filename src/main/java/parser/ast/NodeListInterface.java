@@ -14,20 +14,20 @@ import parser.visitor.Visitor;
  * implement.
  */
 public interface NodeListInterface extends Node {
-    public void addNode(Node n);
+    void addNode(Node n);
 
-    public Node elementAt(int i);
+    Node elementAt(int i);
 
-    public java.util.Enumeration<Node> elements();
+    java.util.Enumeration<Node> elements();
 
-    public int size();
+    int size();
 
-    public void accept(Visitor v);
+    void accept(Visitor v);
 
-    public <R, A> R accept(GJVisitor<R, A> v, A argu);
+    <R, A> R accept(GJVisitor<R, A> v, A argu);
 
-    public <R> R accept(GJNoArguVisitor<R> v);
+    <R> R accept(GJNoArguVisitor<R> v);
 
-    public <A> void accept(GJVoidVisitor<A> v, A argu);
+    <A> void accept(GJVoidVisitor<A> v, A argu);
 }
 

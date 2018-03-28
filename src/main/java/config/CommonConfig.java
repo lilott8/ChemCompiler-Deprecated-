@@ -1,7 +1,5 @@
 package config;
 
-import java.util.List;
-
 /**
  * @created: 9/5/17
  * @since: 0.1
@@ -10,11 +8,15 @@ import java.util.List;
 public interface CommonConfig {
 
     String getOutputDir();
+
     boolean clean();
-    List<String> getFilesForCompilation();
+
+    String getInputFile();
+
     boolean checkForChemAxon();
 
     boolean isDebug();
+
     int getNumberOfThreads();
 
     boolean monitorResources();

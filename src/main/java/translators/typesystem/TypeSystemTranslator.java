@@ -37,46 +37,12 @@ import translators.Translator;
  */
 public class TypeSystemTranslator implements Serializable, Translator {
     public static final Logger logger = LogManager.getLogger(TypeSystemTranslator.class);
-
-    public class TypeSystemSymbolTable implements Serializable {
-        private HashMap<String, ChemicalResolution> __symbols;
-
-        public TypeSystemSymbolTable(CFG controlFlowGraph) {
-            __symbols = new HashMap<String, ChemicalResolution>();
-            for (BasicBlock bb : controlFlowGraph.getBasicBlocks().values()) {
-                for (String symbolName : bb.getSymbolTable().getDefinitionTable().keySet()) {
-                    ChemicalResolution symbol = bb.getSymbolTable().get(symbolName);
-                    if (!__symbols.containsKey(symbolName))
-                        __symbols.put(symbol.getName(), symbol);
-                }
-            }
-
-            for (ChemicalResolution symbol : controlFlowGraph.getSymbolTable().getTable().values()) {
-                if (!__symbols.containsKey(symbol.getName()))
-                    __symbols.put(symbol.getName(), symbol);
-            }
-
-        }
-
-        public String toString() {
-            String ret = "";
-            for (ChemicalResolution resolution : __symbols.values()) {
-                ret += resolution.toString() + '\n';
-            }
-            return ret;
-        }
-
-        public ChemicalResolution getResolution(String symbol) {
-            return __symbols.get(symbol);
-        }
-    }
-
-
     private List<InstructionNode> __instructions;
     private Map<Integer, Set<Integer>> __children;
     private TypeSystemSymbolTable __table;
 
-    public TypeSystemTranslator() {}
+    public TypeSystemTranslator() {
+    }
 
     private TypeSystemTranslator(CFG controlFlowGraph) {
         __instructions = new ArrayList<InstructionNode>();
@@ -102,6 +68,48 @@ public class TypeSystemTranslator implements Serializable, Translator {
             for (String resolutionKey : bb.getSymbolTable().getDefinitionTable().keySet()) {
             }
         }
+    }
+
+    public static String operationType(Instruction n) {
+        if (n instanceof Combine)
+            return "mix";
+        if (n instanceof Heat)
+            return "heat";
+        if (n instanceof Split)
+            return "split";
+        if (n instanceof Detect)
+            return "detect";
+        if (n instanceof Store)
+            return "store";
+        if (n instanceof Output)
+            return "output";
+
+        return "unknown";
+    }
+
+    public static TypeSystemTranslator readFromFile(String filename) {
+        ObjectInputStream ois = null;
+        try {
+            FileInputStream fis = new FileInputStream(filename);
+            ois = new ObjectInputStream(fis);
+            TypeSystemTranslator t = (TypeSystemTranslator) ois.readObject();
+
+            return t;
+        } catch (FileNotFoundException fileNotFound) {
+            logger.fatal("File: " + filename + "not found");
+        } catch (IOException object) {
+            logger.fatal("Object output stream.");
+        } catch (ClassNotFoundException classNotFound) {
+            logger.fatal("Class not found.");
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (Exception e) {
+                }
+            }
+        }
+        return null;
     }
 
     public ChemicalResolution getResolution(String symbol) {
@@ -181,23 +189,6 @@ public class TypeSystemTranslator implements Serializable, Translator {
 
     }
 
-    public static String operationType(Instruction n) {
-        if (n instanceof Combine)
-            return "mix";
-        if (n instanceof Heat)
-            return "heat";
-        if (n instanceof Split)
-            return "split";
-        if (n instanceof Detect)
-            return "detect";
-        if (n instanceof Store)
-            return "store";
-        if (n instanceof Output)
-            return "output";
-
-        return "unknown";
-    }
-
     public void toFile(String filename) {
         ObjectOutputStream oos = null;
         try {
@@ -220,37 +211,45 @@ public class TypeSystemTranslator implements Serializable, Translator {
 
     }
 
-    public static TypeSystemTranslator readFromFile(String filename) {
-        ObjectInputStream ois = null;
-        try {
-            FileInputStream fis = new FileInputStream(filename);
-            ois = new ObjectInputStream(fis);
-            TypeSystemTranslator t = (TypeSystemTranslator) ois.readObject();
-
-            return t;
-        } catch (FileNotFoundException fileNotFound) {
-            logger.fatal("File: " + filename + "not found");
-        } catch (IOException object) {
-            logger.fatal("Object output stream.");
-        } catch (ClassNotFoundException classNotFound) {
-            logger.fatal("Class not found.");
-        } finally {
-            if (ois != null) {
-                try {
-                    ois.close();
-                } catch (Exception e) {
-                }
-            }
-        }
-        return null;
-    }
-
     public Translator runTranslation(CFG controlFlowGraph) {
         return new TypeSystemTranslator(controlFlowGraph);
     }
 
     public Translator setConfig(TranslateConfig config) {
         return this;
+    }
+
+    public class TypeSystemSymbolTable implements Serializable {
+        private HashMap<String, ChemicalResolution> __symbols;
+
+        public TypeSystemSymbolTable(CFG controlFlowGraph) {
+            __symbols = new HashMap<String, ChemicalResolution>();
+            for (BasicBlock bb : controlFlowGraph.getBasicBlocks().values()) {
+                for (String symbolName : bb.getSymbolTable().getDefinitionTable().keySet()) {
+                    ChemicalResolution symbol = bb.getSymbolTable().get(symbolName);
+                    if (!__symbols.containsKey(symbolName))
+                        __symbols.put(symbol.getName(), symbol);
+                }
+            }
+
+            for (ChemicalResolution symbol : controlFlowGraph.getSymbolTable().getTable().values()) {
+                if (!__symbols.containsKey(symbol.getName()))
+                    __symbols.put(symbol.getName(), symbol);
+            }
+
+        }
+
+        public String toString() {
+            String ret = "";
+            for (ChemicalResolution resolution : __symbols.values()) {
+                ret += resolution.toString() + '\n';
+            }
+            return ret;
+        }
+
+        public ChemicalResolution getResolution(String symbol) {
+            return __symbols.get(symbol);
+        }
     }
 }
 

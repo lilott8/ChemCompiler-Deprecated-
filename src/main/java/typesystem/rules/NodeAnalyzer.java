@@ -4,15 +4,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import chemical.epa.ChemTypes;
-import compilation.datastructures.node.InstructionNode;
-import typesystem.Inference.InferenceType;
-import typesystem.elements.Formula;
-import substance.Property;
 import chemical.combinator.Combiner;
 import chemical.combinator.CombinerFactory;
+import chemical.epa.ChemTypes;
 import chemical.identification.Identifier;
 import chemical.identification.IdentifierFactory;
+import compilation.datastructures.node.InstructionNode;
+import shared.variable.DefinedVariable;
+import shared.variable.Variable;
+import substance.Property;
+import typesystem.Inference.InferenceType;
+import typesystem.elements.Formula;
 
 import static chemical.epa.ChemTypes.REAL;
 
@@ -23,12 +25,17 @@ import static chemical.epa.ChemTypes.REAL;
  */
 public abstract class NodeAnalyzer extends Rule {
 
+    protected final Set<ChemTypes> propertyTypes = new HashSet<>();
     protected Identifier identifier;
     protected Combiner combiner;
-    protected final Set<ChemTypes> propertyTypes = new HashSet<>();
 
     {
         propertyTypes.add(REAL);
+    }
+
+    {
+        this.identifier = IdentifierFactory.getIdentifier();
+        this.combiner = CombinerFactory.getCombiner();
     }
 
     protected NodeAnalyzer(InferenceType type) {
@@ -39,20 +46,15 @@ public abstract class NodeAnalyzer extends Rule {
         super(type, clazz);
     }
 
-    {
-        this.identifier = IdentifierFactory.getIdentifier();
-        this.combiner = CombinerFactory.getCombiner();
-    }
-
     public abstract Rule gatherAllConstraints(InstructionNode node);
 
     protected Formula gatherProperties(Formula instruction, List<Property> properties) {
-        /*for (Property p : properties) {
-            Variable prop = new Term(Rule.createHash(p.toString()), this.propertyTypes);
+        for (Property p : properties) {
+            Variable prop = new DefinedVariable(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addInputVariable(prop);
             addVariable(prop);
-        }*/
+        }
         return instruction;
     }
 

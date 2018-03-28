@@ -8,13 +8,22 @@ package config;
 public interface DatabaseConfig extends CommonConfig {
 
     String getConnectionString();
+
     String getDBName();
+
     String getDBAddr();
+
     String getDBPassword();
+
     String getDBUser();
+
     int getDBPort();
+
     int getTimeout();
+
     String getDBDriver();
+
     boolean isDBEnabled();
+
     String getDBExtras();
 }

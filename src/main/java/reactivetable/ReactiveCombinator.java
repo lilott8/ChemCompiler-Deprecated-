@@ -74,7 +74,7 @@ public class ReactiveCombinator extends TableCombinator {
             } // for each RG
             if (this.queue.size() % 4 == 0) {
                 logger.info(String.format("Done processing: %.4f%% of records.",
-                        ((1-(this.queue.size() / (double) this.totalRecords)) * 100)));
+                        ((1 - (this.queue.size() / (double) this.totalRecords)) * 100)));
             }
             // Write the table to disk.
             this.writer.writeTable(this.comboTable);
@@ -89,13 +89,12 @@ public class ReactiveCombinator extends TableCombinator {
     }
 
 
-
     /**
      * Write portions of the table to disk.
      * Useful for obtaining intermediate results.
      */
     public synchronized void writeToDisk() {
-        for (Table.Cell<Integer, Integer, Set<Integer>> cell: comboTable.cellSet()){
+        for (Table.Cell<Integer, Integer, Set<Integer>> cell : comboTable.cellSet()) {
             StringBuilder sb = new StringBuilder();
             sb.append(cell.getRowKey()).append("|").append(cell.getColumnKey()).append("|");
             for (int type : cell.getValue()) {

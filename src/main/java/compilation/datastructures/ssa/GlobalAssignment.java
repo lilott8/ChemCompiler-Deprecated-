@@ -7,21 +7,21 @@ import compilation.datastructures.node.InstructionNode;
  */
 public class GlobalAssignment extends InstructionNode {
 
-    public GlobalAssignment(String symbol){
-        super(-1,null);
+    public GlobalAssignment(String symbol) {
+        super(-1, null);
         this.outputSymbols.add(symbol);
     }
 
-    public String toString(){
+    public String toString() {
         return this.toString("");
     }
 
     public String toString(String indentBuffer) {
         String ret = "";
 
-        for(String symbol : this.outputSymbols)
-            ret +=  indentBuffer + "Define: " + symbol;
+        for (String symbol : this.outputSymbols)
+            ret += indentBuffer + "Define: " + symbol;
 
-       return ret;
+        return ret;
     }
 }

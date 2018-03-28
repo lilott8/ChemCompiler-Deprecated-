@@ -7,12 +7,14 @@ package shared;
  *
  * A phase handles a large portion of compilation.
  * It is usually comprised of multiple steps, e.g.:
- *  Parsing -> [lexical analysis, ast generation, type checking]
- *  Data Flow -> [liveliness analysis, control flow, etc]
+ * Parsing -> [lexical analysis, ast generation, type checking]
+ * Data Flow -> [liveliness analysis, control flow, etc]
  */
 public interface Phase {
 
     Phase run();
 
     String getName();
+
+    String getOutput();
 }

@@ -22,9 +22,12 @@ import shared.Phase;
 public class BioScriptParser implements Phase {
 
     public static final Logger logger = LogManager.getLogger(BioScriptParser.class);
+
     private BSParser parser;
     private InferenceConfig config = ConfigFactory.getConfig();
-    private BSSymbolTable symbolTable;
+    private BSVisitor symbolTable;
+    private BSVisitor typeChecker;
+    private BSVisitor irConverter;
     private String file;
 
     public BioScriptParser(String fileName) {
@@ -44,18 +47,38 @@ public class BioScriptParser implements Phase {
             try {
                 BSProgram program = this.parser.BSProgram();
                 program.accept(this.symbolTable);
+                // logger.info(this.symbolTable);
                 if (!this.config.getErrorLevel().disabled()) {
-                    this.symbolTable.solve();
+                    this.typeChecker = new BSTypeChecker();
+                    program.accept(this.typeChecker);
+                    this.typeChecker.run();
+                    ((TypeChecker) this.typeChecker).solve();
                 } else {
                     logger.error("Type checking has been disabled.");
                 }
+                this.irConverter = new BSIRConverter();
+                program.accept(this.irConverter);
+                // logger.info(this.irConverter);
             } catch (ParseException e) {
                 logger.error(e);
+                if (this.config.isDebug()) {
+                    e.printStackTrace();
+                }
             }
             input.close();
         } catch (IOException ioe) {
             logger.fatal("Couldn't load the file: " + this.file);
+        } catch (Exception e) {
+            logger.fatal(e.getMessage());
+            logger.fatal(e.toString());
+            if (this.config.isDebug()) {
+                e.printStackTrace();
+            }
         }
         return this;
+    }
+
+    public String getOutput() {
+        return this.irConverter.toString();
     }
 }

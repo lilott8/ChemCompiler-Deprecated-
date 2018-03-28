@@ -20,16 +20,16 @@ import java.util.Set;
 
 import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
-import config.ConfigFactory;
-import config.InferenceConfig;
-import shared.io.file.write.FileWriter;
-import shared.io.file.write.SimpleWriter;
-import shared.substances.ChemAxonCompound;
 import chemical.classification.Classifier;
 import chemical.classification.ClassifierFactory;
 import chemical.combinator.Combiner;
 import chemical.combinator.CombinerFactory;
 import chemical.epa.ChemTypes;
+import config.ConfigFactory;
+import config.InferenceConfig;
+import shared.io.file.write.FileWriter;
+import shared.io.file.write.SimpleWriter;
+import shared.substances.ChemAxonCompound;
 
 /**
  * @created: 10/2/17
@@ -38,33 +38,28 @@ import chemical.epa.ChemTypes;
  */
 public abstract class TableCombinator implements Runnable {
     protected static final Logger logger = LogManager.getLogger(TableCombinator.class);
-
-    // handy globals to make things easier.
-    protected Combiner combiner = CombinerFactory.getCombiner();
-    protected Classifier classifier = ClassifierFactory.getClassifier();
     // file to write things to disk
     protected final FileWriter writer;
     protected final FileWriter doneWriter;
-    // config for setting things
-    protected InferenceConfig config = ConfigFactory.getConfig();
-    // total records to be processed (queue.size() before runn())
-    protected int totalRecords;
-
     // Cache for combining compounds.
     protected final Table<Long, Long, ChemAxonCompound> comboCache = HashBasedTable.create();
     // Actual table that holds the results.
     // X,y coordinates retrieve the resultant reactive groups of
     // Mixing the two groups together.
     protected final Table<Integer, Integer, Set<Integer>> comboTable = HashBasedTable.create();
-
+    // handy globals to make things easier.
+    protected Combiner combiner = CombinerFactory.getCombiner();
+    protected Classifier classifier = ClassifierFactory.getClassifier();
+    // config for setting things
+    protected InferenceConfig config = ConfigFactory.getConfig();
+    // total records to be processed (queue.size() before runn())
+    protected int totalRecords;
     // this houses all the reactive groups and their corresponding chemicals.
     protected Map<Integer, Set<ChemAxonCompound>> reactiveGroupToChemicals = new HashMap<>();
-    // List of id's we a
+    // List of idCounter's we a
     protected Set<Integer> reactiveGroupId = new LinkedHashSet<>();
     // Cache the creation of the chemicals.
     protected Map<Long, ChemAxonCompound> chemicalCache = new HashMap<>();
-
-    public abstract void printReactiveGroupTable();
 
     public TableCombinator(FileWriter handler) {
         this.writer = handler;
@@ -72,10 +67,13 @@ public abstract class TableCombinator implements Runnable {
         this.doneWriter = new SimpleWriter("completed.txt", false);
     }
 
+    public abstract void printReactiveGroupTable();
+
     /**
      * This parses the chemicals to a temporary container.
      * This temporary container just makes it easier to manage
      * The data and not have to put ugliness in here.
+     *
      * @return List of chemicals.
      */
     private List<Chemical> parseFile() {
@@ -83,7 +81,7 @@ public abstract class TableCombinator implements Runnable {
         List<Chemical> results = new ArrayList<>();
         logger.info("Beginning parsing file.");
         try {
-            File file = new File(this.config.getFilesForCompilation().get(0));
+            File file = new File(this.config.getInputFile());
             reader = new BufferedReader(new FileReader(file));
 
             String line;
@@ -103,7 +101,8 @@ public abstract class TableCombinator implements Runnable {
             if (reader != null) {
                 try {
                     reader.close();
-                } catch(IOException ee) {}
+                } catch (IOException ee) {
+                }
             }
         }
         logger.info("Done parsing file.");
@@ -113,14 +112,13 @@ public abstract class TableCombinator implements Runnable {
     /**
      * Use ChemAxon to instantiate the chemicals.
      * Store those in the cache.  "Rip the band-aid off first."
-     * @param input
      */
     protected void buildChemicals(List<Chemical> input) {
         int count = 0;
 
         logger.info("Beginning building chemicals.");
         for (Chemical chem : input) {
-            //logger.info("On chemical: " + count + " (id: " + chem.pubChemId + ")");
+            //logger.info("On chemical: " + count + " (idCounter: " + chem.pubChemId + ")");
             // If we have seen the chemical before, add to the reactive group
             if (chemicalCache.containsKey(chem.pubChemId)) {
                 chemicalCache.get(chem.pubChemId).addReactiveGroup(chem.reactiveGroup);
@@ -132,7 +130,7 @@ public abstract class TableCombinator implements Runnable {
                 chemicalCache.put(compound.getId(), compound);
             }
             count++;
-            double done = 100*(count / (double)input.size());
+            double done = 100 * (count / (double) input.size());
             if (input.size() % 100 == 0) {
                 logger.debug(String.format("Done processing: %.4f%% chemicals", done));
             }
@@ -150,6 +148,7 @@ public abstract class TableCombinator implements Runnable {
     /**
      * Adds the instantiated chemicals to their
      * Respective reactive group.
+     *
      * @param compound ChemAxonCompound
      */
     private void addChemicalToReactiveGroups(ChemAxonCompound compound) {
@@ -160,14 +159,16 @@ public abstract class TableCombinator implements Runnable {
 
     /**
      * Wrapper funciton to add the molecule to the ChemAxonCompound
-     * @param a ChemAxonCompound
+     *
+     * @param a    ChemAxonCompound
      * @param chem Chemical object
+     *
      * @return ChemAxonCompound with molecule.
      */
     private synchronized ChemAxonCompound addMolecule(ChemAxonCompound a, Chemical chem) {
         try {
             a.setRepresentation(MolImporter.importMol(chem.canonicalSmiles, "smiles"));
-        } catch(MolFormatException e) {
+        } catch (MolFormatException e) {
             logger.error("Could not instantiate: " + chem.pubChemId);
         }
         return a;
@@ -175,9 +176,11 @@ public abstract class TableCombinator implements Runnable {
 
     /**
      * "Public" exposing method to add a reaction to the table
+     *
      * @param chemX ChemAxonCompound
      * @param chemY ChemAxonCompound
      * @param types set of ChemTypes
+     *
      * @return boolean
      */
     protected synchronized boolean addToTable(ChemAxonCompound chemX, ChemAxonCompound chemY, Set<ChemTypes> types) {
@@ -194,9 +197,11 @@ public abstract class TableCombinator implements Runnable {
     /**
      * Ensures we always have a place to add the type to.
      * Sort by x ascending.
-     * @param x int
-     * @param y int
+     *
+     * @param x    int
+     * @param y    int
      * @param type int
+     *
      * @return boolean
      */
     protected synchronized boolean addToTable(int x, int y, int type) {
@@ -220,8 +225,10 @@ public abstract class TableCombinator implements Runnable {
      * Combine the chemicals to get the resultant reactive group(s).
      * Order by x ascending.
      * This also classifies the compound.
+     *
      * @param a ChemAxonCompound
      * @param b ChemAxonCompound
+     *
      * @return ChemAxonCompound
      */
     protected synchronized ChemAxonCompound combineChems(ChemAxonCompound a, ChemAxonCompound b) {

@@ -1,0 +1,670 @@
+{
+    "EXPERIMENT" : {
+        "NAME" : "DEFAULT",
+        "INPUTS" : [
+            {
+                "SENSOR_DECLARATION" : {
+                    "ID" : 0,
+                    "NAME" : "test",
+                    "TYPE" : "SENSOR",
+                    "INFERRED TYPES" : [
+                        -1
+                    ]
+                }
+            }
+        ,
+            {
+                "VARIABLE_DECLARATION" : {
+                    "ID" : 1,
+                    "NAME" : "test2",
+                    "TYPE" : "STATIONARY", "INFERRED TYPES" : [
+                        99
+                    ]
+                }
+            }
+        ,
+            {
+                "VARIABLE_DECLARATION" : {
+                    "ID" : 2,
+                    "NAME" : "chemical1",
+                    "TYPE" : "CHEMICAL",
+                    "INFERRED TYPES" : [
+                        99
+                    ]
+                }
+            }
+        ,
+            {
+                "VARIABLE_DECLARATION" : {
+                    "ID" : 3,
+                    "NAME" : "chemical2",
+                    "TYPE" : "CHEMICAL",
+                    "INFERRED TYPES" : [
+                        99
+                    ]
+                }
+            }
+        ],
+        "INSTRUCTIONS" : [
+            {
+                "OPERATION" :
+                {
+                    "NAME" : "test",
+                    "ID" : 4,
+                    "CLASSIFICATION" : "DETECT",
+                    "INPUTS" : [
+                        {
+                            "INPUT_TYPE" : "VARIABLE",
+                            "STATIONARY" : {
+                                "NAME" : "y"
+                            }
+                        }
+                    ,{
+                            "INPUT_TYPE" : "PROPERTY",
+                            "PROPERTY" : {
+                                "TIME" : {
+                                    "VALUE" : 30,
+                                    "UNITS" : "SECONDS"
+                                }
+                            }
+                        }
+                    ],
+                    "OUTPUTS" : [
+                        {
+                            "VARIABLE_DECLARATION" : {
+                                "ID" : 6,
+                                "NAME" : "ab",
+                                "TYPE" : "CHEMICAL",
+                                "INFERRED TYPES" : [
+                                    99
+                                ]
+                            }
+                        }
+
+                    ]
+                }
+            }
+        ,
+            {
+                "OPERATION" : {
+                    "NAME" : "IF",
+                    "ID" : 6,
+                    "CLASSIFICATION" : "CFG_BRANCH",
+                    "CONDITION" : "x>4",
+                    "TRUE_BRANCH" : [
+                        {
+                            "OPERATION" :
+                            {
+                                "NAME" : "HEAT",
+                                "ID" : 7,
+                                "CLASSIFICATION" : "HEAT",
+                                "INPUTS" : [
+                                    {
+                                        "INPUT_TYPE" : "VARIABLE",
+                                        "CHEMICAL" : {
+                                            "VARIABLE" : {
+                                                "NAME" : "chemical1"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "INPUT_TYPE" : "PROPERTY",
+                                        "TEMPERATURE" : {
+                                            "VALUE" : 30,
+                                            "UNITS" : "SECONDS"
+                                        }
+                                    }
+                                ],
+                                "OUTPUTS" : []
+                            }
+                        }
+                    ,
+                        {
+                            "OPERATION" :
+                            {
+                                "NAME" : "HEAT",
+                                "ID" : 8,
+                                "CLASSIFICATION" : "HEAT",
+                                "INPUTS" : [
+                                    {
+                                        "INPUT_TYPE" : "VARIABLE",
+                                        "CHEMICAL" : {
+                                            "VARIABLE" : {
+                                                "NAME" : "chemical2"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "INPUT_TYPE" : "PROPERTY",
+                                        "TEMPERATURE" : {
+                                            "VALUE" : 50,
+                                            "UNITS" : "CELSIUS"
+                                        }
+                                    }
+                                ,{
+                                        "INPUT_TYPE" : "PROPERTY",
+                                        "TIME" : {
+                                            "VALUE" : 90,
+                                            "UNITS" : "SECONDS"
+                                        }
+                                    }
+                                ],
+                                "OUTPUTS" : []
+                            }
+                        }
+
+                    ]
+                }
+            }
+        ,
+            {
+                "OPERATION" :
+                {
+                    "NAME" : "HEAT",
+                    "ID" : 9,
+                    "CLASSIFICATION" : "HEAT",
+                    "INPUTS" : [
+                        {
+                            "INPUT_TYPE" : "VARIABLE",
+                            "VARIABLE" : {
+                                "NAME" : "x"
+                            }
+                        },
+                        {
+                            "INPUT_TYPE" : "PROPERTY",
+                            "TEMPERATURE" : {
+                                "VALUE" : 40,
+                                "UNITS" : "CELSIUS"
+                            }
+                        }
+                    ],
+                    "OUTPUTS" : []
+                }
+            }
+        ,
+            {
+                "OPERATION" : {
+                    "NAME" : "LOOP",
+                    "ID" : 12,
+                    "CLASSIFICATION" : "CFG_LOOP",
+                    "CONDITION" : "x<4",
+                    "OPERATIONS" : [
+                        {
+                            "OPERATION" :
+                            {
+                                "NAME" : "DRAIN",
+                                "ID" : 13,
+                                "CLASSIFICATION" : "OUTPUT",
+                                "INPUTS" : [
+                                    {
+                                        "INPUT_TYPE" : "VARIABLE",
+                                        "VARIABLE" : {
+                                            "NAME" : "x"
+                                        }
+
+                                    }
+                                ],
+                                "OUTPUTS" : []
+                            }
+                        }
+
+                    ,
+                        {
+                            "OPERATION" :
+                            {
+                                "NAME" : "DRAIN",
+                                "ID" : 14,
+                                "CLASSIFICATION" : "OUTPUT",
+                                "INPUTS" : [
+                                    {
+                                        "INPUT_TYPE" : "VARIABLE",
+                                        "VARIABLE" : {
+                                            "NAME" : "y"
+                                        }
+
+                                    }
+                                ],
+                                "OUTPUTS" : []
+                            }
+                        }
+
+                    ,
+                        {
+                            "OPERATION" :
+                            {
+                                "NAME" : "DRAIN",
+                                "ID" : 15,
+                                "CLASSIFICATION" : "OUTPUT",
+                                "INPUTS" : [
+                                    {
+                                        "INPUT_TYPE" : "VARIABLE",
+                                        "VARIABLE" : {
+                                            "NAME" : "z"
+                                        }
+
+                                    }
+                                ],
+                                "OUTPUTS" : []
+                            }
+                        }
+
+                    ]
+                }
+            }
+        ,
+            {
+                "OPERATION" :
+                {
+                    "NAME" : "DRAIN",
+                    "ID" : 16,
+                    "CLASSIFICATION" : "OUTPUT",
+                    "INPUTS" : [
+                        {
+                            "INPUT_TYPE" : "VARIABLE",
+                            "VARIABLE" : {
+                                "NAME" : "another"
+                            }
+
+                        }
+                    ],
+                    "OUTPUTS" : []
+                }
+            }
+        ,
+            {
+                "OPERATION" : {
+                    "NAME" : "IF",
+                    "ID" : 17,
+                    "CLASSIFICATION" : "CFG_BRANCH",
+                    "CONDITION" : "x>4",
+                    "TRUE_BRANCH" : [
+                        {
+                            "OPERATION" :
+                            {
+                                "NAME" : "HEAT",
+                                "ID" : 18,
+                                "CLASSIFICATION" : "HEAT",
+                                "INPUTS" : [
+                                    {
+                                        "INPUT_TYPE" : "VARIABLE",
+                                        "VARIABLE" : {
+                                            "NAME" : "a"
+                                        }
+                                    },
+                                    {
+                                        "INPUT_TYPE" : "PROPERTY",
+                                        "TEMPERATURE" : {
+                                            "VALUE" : 30,
+                                            "UNITS" : "SECONDS"
+                                        }
+                                    }
+                                ],
+                                "OUTPUTS" : []
+                            }
+                        }
+                    ,
+                        {
+                            "OPERATION" :
+                            {
+                                "NAME" : "HEAT",
+                                "ID" : 19,
+                                "CLASSIFICATION" : "HEAT",
+                                "INPUTS" : [
+                                    {
+                                        "INPUT_TYPE" : "VARIABLE",
+                                        "VARIABLE" : {
+                                            "NAME" : "c"
+                                        }
+                                    },
+                                    {
+                                        "INPUT_TYPE" : "PROPERTY",
+                                        "TEMPERATURE" : {
+                                            "VALUE" : 30,
+                                            "UNITS" : "SECONDS"
+                                        }
+                                    }
+                                ],
+                                "OUTPUTS" : []
+                            }
+                        }
+                    ,
+                        {
+                            "OPERATION" : {
+                                "NAME" : "IF",
+                                "ID" : 20,
+                                "CLASSIFICATION" : "CFG_BRANCH",
+                                "CONDITION" : "x>4",
+                                "TRUE_BRANCH" : [
+                                    {
+                                        "OPERATION" : {
+                                            "ID" : 21,
+                                            "NAME" : "SPLIT",
+                                            "CLASSIFICATION" : "SPLIT",
+                                            "INPUTS" : [
+                                                {
+                                                    "INPUT_TYPE" : "VARIABLE",
+                                                    "VARIABLE" : {
+                                                        "NAME" : "x"
+                                                    }
+
+                                                }
+                                            ],
+                                            "OUTPUTS" : [
+                                                {
+                                                    "ID" : "a0",
+                                                    "NAME" : "a0",
+                                                    "TYPE" : "CHEMICAL",
+                                                    "INFERRED TYPES" : [
+                                                        99
+                                                    ]
+                                                },
+                                                {
+                                                    "ID" : "a2",
+                                                    "NAME" : "a2",
+                                                    "TYPE" : "CHEMICAL",
+                                                    "INFERRED TYPES" : [
+                                                        99
+                                                    ]
+                                                },
+                                                {
+                                                    "ID" : "a4",
+                                                    "NAME" : "a4",
+                                                    "TYPE" : "CHEMICAL",
+                                                    "INFERRED TYPES" : [
+                                                        99
+                                                    ]
+                                                }]
+                                        }
+                                    }
+                                ,
+                                    {
+                                        "OPERATION" : {
+                                            "ID" : 23,
+                                            "NAME" : "MIX",
+                                            "CLASSIFICATION" : "MIX",
+                                            "INPUTS" : [
+                                                {
+                                                    "INPUT_TYPE" : "VARIABLE",
+                                                    "VARIABLE" : {
+                                                        "NAME" : "c"
+                                                    }
+                                                }
+                                            ,
+                                                {
+                                                    "INPUT_TYPE" : "VARIABLE",
+                                                    "VARIABLE" : {
+                                                        "NAME" : "four"
+                                                    }
+                                                }
+                                            ],
+                                            "OUTPUTS" : [
+                                                {
+                                                    "VARIABLE_DECLARATION" : {
+                                                        "ID" : 29,
+                                                        "NAME" : "b",
+                                                        "TYPE" : "VARIABLE",
+                                                        "INFERRED TYPES" : [
+                                                            99
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+
+                                ]
+                            }
+                        }
+
+                    ]
+                ,
+                    "FALSE_BRANCH" : [
+                        {
+                            "OPERATION" : {
+                                "NAME" : "IF",
+                                "ID" : 25,
+                                "CLASSIFICATION" : "CFG_BRANCH",
+                                "CONDITION" : "x>4",
+                                "TRUE_BRANCH" : [
+                                    {
+                                        "OPERATION" :
+                                        {
+                                            "NAME" : "HEAT",
+                                            "ID" : 28,
+                                            "CLASSIFICATION" : "HEAT",
+                                            "INPUTS" : [
+                                                {
+                                                    "INPUT_TYPE" : "VARIABLE",
+                                                    "VARIABLE" : {
+                                                        "NAME" : "a"
+                                                    }
+                                                },
+                                                {
+                                                    "INPUT_TYPE" : "PROPERTY",
+                                                    "TEMPERATURE" : {
+                                                        "VALUE" : 55,
+                                                        "UNITS" : "CELSIUS"
+                                                    }
+                                                }
+                                            ],
+                                            "OUTPUTS" : []
+                                        }
+                                    }
+                                ,
+                                    {
+                                        "OPERATION" : {
+                                            "NAME" : "IF",
+                                            "ID" : 29,
+                                            "CLASSIFICATION" : "CFG_BRANCH",
+                                            "CONDITION" : "x>4",
+                                            "TRUE_BRANCH" : [
+                                                {
+                                                    "OPERATION" :
+                                                    {
+                                                        "NAME" : "DRAIN",
+                                                        "ID" : 30,
+                                                        "CLASSIFICATION" : "OUTPUT",
+                                                        "INPUTS" : [
+                                                            {
+                                                                "INPUT_TYPE" : "VARIABLE",
+                                                                "VARIABLE" : {
+                                                                    "NAME" : "innerelseif"
+                                                                }
+
+                                                            }
+                                                        ],
+                                                        "OUTPUTS" : []
+                                                    }
+                                                }
+                                            ,
+                                                {
+                                                    "OPERATION" : {
+                                                        "NAME" : "LOOP",
+                                                        "ID" : 33,
+                                                        "CLASSIFICATION" : "CFG_LOOP",
+                                                        "CONDITION" : "x<4",
+                                                        "OPERATIONS" : [
+                                                            {
+                                                                "OPERATION" :
+                                                                {
+                                                                    "NAME" : "DRAIN",
+                                                                    "ID" : 34,
+                                                                    "CLASSIFICATION" : "OUTPUT",
+                                                                    "INPUTS" : [
+                                                                        {
+                                                                            "INPUT_TYPE" : "VARIABLE",
+                                                                            "VARIABLE" : {
+                                                                                "NAME" : "arepeat"
+                                                                            }
+
+                                                                        }
+                                                                    ],
+                                                                    "OUTPUTS" : []
+                                                                }
+                                                            }
+
+                                                        ,
+                                                            {
+                                                                "OPERATION" :
+                                                                {
+                                                                    "NAME" : "DRAIN",
+                                                                    "ID" : 35,
+                                                                    "CLASSIFICATION" : "OUTPUT",
+                                                                    "INPUTS" : [
+                                                                        {
+                                                                            "INPUT_TYPE" : "VARIABLE",
+                                                                            "VARIABLE" : {
+                                                                                "NAME" : "brepeat"
+                                                                            }
+
+                                                                        }
+                                                                    ],
+                                                                    "OUTPUTS" : []
+                                                                }
+                                                            }
+
+                                                        ,
+                                                            {
+                                                                "OPERATION" : {
+                                                                    "NAME" : "LOOP",
+                                                                    "ID" : 38,
+                                                                    "CLASSIFICATION" : "CFG_LOOP",
+                                                                    "CONDITION" : "x<4",
+                                                                    "OPERATIONS" : [
+                                                                        {
+                                                                            "OPERATION" :
+                                                                            {
+                                                                                "NAME" : "HEAT",
+                                                                                "ID" : 39,
+                                                                                "CLASSIFICATION" : "HEAT",
+                                                                                "INPUTS" : [
+                                                                                    {
+                                                                                        "INPUT_TYPE" : "VARIABLE",
+                                                                                        "VARIABLE" : {
+                                                                                            "NAME" : "xxxxxx"
+                                                                                        }
+                                                                                    },
+                                                                                    {
+                                                                                        "INPUT_TYPE" : "PROPERTY",
+                                                                                        "TEMPERATURE" : {
+                                                                                            "VALUE" : 30,
+                                                                                            "UNITS" : "SECONDS"
+                                                                                        }
+                                                                                    }
+                                                                                ],
+                                                                                "OUTPUTS" : []
+                                                                            }
+                                                                        }
+
+                                                                    ]
+                                                                }
+                                                            }
+
+                                                        ]
+                                                    }
+                                                }
+                                            ,
+                                                {
+                                                    "OPERATION" : {
+                                                        "ID" : 40,
+                                                        "NAME" : "MIX",
+                                                        "CLASSIFICATION" : "MIX",
+                                                        "INPUTS" : [
+                                                            {
+                                                                "INPUT_TYPE" : "VARIABLE",
+                                                                "VARIABLE" : {
+                                                                    "NAME" : "a"
+                                                                }
+                                                            }
+                                                        ,
+                                                            {
+                                                                "INPUT_TYPE" : "VARIABLE",
+                                                                "VARIABLE" : {
+                                                                    "NAME" : "b"
+                                                                }
+                                                            }
+                                                        ],
+                                                        "OUTPUTS" : [
+                                                            {
+                                                                "VARIABLE_DECLARATION" : {
+                                                                    "ID" : 30,
+                                                                    "NAME" : "a",
+                                                                    "TYPE" : "VARIABLE",
+                                                                    "INFERRED TYPES" : [
+                                                                        99
+                                                                    ]
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ,
+                                                {
+                                                    "OPERATION" :
+                                                    {
+                                                        "NAME" : "x",
+                                                        "ID" : 42,
+                                                        "CLASSIFICATION" : "DETECT",
+                                                        "INPUTS" : [
+                                                            {
+                                                                "INPUT_TYPE" : "VARIABLE",
+                                                                "STATIONARY" : {
+                                                                    "NAME" : "y"
+                                                                }
+                                                            }
+                                                        ],
+                                                        "OUTPUTS" : [
+                                                            {
+                                                                "VARIABLE_DECLARATION" : {
+                                                                    "ID" : 43,
+                                                                    "NAME" : "b",
+                                                                    "TYPE" : "CHEMICAL",
+                                                                    "INFERRED TYPES" : [
+                                                                        99
+                                                                    ]
+                                                                }
+                                                            }
+
+                                                        ]
+                                                    }
+                                                }
+
+                                            ]
+                                        }
+                                    }
+
+                                ]
+                            }
+                        }
+
+                    ]
+                }
+            }
+        ,
+            {
+                "OPERATION" :
+                {
+                    "NAME" : "HEAT",
+                    "ID" : 44,
+                    "CLASSIFICATION" : "HEAT",
+                    "INPUTS" : [
+                        {
+                            "INPUT_TYPE" : "VARIABLE",
+                            "VARIABLE" : {
+                                "NAME" : "bbbbbb"
+                            }
+                        },
+                        {
+                            "INPUT_TYPE" : "PROPERTY",
+                            "TEMPERATURE" : {
+                                "VALUE" : 30,
+                                "UNITS" : "SECONDS"
+                            }
+                        }
+                    ],
+                    "OUTPUTS" : []
+                }
+            }
+        ]
+    }
+}

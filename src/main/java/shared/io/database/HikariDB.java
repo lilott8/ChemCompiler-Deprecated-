@@ -17,9 +17,8 @@ import java.sql.SQLException;
  */
 public class HikariDB extends DatabaseConnector {
 
-    private HikariDataSource dataSource;
-
     private static final Logger logger = LogManager.getLogger(HikariDB.class);
+    private HikariDataSource dataSource;
 
     HikariDB() {
         HikariConfig hikariConfig = new HikariConfig();
@@ -35,7 +34,7 @@ public class HikariDB extends DatabaseConnector {
     public Connection getConnection() {
         try {
             return this.dataSource.getConnection();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             logger.error(e.toString());
         }
         return null;
@@ -50,7 +49,7 @@ public class HikariDB extends DatabaseConnector {
     public void closeConnection(Connection connection) {
         try {
             connection.close();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             logger.error(e.toString());
         }
     }

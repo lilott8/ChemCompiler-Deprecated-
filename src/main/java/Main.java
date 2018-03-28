@@ -16,7 +16,7 @@ import reactivetable.StatisticCombinator;
 public class Main {
     public static final Logger logger = LogManager.getLogger(Main.class);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         // Build the command line parser
         CliWrapper cli = new CliWrapper();
         cli.parseCommandLine(args);
@@ -35,7 +35,11 @@ public class Main {
         // runner();
     }
 
-    public static void runner() throws Exception {
+    public static final void abandonShip(String message) throws Exception {
+        throw new Exception(message);
+    }
+
+    public static void runner() {
         List<String> compile = new ArrayList<>();
 
         // Aquacore Tests. (0-3)

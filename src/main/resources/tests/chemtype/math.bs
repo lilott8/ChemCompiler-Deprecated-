@@ -1,0 +1,18 @@
+module test1
+manifest y
+
+functions
+
+instructions
+
+x = 4 + 3
+
+if (x < 4) {
+    t = x +3
+}
+
+z = detect test1 on y
+
+c = y
+
+a = split y into 4

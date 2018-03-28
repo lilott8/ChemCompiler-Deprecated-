@@ -1,13 +1,9 @@
 package chemical.combinator;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import shared.substances.BaseCompound;
-import shared.substances.NaiveCompound;
 import chemical.epa.ChemTypes;
 
 /**
@@ -17,7 +13,8 @@ import chemical.epa.ChemTypes;
  */
 public class NaiveCombiner implements Combiner {
 
-    NaiveCombiner() {}
+    NaiveCombiner() {
+    }
 
     @Override
     public Set<ChemTypes> combine(Set<ChemTypes> a, Set<ChemTypes> b) {

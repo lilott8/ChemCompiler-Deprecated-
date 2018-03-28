@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InferenceRule {
     String ruleName();
+
     String ruleType();
+
     String analyze() default "node";
 }

@@ -11,11 +11,11 @@ import typesystem.Inference.InferenceType;
 @InferenceRule(ruleName = "repeat", ruleType = "instruction", analyze = "edge")
 public class Repeat extends EdgeAnalyzer {
 
+    private IfBranch branch = new IfBranch(InferenceType.INSTRUCTION);
+
     public Repeat(InferenceType type) {
         super(type, Repeat.class);
     }
-
-    private IfBranch branch = new IfBranch(InferenceType.INSTRUCTION);
 
     @Override
     public Rule gatherConstraints(BasicBlockEdge edge) {

@@ -7,6 +7,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,18 +26,34 @@ import shared.errors.ConfigurationException;
  * @project: ChemicalCompiler
  */
 public class CliWrapper {
+    public static final Logger logger = LogManager.getLogger(CliWrapper.class);
     private CommandLine cmd;
     private CommandLineParser parser = new DefaultParser();
-    public static final Logger logger = LogManager.getLogger(CliWrapper.class);
 
     public CliWrapper() {
+    }
+
+    private static boolean checkForChemAxon() {
+        String licensePath = "";
+        String userName = System.getProperty("user.name");
+        if (SystemUtils.IS_OS_WINDOWS) {
+            licensePath += String.format("C:\\Users\\%s\\chemaxon\\license.cxl", userName);
+        } else {
+            licensePath += String.format("/Users/%s/.chemaxon/license.cxl", userName);
+        }
+
+        if (!new File(licensePath).exists()) {
+            logger.fatal("ChemAxon license file not found. Please view: https://docs.chemaxon.com/display/docs/Installing+licenses+LIC");
+            throw new ConfigurationException("Chem Axon License file not found.");
+        }
+        return true;
     }
 
     public void parseCommandLine(String... args) {
         try {
             this.cmd = this.parser.parse(this.buildOptions(), args);
             this.initializeEnvironment(this.cmd);
-        } catch(ParseException e) {
+        } catch (ParseException e) {
             logger.fatal("Error parsing command line, illegal command: " + Arrays.toString(args));
             logger.fatal(e);
         }
@@ -44,14 +61,14 @@ public class CliWrapper {
 
     private void initializeEnvironment(final CommandLine cmd) {
         // see if we asked for help...
-        if(cmd.hasOption("help")) {
+        if (cmd.hasOption("help")) {
             HelpFormatter hf = new HelpFormatter();
             hf.printHelp("ChemicalCompiler", buildOptions(), true);
             System.exit(0);
         }
 
         // See if we have the argument we need.
-        if(!cmd.hasOption("compile")) {
+        if (!cmd.hasOption("compile")) {
             throw new ConfigurationException("No input file to compile given.");
         }
 
@@ -72,7 +89,7 @@ public class CliWrapper {
         Config config = ConfigFactory.buildConfig(cmd);
 
         // add any initializing statements derived from the command line here.
-        if (config.getFilesForCompilation().size() == 0) {
+        if (StringUtils.isEmpty(config.getInputFile())) {
             throw new ConfigurationException("We have no valid file(s) for input");
         }
 
@@ -91,7 +108,7 @@ public class CliWrapper {
         String desc = "Compile the source file(s)\n" +
                 "Usage: -c /path/to/file_to_compile.json";
         options.addOption(Option.builder("c").longOpt("compile")
-                .desc(desc).hasArgs().required().type(ArrayList.class)
+                .desc(desc).hasArgs().required().numberOfArgs(1).type(String.class)
                 .argName("compile").build());
 
         // Testing mode
@@ -260,22 +277,6 @@ public class CliWrapper {
             return cmd.hasOption("dbuser") && cmd.hasOption("dbpass");
         }
         // If we have no database flags, we can return true.
-        return true;
-    }
-
-    private static boolean checkForChemAxon() {
-        String licensePath = "";
-        String userName = System.getProperty("user.name");
-        if (SystemUtils.IS_OS_WINDOWS) {
-            licensePath += String.format("C:\\Users\\%s\\chemaxon\\license.cxl", userName);
-        } else {
-            licensePath += String.format("/Users/%s/.chemaxon/license.cxl", userName);
-        }
-
-        if (!new File(licensePath).exists()) {
-            logger.fatal("ChemAxon license file not found. Please view: https://docs.chemaxon.com/display/docs/Installing+licenses+LIC");
-            throw new ConfigurationException("Chem Axon License file not found.");
-        }
         return true;
     }
 }

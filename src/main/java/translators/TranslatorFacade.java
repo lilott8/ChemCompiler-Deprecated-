@@ -18,6 +18,25 @@ import translators.typesystem.TypeSystemTranslator;
  */
 public class TranslatorFacade implements Facade {
 
+    private TranslateConfig config;
+    private Map<TRANSLATORS, Translator> translators = new HashMap<TRANSLATORS, Translator>();
+    private CFG controlFlowGraph;
+    public TranslatorFacade(TranslateConfig config, CFG cfg) {
+        this.controlFlowGraph = cfg;
+        this.config = config;
+
+        for (Map.Entry<String, Translator> entry : this.config.getAllTranslations().entrySet()) {
+            TRANSLATORS t = TRANSLATORS.valueOf(StringUtils.upperCase(entry.getKey()));
+            this.translators.put(t, TRANSLATORS.getTranslator(t));
+        }
+    }
+
+    public void start() {
+        for (Map.Entry<TRANSLATORS, Translator> t : this.translators.entrySet()) {
+            t.getValue().runTranslation(this.controlFlowGraph).toFile(this.config.getOutputDir() + this.controlFlowGraph.getID());
+        }
+    }
+
     public enum TRANSLATORS {
         MFSIM, TYPESYSTEM, NONE;
 
@@ -29,26 +48,6 @@ public class TranslatorFacade implements Facade {
                 case TYPESYSTEM:
                     return new TypeSystemTranslator();
             }
-        }
-    }
-
-    private TranslateConfig config;
-    private Map<TRANSLATORS, Translator> translators = new HashMap<TRANSLATORS, Translator>();
-    private CFG controlFlowGraph;
-
-    public TranslatorFacade(TranslateConfig config, CFG cfg) {
-        this.controlFlowGraph = cfg;
-        this.config = config;
-
-        for(Map.Entry<String, Translator> entry: this.config.getAllTranslations().entrySet()) {
-            TRANSLATORS t = TRANSLATORS.valueOf(StringUtils.upperCase(entry.getKey()));
-            this.translators.put(t, TRANSLATORS.getTranslator(t));
-        }
-    }
-
-    public void start() {
-        for (Map.Entry<TRANSLATORS, Translator> t : this.translators.entrySet()) {
-            t.getValue().runTranslation(this.controlFlowGraph).toFile(this.config.getOutputDir() + this.controlFlowGraph.getID());
         }
     }
 }

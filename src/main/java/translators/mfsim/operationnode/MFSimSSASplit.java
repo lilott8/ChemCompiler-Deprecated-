@@ -8,7 +8,7 @@ import executable.instructions.Split;
 /**
  * Created by chriscurtis on 10/28/16.
  */
-public class MFSimSSASplit extends MFSimSSANode{
+public class MFSimSSASplit extends MFSimSSANode {
     public static final Logger logger = LogManager.getLogger(MFSimSSAMix.class);
     private Integer numOutput;
     private Long time;

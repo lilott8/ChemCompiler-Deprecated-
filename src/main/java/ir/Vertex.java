@@ -1,0 +1,15 @@
+package ir;
+
+/**
+ * @created: 3/2/18
+ * @since: 0.1
+ * @project: ChemicalCompiler
+ */
+public interface Vertex {
+
+    String getName();
+
+    int getId();
+
+    String getIdAsString();
+}

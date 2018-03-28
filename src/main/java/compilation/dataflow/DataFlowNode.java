@@ -18,13 +18,14 @@ abstract public class DataFlowNode {
     protected List<String> out;
     protected List<String> in;
 
-    public DataFlowNode(Integer id){
+    public DataFlowNode(Integer id) {
         this.id = id;
         gen = null;
         kill = null;
         in = new ArrayList<>();
         out = new ArrayList<>();
     }
+
     public DataFlowNode(BasicBlock bb) {
         gen = new HashSet<>();
         kill = new HashSet<>();
@@ -32,37 +33,37 @@ abstract public class DataFlowNode {
         out = new ArrayList<>();
         id = bb.getId();
 
-        for(InstructionNode i :bb.getInstructions()) {
+        for (InstructionNode i : bb.getInstructions()) {
             gen.addAll(i.getInstruction().getOutputs().keySet());
         }
 
 
-
     }
+
     public String toString() {
         String ret = "";
-        if(gen != null && gen.size()>0) {
+        if (gen != null && gen.size() > 0) {
             ret += "Gen: ";
             for (String item : gen) {
                 ret += item + " ";
             }
             ret += '\n';
         }
-        if(kill != null && kill.size()>0) {
+        if (kill != null && kill.size() > 0) {
             ret += "Kill: ";
             for (String item : kill) {
                 ret += item + " ";
             }
             ret += '\n';
         }
-        if(out != null && out.size()>0) {
+        if (out != null && out.size() > 0) {
             ret += "Out: ";
             for (String item : out) {
                 ret += item + " ";
             }
             ret += '\n';
         }
-        if(in != null && in.size()>0) {
+        if (in != null && in.size() > 0) {
             ret += "In: ";
             for (String item : in) {
                 ret += item + " ";

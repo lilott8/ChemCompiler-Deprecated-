@@ -1,0 +1,21 @@
+module test
+stationary test2
+manifest mat chemical1
+manifest chemical2
+
+functions
+
+instructions
+
+a = mix chemical1 with chemical2
+b = mix a with chemical2
+
+repeat 5 times {
+    c = mix a with b
+    b = mix c with a
+    repeat 3 times {
+        c = mix a with b
+        b = mix c with a
+    }
+    heat a at 20
+}

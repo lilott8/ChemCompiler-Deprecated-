@@ -13,7 +13,7 @@ import parser.visitor.Visitor;
  * Grammar production:
  * f0 -> Identifier()
  * f1 -> <LPAREN>
- * f2 -> ( ExpressionList() )?
+ * f2 -> ( ArgumentList() )?
  * f3 -> <RPAREN>
  */
 public class FunctionInvoke implements Node {

@@ -8,15 +8,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import shared.Phase;
 import shared.ReportingLevel;
 import translators.Translator;
 import translators.mfsim.MFSimSSATranslator;
@@ -43,7 +39,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
     /**
      * List of files to compile
      */
-    private List<String> input = new ArrayList<String>();
+    private String input;
 
     /**
      * Where to compile the files to
@@ -277,7 +273,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
      *
      * @return List List of files to compile
      */
-    public List<String> getFilesForCompilation() {
+    public String getInputFile() {
         return this.input;
     }
 
@@ -321,7 +317,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
         for (String file : strings) {
             File f = new File(file);
             if (f.exists() && !f.isDirectory()) {
-                this.input.add(file);
+                this.input = file;
             }
         }
     }

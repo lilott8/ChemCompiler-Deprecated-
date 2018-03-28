@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Created by chriscurtis on 10/28/16.
  */
-public class MFSimSSATransferOut extends MFSimSSANode{
+public class MFSimSSATransferOut extends MFSimSSANode {
     private static final Logger logger = LogManager.getLogger(MFSimSSATransferOut.class);
     String transferedSymbol;
 

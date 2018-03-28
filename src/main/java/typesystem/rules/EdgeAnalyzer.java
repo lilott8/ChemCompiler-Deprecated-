@@ -13,6 +13,7 @@ public abstract class EdgeAnalyzer extends Rule {
     public EdgeAnalyzer(Inference.InferenceType type) {
         super(type);
     }
+
     public EdgeAnalyzer(Inference.InferenceType type, Class<? extends EdgeAnalyzer> clazz) {
         super(type, clazz);
     }

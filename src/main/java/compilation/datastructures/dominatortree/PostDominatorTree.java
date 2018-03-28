@@ -11,7 +11,7 @@ import compilation.datastructures.cfg.CFG;
  */
 public class PostDominatorTree extends DominatorTreeBase {
 
-    public PostDominatorTree(CFG controlFlowGraph){
+    public PostDominatorTree(CFG controlFlowGraph) {
 
         dominatorTable = new HashMap<>();
 
@@ -22,9 +22,9 @@ public class PostDominatorTree extends DominatorTreeBase {
         //this needs to the Exit Node to be the LAST Node.
         //The Exit node will have the largest getId
 
-        Integer maxID=-1;
+        Integer maxID = -1;
         for (Integer bbID : controlFlowGraph.getBasicBlocks().keySet()) {
-            if(maxID < bbID){
+            if (maxID < bbID) {
                 maxID = bbID;
             }
             nodes.add(bbID);
@@ -39,25 +39,25 @@ public class PostDominatorTree extends DominatorTreeBase {
     protected void buildTree() {
         List<Integer> n_n = new ArrayList<>();
 
-        n_n.add(nodes.get(nodes.size()-1));
-        dominatorTable.put(nodes.get(nodes.size()-1), n_n);
+        n_n.add(nodes.get(nodes.size() - 1));
+        dominatorTable.put(nodes.get(nodes.size() - 1), n_n);
 
-        for(int i = nodes.size()-2; i>=0; --i) {
+        for (int i = nodes.size() - 2; i >= 0; --i) {
             dominatorTable.put(nodes.get(i), nodes);
         }
         boolean changed;
         do {
             changed = false;
-            for(int i = nodes.size()-2; i>=0 ; --i){
+            for (int i = nodes.size() - 2; i >= 0; --i) {
                 List<Integer> currentSet = dominatorTable.get(nodes.get(i));
                 List<Integer> newSet = super.denominatorFormula(nodes.get(i));
                 if (!checkEq(newSet, currentSet)) {
                     changed = true;
-                    dominatorTable.put(nodes.get(i),newSet);
+                    dominatorTable.put(nodes.get(i), newSet);
                 }
             }
 
-        }while(changed);
+        } while (changed);
 
         generateImmediateDominators();
         generateDominanceFrontier();

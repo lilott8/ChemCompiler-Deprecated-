@@ -12,11 +12,11 @@ import config.DatabaseConfig;
  */
 public class ConnectorFactory {
 
-    private static DatabaseConfig config = ConfigFactory.getConfig();
-    private static DatabaseConnector connection;
     public static final String DEFAULT = "mysql";
     public static final String MYSQL = "mysql";
     public static final String HIKARI = "hikari";
+    private static DatabaseConfig config = ConfigFactory.getConfig();
+    private static DatabaseConnector connection;
     private static String CURRENT = "";
 
     static {
@@ -31,7 +31,8 @@ public class ConnectorFactory {
         }
     }
 
-    private ConnectorFactory() {}
+    private ConnectorFactory() {
+    }
 
     /**
      * Build a connection to a shared.io.database

@@ -1,7 +1,14 @@
 package typesystem.rules;
 
+import org.apache.commons.lang3.StringUtils;
+
 import compilation.datastructures.basicblock.BasicBlockEdge;
+import shared.variable.Variable;
 import typesystem.Inference.InferenceType;
+import typesystem.elements.Formula;
+
+import static chemical.epa.ChemTypes.NAT;
+import static chemical.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/27/17
@@ -18,16 +25,17 @@ public class IfBranch extends EdgeAnalyzer {
     @Override
     public Rule gatherConstraints(BasicBlockEdge edge) {
         //Formula instruction = new Formula(edge.getId(), InstructionType.BRANCH);
-        /*Formula instruction = new Formula(InstructionType.BRANCH);
+        Formula instruction = new Formula(InstructionType.BRANCH);
 
-        Variable output = new Term(Rule.createHash(edge.getConditional().toString()));
+        Variable output = new shared.variable.Property(Rule.createHash(edge.getConditional().toString()));
         output.addTypingConstraint(NAT);
+        addVariable(output);
 
         Variable left;
         if (isNumeric(edge.getConditional().getLeftOperand())) {
-            left = new Term(Rule.createHash(edge.getConditional().getLeftOperand()));
+            left = new shared.variable.Property(Rule.createHash(edge.getConditional().getLeftOperand()));
         } else {
-            left = new Term(edge.getConditional().getLeftOperand());
+            left = new shared.variable.Property(edge.getConditional().getLeftOperand());
         }
         // We have to do this separately because if we don't have a typing,
         // Then it must be a real.
@@ -45,9 +53,9 @@ public class IfBranch extends EdgeAnalyzer {
         if (!StringUtils.isEmpty(edge.getConditional().getRightOperand())) {
             Variable right;
             if (isNumeric(edge.getConditional().getRightOperand())) {
-                right = new Term(Rule.createHash(edge.getConditional().getRightOperand()));
+                right = new shared.variable.Property(Rule.createHash(edge.getConditional().getRightOperand()));
             } else {
-                right = new Term(edge.getConditional().getRightOperand());
+                right = new shared.variable.Property(edge.getConditional().getRightOperand());
             }
             // We have to do this separately because if we don't have a typing,
             // Then it must be a real.
@@ -60,7 +68,7 @@ public class IfBranch extends EdgeAnalyzer {
             addVariable(right);
         }
 
-        addInstruction(instruction);*/
+        addInstruction(instruction);
 
         return this;
     }

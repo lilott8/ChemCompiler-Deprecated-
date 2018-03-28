@@ -12,18 +12,18 @@ import parser.visitor.Visitor;
 /**
  * Grammar production:
  * f0 -> <BANG>
- * f1 -> Expression()
+ * f1 -> PrimaryExpression()
  */
 public class NotExpression implements Node {
     public NodeToken f0;
-    public Expression f1;
+    public PrimaryExpression f1;
 
-    public NotExpression(NodeToken n0, Expression n1) {
+    public NotExpression(NodeToken n0, PrimaryExpression n1) {
         f0 = n0;
         f1 = n1;
     }
 
-    public NotExpression(Expression n0) {
+    public NotExpression(PrimaryExpression n0) {
         f0 = new NodeToken("!");
         f1 = n0;
     }

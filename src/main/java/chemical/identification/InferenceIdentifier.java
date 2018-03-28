@@ -10,13 +10,13 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
+import chemical.epa.ChemTypes;
 import config.Config;
 import config.ConfigFactory;
 import shared.io.database.ConnectorFactory;
 import shared.io.database.DatabaseConnector;
 import shared.substances.BaseCompound;
 import shared.substances.NaiveCompound;
-import chemical.epa.ChemTypes;
 
 /**
  * @created: 10/17/17
@@ -25,8 +25,8 @@ import chemical.epa.ChemTypes;
  */
 public class InferenceIdentifier extends Identifier {
 
-    Config config = ConfigFactory.getConfig();
     public static final Logger logger = LogManager.getLogger(InferenceIdentifier.class);
+    Config config = ConfigFactory.getConfig();
 
     @Override
     public BaseCompound identifyCompound(String name) {
@@ -41,7 +41,7 @@ public class InferenceIdentifier extends Identifier {
     @Override
     public Set<ChemTypes> identifyCompoundForTypes(String name) {
         Set<ChemTypes> results = new HashSet<>();
-        switch(config.getClassificationLevel()) {
+        switch (config.getClassificationLevel()) {
             // pubchem
             // With this case, if we can run, it is authoritative.
             // Such that, if this runs, whatever is returned is
@@ -51,8 +51,9 @@ public class InferenceIdentifier extends Identifier {
                     long x = Long.parseLong(name);
                     results = this.searchByPubChemId(x);
                     break;
-                } catch(NumberFormatException e) {}
-            // Cas-No: Here, we have to use the tuple return.
+                } catch (NumberFormatException e) {
+                }
+                // Cas-No: Here, we have to use the tuple return.
             case 8:
                 if (isCasNumber(name)) {
                     results.addAll(this.searchByCasNumber(name));
@@ -115,8 +116,8 @@ public class InferenceIdentifier extends Identifier {
 
     private Set<ChemTypes> searchByPubChemId(long id) {
         String query = String.format("SELECT rg.epa_id FROM chemicals c " +
-                "LEFT JOIN chemicals_reactive_groups crg ON c.pubchem_id = crg.pubchem_id " +
-                "LEFT JOIN reactive_groups rg on crg.reactive_groups_id = rg.id WHERE c.%s = ?",
+                        "LEFT JOIN chemicals_reactive_groups crg ON c.pubchem_id = crg.pubchem_id " +
+                        "LEFT JOIN reactive_groups rg on crg.reactive_groups_id = rg.id WHERE c.%s = ?",
                 Representation.getColumn(Representation.PUBCHEM_ID));
         return this.issueQuery(query, id, "epa_id");
     }
@@ -146,7 +147,7 @@ public class InferenceIdentifier extends Identifier {
         return results;
     }
 
-    private Set<ChemTypes> issueQuery (String query, String parameter, String column) {
+    private Set<ChemTypes> issueQuery(String query, String parameter, String column) {
         Set<ChemTypes> results = new HashSet<>();
         DatabaseConnector database = ConnectorFactory.getConnection();
         Connection connection = database.getConnection();

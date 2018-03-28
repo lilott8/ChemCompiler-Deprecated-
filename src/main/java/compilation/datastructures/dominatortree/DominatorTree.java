@@ -27,22 +27,22 @@ public class DominatorTree extends DominatorTreeBase {
         List<Integer> n_0 = new ArrayList<Integer>();
         n_0.add(nodes.get(0));
         dominatorTable.put(nodes.get(0), n_0);
-        for(int i = 1; i< nodes.size(); ++i) {
+        for (int i = 1; i < nodes.size(); ++i) {
             dominatorTable.put(nodes.get(i), nodes);
         }
         boolean changed;
         do {
             changed = false;
-            for(int i = 1; i< nodes.size(); ++i){
+            for (int i = 1; i < nodes.size(); ++i) {
                 List<Integer> currentSet = dominatorTable.get(nodes.get(i));
                 List<Integer> newSet = super.denominatorFormula(nodes.get(i));
                 if (!checkEq(newSet, currentSet)) {
                     changed = true;
-                    dominatorTable.put(nodes.get(i),newSet);
+                    dominatorTable.put(nodes.get(i), newSet);
                 }
             }
 
-        }while(changed);
+        } while (changed);
 
         generateImmediateDominators();
         generateDominanceFrontier();

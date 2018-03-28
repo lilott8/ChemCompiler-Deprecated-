@@ -1,10 +1,12 @@
 package typesystem.satsolver.constraints.SMT;
 
-import shared.Variable;
-import typesystem.elements.Formula;
-import typesystem.satsolver.constraints.Composer;
-import typesystem.satsolver.strategies.SolverStrategy;
+import java.util.Set;
+
 import chemical.epa.ChemTypes;
+import shared.variable.Variable;
+import typesystem.elements.Formula;
+import typesystem.satsolver.constraints.SMTSolver;
+import typesystem.satsolver.strategies.SolverStrategy;
 
 import static typesystem.satsolver.strategies.SolverStrategy.NL;
 
@@ -13,7 +15,7 @@ import static typesystem.satsolver.strategies.SolverStrategy.NL;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Detect implements Composer {
+public class Detect implements SMTSolver {
 
     @Override
     public String compose(Formula instruction) {
@@ -38,7 +40,7 @@ public class Detect implements Composer {
     public String compose(Variable variable) {
         StringBuilder sb = new StringBuilder();
 
-        for (ChemTypes t : variable.getTypes()) {
+        for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getName(), t)).append(" true))").append(NL);
         }
 
