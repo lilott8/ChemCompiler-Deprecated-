@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import compilation.Compiler;
 import ir.AssignStatement;
 import ir.Conditional;
 import ir.DetectStatement;
@@ -771,6 +772,7 @@ public class BSIRConverter extends BSVisitor {
         logger.warn(rightOpTypes);
 
         if (!ChemTypes.getMaterials().isEmpty()) {
+            Compiler.abandonShip("You cannot assign a material to a variable.");
             throw new InvalidSyntaxException("You cannot assign a material to a variable.");
         } else {
             AssignStatement assign = new AssignStatement();

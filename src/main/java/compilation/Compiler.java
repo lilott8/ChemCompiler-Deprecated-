@@ -40,6 +40,8 @@ public class Compiler {
     private CFG controlFlow;
 
     private Config config;
+    private static boolean abandonShip = false;
+    private static String abandonShipReasons = "";
 
     private Map<String, List<Phase>> phases = new HashMap<>();
 
@@ -49,41 +51,9 @@ public class Compiler {
         this.phases.get(this.config.getInputFile()).add(new BioScriptParser(this.config.getInputFile()));
     }
 
-    public void compile() {
-
-        for (Map.Entry<String, List<Phase>> entry : this.phases.entrySet()) {
-            logger.info(entry.getKey());
-            for (Phase phase : entry.getValue()) {
-                logger.info("Running: " + phase.getName());
-                phase.run();
-            }
-        }
-
-        BenchtopParser.parseFromString(this.phases.get(this.config.getInputFile()).get(0).getOutput());
-        this.benchtop = Benchtop.INSTANCE;
-        try {
-            for (String experimentKey : this.benchtop.getExperiments().keySet()) {
-                for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
-                    this.controlFlow = CFGBuilder.buildControlFlowGraph(experiment);
-                    this.SSI = new StaticSingleInformation(this.controlFlow);
-
-                    //replaces basic graph with dependancy sliced versions
-                    for (BasicBlock bb : this.SSI.getBasicBlocks().values()) {
-                        this.SSI.newBasicBlock(new DependencySlicedBasicBlock(bb, this.SSI));
-                    }
-
-                    DependencySlicedBasicBlock.getInOutSets(this.SSI);
-                    experimentControlFlowGraphs.add(this.SSI);
-                }
-            }
-        } catch (Exception e) {
-            logger.fatal(e);
-            e.printStackTrace();
-        }
-
-        runPhases();
-        //runTranslations();
-
+    public static void abandonShip(String reason) {
+        abandonShip = true;
+        abandonShipReasons += reason + System.lineSeparator();
     }
 
     public void runPhases() {
@@ -122,5 +92,54 @@ public class Compiler {
 
     public List<CFG> getExperiments() {
         return experimentControlFlowGraphs;
+    }
+
+    public void compile() {
+
+        for (Map.Entry<String, List<Phase>> entry : this.phases.entrySet()) {
+            logger.info(entry.getKey());
+            for (Phase phase : entry.getValue()) {
+                if (!abandonShip) {
+                    logger.info("Running: " + phase.getName());
+                    phase.run();
+                } else {
+                    logger.fatal(abandonShipReasons);
+                    logger.fatal("Killing program in compiler.");
+                    System.exit(0);
+                }
+            }
+        }
+
+        BenchtopParser.parseFromString(this.phases.get(this.config.getInputFile()).get(0).getOutput());
+        this.benchtop = Benchtop.INSTANCE;
+        try {
+            for (String experimentKey : this.benchtop.getExperiments().keySet()) {
+                for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
+                    this.controlFlow = CFGBuilder.buildControlFlowGraph(experiment);
+                    this.SSI = new StaticSingleInformation(this.controlFlow);
+
+                    //replaces basic graph with dependancy sliced versions
+                    for (BasicBlock bb : this.SSI.getBasicBlocks().values()) {
+                        this.SSI.newBasicBlock(new DependencySlicedBasicBlock(bb, this.SSI));
+                    }
+
+                    DependencySlicedBasicBlock.getInOutSets(this.SSI);
+                    experimentControlFlowGraphs.add(this.SSI);
+                }
+            }
+        } catch (Exception e) {
+            logger.fatal(e);
+            e.printStackTrace();
+        }
+
+        if (!abandonShip) {
+            runPhases();
+        } else {
+            logger.fatal(abandonShipReasons);
+            logger.fatal("Killing program in compiler.");
+            System.exit(0);
+        }
+        //runTranslations();
+
     }
 }
