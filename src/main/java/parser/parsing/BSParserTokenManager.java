@@ -100,7 +100,7 @@ public class BSParserTokenManager implements BSParserConstants {
             case 61:
                 return ((jjbitVec6[i2] & l2) != 0L);
             default:
-                return (jjbitVec0[i1] & l1) != 0L;
+               return (jjbitVec0[i1] & l1) != 0L;
         }
     }
 

@@ -65,6 +65,7 @@ import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
+import parser.ast.VariableAlias;
 import parser.ast.WhileStatement;
 
 /**
@@ -557,6 +558,7 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
      * | SplitStatement()
      * | FunctionInvoke()
      * | MathStatement()
+     * | VariableAlias()
      */
     public R visit(RightOp n) {
         R _ret = null;
@@ -854,5 +856,14 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
         n.f0.accept(this);
         return _ret;
     }
+
+   /**
+    * f0 -> Identifier()
+    */
+   public R visit(VariableAlias n) {
+      R _ret = null;
+      n.f0.accept(this);
+      return _ret;
+   }
 
 }

@@ -60,10 +60,10 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     public static final String INTEGER = "INTEGER";
     public static final String BOOLEAN = "BOOLEAN";
     public static final String CONST = "CONST";
-    protected List<Variable> constants = new ArrayList<>();
     // Keep track of the instruction idCounter to input/outputs
     protected static Map<Integer, Statement> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
+    protected List<Variable> constants = new ArrayList<>();
     protected Map<String, Statement> controlInstructions = new HashMap<>();
     // Current instruction to work on.
     protected Statement instruction;
@@ -85,6 +85,10 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     protected boolean inConditional = false;
     // String for the conditional itself.
     protected String conditional = "";
+    // Are we in assignment?
+    protected boolean isAssign = false;
+    // Manage the left hand side of the expression.
+    protected Variable assignTo = null;
     // Ability to identify stuff.
     protected chemical.identification.Identifier identifier = IdentifierFactory.getIdentifier();
     private int scopeId = 0;

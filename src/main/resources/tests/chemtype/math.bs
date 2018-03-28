@@ -13,5 +13,6 @@ if (x < 4) {
 
 z = detect test1 on y
 
+c = y
 
 a = split y into 4

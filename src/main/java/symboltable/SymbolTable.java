@@ -179,6 +179,11 @@ public enum SymbolTable {
         return null;
     }
 
+    @Nullable
+    public Variable searchScopeHierarchy(String name, String scope) {
+        return searchScopeHierarchy(name, this.scopes.get(scope));
+    }
+
     /**
      * Recursive function looking for a definition of a
      * variable in parent scope(s).

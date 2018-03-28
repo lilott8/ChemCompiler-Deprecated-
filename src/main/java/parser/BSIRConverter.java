@@ -7,9 +7,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import chemical.epa.ChemTypes;
 import ir.AssignStatement;
 import ir.Conditional;
 import ir.DetectStatement;
@@ -49,6 +52,7 @@ import parser.ast.PlusExpression;
 import parser.ast.RepeatStatement;
 import parser.ast.Stationary;
 import parser.ast.TimesExpression;
+import parser.ast.VariableAlias;
 import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
 import shared.io.strings.Experiment;
@@ -65,10 +69,6 @@ public class BSIRConverter extends BSVisitor {
 
     public static final Logger logger = LogManager.getLogger(BSIRConverter.class);
 
-    // Are we in assignment?
-    private boolean isAssign = false;
-    // Manage the left hand side of the expression.
-    private Variable assignTo = null;
     // List of functions defined in this program, including the default.
     private Map<String, List<Statement>> functions = new HashMap<>();
     // A simple stack that allows us to know when control changes
@@ -104,7 +104,7 @@ public class BSIRConverter extends BSVisitor {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         // Build the IR data structure.
         ModuleStatement module = new ModuleStatement();
@@ -125,7 +125,7 @@ public class BSIRConverter extends BSVisitor {
         // Get the name.
         n.f2.accept(this);
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         // Build the IR data structure.
         StationaryStatement stationary = new StationaryStatement();
@@ -147,7 +147,7 @@ public class BSIRConverter extends BSVisitor {
         // Get the name.
         n.f2.accept(this);
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         // Build the IR data structure.
         ManifestStatement manifest = new ManifestStatement();
@@ -170,7 +170,7 @@ public class BSIRConverter extends BSVisitor {
         // Get the name.
         n.f1.accept(this);
         this.assignTo = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         this.isAssign = true;
 
@@ -273,8 +273,8 @@ public class BSIRConverter extends BSVisitor {
         if (n.f8.present()) {
             n.f8.accept(this);
             Statement ret = new ReturnStatement();
-            ret.addOutputVariable(SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope())));
-            ret.addInputVariable(SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope())));
+            ret.addOutputVariable(SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope()));
+            ret.addInputVariable(SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope()));
             this.method.setReturnStatement(ret);
         } else {
             logger.fatal("Add exception for no return statement.");
@@ -324,7 +324,7 @@ public class BSIRConverter extends BSVisitor {
     @Override
     public BSVisitor visit(FormalParameter n) {
         n.f1.accept(this);
-        Variable v = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        Variable v = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
         if (n.f0.present()) {
             n.f0.accept(this);
             if (v != null && v.getTypes().isEmpty()) {
@@ -368,7 +368,7 @@ public class BSIRConverter extends BSVisitor {
     public BSVisitor visit(AllowedArguments n) {
         n.f0.accept(this);
 
-        Variable v = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        Variable v = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
         this.parameters.add(v);
         this.types.clear();
 
@@ -389,7 +389,7 @@ public class BSIRConverter extends BSVisitor {
         this.newScope(scopeName);
 
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         // Build the new IR data structure.
         LoopStatement loop = new LoopStatement(f1.getVarName());
@@ -426,7 +426,7 @@ public class BSIRConverter extends BSVisitor {
         logger.warn("While conditional is not being parse completely.");
         n.f2.accept(this);
         //Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-        //        SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        //        this.getCurrentScope());
 
         // Build the new IR data structure.
         LoopStatement loop = new LoopStatement(this.conditional);
@@ -470,7 +470,7 @@ public class BSIRConverter extends BSVisitor {
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
 
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         Conditional branch = new IfStatement(this.conditional);
         branch.setScopeName(scopeName);
@@ -550,7 +550,7 @@ public class BSIRConverter extends BSVisitor {
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
         // Build a false variable for the expression, for now.
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         Conditional branch = new IfStatement(this.conditional);
         branch.setScopeName(this.getCurrentScope());
@@ -587,10 +587,10 @@ public class BSIRConverter extends BSVisitor {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
         n.f3.accept(this);
         Variable f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         // Build the IR data structure.
         Statement mix = new MixStatement();
@@ -601,7 +601,7 @@ public class BSIRConverter extends BSVisitor {
         if (n.f4.present()) {
             n.f4.accept(this);
             Variable<Integer> f4 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                    SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                    this.getCurrentScope());
             // Add f4 to the data structure.
             mix.addProperty(Property.TIME, f4);
         }
@@ -629,11 +629,11 @@ public class BSIRConverter extends BSVisitor {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
         // Get the name.
         n.f3.accept(this);
         Variable<Integer> f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         // Build the IR data structure.
         Statement split = new SplitStatement();
@@ -664,10 +664,10 @@ public class BSIRConverter extends BSVisitor {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
         n.f3.accept(this);
         Variable f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         // Build the IR data structure.
         Statement detect = new DetectStatement();
@@ -679,7 +679,7 @@ public class BSIRConverter extends BSVisitor {
             n.f4.accept(this);
             logger.warn("this.getNextIntId is being used in detect");
             Variable f4 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                    SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                    this.getCurrentScope());
             // Add f4 to the data structure.
             detect.addProperty(Property.TIME, f4);
         }
@@ -704,7 +704,7 @@ public class BSIRConverter extends BSVisitor {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
 
         // Build the IR data structure.
         Statement drain = new DrainStatement(String.format("%s-%d",
@@ -730,11 +730,10 @@ public class BSIRConverter extends BSVisitor {
         // Get the name.
         n.f1.accept(this);
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+                this.getCurrentScope());
         // Get the name.
         n.f3.accept(this);
-        Variable<Integer> f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        Variable<Integer> f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
 
         // Build the IR data structure.
         Statement heat = new HeatStatement(String.format("%s-%d",
@@ -744,8 +743,7 @@ public class BSIRConverter extends BSVisitor {
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            Variable<Integer> f4 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                    SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+            Variable<Integer> f4 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
             // Add f4 to the data structure.
             heat.addProperty(Property.TIME, f4);
         }
@@ -758,6 +756,39 @@ public class BSIRConverter extends BSVisitor {
     }
 
     /**
+     * f0 -> Identifier()
+     */
+    @Override
+    public BSVisitor visit(VariableAlias n) {
+        n.f0.accept(this);
+
+        Variable rightOp = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
+
+        Set<ChemTypes> rightOpTypes = new HashSet<ChemTypes>(rightOp.getTypes());
+
+        logger.warn(rightOpTypes);
+        rightOpTypes.removeAll(ChemTypes.getNums());
+        logger.warn(rightOpTypes);
+
+        if (!ChemTypes.getMaterials().isEmpty()) {
+            throw new InvalidSyntaxException("You cannot assign a material to a variable.");
+        } else {
+            AssignStatement assign = new AssignStatement();
+            MathStatement math = new MathStatement();
+            math.addInputVariable(rightOp);
+            math.addOutputVariable(rightOp);
+            math.setMethodName(this.methodStack.peek());
+            assign.setLeftOp(this.assignTo);
+            assign.setRightOp(math);
+            assign.setMethodName(this.methodStack.peek());
+            instructions.put(assign.getId(), assign);
+            this.addStatement(assign);
+        }
+
+        return this;
+    }
+
+    /**
      * f0 -> PrimaryExpression()
      * f1 -> <ADD>
      * f2 -> PrimaryExpression()
@@ -765,9 +796,9 @@ public class BSIRConverter extends BSVisitor {
     @Override
     public BSVisitor visit(PlusExpression n) {
         n.f0.accept(this);
-        Variable a = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        Variable a = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
         n.f2.accept(this);
-        Variable b = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        Variable b = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
 
         Statement math = new MathStatement();
         math.addInputVariable(a);
@@ -787,9 +818,9 @@ public class BSIRConverter extends BSVisitor {
     @Override
     public BSVisitor visit(MinusExpression n) {
         n.f0.accept(this);
-        Variable a = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        Variable a = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
         n.f2.accept(this);
-        Variable b = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        Variable b = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
 
         Statement math = new MathStatement();
         math.addInputVariable(a);
@@ -808,9 +839,9 @@ public class BSIRConverter extends BSVisitor {
     @Override
     public BSVisitor visit(TimesExpression n) {
         n.f0.accept(this);
-        Variable a = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        Variable a = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
         n.f2.accept(this);
-        Variable b = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        Variable b = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
 
         Statement math = new MathStatement();
         math.addInputVariable(a);

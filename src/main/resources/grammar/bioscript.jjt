@@ -372,7 +372,9 @@ void RightOp() :
             SplitStatement()
     |   LOOKAHEAD( <IDENTIFIER> <LPAREN> )
             FunctionInvoke()
-    |   MathStatement()
+    |   LOOKAHEAD(3)
+            MathStatement()
+    |   VariableAlias()
 }
 
 void PrimaryExpression() :
@@ -531,4 +533,10 @@ void Primitives() :
     | RealLiteral()
     | TrueLiteral()
     | FalseLiteral()
+}
+
+void VariableAlias() :
+{}
+{
+    Identifier()
 }

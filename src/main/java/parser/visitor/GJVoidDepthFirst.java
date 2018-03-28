@@ -65,6 +65,7 @@ import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
+import parser.ast.VariableAlias;
 import parser.ast.WhileStatement;
 
 /**
@@ -491,6 +492,7 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
      * | SplitStatement()
      * | FunctionInvoke()
      * | MathStatement()
+     * | VariableAlias()
      */
     public void visit(RightOp n, A argu) {
         n.f0.accept(this, argu);
@@ -734,6 +736,13 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
      * | FalseLiteral()
      */
     public void visit(Primitives n, A argu) {
+        n.f0.accept(this, argu);
+    }
+
+    /**
+     * f0 -> Identifier()
+     */
+    public void visit(VariableAlias n, A argu) {
         n.f0.accept(this, argu);
     }
 

@@ -65,6 +65,7 @@ import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
+import parser.ast.VariableAlias;
 import parser.ast.WhileStatement;
 
 /**
@@ -481,6 +482,7 @@ public class DepthFirstVisitor implements Visitor {
      * | SplitStatement()
      * | FunctionInvoke()
      * | MathStatement()
+     * | VariableAlias()
      */
     public void visit(RightOp n) {
         n.f0.accept(this);
@@ -726,5 +728,12 @@ public class DepthFirstVisitor implements Visitor {
     public void visit(Primitives n) {
         n.f0.accept(this);
     }
+
+   /**
+    * f0 -> Identifier()
+    */
+   public void visit(VariableAlias n) {
+      n.f0.accept(this);
+   }
 
 }

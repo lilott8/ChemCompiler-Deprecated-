@@ -62,6 +62,7 @@ import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
+import parser.ast.VariableAlias;
 import parser.ast.WhileStatement;
 
 /**
@@ -332,6 +333,7 @@ public interface Visitor {
      * | SplitStatement()
      * | FunctionInvoke()
      * | MathStatement()
+     * | VariableAlias()
      */
     void visit(RightOp n);
 
@@ -496,6 +498,11 @@ public interface Visitor {
      * | FalseLiteral()
      */
     void visit(Primitives n);
+
+    /**
+     * f0 -> Identifier()
+     */
+    void visit(VariableAlias n);
 
 }
 

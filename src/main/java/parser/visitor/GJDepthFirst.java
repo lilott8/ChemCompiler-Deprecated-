@@ -65,6 +65,7 @@ import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
+import parser.ast.VariableAlias;
 import parser.ast.WhileStatement;
 
 /**
@@ -557,6 +558,7 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
      * | SplitStatement()
      * | FunctionInvoke()
      * | MathStatement()
+     * | VariableAlias()
      */
     public R visit(RightOp n, A argu) {
         R _ret = null;
@@ -850,6 +852,15 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
      * | FalseLiteral()
      */
     public R visit(Primitives n, A argu) {
+        R _ret = null;
+        n.f0.accept(this, argu);
+        return _ret;
+    }
+
+    /**
+     * f0 -> Identifier()
+     */
+    public R visit(VariableAlias n, A argu) {
         R _ret = null;
         n.f0.accept(this, argu);
         return _ret;
