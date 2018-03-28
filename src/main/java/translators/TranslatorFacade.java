@@ -1,6 +1,8 @@
 package translators;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +11,7 @@ import compilation.datastructures.cfg.CFG;
 import config.TranslateConfig;
 import shared.Facade;
 import translators.mfsim.MFSimSSATranslator;
+import translators.microdrop.MicroDropTranslator;
 import translators.typesystem.TypeSystemTranslator;
 
 /**
@@ -18,16 +21,18 @@ import translators.typesystem.TypeSystemTranslator;
  */
 public class TranslatorFacade implements Facade {
 
+    public static final Logger logger = LogManager.getLogger(TranslatorFacade.class);
+
     private TranslateConfig config;
     private Map<TRANSLATORS, Translator> translators = new HashMap<TRANSLATORS, Translator>();
     private CFG controlFlowGraph;
+
     public TranslatorFacade(TranslateConfig config, CFG cfg) {
         this.controlFlowGraph = cfg;
         this.config = config;
 
-        for (Map.Entry<String, Translator> entry : this.config.getAllTranslations().entrySet()) {
-            TRANSLATORS t = TRANSLATORS.valueOf(StringUtils.upperCase(entry.getKey()));
-            this.translators.put(t, TRANSLATORS.getTranslator(t));
+        for (TRANSLATORS entry : this.config.getAllTranslations()) {
+            this.translators.put(entry, TRANSLATORS.getTranslator(entry));
         }
     }
 
@@ -38,7 +43,7 @@ public class TranslatorFacade implements Facade {
     }
 
     public enum TRANSLATORS {
-        MFSIM, TYPESYSTEM, NONE;
+        MFSIM, TYPESYSTEM, MICRODROP, NONE;
 
         public static Translator getTranslator(TRANSLATORS t) {
             switch (t) {
@@ -47,6 +52,8 @@ public class TranslatorFacade implements Facade {
                     return new MFSimSSATranslator();
                 case TYPESYSTEM:
                     return new TypeSystemTranslator();
+                case MICRODROP:
+                    return new MicroDropTranslator();
             }
         }
     }

@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import compilation.datastructures.cfg.CFG;
+import config.CommonConfig;
+import config.Config;
 import config.TranslateConfig;
 import translators.Translator;
 
@@ -16,6 +18,7 @@ public class MFSimSSATranslator implements Translator {
 
     private IDGen uniqueIDGen;
     private MFSimSSACFG controlFLow;
+    private CommonConfig config;
 
     private MFSimSSATranslator(CFG controlFlowGraph) {
         uniqueIDGen = new IDGen();
@@ -29,7 +32,12 @@ public class MFSimSSATranslator implements Translator {
         controlFLow.toFile(output);
     }
 
+    public void toFile() {
+        this.toFile(this.config.getOutputDir() + "output");
+    }
+
     public Translator setConfig(TranslateConfig config) {
+        this.config = config;
         return this;
     }
 

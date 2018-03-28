@@ -9,9 +9,12 @@ import config.TranslateConfig;
  * @project: ChemicalCompiler
  */
 public interface Translator {
+
     Translator setConfig(TranslateConfig config);
 
     Translator runTranslation(CFG controlFlowGraph);
 
     void toFile(String output);
+
+    void toFile();
 }

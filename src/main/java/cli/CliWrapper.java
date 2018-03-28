@@ -137,7 +137,8 @@ public class CliWrapper {
                 "Usage: -translate {list of translators}\n" +
                 "Available translators: \n" +
                 "\tmfsim: translates cfg to mfsim machine code\n" +
-                "\ttypesystem: translates cfg for further typing analysis";
+                "\ttypesystem: translates cfg for further typing analysis\n" +
+                "\tmicrodrop: translates the cfg to microdrop machine code";
         options.addOption(Option.builder("t").longOpt("translate")
                 .desc(desc).type(ArrayList.class).hasArgs().required(false)
                 .argName("translate").build());

@@ -1,8 +1,10 @@
 package config;
 
 import java.util.Map;
+import java.util.Set;
 
 import translators.Translator;
+import translators.TranslatorFacade;
 
 /**
  * @created: 7/26/17
@@ -11,10 +13,7 @@ import translators.Translator;
  */
 public interface TranslateConfig extends CommonConfig {
 
-    String MFSIM = "mfsim";
-    String TYPESYSTEM = "typesystem";
-
-    Map<String, Translator> getAllTranslations();
+    Set<TranslatorFacade.TRANSLATORS> getAllTranslations();
 
     boolean translationEnabled(String translator);
 
