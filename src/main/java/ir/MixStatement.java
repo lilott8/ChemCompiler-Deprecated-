@@ -29,7 +29,7 @@ public class MixStatement extends BaseStatement {
 
     @Override
     public String compose(Formula instruction) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         sb.append("; Building mixes for: ").append(instruction.getId()).append(NL);
 
@@ -47,7 +47,7 @@ public class MixStatement extends BaseStatement {
 
     @Override
     public String compose(Variable variable) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
@@ -57,7 +57,7 @@ public class MixStatement extends BaseStatement {
     }
 
     private String buildMix(Variable output, List<Variable> input) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         // We need the form: a \in output ^ b \in output => LU(a,b) \subseteq output
         // At this point, output's set contains the look up values already.
@@ -90,7 +90,7 @@ public class MixStatement extends BaseStatement {
      * output_lu(t1, t2) true) ; this will populate for each lu value ) ) )
      */
     private String buildSimpleImplication(Variable output, Variable input1, Variable input2, ChemTypes t1, ChemTypes t2) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         sb.append("(assert").append(NL);
         sb.append(TAB).append("(=>").append(NL);
@@ -139,6 +139,11 @@ public class MixStatement extends BaseStatement {
                     sb.append("}").append(NL);
                 }
             } else {
+                sb.append(",").append(NL);
+                sb.append("\"VOLUME\" : {").append(NL);
+                sb.append("\"VALUE\" : ").append(10).append(",").append(NL);
+                sb.append("\"UNITS\" : ").append("\"mL\"").append(NL);
+                sb.append("}").append(NL);
                 sb.append("}").append(NL);
             }
             if (x < this.inputVariables.size() - 1) {

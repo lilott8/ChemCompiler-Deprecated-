@@ -11,7 +11,6 @@ import compilation.datastructures.cfg.CFG;
 import config.TranslateConfig;
 import shared.Facade;
 import translators.mfsim.MFSimSSATranslator;
-import translators.microdrop.MicroDropTranslator;
 import translators.typesystem.TypeSystemTranslator;
 
 /**
@@ -52,8 +51,6 @@ public class TranslatorFacade implements Facade {
                     return new MFSimSSATranslator();
                 case TYPESYSTEM:
                     return new TypeSystemTranslator();
-                case MICRODROP:
-                    return new MicroDropTranslator();
             }
         }
     }

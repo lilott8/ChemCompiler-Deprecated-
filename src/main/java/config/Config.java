@@ -19,7 +19,6 @@ import shared.ReportingLevel;
 import translators.Translator;
 import translators.TranslatorFacade;
 import translators.mfsim.MFSimSSATranslator;
-import translators.microdrop.MicroDropTranslator;
 import translators.typesystem.TypeSystemTranslator;
 
 /**
@@ -341,8 +340,6 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
                 this.translators.add(TranslatorFacade.TRANSLATORS.MFSIM);
             } else if (StringUtils.equalsIgnoreCase(TranslatorFacade.TRANSLATORS.TYPESYSTEM.toString(), name)) {
                 this.translators.add(TranslatorFacade.TRANSLATORS.TYPESYSTEM);
-            } else if (StringUtils.equalsIgnoreCase(TranslatorFacade.TRANSLATORS.MICRODROP.toString(), name)) {
-                this.translators.add(TranslatorFacade.TRANSLATORS.MICRODROP);
             }
         }
     }

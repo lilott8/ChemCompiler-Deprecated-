@@ -7,3 +7,5 @@ functions
 instructions
 
 a = mix chemical1 with chemical2
+b = mix chemical2 with a
+drain b

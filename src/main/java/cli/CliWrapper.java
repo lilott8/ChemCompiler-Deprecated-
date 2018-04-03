@@ -133,7 +133,7 @@ public class CliWrapper {
                 .argName("output").build());
 
         // What translators to use
-        desc = "What translator to use.  If -o is set, this must be set.\n" +
+        desc = "What translwator to use.  If -o is set, this must be set.\n" +
                 "Usage: -translate {list of translators}\n" +
                 "Available translators: \n" +
                 "\tmfsim: translates cfg to mfsim machine code\n" +

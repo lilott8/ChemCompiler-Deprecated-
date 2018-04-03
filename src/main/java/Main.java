@@ -60,7 +60,7 @@ public class Main {
         compile.add("src/main/resources/tests/contrived/if_elif_else.json");
         compile.add("src/main/resources/tests/contrived/if_else.json");
         compile.add("src/main/resources/tests/contrived/simple.json");
-        compile.add("src/main/resources/tests/contrived/simple_mix.json");
+        compile.add("src/main/resources/tests/contrived/mix-manual-actuation.json");
         compile.add("src/main/resources/tests/contrived/split.json");
 
         // Elisa Tests. (15-23)
