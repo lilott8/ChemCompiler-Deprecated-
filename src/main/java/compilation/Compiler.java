@@ -59,8 +59,14 @@ public class Compiler {
     public void runPhases() {
         if (!this.config.getErrorLevel().disabled()) {
             for (CFG experiment : this.experimentControlFlowGraphs) {
-                Inference phase = new Inference();
-                phase.runPhase(experiment);
+                if (!abandonShip) {
+                    Inference phase = new Inference();
+                    phase.runPhase(experiment);
+                } else {
+                    logger.fatal(abandonShipReasons);
+                    logger.fatal("Killing program in compiler.");
+                    System.exit(0);
+                }
             }
         }
     }
@@ -132,14 +138,8 @@ public class Compiler {
             e.printStackTrace();
         }
 
-        if (!abandonShip) {
-            runPhases();
-        } else {
-            logger.fatal(abandonShipReasons);
-            logger.fatal("Killing program in compiler.");
-            System.exit(0);
-        }
-        //runTranslations();
+        this.runPhases();
+        this.runTranslations();
 
     }
 }

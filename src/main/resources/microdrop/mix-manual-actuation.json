@@ -1,0 +1,1075 @@
+{
+  "version": "0.2.0",
+  "steps": [
+    {
+      "user_prompt_plugin": {
+        "message": "Dispense Chemical a",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "route_repeats": 1,
+        "repeat_duration_s": 0,
+        "trail_length": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode025",
+            "electrode026"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            1.0
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "trail_length": 1,
+        "repeat_duration_s": 0,
+        "route_repeats": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode025",
+            "electrode026"
+          ],
+          "type": "Series",
+          "values": [
+            true,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "route_repeats": 1,
+        "trail_length": 1,
+        "repeat_duration_s": 0,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        }
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode025",
+            "electrode026",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            true
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "trail_length": 1,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "repeat_duration_s": 0,
+        "route_repeats": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode025",
+            "electrode026",
+            "electrode046",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            true,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "route_repeats": 1,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "repeat_duration_s": 0,
+        "trail_length": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode046",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "trail_length": 1,
+        "repeat_duration_s": 0,
+        "route_repeats": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode046",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "route_repeats": 1,
+        "trail_length": 1,
+        "repeat_duration_s": 0,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        }
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode046",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "Dispense Chemical b",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "trail_length": 1,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "repeat_duration_s": 0,
+        "route_repeats": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode035",
+            "electrode046",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "route_repeats": 1,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "repeat_duration_s": 0,
+        "trail_length": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode035",
+            "electrode036",
+            "electrode046",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "trail_length": 1,
+        "repeat_duration_s": 0,
+        "route_repeats": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode008",
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode035",
+            "electrode036",
+            "electrode046",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "route_repeats": 1,
+        "trail_length": 1,
+        "repeat_duration_s": 0,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        }
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode008",
+            "electrode011",
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode035",
+            "electrode036",
+            "electrode046",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "trail_length": 1,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "repeat_duration_s": 0,
+        "route_repeats": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode008",
+            "electrode011",
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode035",
+            "electrode036",
+            "electrode046",
+            "electrode056",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "route_repeats": 1,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "repeat_duration_s": 0,
+        "trail_length": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode008",
+            "electrode011",
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode035",
+            "electrode036",
+            "electrode046",
+            "electrode056",
+            "electrode080",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "trail_length": 1,
+        "repeat_duration_s": 0,
+        "route_repeats": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode008",
+            "electrode011",
+            "electrode012",
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode035",
+            "electrode036",
+            "electrode046",
+            "electrode056",
+            "electrode080",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "route_repeats": 1,
+        "trail_length": 1,
+        "repeat_duration_s": 0,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        }
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode008",
+            "electrode011",
+            "electrode012",
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode035",
+            "electrode036",
+            "electrode046",
+            "electrode056",
+            "electrode062",
+            "electrode080",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "trail_length": 1,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        },
+        "repeat_duration_s": 0,
+        "route_repeats": 1
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode008",
+            "electrode011",
+            "electrode012",
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode035",
+            "electrode036",
+            "electrode046",
+            "electrode056",
+            "electrode062",
+            "electrode080",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    },
+    {
+      "user_prompt_plugin": {
+        "message": "Mix a with b",
+        "schema": ""
+      },
+      "droplet_planning_plugin": {
+        "transition_duration_ms": 750,
+        "route_repeats": 1,
+        "trail_length": 1,
+        "repeat_duration_s": 0,
+        "drop_routes": {
+          "index": [],
+          "values": [],
+          "index_dtype": "object",
+          "columns": [
+            "route_i",
+            "electrode_i",
+            "transition_i"
+          ],
+          "type": "DataFrame"
+        }
+      },
+      "microdrop.electrode_controller_plugin": {
+        "electrode_states": {
+          "index": [
+            "electrode008",
+            "electrode011",
+            "electrode012",
+            "electrode014",
+            "electrode018",
+            "electrode025",
+            "electrode026",
+            "electrode035",
+            "electrode036",
+            "electrode046",
+            "electrode056",
+            "electrode062",
+            "electrode080",
+            "electrode086"
+          ],
+          "type": "Series",
+          "values": [
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "index_dtype": "object",
+          "dtype": "object"
+        }
+      },
+      "step_label_plugin": {
+        "label": ""
+      },
+      "dropbot_plugin": {
+        "duration": 1000,
+        "frequency": 10000.0,
+        "max_repeats": 3,
+        "voltage": 80.0,
+        "volume_threshold": 0.0
+      },
+      "dmf_device_ui_plugin": {
+        "video_enabled": true
+      }
+    }
+  ],
+  "name": "mix",
+  "plugin_data": {}
+}

@@ -6,19 +6,6 @@ functions
 
 instructions
 
-function test(chemA) : nat {
-    a = mix chemA with chemical1
-    return a
-}
-
-a = test(chemical1)
-
-if (4 < 3) {
-     b = mix a with chemical1
-} else {
-     b = mix chemical1 with chemical2
-}
-
-repeat 4 times {
-    x = detect test on a
-}
+a = mix chemical1 with chemical2
+b = mix chemical2 with a
+drain b

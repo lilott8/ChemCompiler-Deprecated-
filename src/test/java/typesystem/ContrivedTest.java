@@ -40,7 +40,7 @@ public class ContrivedTest {
 
     @Test
     public void simpleMixSimpleSat() {
-        String file = "simple_mix.json";
+        String file = "mix-manual-actuation.json";
         assertTrue(runTest(root + file));
     }
 }

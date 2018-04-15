@@ -10,11 +10,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import shared.ReportingLevel;
 import translators.Translator;
+import translators.TranslatorFacade;
 import translators.mfsim.MFSimSSATranslator;
 import translators.typesystem.TypeSystemTranslator;
 
@@ -64,7 +67,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
     /**
      * List of translations that need to occur
      */
-    private Map<String, Translator> translators = new HashMap<>();
+    private Set<TranslatorFacade.TRANSLATORS> translators = new HashSet<>();
 
     /**
      * No default password
@@ -125,7 +128,7 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
     /**
      * Where is the location of the reactive matrix.
      */
-    private String reactiveMatrix = "src/main/resources/abstract-interpretation.txt";
+    private String reactiveMatrix = "src/main/resources/abstract-int/abstract-interpretation.txt";
     /**
      * Use 3rd party chemistry software to simulate mixes.
      */
@@ -333,10 +336,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
 
     private void buildTranslators(List<String> strings) {
         for (String name : strings) {
-            if (StringUtils.equalsIgnoreCase("mfsim", name)) {
-                this.translators.put(TranslateConfig.MFSIM, new MFSimSSATranslator());
-            } else if (StringUtils.equalsIgnoreCase("typesystem", name)) {
-                this.translators.put(TranslateConfig.TYPESYSTEM, new TypeSystemTranslator());
+            if (StringUtils.equalsIgnoreCase(TranslatorFacade.TRANSLATORS.MFSIM.toString(), name)) {
+                this.translators.add(TranslatorFacade.TRANSLATORS.MFSIM);
+            } else if (StringUtils.equalsIgnoreCase(TranslatorFacade.TRANSLATORS.TYPESYSTEM.toString(), name)) {
+                this.translators.add(TranslatorFacade.TRANSLATORS.TYPESYSTEM);
             }
         }
     }
@@ -346,12 +349,12 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
      *
      * @return Map of translations that can occur Map of all translations
      */
-    public Map<String, Translator> getAllTranslations() {
+    public Set<TranslatorFacade.TRANSLATORS> getAllTranslations() {
         return this.translators;
     }
 
     public boolean translationEnabled(String name) {
-        return this.translators.containsKey(name);
+        return this.translators.contains(name);
     }
 
     public boolean translationsEnabled() {

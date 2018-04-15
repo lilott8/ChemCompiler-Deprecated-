@@ -79,4 +79,8 @@ public class Experiment implements Stringify {
         // logger.info(sb.toString());
         return sb.toString();
     }
+
+    public String toString() {
+        return this.toJson();
+    }
 }

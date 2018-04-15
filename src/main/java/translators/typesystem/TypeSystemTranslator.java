@@ -22,6 +22,7 @@ import compilation.datastructures.InstructionEdge;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.node.InstructionNode;
+import config.CommonConfig;
 import config.TranslateConfig;
 import executable.instructions.Combine;
 import executable.instructions.Detect;
@@ -40,6 +41,7 @@ public class TypeSystemTranslator implements Serializable, Translator {
     private List<InstructionNode> __instructions;
     private Map<Integer, Set<Integer>> __children;
     private TypeSystemSymbolTable __table;
+    private CommonConfig config;
 
     public TypeSystemTranslator() {
     }
@@ -211,11 +213,17 @@ public class TypeSystemTranslator implements Serializable, Translator {
 
     }
 
+    @Override
+    public void toFile() {
+        this.toFile(this.config.getOutputDir() + "output");
+    }
+
     public Translator runTranslation(CFG controlFlowGraph) {
         return new TypeSystemTranslator(controlFlowGraph);
     }
 
     public Translator setConfig(TranslateConfig config) {
+        this.config = config;
         return this;
     }
 
