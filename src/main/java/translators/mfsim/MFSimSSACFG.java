@@ -41,7 +41,7 @@ public class MFSimSSACFG {
         for (BasicBlock bb : controlFlowGraph.getBasicBlocks().values()) {
             MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID, ((StaticSingleAssignment) controlFlowGraph).getVariableStack());
             dags.put(bb.getId(), dag);
-            logger.info(dag);
+            //logger.info(dag);
         }
         for (BasicBlockEdge edge : controlFlowGraph.getBasicBlockEdges()) {
             List<BasicBlockEdge> conditionalGroup;
@@ -165,11 +165,11 @@ public class MFSimSSACFG {
     private String resolveExpression(String destName, BasicBlockEdge edge, Integer bbID) {
         Integer expressionID = this.uniqueIDGen.getNextID();
         String ret = expressionID + ")\nEXP(" + expressionID;
-        if (edge.getType().toString().equals("repeat")) {
+        if (edge.getType().equals("repeat")) {
             ret += ", RUN_COUNT, LT, " + destName + ", " + edge.getCondition() + ")\n";
         } else if (false/*edge is while*/) {
 
-        } else if (edge.getType().toString().equals("lte")) {
+        } else if (edge.getType().equals("lte")) {
             MFSimSSADAG dag = dags.get(bbID);
             Integer nodeID = 0;
             for (MFSimSSANode node : dag.getNodes().values()) {

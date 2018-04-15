@@ -82,7 +82,7 @@ public class MFSimSSADAG {
             }
 
             if (numInstructions == 0) {
-                logger.info("LEADER");
+                // logger.info("LEADER");
             }
             MFSimSSANode n = null;
             Instruction instruction = instructionNode.getInstruction();
@@ -123,7 +123,12 @@ public class MFSimSSADAG {
                     if (variableStack.containsKey(input)) {
                         if (instruction.getInputs().get(input) instanceof Instance) {
                             if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
-                                amount = (int) ((Instance) instruction.getInputs().get(input)).getSubstance().getVolume().getQuantity();
+                                if (((Instance) instruction.getInputs().get(input)).getSubstance().getVolume() == null) {
+                                    amount = 10;
+                                    logger.warn("Using a default volume.");
+                                } else {
+                                    amount = (int) ((Instance) instruction.getInputs().get(input)).getSubstance().getVolume().getQuantity();
+                                }
                                 changed = true;
                             }
                         }
