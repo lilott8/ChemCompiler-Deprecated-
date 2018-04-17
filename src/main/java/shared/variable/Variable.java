@@ -53,6 +53,10 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
         this.scope = scope;
     }
 
+    public Property converToProperty() {
+        return new Property(this.name, this.types, this.scope);
+    }
+
     //abstract public String buildReference();
     abstract public String buildUsage();
 

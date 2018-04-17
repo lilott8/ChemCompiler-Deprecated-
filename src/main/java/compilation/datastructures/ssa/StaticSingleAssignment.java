@@ -136,14 +136,11 @@ public abstract class StaticSingleAssignment extends CFG {
         ArrayList<String> oldLHS = new ArrayList<String>();
         for (InstructionNode instruction : bb.getInstructions()) {
             if (!(instruction instanceof PHIInstruction || instruction instanceof GlobalAssignment || instruction instanceof SigmaInstruction)) {
-                ArrayList<String> symbols = new ArrayList<String>();
+                ArrayList<String> symbols = new ArrayList<String>(instruction.getInstruction().getInputs().keySet());
                 //needed deep copy to allow the removal of old symbols
-                for (String symbol : instruction.getInstruction().getInputs().keySet())
-                    symbols.add(symbol);
                 for (String symbol : symbols) {
-                    if (ConfigFactory.getConfig().isDebug()) {
-                        // logger.debug("Changing RHS: " + symbol + " to " + variableStack.get(symbol).peek());
-                    }
+                    //if (ConfigFactory.getConfig().isDebug()) {
+                    //}
                     int index = instruction.getInputSymbols().indexOf(symbol);
                     instruction.getInputSymbols().set(index, variableStack.get(symbol).peek().getVariable(whichSucc(bb.getId(), variableStack.get(symbol).peek().getOriginID())));
 //                    instruction.getInstruction().getInputs().put(variableStack.get(symbol).peek(),instruction.getInstruction().getInputs().get(symbol));

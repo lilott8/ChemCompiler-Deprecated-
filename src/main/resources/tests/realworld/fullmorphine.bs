@@ -1,0 +1,62 @@
+manifest xxxxx
+manifest Antigen1
+manifest Antigen2
+manifest Antigen3
+manifest Negative_Standard
+manifest Positive_Standard
+manifest Diluted_Sample
+manifest Morphine_Conjugate
+manifest Distilled_Water
+manifest TMB_Substrate
+manifest Stop_Reagent
+
+functions
+
+instructions
+
+a = mix Negative_Standard with Antigen1
+b = mix Positive_Standard with Antigen2
+c = mix Diluted_Sample with Antigen3
+
+d = mix Morphine_Conjugate with a
+e = mix Morphine_Conjugate with b
+f = mix Morphine_Conjugate with c
+
+
+heat d at 23
+heat e at 23
+heat f at 23
+
+drain d
+drain e
+drain f
+repeat 6 times {
+  aa = mix Distilled_Water with Antigen1
+  ba = mix Distilled_Water with Antigen2
+  ca = mix Distilled_Water with Antigen3
+
+  drain aa
+  drain ba
+  drain ca
+
+}
+x = mix  TMB_Substrate with Antigen1
+y = mix  TMB_Substrate with Antigen2
+z = mix  TMB_Substrate with Antigen3
+
+heat x at 23
+heat y at 23
+heat z at 23
+
+g = mix x with  Stop_Reagent
+h = mix y with  Stop_Reagent
+i = mix z with  Stop_Reagent
+
+Negative_Reading = detect fluorescence on Antigen1
+Positive_Reading = detect fluorescence on Antigen2
+Sample_Reading = detect fluorescence on Antigen3
+
+drain g
+drain h
+drain i
+

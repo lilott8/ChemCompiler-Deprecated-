@@ -1,7 +1,10 @@
 package parser;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -632,8 +635,9 @@ public class BSSymbolTable extends BSVisitor {
     }
 
     private Property checkForOrCreateProperty(String units) {
-        Property prop = (Property) SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getCurrentScope());
-        if (prop == null) {
+        Property prop;
+        Variable var = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getCurrentScope());
+        if (var == null) {
             prop = (Property) this.constant;
             // Set<ChemTypes> types = new HashSet<>();
             // types.add(REAL);
@@ -641,6 +645,10 @@ public class BSSymbolTable extends BSVisitor {
             prop.setValue(Integer.parseInt(this.value));
             prop.setUnits(units);
             addVariable(prop);
+            SymbolTable.INSTANCE.addLocal(prop);
+        } else {
+            prop = var.converToProperty();
+            prop.setUnits(units);
             SymbolTable.INSTANCE.addLocal(prop);
         }
         this.types.clear();

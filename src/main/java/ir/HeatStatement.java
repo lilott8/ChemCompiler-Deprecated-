@@ -65,9 +65,13 @@ public class HeatStatement extends BaseNop {
         sb.append("\"TEMPERATURE\" : ");
         // Temp object.
         sb.append("{").append(NL);
-        Property temp = (Property) this.properties.get(Property.TEMP);
-        sb.append("\"VALUE\" : ").append(temp.getValue()).append(", ").append(NL);
-        sb.append("\"UNITS\" : ").append("\"").append(temp.getUnits()).append("\"").append(NL);
+        // Property temp = (Property) this.properties.get(Property.TEMP);
+        // sb.append("\"VALUE\" : ").append(temp.getValue()).append(", ").append(NL);
+        // sb.append("\"UNITS\" : ").append("\"").append(temp.getUnits()).append("\"").append(NL);
+
+        // Property temp = (Property) this.properties.get(Property.TEMP);
+        sb.append("\"VALUE\" : ").append(30).append(", ").append(NL);
+        sb.append("\"UNITS\" : ").append("\"").append("C").append("\"").append(NL);
         // Close temp object.
         sb.append("}").append(NL);
         // close variable.
