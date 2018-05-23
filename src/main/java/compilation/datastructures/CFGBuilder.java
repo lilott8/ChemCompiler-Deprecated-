@@ -1,5 +1,8 @@
 package compilation.datastructures;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +18,8 @@ import executable.instructions.Instruction;
  * Created by chriscurtis on 10/13/16.
  */
 public class CFGBuilder {
+
+    public static final Logger logger = LogManager.getLogger(CFGBuilder.class);
 
     private static BasicBlock insertExitNode(List<BasicBlock> exitNodes, CFG cfg) {
         BasicBlock EXIT = cfg.newBasicBlock();
@@ -70,14 +75,24 @@ public class CFGBuilder {
      *
      */
     private static List<BasicBlock> processBranch(CFG controlFlowGraph, BasicBlock bb, Branch branch) throws Exception {
+        logger.info("ProcessBranch");
+        logger.info(controlFlowGraph);
+        logger.info(bb);
+        logger.info(branch.getTrueBranch());
+        logger.info(branch.getElseBranch());
+        logger.info("End ProcessBranch");
         List<BasicBlock> leaves = new ArrayList<BasicBlock>();
         if (branch != null) {
             BasicBlock trueBranchEntryBasicBlock = controlFlowGraph.newBasicBlock();
+            // Link the predecessor with trueBranchEntryBasicBlock
             controlFlowGraph.addEdge(bb, trueBranchEntryBasicBlock, branch.getCondition(), branch.getName());
 
+            // Add all instructions to the true branch
             leaves.addAll(processNestedInstructions(controlFlowGraph, trueBranchEntryBasicBlock, branch.getTrueBranch()));
-
+            logger.debug(leaves);
+            
             for (int instructionsIndex = 0; instructionsIndex < branch.getElseIfBranch().size(); ++instructionsIndex) {
+                logger.fatal("in the getElsIfBranch loop");
                 Instruction elseIfBranch = branch.getElseIfBranch().get(instructionsIndex);
                 BasicBlock elseIfBranchEntryBasicBlock = controlFlowGraph.newBasicBlock();
                 controlFlowGraph.addEdge(bb, elseIfBranchEntryBasicBlock);
@@ -100,8 +115,9 @@ public class CFGBuilder {
 
                 leaves.addAll(processNestedInstructions(controlFlowGraph, elseBranchBasicBlock, branch.getElseBranch()));
             }
-            if (branch.getElseBranch().isEmpty())
+            if (branch.getElseBranch().isEmpty()) {
                 leaves.add(bb);
+            }
         }
         return leaves;
     }

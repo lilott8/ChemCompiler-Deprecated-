@@ -468,12 +468,14 @@ public class BSIRConverter extends BSVisitor {
         n.f2.accept(this);
         this.inConditional = false;
 
+        Conditional elseBranch = null;
+
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
 
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 this.getCurrentScope());
 
-        Conditional branch = new IfStatement(this.conditional);
+        Conditional branch = new IfStatement(this.conditional, true);
         branch.setScopeName(scopeName);
         branch.setMethodName(this.methodStack.peek());
         instructions.put(branch.getId(), branch);
@@ -497,9 +499,9 @@ public class BSIRConverter extends BSVisitor {
             if (n.f8.present()) {
                 scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
                 this.newScope(scopeName);
-                Conditional elseBranch = new IfStatement("");
+                elseBranch = new IfStatement("", false);
                 elseBranch.setScopeName(scopeName);
-                branch.setMethodName(this.methodStack.peek());
+                elseBranch.setMethodName(this.methodStack.peek());
                 instructions.put(elseBranch.getId(), elseBranch);
 
                 Nop elseSource = new SourceStatement();
@@ -509,13 +511,14 @@ public class BSIRConverter extends BSVisitor {
                 elseBranch.setTrueTarget(elseSource);
 
                 this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
-                this.controlStack.push(elseBranch);
+                // this.controlStack.push(elseBranch);
 
                 // Grab the statements.
                 n.f8.accept(this);
+
                 // Set the false branch
                 if (!fromElseIf) {
-                    this.addBranches(elseBranch, false);
+                    this.addBranches(branch, false);
                 } else {
                     // This is only necessary if the else if is in use.
                     // Add the last else if to this else.
@@ -553,13 +556,12 @@ public class BSIRConverter extends BSVisitor {
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 this.getCurrentScope());
 
-        Conditional branch = new IfStatement(this.conditional);
+        Conditional branch = new IfStatement(this.conditional, false);
         branch.setScopeName(this.getCurrentScope());
         branch.setMethodName(this.methodStack.peek());
 
         // Get the statements in the scope.
         n.f5.accept(this);
-
         return this;
     }
 
@@ -872,7 +874,9 @@ public class BSIRConverter extends BSVisitor {
         // This is a control in the main.
         if (this.controlStack.size() <= 1) {
             this.functions.get(this.methodStack.peek()).add(conditional);
-            controlStack.pop();
+            if (!this.controlStack.isEmpty()) {
+                controlStack.pop();
+            }
         } else {
             // This is a nested control.
             Conditional inner = this.controlStack.pop();

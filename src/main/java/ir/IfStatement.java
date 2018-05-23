@@ -21,14 +21,17 @@ public class IfStatement extends BaseConditional {
 
     public static final String INSTRUCTION = "IF";
 
-    public IfStatement(String condition) {
+    private boolean isTrue = true;
+
+    public IfStatement(String condition, boolean isTrue) {
         super(INSTRUCTION, condition);
+        this.isTrue = isTrue;
         logger.warn("Why is the condition coming in as a string?");
     }
 
     @Override
     public String compose(Formula instruction) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         for (Variable v : instruction.getInput()) {
             sb.append(compose(v));
@@ -45,13 +48,40 @@ public class IfStatement extends BaseConditional {
 
     @Override
     public String compose(Variable variable) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Returns a string representation of the object. In general, the
+     * {@code toString} method returns a string that
+     * "textually represents" this object. The result should
+     * be a concise but informative representation that is easy for a
+     * person to read.
+     * It is recommended that all subclasses override this method.
+     * <p>
+     * The {@code toString} method for class {@code Object}
+     * returns a string consisting of the name of the class of which the
+     * object is an instance, the at-sign character `{@code @}', and
+     * the unsigned hexadecimal representation of the hash code of the
+     * object. In other words, this method returns a string equal to the
+     * value of:
+     * <blockquote>
+     * <pre>
+     * getClass().getName() + '@' + Integer.toHexString(hashCode())
+     * </pre></blockquote>
+     *
+     * @return a string representation of the object.
+     */
+    @Override
+    public String toString() {
+        String output = String.format("Branch(isTrue: %b) Conditional: %s\n True Branch: %s\n----\nFalse Branch: %s", this.isTrue, this.condition, this.trueBranch, this.falseBranch);
+        return output;
     }
 
     @Override
@@ -62,7 +92,7 @@ public class IfStatement extends BaseConditional {
     @Override
     public String toJson(String indent) {
         // Open the object brace.
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         sb.append("{").append(NL);
         sb.append("\"OPERATION\" : {").append(NL);
         sb.append("\"NAME\" : \"IF\",").append(NL);
@@ -110,7 +140,7 @@ public class IfStatement extends BaseConditional {
 
     public String print(String indent) {
         indent += "\t";
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         sb.append(indent).append("If True Branch(").append(this.id).append("): ").append(NL);
         for (Statement s : this.trueBranch) {
             sb.append("(").append(this.id).append(") ").append(s.print(indent)).append(NL);

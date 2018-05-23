@@ -82,25 +82,33 @@ public class DependencySlicedBasicBlock extends BasicBlock {
         List<InstructionNode> instructions = new ArrayList<InstructionNode>();
         Integer last = 0;
         for (BasicBlock bb : CFG.getBasicBlocks().values()) {
+            //logger.info(bb);
             instructions.addAll(bb.getInstructions());
             last = bb.getId();
         }
 
         for (BasicBlock bb : CFG.getBasicBlocks().values()) {
-            firstInstructions.put(bb, bb.getInstructions().get(0));
-            for (InstructionNode i : bb.getInstructions()) {
-                if (!(i instanceof SigmaInstruction) && !(i instanceof PHIInstruction)) {
-                    firstInstructions.put(bb, i);
-                    break;
+            if (!bb.getInstructions().isEmpty()) {
+                firstInstructions.put(bb, bb.getInstructions().get(0));
+                for (InstructionNode i : bb.getInstructions()) {
+                    if (!(i instanceof SigmaInstruction) && !(i instanceof PHIInstruction)) {
+                        firstInstructions.put(bb, i);
+                        break;
+                    }
                 }
-            }
-            lastInstructions.put(bb, bb.getInstructions().get(bb.getInstructions().size() - 1));
-            for (Integer index = bb.getInstructions().size() - 1; index > -1; index--) {
-                InstructionNode i = bb.getInstructions().get(index);
-                if (!(i instanceof SigmaInstruction) && !(i instanceof PHIInstruction)) {
-                    lastInstructions.put(bb, i);
-                    break;
+                lastInstructions.put(bb, bb.getInstructions().get(bb.getInstructions().size() - 1));
+                for (Integer index = bb.getInstructions().size() - 1; index > -1; index--) {
+                    InstructionNode i = bb.getInstructions().get(index);
+                    if (!(i instanceof SigmaInstruction) && !(i instanceof PHIInstruction)) {
+                        lastInstructions.put(bb, i);
+                        break;
+                    }
                 }
+            } else {
+                logger.fatal("Instruction basic block is empty...");
+                logger.fatal(bb.getInstructions());
+                logger.fatal(bb.getId());
+                logger.fatal(bb);
             }
         }
         firstInstructions.remove(CFG.getEntry());

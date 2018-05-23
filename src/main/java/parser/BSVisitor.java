@@ -275,11 +275,14 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
      */
     @Override
     public BSVisitor visit(LessThanExpression n) {
+        // TODO: check each side of the conditional for constant or chemical.
+        logger.fatal("You need to check each side of the conditional and check if it's a chemical or a constant.");
         n.f0.accept(this);
+        logger.info(this.name);
         this.conditional += this.name;
         this.conditional += "<";
         n.f2.accept(this);
-        this.conditional += this.name;
+        this.conditional += SymbolTable.INSTANCE.getCurrentScope().getVariables().get(this.name).getValue();
         return this;
     }
 

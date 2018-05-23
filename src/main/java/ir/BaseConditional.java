@@ -32,6 +32,7 @@ public abstract class BaseConditional extends BaseStatement implements Condition
     public BaseConditional(String name, String condition) {
         super(name);
         this.condition = condition;
+        logger.info(this.condition);
     }
 
     @Override
