@@ -32,7 +32,7 @@ public class ConditionalNode implements Node {
             leftOperand = StringUtils.strip(array[0]);
             rightOperand = StringUtils.strip(array[1]);
             if (Rule.isNumeric(rightOperand)) {
-                rightOperand = Rule.createHash(rightOperand);
+                //rightOperand = Rule.createHash(rightOperand);
             }
         } else {
             leftOperand = StringUtils.strip(array[0]);

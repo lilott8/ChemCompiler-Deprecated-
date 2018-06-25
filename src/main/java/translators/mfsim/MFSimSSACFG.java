@@ -165,6 +165,7 @@ public class MFSimSSACFG {
     private String resolveExpression(String destName, BasicBlockEdge edge, Integer bbID) {
         Integer expressionID = this.uniqueIDGen.getNextID();
         String ret = expressionID + ")\nEXP(" + expressionID;
+        logger.warn(edge);
         if (edge.getType().equals("repeat")) {
             ret += ", RUN_COUNT, LT, " + destName + ", " + edge.getCondition() + ")\n";
         } else if (false/*edge is while*/) {
@@ -179,7 +180,9 @@ public class MFSimSSACFG {
                     edge.getCondition().substring((edge.getCondition().lastIndexOf("=") + 1)) + ")\n";
             logger.warn("Hard-coding ONE_SENSOR");
         } else {
-            ret += ", <INSERT CONDITION HERE>)\n";
+            logger.warn(edge.getConditional());
+            ret += ", " + edge.getConditional().toString() + ")\n";
+            //ret += ", <INSERT CONDITION HERE>)\n";
         }
         return ret;
 
