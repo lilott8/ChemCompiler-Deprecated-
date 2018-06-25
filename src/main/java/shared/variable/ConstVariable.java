@@ -19,6 +19,10 @@ public class ConstVariable<Value> extends Variable<Value> {
 
     public static final Logger logger = LogManager.getLogger(ConstVariable.class);
 
+    {
+        this.isConstant = true;
+    }
+
     public ConstVariable(String name) {
         super(name);
     }
@@ -49,7 +53,7 @@ public class ConstVariable<Value> extends Variable<Value> {
     @Override
     public String buildDeclaration() {
         logger.warn("The type for ConstVars should be NUMBER not CHEMICAL");
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         sb.append("{").append(NL);
         sb.append("\"VARIABLE_DECLARATION\" : {").append(NL);

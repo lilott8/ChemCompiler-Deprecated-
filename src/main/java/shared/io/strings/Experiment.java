@@ -4,10 +4,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import ir.Statement;
+import shared.variable.Variable;
 import symboltable.SymbolTable;
 
 import static ir.Statement.NL;
@@ -41,9 +43,17 @@ public class Experiment implements Stringify {
 
         // Open INPUTS.
         sb.append("\"INPUTS\" : [").append(NL);
-        for (int x = 0; x < this.symbols.getInputs().size(); x++) {
-            sb.append(this.symbols.getInputs().get(x).buildDeclaration());
-            if (x < this.symbols.getInputs().size() - 1) {
+        // We preprocess the inputs so we don't include the constant values.
+        List<Variable> useableVars = new ArrayList<>();
+        for (Variable v : this.symbols.getInputs()) {
+            if (!v.isConstant()) {
+                useableVars.add(v);
+            }
+        }
+
+        for (int x = 0; x < useableVars.size(); x++) {
+            sb.append(useableVars.get(x).buildDeclaration());
+            if (x < useableVars.size() - 1) {
                 sb.append(",").append(NL);
             }
         }

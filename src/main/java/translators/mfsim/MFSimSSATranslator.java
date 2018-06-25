@@ -2,11 +2,18 @@ package translators.mfsim;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.w3c.dom.events.EventException;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.NoSuchElementException;
 
 import compilation.datastructures.cfg.CFG;
 import config.CommonConfig;
 import config.Config;
+import config.ConfigFactory;
 import config.TranslateConfig;
+import shared.io.file.write.FileWriter;
 import translators.Translator;
 
 /**
@@ -23,17 +30,21 @@ public class MFSimSSATranslator implements Translator {
     private MFSimSSATranslator(CFG controlFlowGraph) {
         uniqueIDGen = new IDGen();
         controlFLow = new MFSimSSACFG(controlFlowGraph, uniqueIDGen);
+        this.config = ConfigFactory.getConfig();
+        if (!FileWriter.folderExists(this.config.getOutputDir())) {
+            throw new NoSuchElementException("Cannot find: " + this.config.getOutputDir());
+        }
     }
 
     public MFSimSSATranslator() {
     }
 
     public void toFile(String output) {
-        controlFLow.toFile(output);
+        controlFLow.toFile(FileWriter.getAbsoluteFromRelative(output));
     }
 
     public void toFile() {
-        this.toFile(this.config.getOutputDir() + "output");
+        this.toFile(FileWriter.getAbsoluteFromRelative(this.config.getOutputDir() + "output"));
     }
 
     public Translator setConfig(TranslateConfig config) {

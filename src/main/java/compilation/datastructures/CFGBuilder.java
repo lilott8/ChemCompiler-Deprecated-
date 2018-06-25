@@ -76,11 +76,11 @@ public class CFGBuilder {
      */
     private static List<BasicBlock> processBranch(CFG controlFlowGraph, BasicBlock bb, Branch branch) throws Exception {
         logger.info("ProcessBranch");
-        logger.info(controlFlowGraph);
-        logger.info(bb);
+        logger.info("CFG: " + controlFlowGraph);
+        logger.info("BasicBlock: " + bb);
         logger.info(branch.getTrueBranch());
         logger.info(branch.getElseBranch());
-        logger.info("End ProcessBranch");
+        logger.info("===============End ProcessBranch===============");
         List<BasicBlock> leaves = new ArrayList<BasicBlock>();
         if (branch != null) {
             BasicBlock trueBranchEntryBasicBlock = controlFlowGraph.newBasicBlock();
@@ -89,10 +89,9 @@ public class CFGBuilder {
 
             // Add all instructions to the true branch
             leaves.addAll(processNestedInstructions(controlFlowGraph, trueBranchEntryBasicBlock, branch.getTrueBranch()));
-            logger.debug(leaves);
-            
+            logger.debug("Leaves: " + leaves);
+
             for (int instructionsIndex = 0; instructionsIndex < branch.getElseIfBranch().size(); ++instructionsIndex) {
-                logger.fatal("in the getElsIfBranch loop");
                 Instruction elseIfBranch = branch.getElseIfBranch().get(instructionsIndex);
                 BasicBlock elseIfBranchEntryBasicBlock = controlFlowGraph.newBasicBlock();
                 controlFlowGraph.addEdge(bb, elseIfBranchEntryBasicBlock);
@@ -109,7 +108,7 @@ public class CFGBuilder {
 
                 bb = elseIfBranchEntryBasicBlock;
             }
-            if (branch.getElseIfBranch().size() > 0) {
+            if (branch.getElseBranch().size() > 0) {
                 BasicBlock elseBranchBasicBlock = controlFlowGraph.newBasicBlock();
                 controlFlowGraph.addEdge(bb, elseBranchBasicBlock);
 

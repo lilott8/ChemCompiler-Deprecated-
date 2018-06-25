@@ -28,6 +28,7 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
     protected List<Integer> properties = new ArrayList<>();
     protected int id;
     protected boolean isVariable = false;
+    protected boolean isConstant = false;
 
     {
         this.id = this.getNewId();
@@ -87,6 +88,10 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
     public Variable setValue(Value value) {
         this.value = value;
         return this;
+    }
+
+    public boolean isConstant() {
+        return this.isConstant;
     }
 
     public void addScope(Scope scope) {

@@ -7,7 +7,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 
 import config.ConfigFactory;
@@ -122,5 +127,17 @@ public abstract class FileWriter extends Thread {
             }
             this.write(sb.toString());
         }
+    }
+
+    public static boolean folderExists(String input) {
+        File a = new File(input);
+        Path path = Paths.get(input);
+        LogManager.getLogger(FileWriter.class).info(a.getAbsolutePath());
+        return Files.exists(path);
+    }
+
+    public static String getAbsoluteFromRelative(String input) {
+        File relative = new File(input);
+        return relative.getAbsolutePath();
     }
 }

@@ -459,6 +459,7 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(BranchStatement n) {
+        logger.info("branch statement 1");
         // Build the scope for the If Statement.
         String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
         // Create a new scope.
@@ -503,12 +504,6 @@ public class BSIRConverter extends BSVisitor {
                 elseBranch.setScopeName(scopeName);
                 elseBranch.setMethodName(this.methodStack.peek());
                 instructions.put(elseBranch.getId(), elseBranch);
-
-                Nop elseSource = new SourceStatement();
-                Nop elseSink = new SinkStatement();
-
-                elseBranch.setFalseTarget(elseSink);
-                elseBranch.setTrueTarget(elseSource);
 
                 this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
                 // this.controlStack.push(elseBranch);

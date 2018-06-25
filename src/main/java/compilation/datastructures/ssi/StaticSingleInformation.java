@@ -39,6 +39,7 @@ public class StaticSingleInformation extends StaticSingleAssignment {
             if (this.placeSigmaNodes())
                 changesMade = true;
         }
+
         this.renameVariables();
     }
 

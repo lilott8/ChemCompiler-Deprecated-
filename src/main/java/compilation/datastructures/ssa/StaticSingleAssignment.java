@@ -125,23 +125,22 @@ public abstract class StaticSingleAssignment extends CFG {
             }
             variableStack.put(symbol, symbols);
         }
+        logger.debug(this.entry);
         this.renameSearch(this.entry);
     }
 
     protected void renameSearch(BasicBlock bb) {
-        if (ConfigFactory.getConfig().isDebug()) {
-            // logger.debug("Processing Rename on: " + bb.getId());
-        }
-
         ArrayList<String> oldLHS = new ArrayList<String>();
         for (InstructionNode instruction : bb.getInstructions()) {
             if (!(instruction instanceof PHIInstruction || instruction instanceof GlobalAssignment || instruction instanceof SigmaInstruction)) {
                 ArrayList<String> symbols = new ArrayList<String>(instruction.getInstruction().getInputs().keySet());
                 //needed deep copy to allow the removal of old symbols
                 for (String symbol : symbols) {
-                    //if (ConfigFactory.getConfig().isDebug()) {
-                    //}
                     int index = instruction.getInputSymbols().indexOf(symbol);
+                    if (variableStack.get(symbol) == null) {
+                        logger.fatal("Cannot find symbol: " + symbol);
+                        throw new IllegalStateException(symbol + " was not properly defined.");
+                    }
                     instruction.getInputSymbols().set(index, variableStack.get(symbol).peek().getVariable(whichSucc(bb.getId(), variableStack.get(symbol).peek().getOriginID())));
 //                    instruction.getInstruction().getInputs().put(variableStack.get(symbol).peek(),instruction.getInstruction().getInputs().get(symbol));
 //                    instruction.getInstruction().getInputs().remove(symbol);
@@ -155,9 +154,6 @@ public abstract class StaticSingleAssignment extends CFG {
                 Integer count = variableCount.get(oldSymbol);
                 Integer predecessorID = variableStack.get(oldSymbol).peek().getOriginID();
                 String newSymbol = getNewSymbol(variableStack.get(oldSymbol).peek().getVariable(whichSucc(bb.getId(), predecessorID)), count);
-                if (ConfigFactory.getConfig().isDebug()) {
-                    // logger.debug("Changing LHS: " + oldSymbol + " to " + newSymbol);
-                }
                 instruction.getOutputSymbols().set(i, newSymbol);
                 if (instruction instanceof SigmaInstruction) {
                     newOutputSymbols.add(newSymbol);
