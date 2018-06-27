@@ -27,6 +27,7 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
     protected Value value;
     protected List<Integer> properties = new ArrayList<>();
     protected int id;
+    protected boolean isGlobal = false;
     protected boolean isVariable = false;
     protected boolean isConstant = false;
 
@@ -92,6 +93,10 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
 
     public boolean isConstant() {
         return this.isConstant;
+    }
+
+    public boolean isGlobal() {
+        return this.isGlobal;
     }
 
     public void addScope(Scope scope) {

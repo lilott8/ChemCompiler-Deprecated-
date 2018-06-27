@@ -89,7 +89,7 @@ public enum SymbolTable {
     }
 
     public void addConstant(Variable symbol) {
-        this.constants.put(symbol.getScopedName(), symbol);
+        this.constants.put(symbol.getName(), symbol);
     }
 
     public void addLocals(List<Variable> symbols) {

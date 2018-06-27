@@ -1,0 +1,14 @@
+module test
+manifest mat chemical1
+manifest mat chemical2
+
+functions
+
+instructions
+
+x = detect test on chemical1
+b = mix chemical1 with chemical2
+
+if (x < 4) {
+    drain b
+}

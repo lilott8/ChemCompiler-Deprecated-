@@ -103,7 +103,6 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     }
 
     public BSVisitor() {
-        logger.warn("INTEGER/TRUE/FALSE literals are adding themselves to both locals and constants.");
     }
 
     protected String getCurrentScope() {
@@ -129,7 +128,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
             variables.put(t.getScopedName(), t);
         } else {
             if (variables.get(t.getScopedName()).equals(t)) {
-                logger.warn(String.format("%s is equal to %s", t, variables.get(t.getName())));
+                // logger.warn(String.format("%s is equal to %s", t, variables.get(t.getName())));
             }
         }
     }
@@ -276,7 +275,6 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     @Override
     public BSVisitor visit(LessThanExpression n) {
         // TODO: check each side of the conditional for constant or chemical.
-        logger.fatal("You need to check each side of the conditional and check if it's a chemical or a constant.");
         n.f0.accept(this);
         logger.info(this.name);
         this.conditional += this.name;
@@ -410,7 +408,6 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
      */
     @Override
     public BSVisitor visit(MathParenthesis n) {
-        logger.warn("need to change math parenths");
         this.conditional += "(";
         n.f1.accept(this);
         this.conditional += this.name;

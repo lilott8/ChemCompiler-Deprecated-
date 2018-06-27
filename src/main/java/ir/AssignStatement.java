@@ -57,7 +57,7 @@ public class AssignStatement extends BaseStatement implements Assign {
 
     @Override
     public String compose(Formula instruction) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         // Only output matters here Output = arbitrary input at beginning of file.
         for (Variable v : instruction.getOutput()) {
@@ -69,7 +69,7 @@ public class AssignStatement extends BaseStatement implements Assign {
 
     @Override
     public String compose(Variable variable) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
@@ -86,11 +86,9 @@ public class AssignStatement extends BaseStatement implements Assign {
     @Override
     public String toJson(String indent) {
         if (this.rightOp.containsInvoke()) {
-            logger.warn("not addressing invocations yet.");
         }
 
         if (this.containsInvoke) {
-            logger.error("We have a function call!");
         }
 
         return this.rightOp.toJson();

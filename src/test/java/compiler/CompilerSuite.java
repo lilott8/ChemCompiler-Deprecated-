@@ -10,7 +10,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TreeTest.class
+        //TreeTest.class
+        UsageTest.class
 })
 public class CompilerSuite {
 }

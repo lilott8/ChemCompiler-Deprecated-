@@ -125,7 +125,6 @@ public abstract class StaticSingleAssignment extends CFG {
             }
             variableStack.put(symbol, symbols);
         }
-        logger.debug(this.entry);
         this.renameSearch(this.entry);
     }
 

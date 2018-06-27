@@ -122,7 +122,6 @@ public class Compiler {
             for (String experimentKey : this.benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
                     this.controlFlow = CFGBuilder.buildControlFlowGraph(experiment);
-                    logger.warn(this.controlFlow);
                     this.SSI = new StaticSingleInformation(this.controlFlow);
 
                     //logger.fatal(this.SSI.getBasicBlocks());

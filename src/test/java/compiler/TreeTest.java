@@ -18,7 +18,7 @@ public class TreeTest {
 
     private static Logger logger = LogManager.getLogger(TreeTest.class);
 
-    @Test
+    // @Test
     public void DominatorTreeTest() {
         CFG cfg = new CFG();
 
@@ -52,7 +52,7 @@ public class TreeTest {
         // TODO: add asserts.
     }
 
-    @Test
+    // @Test
     public void DominatorTreeTest2() {
         CFG cfg = new CFG();
 
@@ -105,7 +105,7 @@ public class TreeTest {
         // TODO: add asserts.
     }
 
-    @Test
+    // @Test
     public void PostDominatorTreeTest(){
         CFG cfg = new CFG();
 

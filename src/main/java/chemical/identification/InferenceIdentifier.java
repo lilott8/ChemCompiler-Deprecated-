@@ -140,7 +140,7 @@ public class InferenceIdentifier extends Identifier {
             // Close the result set.
             rs.close();
         } catch (SQLException e) {
-            logger.warn(e.toString());
+            logger.error(e.toString());
             results.add(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
         }
         database.closeConnection(connection);
@@ -169,7 +169,7 @@ public class InferenceIdentifier extends Identifier {
             }
         } catch (SQLException e) {
             results.add(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
-            logger.warn(e.toString());
+            logger.error(e.toString());
         }
         database.closeConnection(connection);
         return results;

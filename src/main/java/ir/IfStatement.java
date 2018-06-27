@@ -26,7 +26,6 @@ public class IfStatement extends BaseConditional {
     public IfStatement(String condition, boolean isTrue) {
         super(INSTRUCTION, condition);
         this.isTrue = isTrue;
-        logger.warn("Why is the condition coming in as a string?");
     }
 
     @Override

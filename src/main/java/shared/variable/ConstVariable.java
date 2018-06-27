@@ -52,7 +52,6 @@ public class ConstVariable<Value> extends Variable<Value> {
 
     @Override
     public String buildDeclaration() {
-        logger.warn("The type for ConstVars should be NUMBER not CHEMICAL");
         StringBuilder sb = new StringBuilder();
 
         sb.append("{").append(NL);

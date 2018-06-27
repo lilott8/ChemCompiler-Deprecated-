@@ -97,8 +97,6 @@ public class TypeSystem {
             }
         }
         //logger.info(this.translator.toString());
-        logger.trace("getInstruction Inputs: " + instructionInputs);
-        logger.trace("Resolved Variables: " + resolvedVariables);
     }
 
     /**
@@ -120,8 +118,6 @@ public class TypeSystem {
      */
     public void validateInteractions() {
         for (Map.Entry<String, List<String>> entry : this.instructionInputs.entrySet()) {
-            logger.debug(entry);
-            logger.warn("[validateInteraction] Using an unsafe way to get chemicals");
             BaseCompound a = this.resolveInput(entry.getValue().get(0));
             BaseCompound b = this.resolveInput(entry.getValue().get(1));
             EpaManager.INSTANCE.validate(a, b);
@@ -136,10 +132,8 @@ public class TypeSystem {
      * reference is comprise of
      */
     private BaseCompound resolveInput(String s) {
-        logger.info("Given: " + s);
         // always look in the cache first!
         if (this.cache.containsKey(s)) {
-            logger.info("Found: " + cache.get(s).getName());
             return this.cache.get(s);
         }
         // otherwise we need to look at all the
@@ -148,12 +142,10 @@ public class TypeSystem {
         while (!resolvedVariables.containsKey(s)) {
             for (String n : instructionInputs.get(s)) {
                 if (resolvedVariables.containsKey(n)) {
-                    logger.info("Found: " + resolvedVariables.get(n).getName());
                     return resolvedVariables.get(n);
                 }
             }
         }
-        logger.trace("Found: " + resolvedVariables.get(s).getName());
         return resolvedVariables.get(s);
     }
 }

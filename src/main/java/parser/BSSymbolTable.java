@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import compilation.symboltable.UsageGovernor;
 import ir.Invoke;
 import ir.InvokeStatement;
 import parser.ast.AssignmentStatement;
@@ -88,7 +89,8 @@ public class BSSymbolTable extends BSVisitor {
         SymbolTable.INSTANCE.addInput(f1);
         // Add the symbol to the scope.
         SymbolTable.INSTANCE.addLocal(f1);
-
+        SymbolTable.INSTANCE.addConstant(f1);
+        UsageGovernor.defVar(f1.getName());
         return this;
     }
 
@@ -116,6 +118,8 @@ public class BSSymbolTable extends BSVisitor {
 
         // Anything in this section is always default scope.
         SymbolTable.INSTANCE.addLocal(f2);
+        SymbolTable.INSTANCE.addConstant(f2);
+        UsageGovernor.defVar(f2.getName());
         this.types.clear();
         return this;
     }
@@ -145,6 +149,8 @@ public class BSSymbolTable extends BSVisitor {
         // build the variable now
         SymbolTable.INSTANCE.addLocal(f2);
         SymbolTable.INSTANCE.addInput(f2);
+        SymbolTable.INSTANCE.addConstant(f2);
+        UsageGovernor.defVar(f2.getName());
         this.types.clear();
 
         return this;
@@ -372,7 +378,6 @@ public class BSSymbolTable extends BSVisitor {
      */
     @Override
     public BSVisitor visit(WhileStatement n) {
-        logger.warn("While statements are not being parsed completely.");
         // Get the statements.
         n.f4.accept(this);
 
@@ -393,7 +398,6 @@ public class BSSymbolTable extends BSVisitor {
     @Override
     public BSVisitor visit(BranchStatement n) {
         // Build the instruction.
-        // logger.fatal("You need to reset the instruction in If");
         // Build the name.
         String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
         // Create a new scope.
@@ -441,7 +445,6 @@ public class BSSymbolTable extends BSVisitor {
 
         // Begin type checking.
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
-        logger.warn(String.format("Symbol Table elseif: %s_%s", SymbolTable.INSTANCE.getCurrentScope().getName(), this.name));
         Variable term = new AssignedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
         term.addTypingConstraint(NAT);
         addVariable(term);

@@ -16,6 +16,7 @@ public class DefinedVariable<Value> extends Variable<Value> {
 
     {
         this.isVariable = false;
+        this.isGlobal = true;
     }
 
     public DefinedVariable(String name) {
@@ -49,7 +50,7 @@ public class DefinedVariable<Value> extends Variable<Value> {
 
     @Override
     public String buildDeclaration() {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         sb.append("{").append(NL);
         sb.append("\"VARIABLE_DECLARATION\" : {").append(NL);

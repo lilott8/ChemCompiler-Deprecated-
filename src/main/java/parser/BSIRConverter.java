@@ -424,7 +424,6 @@ public class BSIRConverter extends BSVisitor {
         this.newScope(scopeName);
         n.f1.accept(this);
 
-        logger.warn("While conditional is not being parse completely.");
         n.f2.accept(this);
         //Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
         //        this.getCurrentScope());
@@ -459,7 +458,6 @@ public class BSIRConverter extends BSVisitor {
      */
     @Override
     public BSVisitor visit(BranchStatement n) {
-        logger.info("branch statement 1");
         // Build the scope for the If Statement.
         String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
         // Create a new scope.
@@ -675,7 +673,6 @@ public class BSIRConverter extends BSVisitor {
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            logger.warn("this.getNextIntId is being used in detect");
             Variable f4 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                     this.getCurrentScope());
             // Add f4 to the data structure.
@@ -764,13 +761,11 @@ public class BSIRConverter extends BSVisitor {
 
         Set<ChemTypes> rightOpTypes = new HashSet<ChemTypes>(rightOp.getTypes());
 
-        logger.warn(rightOpTypes);
         rightOpTypes.removeAll(ChemTypes.getNums());
-        logger.warn(rightOpTypes);
 
         if (!ChemTypes.getMaterials().isEmpty()) {
-            Compiler.abandonShip("You cannot assign a material to a variable.");
-            throw new InvalidSyntaxException("You cannot assign a material to a variable.");
+            // Compiler.abandonShip("You cannot assign a material to a variable.");
+            throw new InvalidSyntaxException("You cannot alias a material (e.g. mat x = y.");
         } else {
             AssignStatement assign = new AssignStatement();
             MathStatement math = new MathStatement();
@@ -783,7 +778,6 @@ public class BSIRConverter extends BSVisitor {
             instructions.put(assign.getId(), assign);
             this.addStatement(assign);
         }
-
         return this;
     }
 

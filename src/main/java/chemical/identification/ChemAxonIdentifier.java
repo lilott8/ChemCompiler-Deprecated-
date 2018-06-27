@@ -138,7 +138,7 @@ public class ChemAxonIdentifier extends Identifier {
             // Close the result set!
             rs.close();
         } catch (SQLException e) {
-            logger.warn(e.toString());
+            logger.error(e.toString());
         }
         database.closeConnection(connection);
         return compound;
@@ -156,7 +156,6 @@ public class ChemAxonIdentifier extends Identifier {
 
     private ChemAxonCompound searchBySmiles(String smiles) {
         ChemAxonCompound compound = null;
-        logger.warn("Using smiles for the where clause.");
         String where = Representation.getColumn(Representation.SMILES);
         String query = String.format("SELECT DISTINCT(c.pubchem_id), crg.reactive_groups_id FROM chemicals c " +
                 "LEFT JOIN chemicals_reactive_groups crg ON c.pubchem_id = crg.pubchem_id " +

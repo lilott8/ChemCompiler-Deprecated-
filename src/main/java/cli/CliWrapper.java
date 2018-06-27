@@ -63,7 +63,7 @@ public class CliWrapper {
         // see if we asked for help...
         if (cmd.hasOption("help")) {
             HelpFormatter hf = new HelpFormatter();
-            hf.printHelp("ChemicalCompiler", buildOptions(), true);
+            hf.printHelp("BioScript", buildOptions(), true);
             System.exit(0);
         }
 
@@ -109,7 +109,7 @@ public class CliWrapper {
                 "Usage: -c /path/to/file_to_compile.json";
         options.addOption(Option.builder("c").longOpt("compile")
                 .desc(desc).hasArgs().required().numberOfArgs(1).type(String.class)
-                .argName("compile").build());
+                .argName("compile").required(true).build());
 
         // Testing mode
         desc = "Debug mode\n" +
@@ -129,7 +129,7 @@ public class CliWrapper {
         desc = "Place output in which directory.  If -t is set, this must be set." +
                 "\n Usage: -o /path/to/output/";
         options.addOption(Option.builder("o").longOpt("output")
-                .desc(desc).type(String.class).hasArg().required(false)
+                .desc(desc).type(String.class).hasArg().required(true)
                 .argName("output").build());
 
         // What translators to use
@@ -269,6 +269,8 @@ public class CliWrapper {
         options.addOption(Option.builder("nca")
                 .longOpt("nochemaxon").desc(desc).argName("nochemaxon").build());
 
+        desc = "print this message.";
+        options.addOption(Option.builder("help").longOpt("help").desc(desc).argName("help").build());
         return options;
     }
 

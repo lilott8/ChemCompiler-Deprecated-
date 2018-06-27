@@ -129,6 +129,5 @@ public class ReactiveCombinator extends TableCombinator {
 
         sb.append("Total chemicals: ").append(total).append(System.lineSeparator());
         sb.append(idOfMax).append(" has the most at: ").append(max);
-        logger.warn(sb.toString());
     }
 }
