@@ -15,6 +15,7 @@ import java.util.Map;
 import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
+import compilation.datastructures.node.ConditionalNode;
 import compilation.datastructures.node.InstructionNode;
 import compilation.datastructures.ssa.StaticSingleAssignment;
 import executable.instructions.Output;
@@ -180,12 +181,25 @@ public class MFSimSSACFG {
                     edge.getCondition().substring((edge.getCondition().lastIndexOf("=") + 1)) + ")\n";
             logger.warn("Hard-coding ONE_SENSOR");
         } else {
-            logger.warn(edge.getConditional());
-            ret += ", " + edge.getConditional().toString() + ")\n";
-            //ret += ", <INSERT CONDITION HERE>)\n";
+            ret += ", " + this.buildMFSimConditional(edge.getConditional()) + ")\n";
+            // ret += ", " + edge.getConditional().toString() + ")\n";
+            // ret += ", <INSERT CONDITION HERE>)\n";
         }
         return ret;
+    }
 
+    private String buildMFSimConditional(ConditionalNode node) {
+        StringBuilder sb = new StringBuilder();
+        // Get left operand of conditional:
+        sb.append(node.getRightOperand());
+        // Get right operand:
+        sb.append(node.getRightOperand());
+        // Get the conditional (<, >=, etc), in string form:
+        sb.append(node.getConditional());
+        // Get the conditional as a type(lt, lte, etc):
+        sb.append(node.getConditionalType());
+
+        return sb.toString();
     }
 
     private String getUnconditionalJump(String Source) {

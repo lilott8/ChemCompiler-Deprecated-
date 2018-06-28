@@ -51,6 +51,14 @@ public class ConditionalNode implements Node {
         return this.rightOperand;
     }
 
+    public String getConditional() {
+        return this.conditionalType.toString(this.conditionalType);
+    }
+
+    public ConditionalType getConditionalType() {
+        return this.conditionalType;
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.leftOperand).append(" ").append(this.conditionalType.toString())
