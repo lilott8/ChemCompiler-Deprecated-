@@ -151,6 +151,11 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
      * DEFAULT: true
      */
     private boolean checkForChemAxon = true;
+    /**
+     * Should the compiler print typing statistics
+     * DEFAULT: false
+     */
+    private boolean printStatistics = false;
 
     /**
      * Build the config object from our command line This method must match that in the main.
@@ -268,6 +273,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
 
         if (cmd.hasOption("nochemaxon")) {
             this.checkForChemAxon = false;
+        }
+
+        if (cmd.hasOption("statistics")) {
+            this.printStatistics = true;
         }
     }
 
@@ -466,5 +475,9 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
     @Override
     public ReportingLevel getErrorLevel() {
         return this.errorLevel;
+    }
+
+    public boolean printStatistics() {
+        return this.printStatistics;
     }
 }

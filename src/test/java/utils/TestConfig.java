@@ -49,4 +49,8 @@ public class TestConfig implements CommonConfig {
     public boolean checkForChemAxon() {
         return true;
     }
+
+    public boolean printStatistics() {
+        return false;
+    }
 }

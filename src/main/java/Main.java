@@ -11,6 +11,7 @@ import compilation.Compiler;
 import config.Config;
 import config.ConfigFactory;
 import reactivetable.StatisticCombinator;
+import shared.Statistics;
 
 
 public class Main {
@@ -33,6 +34,10 @@ public class Main {
         //compiler.runAllOps();
         //logger.debug(compiler.getControlFlow());
         // runner();
+
+        if (config.printStatistics()) {
+            logger.warn(Statistics.INSTANCE.printStats());
+        }
     }
 
     public static final void abandonShip(String message) throws Exception {

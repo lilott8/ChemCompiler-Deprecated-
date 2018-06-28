@@ -1,5 +1,6 @@
 package compilation;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,6 +22,7 @@ import parser.BioScriptParser;
 import parsing.BioScript.BenchtopParser;
 import shared.Facade;
 import shared.Phase;
+import shared.Statistics;
 import translators.TranslatorFacade;
 import typesystem.Inference;
 
@@ -60,8 +62,12 @@ public class Compiler {
         if (!this.config.getErrorLevel().disabled()) {
             for (CFG experiment : this.experimentControlFlowGraphs) {
                 if (!abandonShip) {
+                    long beginTime = System.nanoTime();
                     Inference phase = new Inference();
                     phase.runPhase(experiment);
+                    long inferenceTime = System.nanoTime() - beginTime;
+                    Statistics.INSTANCE.addStatsCategory(Statistics.TYPE_CHECKING);
+                    Statistics.INSTANCE.addRecord(Statistics.TYPE_CHECKING, String.format("Time (seconds) running inference: %.02f", inferenceTime / 1000000000.0));
                 } else {
                     logger.fatal(abandonShipReasons);
                     logger.fatal("Killing program in compiler.");
@@ -107,7 +113,13 @@ public class Compiler {
             for (Phase phase : entry.getValue()) {
                 if (!abandonShip) {
                     logger.info("Running: " + phase.getName());
+                    Statistics.INSTANCE.addStatsCategory(StringUtils.upperCase(phase.getName()));
+                    long start = System.nanoTime();
                     phase.run();
+                    long finish = System.nanoTime() - start;
+                    Statistics.INSTANCE.addRecord(StringUtils.upperCase(phase.getName()),
+                            String.format("Time (seconds) in %s: %.02f",
+                                    StringUtils.upperCase(phase.getName()), finish / 1000000000.0));
                 } else {
                     logger.fatal(abandonShipReasons);
                     logger.fatal("Killing program in compiler.");
@@ -119,6 +131,7 @@ public class Compiler {
         BenchtopParser.parseFromString(this.phases.get(this.config.getInputFile()).get(0).getOutput());
         this.benchtop = Benchtop.INSTANCE;
         try {
+            long start = System.nanoTime();
             for (String experimentKey : this.benchtop.getExperiments().keySet()) {
                 for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
                     this.controlFlow = CFGBuilder.buildControlFlowGraph(experiment);
@@ -135,6 +148,10 @@ public class Compiler {
                     experimentControlFlowGraphs.add(this.SSI);
                 }
             }
+            long finish = System.nanoTime() - start;
+            Statistics.INSTANCE.addStatsCategory(Statistics.COMPILATION);
+            Statistics.INSTANCE.addRecord(Statistics.COMPILATION,
+                    String.format("Time (seconds) in %s: %.02f", Statistics.COMPILATION, finish / 1000000000.0));
         } catch (Exception e) {
             logger.fatal(e);
             e.printStackTrace();

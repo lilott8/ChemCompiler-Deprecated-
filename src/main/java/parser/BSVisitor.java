@@ -276,7 +276,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     public BSVisitor visit(LessThanExpression n) {
         // TODO: check each side of the conditional for constant or chemical.
         n.f0.accept(this);
-        logger.info(this.name);
+        // logger.info(this.name);
         this.conditional += this.name;
         this.conditional += "<";
         n.f2.accept(this);

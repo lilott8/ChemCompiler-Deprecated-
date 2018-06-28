@@ -69,8 +69,8 @@ public class BSTypeChecker extends BSVisitor implements TypeChecker {
 
     @Override
     public void solve() {
-        logger.fatal("solveConstraints is commented out.");
-        logger.fatal("You are still using constraint generation from typesystem.Inference.");
+        // logger.fatal("solveConstraints is commented out.");
+        // logger.fatal("You are still using constraint generation from typesystem.Inference.");
         //this.z3.solveConstraints(statements, variables);
     }
 

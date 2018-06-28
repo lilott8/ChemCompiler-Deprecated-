@@ -29,6 +29,7 @@ public class CliWrapper {
     public static final Logger logger = LogManager.getLogger(CliWrapper.class);
     private CommandLine cmd;
     private CommandLineParser parser = new DefaultParser();
+    private boolean addOptionals = false;
 
     public CliWrapper() {
     }
@@ -44,6 +45,7 @@ public class CliWrapper {
 
         if (!new File(licensePath).exists()) {
             logger.fatal("ChemAxon license file not found. Please view: https://docs.chemaxon.com/display/docs/Installing+licenses+LIC");
+            logger.fatal("Please use the '-nca' flag to acknowledge you want to run BioScript without ChemAxon.");
             throw new ConfigurationException("Chem Axon License file not found.");
         }
         return true;
@@ -118,12 +120,7 @@ public class CliWrapper {
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
                 .argName("debug").build());
 
-        // Run SSI Algorithm
-        desc = "Run the SSI Algorithm.\n" +
-                "Usage: -ssi";
-        options.addOption(Option.builder("ssi").longOpt("ssi")
-                .desc(desc).type(Boolean.class).hasArg(false).required(false)
-                .argName("ssi").build());
+
 
         // Output file option
         desc = "Place output in which directory.  If -t is set, this must be set." +
@@ -136,30 +133,16 @@ public class CliWrapper {
         desc = "What translator to use.  If -o is set, this must be set.\n" +
                 "Usage: -translate {list of translators}\n" +
                 "Available translators: \n" +
-                "\tmfsim: translates cfg to mfsim machine code\n" +
-                "\ttypesystem: translates cfg for further typing analysis\n" +
-                "\tmicrodrop: translates the cfg to microdrop machine code";
+                "\tmfsim: translates cfg to mfsim machine code";
         options.addOption(Option.builder("t").longOpt("translate")
                 .desc(desc).type(ArrayList.class).hasArgs().required(false)
                 .argName("translate").build());
-
         // Clean output option
         desc = "Clean the output directory. If -clean is set, -o (output) must be set." +
                 "\nUsage: -clean";
         options.addOption(Option.builder("clean").longOpt("clean")
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
                 .argName("clean").build());
-
-        // Enable additional optimizations for compilation.
-        desc = "What optimizations to enable." +
-                "\n Available optimizations: " +
-                "\n\t ssi: run SSI algorithm" +
-                "\n\t ssa: run SSA algorithm" +
-                "\n Usage: -opts {list of optimizations}";
-        options.addOption(Option.builder("opts").longOpt("optimizations")
-                .desc(desc).hasArgs().required(false)
-                .argName("opts").build());
-
         // classification scope
         desc = "What level to attempt to classify materials at: \n" +
                 "\t0\t=>\tDisable identification\n" +
@@ -172,49 +155,37 @@ public class CliWrapper {
         options.addOption(Option.builder("classify").longOpt("classify")
                 .desc(desc).type(Integer.class).hasArg().required(false)
                 .argName("classify").build());
-
+        // Simulate using ChemAxon
         desc = "Simulate chemistry using a computational chemical library.\n" +
                 "This is disabled by default.\n" +
                 "Usage: -s";
         options.addOption(Option.builder("s").longOpt("simulate")
                 .desc(desc).hasArg(false).required(false)
                 .argName("simulate").build());
-
         // Enforcement level
         desc = "What level to report type system shared.errors.\n" +
                 "Usage: -ts {error|warn|none}";
         options.addOption(Option.builder("ts").longOpt("typesystem")
                 .desc(desc).type(String.class).hasArg(true).required(false)
                 .argName("ts").build());
-
         // Build the filters
         desc = "Disable building the SMART filters.  This is only disabled for testing purposes.\n" +
                 "Usage: -nf";
         options.addOption(Option.builder("nf").longOpt("nofilters")
                 .desc(desc).type(Boolean.class).hasArg(false).required(false)
                 .argName("nofilters").build());
-
         // Definitions of EPA reactive groups
         desc = "Path for EPA config file.  Defaults to internally installed file.\n" +
                 "Usage: -epadefs [/path/to/file.xml]";
         options.addOption(Option.builder("epadefs").longOpt("epadefs")
-                .desc(desc).type(String.class).hasArg().required(false)
+                .desc(desc).type(String.class).hasArg().required(true)
                 .argName("epadefs").build());
-
-        // Number of threads in the program
-        desc = "Number of threads to use during execution.\n" +
-                "Usage: -threads [number of threads]\n";
-        options.addOption(Option.builder("threads").longOpt("threads")
-                .desc(desc).type(Integer.class).hasArg().required(false)
-                .argName("threads").build());
-
         // Minimum char limit for smart filters.
         desc = "Minimum size of SMARTS filter to use.  Default is maximum.\n" +
                 "Usage: -smarts [number of chars]\n";
         options.addOption(Option.builder("smarts").longOpt("smarts")
                 .desc(desc).type(Integer.class).hasArg().required(false)
                 .argName("smarts").build());
-
         // Ignore chemical usage monitoring
         desc = "Disable resource monitoring, i.e. ignore a mix using " +
                 "the same chemical.\n" +
@@ -222,7 +193,6 @@ public class CliWrapper {
         options.addOption(Option.builder("drm").longOpt("drm")
                 .desc(desc).type(String.class).required(false)
                 .argName("drm").build());
-
         // Database name
         desc = "Database name.\n" +
                 "Usage: -dbname [name]";
@@ -263,14 +233,44 @@ public class CliWrapper {
                 " Usage: -dbextras [extra url get options]";
         options.addOption(Option.builder("dbextras").longOpt("dbextras")
                 .desc(desc).hasArg().argName("dbextras").build());
-
+        // Run a check to make sure ChemAxon is enabled.
         desc = "Disable ChemAxon check.\n" +
                 " Usage: -nca";
         options.addOption(Option.builder("nca")
                 .longOpt("nochemaxon").desc(desc).argName("nochemaxon").build());
-
+        // Chose whether or not you want statistics printed
+        desc = "Print statistics regarding this compiler\n" +
+                " Usage: -stats";
+        options.addOption(Option.builder("stats")
+                .longOpt("statistics").desc(desc).hasArg(false).argName("statistics").build());
+        // Help
         desc = "print this message.";
         options.addOption(Option.builder("help").longOpt("help").desc(desc).argName("help").build());
+
+        if (addOptionals) {
+            // Run SSI Algorithm
+            desc = "Run the SSI Algorithm.\n" +
+                    "Usage: -ssi";
+            options.addOption(Option.builder("ssi").longOpt("ssi")
+                    .desc(desc).type(Boolean.class).hasArg(false).required(false)
+                    .argName("ssi").build());
+            // Enable additional optimizations for compilation.
+            desc = "What optimizations to enable." +
+                    "\n Available optimizations: " +
+                    "\n\t ssi: run SSI algorithm" +
+                    "\n\t ssa: run SSA algorithm" +
+                    "\n Usage: -opts {list of optimizations}";
+            options.addOption(Option.builder("opts").longOpt("optimizations")
+                    .desc(desc).hasArgs().required(false)
+                    .argName("opts").build());
+            // Number of threads in the program
+            desc = "Number of threads to use during execution.\n" +
+                    "Usage: -threads [number of threads]\n";
+            options.addOption(Option.builder("threads").longOpt("threads")
+                    .desc(desc).type(Integer.class).hasArg().required(false)
+                    .argName("threads").build());
+        }
+
         return options;
     }
 
