@@ -212,7 +212,8 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
                 this.dbAddr = cmd.getOptionValue("dbaddr");
             }
             if (cmd.hasOption("dbdriver")) {
-                this.dbDriver = cmd.getOptionValue("dbdriver");
+                // this.dbDriver = cmd.getOptionValue("dbdriver");
+                this.dbDriver = "org.mariadb.jdbc.MySQLDataSource";
             }
             if (cmd.hasOption("dbtimeout")) {
                 this.dbTimeout = Integer.parseInt(cmd.getOptionValue("dbtimeout"));

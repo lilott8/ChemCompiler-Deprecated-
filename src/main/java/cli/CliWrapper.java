@@ -219,8 +219,9 @@ public class CliWrapper {
         options.addOption(Option.builder("dbaddr").longOpt("dbaddr")
                 .desc(desc).hasArg().argName("dbaddr").build());
         // Database driver, e.g. org.mariadb.jdbc.MySQLDataSource
-        desc = "Database driver default mysql. Can be multiple, seperate by comma (,).\n" +
-                "Usage: -dbdriver [mysql|hikari]";
+        desc = "Database driver default mysql. Can be multiple, seperate by comma (,). " +
+                "Default is mysql\n" +
+                "Usage: -dbdriver [mysql]";
         options.addOption(Option.builder("dbdriver").longOpt("dbdriver")
                 .desc(desc).hasArg().argName("dbdriver").build());
         // Database timeout
