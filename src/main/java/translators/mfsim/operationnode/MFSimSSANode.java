@@ -46,22 +46,23 @@ public abstract class MFSimSSANode {
             if (p.getUnit() instanceof Units.Time) {
                 switch ((Units.Time) p.getUnit()) {
                     case DAY:
-                        return (long) p.getQuantity() * 24 * 60 * 60 * 1000000;  //day to microsecond
+                        return (long) p.getQuantity() * 24 * 60 * 60;  //day to second
                     case HOUR:
-                        return (long) p.getQuantity() * 60 * 60 * 1000000; //hour to microsecond
+                        return (long) p.getQuantity() * 60 * 60; //hour to second
                     case MINUTE:
-                        return (long) p.getQuantity() * 60 * 1000000; //minute to microsecond
+                        return (long) p.getQuantity() * 60; //minute to second
                     case SECOND:
-                        return (long) p.getQuantity() * 1000000; //second to microsecond
+                        return (long) p.getQuantity(); // second
                     case MILLISECOND:
-                        return (long) p.getQuantity() * 1000;
+                        return (long) p.getQuantity() / 1000; //millisecond to second
                     case MICROSECOND:
-                        return (long) p.getQuantity();
+                        return (long) p.getQuantity() / 1000000; //microsecond to second
                     default:
                         logger.warn("Using template time.");
                 }
             }
         }
+        logger.warn("Using template time.");
         return 2;  //template time
     }
 

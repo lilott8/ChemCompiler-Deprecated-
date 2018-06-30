@@ -32,15 +32,15 @@
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "O",
-          "NAME" : "O",
+          "ID" : "water",
+          "NAME" : "water",
           "TYPE" : "CHEMICAL"
         }
       },
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C",
-          "NAME" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C",
+          "ID" : "tmb_sub",
+          "NAME" : "tmb_sub",
           "TYPE" : "CHEMICAL"
         }
       },
@@ -481,7 +481,7 @@
                     "INPUT_TYPE" : "VARIABLE",
                     "CHEMICAL" : {
                       "VARIABLE" : {
-                        "NAME" : "O"
+                        "NAME" : "water"
                       },
                       "VOLUME" : {
                         "VALUE" : "350",
@@ -510,7 +510,7 @@
                     "INPUT_TYPE" : "VARIABLE",
                     "CHEMICAL" : {
                       "VARIABLE" : {
-                        "NAME" : "O"
+                        "NAME" : "water"
                       },
                       "VOLUME" : {
                         "VALUE" : "350",
@@ -539,7 +539,7 @@
                     "INPUT_TYPE" : "VARIABLE",
                     "CHEMICAL" : {
                       "VARIABLE" : {
-                        "NAME" : "O"
+                        "NAME" : "water"
                       },
                       "VOLUME" : {
                         "VALUE" : "350",
@@ -694,7 +694,7 @@
               "INPUT_TYPE" : "VARIABLE",
               "CHEMICAL" : {
                 "VARIABLE" : {
-                  "NAME" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C"
+                  "NAME" : "tmb_sub"
                 },
                 "VOLUME" : {
                   "VALUE" : "100",
@@ -723,7 +723,7 @@
               "INPUT_TYPE" : "VARIABLE",
               "CHEMICAL" : {
                 "VARIABLE" : {
-                  "NAME" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C"
+                  "NAME" : "tmb_sub"
                 },
                 "VOLUME" : {
                   "VALUE" : "100",
@@ -752,7 +752,7 @@
               "INPUT_TYPE" : "VARIABLE",
               "CHEMICAL" : {
                 "VARIABLE" : {
-                  "NAME" : "Cc1cc(cc(c1N)C)c2cc(c(c(c2)C)N)C"
+                  "NAME" : "tmb_sub"
                 },
                 "VOLUME" : {
                   "VALUE" : "100",

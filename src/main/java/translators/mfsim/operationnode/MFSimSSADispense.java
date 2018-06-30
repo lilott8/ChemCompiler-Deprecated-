@@ -14,7 +14,7 @@ public class MFSimSSADispense extends MFSimSSANode {
 
     public MFSimSSADispense(Integer id, String name, String chemical, Integer amount) {
         super(id, OperationClassifier.DISPENSE, name);
-        chemical = chemical;
+        this.chemical = chemical;
         units = amount;
 
     }
