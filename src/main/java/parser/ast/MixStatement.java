@@ -12,32 +12,40 @@ import parser.visitor.Visitor;
 /**
  * Grammar production:
  * f0 -> <MIX>
- * f1 -> PrimaryExpression()
- * f2 -> <WITH>
- * f3 -> PrimaryExpression()
- * f4 -> ( <FOR> IntegerLiteral() )?
+ * f1 -> ( VolumeUnit() <OF> )?
+ * f2 -> PrimaryExpression()
+ * f3 -> <WITH>
+ * f4 -> ( VolumeUnit() <OF> )?
+ * f5 -> PrimaryExpression()
+ * f6 -> ( <FOR> TimeUnit() )?
  */
 public class MixStatement implements Node {
     public NodeToken f0;
-    public PrimaryExpression f1;
-    public NodeToken f2;
-    public PrimaryExpression f3;
+    public NodeOptional f1;
+    public PrimaryExpression f2;
+    public NodeToken f3;
     public NodeOptional f4;
+    public PrimaryExpression f5;
+    public NodeOptional f6;
 
-    public MixStatement(NodeToken n0, PrimaryExpression n1, NodeToken n2, PrimaryExpression n3, NodeOptional n4) {
+    public MixStatement(NodeToken n0, NodeOptional n1, PrimaryExpression n2, NodeToken n3, NodeOptional n4, PrimaryExpression n5, NodeOptional n6) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
         f3 = n3;
         f4 = n4;
+        f5 = n5;
+        f6 = n6;
     }
 
-    public MixStatement(PrimaryExpression n0, PrimaryExpression n1, NodeOptional n2) {
+    public MixStatement(NodeOptional n0, PrimaryExpression n1, NodeOptional n2, PrimaryExpression n3, NodeOptional n4) {
         f0 = new NodeToken("mix");
         f1 = n0;
-        f2 = new NodeToken("with");
-        f3 = n1;
+        f2 = n1;
+        f3 = new NodeToken("with");
         f4 = n2;
+        f5 = n3;
+        f6 = n4;
     }
 
     public void accept(Visitor v) {

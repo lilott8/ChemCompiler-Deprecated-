@@ -1,0 +1,18 @@
+manifest PCRMasterMix
+
+functions
+
+instructions
+
+PCRMix = dispense 10uL of PCRMasterMix
+
+heat PCRMix at 95c for 5s
+
+repeat 20 times {
+  heat PCRMix at 53c for 15s
+  heat PCRMix at 72c for 10s
+}
+
+sensor = detect fluorescence on PCRMix for 3m
+
+drain PCRMix

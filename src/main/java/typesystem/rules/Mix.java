@@ -77,11 +77,11 @@ public class Mix extends NodeAnalyzer {
         addVariable(output);
 
         // Get the properties of the instruction if they exist
-        for (Property p : node.getInstruction().getProperties()) {
-            Variable prop = new shared.variable.Property(Rule.createHash(p.toString()), this.propertyTypes);
+        for (substance.Property p : node.getInstruction().getProperties()) {
+            shared.variable.Property prop = new shared.variable.Property(Rule.createHash(p.toString()), "", p.getUnit().toString(), p.getQuantity());
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
-            addVariable(prop);
+            addProperty(prop);
         }
 
         addInstruction(instruction);

@@ -2,6 +2,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import config.Config;
 import config.ConfigFactory;
 import reactivetable.StatisticCombinator;
 import shared.Statistics;
+import shared.io.database.ConnectorFactory;
 
 
 public class Main {
@@ -35,6 +37,15 @@ public class Main {
         //logger.debug(compiler.getControlFlow());
         // runner();
 
+        try {
+            if (!ConnectorFactory.getConnection().getConnection().isClosed()) {
+                ConnectorFactory.getConnection().closeConnection(ConnectorFactory.getConnection().getConnection());
+            }
+        } catch (SQLException e) {
+            logger.error("Problem closing the last database connection.");
+            logger.fatal(e.toString());
+        }
+
         if (config.printStatistics()) {
             logger.warn(Statistics.INSTANCE.printStats());
         }
@@ -54,10 +65,10 @@ public class Main {
         compile.add("src/main/resources/tests/aquacoreassays/pcr.json");
 
         // Chemtrails Tests. (4-7)
-        compile.add("src/main/resources/tests/chemtype/chemtype1.json");
-        compile.add("src/main/resources/tests/chemtype/chemtype2.json");
-        compile.add("src/main/resources/tests/chemtype/chemtype3.json");
-        compile.add("src/main/resources/tests/chemtype/chemtype4.json");
+        compile.add("src/main/resources/tests/bioscript/chemtype1.json");
+        compile.add("src/main/resources/tests/bioscript/chemtype2.json");
+        compile.add("src/main/resources/tests/bioscript/chemtype3.json");
+        compile.add("src/main/resources/tests/bioscript/chemtype4.json");
 
         // Contrived Tests. (8-14)
         compile.add("src/main/resources/tests/contrived/compileFail.json");

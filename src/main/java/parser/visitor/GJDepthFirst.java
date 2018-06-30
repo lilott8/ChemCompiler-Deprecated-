@@ -16,6 +16,7 @@ import parser.ast.BranchStatement;
 import parser.ast.Conditional;
 import parser.ast.ConditionalParenthesis;
 import parser.ast.DetectStatement;
+import parser.ast.DispenseStatement;
 import parser.ast.DivideExpression;
 import parser.ast.DrainStatement;
 import parser.ast.ElseBranchStatement;
@@ -60,12 +61,15 @@ import parser.ast.RightOp;
 import parser.ast.SplitStatement;
 import parser.ast.Statements;
 import parser.ast.Stationary;
+import parser.ast.TempUnit;
+import parser.ast.TimeUnit;
 import parser.ast.TimesExpression;
 import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
 import parser.ast.VariableAlias;
+import parser.ast.VolumeUnit;
 import parser.ast.WhileStatement;
 
 /**
@@ -242,6 +246,20 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
     }
 
     /**
+     * f0 -> MixStatement()
+     * | DetectStatement()
+     * | SplitStatement()
+     * | DispenseStatement()
+     * | FunctionInvoke()
+     * | VariableAlias()
+     */
+    public R visit(RightOp n, A argu) {
+        R _ret = null;
+        n.f0.accept(this, argu);
+        return _ret;
+    }
+
+    /**
      * f0 -> Type()
      * f1 -> ( TypingRest() )*
      */
@@ -309,10 +327,12 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
 
     /**
      * f0 -> <MIX>
-     * f1 -> PrimaryExpression()
-     * f2 -> <WITH>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> PrimaryExpression()
+     * f3 -> <WITH>
+     * f4 -> ( VolumeUnit() <OF> )?
+     * f5 -> PrimaryExpression()
+     * f6 -> ( <FOR> TimeUnit() )?
      */
     public R visit(MixStatement n, A argu) {
         R _ret = null;
@@ -321,6 +341,8 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
         n.f2.accept(this, argu);
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
+        n.f5.accept(this, argu);
+        n.f6.accept(this, argu);
         return _ret;
     }
 
@@ -351,11 +373,24 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
     }
 
     /**
+     * f0 -> <DISPENSE>
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> Identifier()
+     */
+    public R visit(DispenseStatement n, A argu) {
+        R _ret = null;
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
+        n.f2.accept(this, argu);
+        return _ret;
+    }
+
+    /**
      * f0 -> <HEAT>
      * f1 -> PrimaryExpression()
      * f2 -> <AT>
-     * f3 -> IntegerLiteral()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f3 -> TempUnit()
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     public R visit(HeatStatement n, A argu) {
         R _ret = null;
@@ -372,7 +407,7 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
      * f1 -> PrimaryExpression()
      * f2 -> <ON>
      * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     public R visit(DetectStatement n, A argu) {
         R _ret = null;
@@ -386,7 +421,7 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> ( IntegerLiteral() | Identifier() )
+     * f1 -> IntegerLiteral()
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statements() )+
@@ -549,20 +584,6 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
         R _ret = null;
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
-        return _ret;
-    }
-
-    /**
-     * f0 -> MixStatement()
-     * | DetectStatement()
-     * | SplitStatement()
-     * | FunctionInvoke()
-     * | MathStatement()
-     * | VariableAlias()
-     */
-    public R visit(RightOp n, A argu) {
-        R _ret = null;
-        n.f0.accept(this, argu);
         return _ret;
     }
 
@@ -863,6 +884,39 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
     public R visit(VariableAlias n, A argu) {
         R _ret = null;
         n.f0.accept(this, argu);
+        return _ret;
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <SECOND> | <MILLISECOND> | <MICROSECOND> | <HOUR> | <MINUTE> )+
+     */
+    public R visit(TimeUnit n, A argu) {
+        R _ret = null;
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
+        return _ret;
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <LITRE> | <MILLILITRE> | <MICROLITRE> )+
+     */
+    public R visit(VolumeUnit n, A argu) {
+        R _ret = null;
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
+        return _ret;
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <CELSIUS> | <FAHRENHEIT> )+
+     */
+    public R visit(TempUnit n, A argu) {
+        R _ret = null;
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
         return _ret;
     }
 

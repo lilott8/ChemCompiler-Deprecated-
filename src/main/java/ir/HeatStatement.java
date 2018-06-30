@@ -29,13 +29,18 @@ public class HeatStatement extends BaseNop {
     }
 
     @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
+    }
+
+    @Override
     public String toJson() {
         return this.toJson("");
     }
 
     @Override
     public String toJson(String indent) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         // Open object brace.
         sb.append("{").append(NL);

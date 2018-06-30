@@ -83,6 +83,10 @@ public class MixStatement extends BaseStatement {
         return sb.toString();
     }
 
+    @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
+    }
 
     /**
      * This is the common case! This builds the form: t1 \in output ^ t2 \in output => lu(t1, t2)

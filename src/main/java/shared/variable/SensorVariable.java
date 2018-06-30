@@ -35,7 +35,7 @@ public class SensorVariable<Value> extends Variable<Value> {
 
         sb.append("{").append(NL);
         sb.append("\"SENSOR_DECLARATION\" : {").append(NL);
-        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"ID\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"TYPE\" : \"SENSOR\", ").append(NL);
         sb.append(this.addInferredTypes());
@@ -47,6 +47,11 @@ public class SensorVariable<Value> extends Variable<Value> {
 
     @Override
     public String buildUsage() {
-        return null;
+        return "";
+    }
+
+    @Override
+    public String buildVariable() {
+        return "";
     }
 }

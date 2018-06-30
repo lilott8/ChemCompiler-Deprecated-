@@ -9,17 +9,12 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import shared.ReportingLevel;
-import translators.Translator;
 import translators.TranslatorFacade;
-import translators.mfsim.MFSimSSATranslator;
-import translators.typesystem.TypeSystemTranslator;
 
 /**
  * @created: 7/26/17

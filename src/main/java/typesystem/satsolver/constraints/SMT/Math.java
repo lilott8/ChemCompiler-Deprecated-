@@ -3,6 +3,7 @@ package typesystem.satsolver.constraints.SMT;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.SMTSolver;
@@ -29,7 +30,7 @@ public class Math implements SMTSolver {
             sb.append(compose(v));
         }
 
-        for (Variable v : instruction.getProperties()) {
+        for (Property v : instruction.getProperties()) {
             sb.append(compose(v));
         }
 
@@ -46,4 +47,11 @@ public class Math implements SMTSolver {
 
         return sb.toString();
     }
+
+    @Override
+    public String compose(Property property) {
+        return "";
+    }
+
+
 }

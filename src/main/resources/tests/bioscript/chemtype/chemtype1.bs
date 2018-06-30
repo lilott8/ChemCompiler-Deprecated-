@@ -1,0 +1,8 @@
+manifest C2Cl4
+manifest nitric_acid
+
+functions
+
+instructions
+
+a = mix C2Cl4 with 100L of nitric_acid

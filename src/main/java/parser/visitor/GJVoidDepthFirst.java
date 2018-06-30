@@ -16,6 +16,7 @@ import parser.ast.BranchStatement;
 import parser.ast.Conditional;
 import parser.ast.ConditionalParenthesis;
 import parser.ast.DetectStatement;
+import parser.ast.DispenseStatement;
 import parser.ast.DivideExpression;
 import parser.ast.DrainStatement;
 import parser.ast.ElseBranchStatement;
@@ -60,12 +61,15 @@ import parser.ast.RightOp;
 import parser.ast.SplitStatement;
 import parser.ast.Statements;
 import parser.ast.Stationary;
+import parser.ast.TempUnit;
+import parser.ast.TimeUnit;
 import parser.ast.TimesExpression;
 import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
 import parser.ast.VariableAlias;
+import parser.ast.VolumeUnit;
 import parser.ast.WhileStatement;
 
 /**
@@ -218,6 +222,18 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
     }
 
     /**
+     * f0 -> MixStatement()
+     * | DetectStatement()
+     * | SplitStatement()
+     * | DispenseStatement()
+     * | FunctionInvoke()
+     * | VariableAlias()
+     */
+    public void visit(RightOp n, A argu) {
+        n.f0.accept(this, argu);
+    }
+
+    /**
      * f0 -> Type()
      * f1 -> ( TypingRest() )*
      */
@@ -273,10 +289,12 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
 
     /**
      * f0 -> <MIX>
-     * f1 -> PrimaryExpression()
-     * f2 -> <WITH>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> PrimaryExpression()
+     * f3 -> <WITH>
+     * f4 -> ( VolumeUnit() <OF> )?
+     * f5 -> PrimaryExpression()
+     * f6 -> ( <FOR> TimeUnit() )?
      */
     public void visit(MixStatement n, A argu) {
         n.f0.accept(this, argu);
@@ -284,6 +302,8 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
         n.f2.accept(this, argu);
         n.f3.accept(this, argu);
         n.f4.accept(this, argu);
+        n.f5.accept(this, argu);
+        n.f6.accept(this, argu);
     }
 
     /**
@@ -309,11 +329,22 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
     }
 
     /**
+     * f0 -> <DISPENSE>
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> Identifier()
+     */
+    public void visit(DispenseStatement n, A argu) {
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
+        n.f2.accept(this, argu);
+    }
+
+    /**
      * f0 -> <HEAT>
      * f1 -> PrimaryExpression()
      * f2 -> <AT>
-     * f3 -> IntegerLiteral()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f3 -> TempUnit()
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     public void visit(HeatStatement n, A argu) {
         n.f0.accept(this, argu);
@@ -328,7 +359,7 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
      * f1 -> PrimaryExpression()
      * f2 -> <ON>
      * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     public void visit(DetectStatement n, A argu) {
         n.f0.accept(this, argu);
@@ -340,7 +371,7 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> ( IntegerLiteral() | Identifier() )
+     * f1 -> IntegerLiteral()
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statements() )+
@@ -484,18 +515,6 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
     public void visit(AllowedArgumentsRest n, A argu) {
         n.f0.accept(this, argu);
         n.f1.accept(this, argu);
-    }
-
-    /**
-     * f0 -> MixStatement()
-     * | DetectStatement()
-     * | SplitStatement()
-     * | FunctionInvoke()
-     * | MathStatement()
-     * | VariableAlias()
-     */
-    public void visit(RightOp n, A argu) {
-        n.f0.accept(this, argu);
     }
 
     /**
@@ -744,6 +763,33 @@ public class GJVoidDepthFirst<A> implements GJVoidVisitor<A> {
      */
     public void visit(VariableAlias n, A argu) {
         n.f0.accept(this, argu);
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <SECOND> | <MILLISECOND> | <MICROSECOND> | <HOUR> | <MINUTE> )+
+     */
+    public void visit(TimeUnit n, A argu) {
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <LITRE> | <MILLILITRE> | <MICROLITRE> )+
+     */
+    public void visit(VolumeUnit n, A argu) {
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <CELSIUS> | <FAHRENHEIT> )+
+     */
+    public void visit(TempUnit n, A argu) {
+        n.f0.accept(this, argu);
+        n.f1.accept(this, argu);
     }
 
 }

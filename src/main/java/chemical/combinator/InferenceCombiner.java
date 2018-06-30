@@ -21,6 +21,8 @@ public class InferenceCombiner implements Combiner {
 
     @Override
     public Set<ChemTypes> combine(Set<ChemTypes> a, Set<ChemTypes> b) {
+        logger.warn(a);
+        logger.warn(b);
         Set<ChemTypes> chemTypes = new HashSet<>();
 
         for (ChemTypes t1 : a) {

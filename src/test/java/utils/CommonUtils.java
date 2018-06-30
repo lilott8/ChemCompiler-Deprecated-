@@ -25,7 +25,7 @@ public class CommonUtils {
         compiler.compile();
         Inference inference = new Inference();
         compiler.runAllOps();
-        // We can do this because the test has only one experiment!
+        // We can do this because the elisa has only one experiment!
         return inference.runPhase(compiler.getExperiments().get(0));
     }
 }

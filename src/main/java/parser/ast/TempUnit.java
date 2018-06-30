@@ -11,17 +11,16 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> Identifier()
- * | TrueLiteral()
- * | FalseLiteral()
- * | IntegerLiteral()
- * | RealLiteral()
+ * f0 -> IntegerLiteral()
+ * f1 -> ( <CELSIUS> | <FAHRENHEIT> )?
  */
-public class PrimaryExpression implements Node {
-    public NodeChoice f0;
+public class TempUnit implements Node {
+    public IntegerLiteral f0;
+    public NodeOptional f1;
 
-    public PrimaryExpression(NodeChoice n0) {
+    public TempUnit(IntegerLiteral n0, NodeOptional n1) {
         f0 = n0;
+        f1 = n1;
     }
 
     public void accept(Visitor v) {

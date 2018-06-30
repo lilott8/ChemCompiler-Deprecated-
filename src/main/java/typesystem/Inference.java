@@ -18,8 +18,6 @@ import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.node.InstructionNode;
-import config.ConfigFactory;
-import reactivetable.StatisticCombinator;
 import shared.Phase;
 import shared.Statistics;
 import shared.Tuple;
@@ -71,7 +69,7 @@ public class Inference implements shared.Phase {
 
     // Default Constructor
     public Inference() {
-        logger.error("You really should be doing type checking in the parsing phase.");
+        // logger.error("You really should be doing type checking in the parsing phase.");
         this.loadRules();
     }
 
@@ -241,12 +239,12 @@ public class Inference implements shared.Phase {
         return nums.get(middle);
     }
 
+    public String getOutput() {
+        return "";
+    }
+
     // Enum to determine what type the node in the CFG is.
     public enum InferenceType {
         TERM, INSTRUCTION, BRANCH
-    }
-
-    public String getOutput() {
-        return "";
     }
 }

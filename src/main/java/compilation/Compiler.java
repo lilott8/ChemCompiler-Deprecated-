@@ -31,20 +31,15 @@ import typesystem.Inference;
  */
 public class Compiler {
     public static final Logger logger = LogManager.getLogger(Compiler.class);
-
+    private static boolean abandonShip = false;
+    private static String abandonShipReasons = "";
     private Integer idGen = 0;
-
     private List<CFG> experimentControlFlowGraphs = new ArrayList<>();
     private CFG benchtopControlFlowGraph = new CFG();
-
     private Benchtop benchtop;
     private StaticSingleInformation SSI;
     private CFG controlFlow;
-
     private Config config;
-    private static boolean abandonShip = false;
-    private static String abandonShipReasons = "";
-
     private Map<String, List<Phase>> phases = new HashMap<>();
 
     public Compiler(Config config) {

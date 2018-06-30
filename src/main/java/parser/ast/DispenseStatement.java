@@ -11,33 +11,25 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> <DETECT>
- * f1 -> PrimaryExpression()
- * f2 -> <ON>
- * f3 -> PrimaryExpression()
- * f4 -> ( <FOR> TimeUnit() )?
+ * f0 -> <DISPENSE>
+ * f1 -> ( VolumeUnit() <OF> )?
+ * f2 -> Identifier()
  */
-public class DetectStatement implements Node {
+public class DispenseStatement implements Node {
     public NodeToken f0;
-    public PrimaryExpression f1;
-    public NodeToken f2;
-    public PrimaryExpression f3;
-    public NodeOptional f4;
+    public NodeOptional f1;
+    public Identifier f2;
 
-    public DetectStatement(NodeToken n0, PrimaryExpression n1, NodeToken n2, PrimaryExpression n3, NodeOptional n4) {
+    public DispenseStatement(NodeToken n0, NodeOptional n1, Identifier n2) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
-        f3 = n3;
-        f4 = n4;
     }
 
-    public DetectStatement(PrimaryExpression n0, PrimaryExpression n1, NodeOptional n2) {
-        f0 = new NodeToken("detect");
+    public DispenseStatement(NodeOptional n0, Identifier n1) {
+        f0 = new NodeToken("dispense");
         f1 = n0;
-        f2 = new NodeToken("on");
-        f3 = n1;
-        f4 = n2;
+        f2 = n1;
     }
 
     public void accept(Visitor v) {

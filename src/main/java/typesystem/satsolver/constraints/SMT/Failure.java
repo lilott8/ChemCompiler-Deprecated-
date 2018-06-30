@@ -1,5 +1,6 @@
 package typesystem.satsolver.constraints.SMT;
 
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.SMTSolver;
@@ -18,6 +19,11 @@ public class Failure implements SMTSolver {
 
     @Override
     public String compose(Variable variable) {
+        return killSwitch();
+    }
+
+    @Override
+    public String compose(Property property) {
         return killSwitch();
     }
 }

@@ -14,6 +14,7 @@ import parser.visitor.Visitor;
  * f0 -> AssignmentStatement()
  * | BranchStatement()
  * | RepeatStatement()
+ * | WhileStatement()
  * | HeatStatement()
  * | DrainStatement()
  * | FunctionInvoke()

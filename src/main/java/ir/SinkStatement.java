@@ -1,5 +1,6 @@
 package ir;
 
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
@@ -24,6 +25,11 @@ public class SinkStatement extends BaseNop {
     @Override
     public String compose(Variable variable) {
         return super.defaultCompose(variable);
+    }
+
+    @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
     }
 
     @Override

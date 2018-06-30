@@ -35,7 +35,7 @@ public class StationaryVariable<Value> extends Variable<Value> {
         StringBuilder sb = new StringBuilder();
         sb.append("{").append(NL);
         sb.append("\"VARIABLE_DECLARATION\" : {").append(NL);
-        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"ID\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"TYPE\" : \"STATIONARY\", ");
         sb.append(this.addInferredTypes());
@@ -54,5 +54,10 @@ public class StationaryVariable<Value> extends Variable<Value> {
         sb.append("}").append(NL);
 
         return sb.toString();
+    }
+
+    @Override
+    public String buildVariable() {
+        return "";
     }
 }

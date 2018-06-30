@@ -39,11 +39,11 @@ public class DefinedVariable<Value> extends Variable<Value> {
     public String buildUsage() {
         StringBuilder sb = new StringBuilder();
         sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
-        sb.append("\"CHEMICAL\" : {").append(NL);
+        // sb.append("\"CHEMICAL\" : {").append(NL);
         sb.append("\"VARIABLE\" : {").append(NL);
         sb.append("\"NAME\" : \"").append(this.name).append("\"").append(NL);
         sb.append("}").append(NL);
-        sb.append("}").append(NL);
+        //sb.append("}").append(NL);
         // Variables cannot close the chemical tag, because there might be a property.
         return sb.toString();
     }
@@ -54,7 +54,7 @@ public class DefinedVariable<Value> extends Variable<Value> {
 
         sb.append("{").append(NL);
         sb.append("\"VARIABLE_DECLARATION\" : {").append(NL);
-        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"ID\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"TYPE\" : \"CHEMICAL\", ").append(NL);
         sb.append(this.addInferredTypes());
@@ -62,5 +62,10 @@ public class DefinedVariable<Value> extends Variable<Value> {
         sb.append("}").append(NL);
 
         return sb.toString();
+    }
+
+    @Override
+    public String buildVariable() {
+        return "";
     }
 }

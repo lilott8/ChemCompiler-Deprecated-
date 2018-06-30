@@ -10,6 +10,7 @@ import java.util.Set;
 import chemical.combinator.CombinerFactory;
 import chemical.epa.ChemTypes;
 import chemical.epa.EpaManager;
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.SMTSolver;
@@ -171,5 +172,10 @@ public class Mix implements SMTSolver {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String compose(Property property) {
+        return "";
     }
 }

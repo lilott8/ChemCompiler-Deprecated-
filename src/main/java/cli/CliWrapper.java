@@ -121,7 +121,6 @@ public class CliWrapper {
                 .argName("debug").build());
 
 
-
         // Output file option
         desc = "Place output in which directory.  If -t is set, this must be set." +
                 "\n Usage: -o /path/to/output/";
