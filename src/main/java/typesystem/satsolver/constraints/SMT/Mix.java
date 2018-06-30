@@ -165,7 +165,7 @@ public class Mix implements SMTSolver {
             for (Variable input2 : input) {
                 for (ChemTypes t1 : (Set<ChemTypes>) input1.getTypes()) {
                     for (ChemTypes t2 : (Set<ChemTypes>) input2.getTypes()) {
-
+                        // Intentionally left blank.
                     }
                 }
             }

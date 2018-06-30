@@ -1,8 +1,8 @@
-manifest tetrachloroethylne
-manifest nitric_acid
+manifest YXFVVABEGXRONW-UHFFFAOYSA-N
+manifest FAPWRFPIFSIZLT-UHFFFAOYSA-M
 
 functions
 
 instructions
 
-a = mix tetrachloroethylne with 100L of nitric_acid
+a = mix 10mL of YXFVVABEGXRONW-UHFFFAOYSA-N with 100L of FAPWRFPIFSIZLT-UHFFFAOYSA-M

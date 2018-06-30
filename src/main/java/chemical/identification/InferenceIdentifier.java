@@ -181,7 +181,7 @@ public class InferenceIdentifier extends Identifier {
             results.add(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
         }
         // database.closeConnection(connection);
-        logger.info(parameter + ": " + results);
+        // logger.info(parameter + ": " + results);
         return results;
     }
 }
