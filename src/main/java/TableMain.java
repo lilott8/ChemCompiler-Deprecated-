@@ -28,7 +28,7 @@ public class TableMain {
 
         ThreadManager threadManager = new ThreadManager();
         // Instantiate the threaded file manager.
-        FileWriter fileManager = new SimpleWriter("test", true);
+        FileWriter fileManager = new SimpleWriter("elisa", true);
 
         // Create the new combinator
         TableCombinator combo = new ChemicalCombinator(fileManager);

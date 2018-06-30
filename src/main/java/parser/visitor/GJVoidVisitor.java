@@ -14,6 +14,7 @@ import parser.ast.BranchStatement;
 import parser.ast.Conditional;
 import parser.ast.ConditionalParenthesis;
 import parser.ast.DetectStatement;
+import parser.ast.DispenseStatement;
 import parser.ast.DivideExpression;
 import parser.ast.DrainStatement;
 import parser.ast.ElseBranchStatement;
@@ -57,12 +58,15 @@ import parser.ast.RightOp;
 import parser.ast.SplitStatement;
 import parser.ast.Statements;
 import parser.ast.Stationary;
+import parser.ast.TempUnit;
+import parser.ast.TimeUnit;
 import parser.ast.TimesExpression;
 import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
 import parser.ast.VariableAlias;
+import parser.ast.VolumeUnit;
 import parser.ast.WhileStatement;
 
 /**
@@ -155,6 +159,16 @@ public interface GJVoidVisitor<A> {
     void visit(AssignmentStatement n, A argu);
 
     /**
+     * f0 -> MixStatement()
+     * | DetectStatement()
+     * | SplitStatement()
+     * | DispenseStatement()
+     * | FunctionInvoke()
+     * | VariableAlias()
+     */
+    void visit(RightOp n, A argu);
+
+    /**
      * f0 -> Type()
      * f1 -> ( TypingRest() )*
      */
@@ -193,10 +207,12 @@ public interface GJVoidVisitor<A> {
 
     /**
      * f0 -> <MIX>
-     * f1 -> PrimaryExpression()
-     * f2 -> <WITH>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> PrimaryExpression()
+     * f3 -> <WITH>
+     * f4 -> ( VolumeUnit() <OF> )?
+     * f5 -> PrimaryExpression()
+     * f6 -> ( <FOR> TimeUnit() )?
      */
     void visit(MixStatement n, A argu);
 
@@ -215,11 +231,18 @@ public interface GJVoidVisitor<A> {
     void visit(DrainStatement n, A argu);
 
     /**
+     * f0 -> <DISPENSE>
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> Identifier()
+     */
+    void visit(DispenseStatement n, A argu);
+
+    /**
      * f0 -> <HEAT>
      * f1 -> PrimaryExpression()
      * f2 -> <AT>
-     * f3 -> IntegerLiteral()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f3 -> TempUnit()
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     void visit(HeatStatement n, A argu);
 
@@ -228,13 +251,13 @@ public interface GJVoidVisitor<A> {
      * f1 -> PrimaryExpression()
      * f2 -> <ON>
      * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     void visit(DetectStatement n, A argu);
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> ( IntegerLiteral() | Identifier() )
+     * f1 -> IntegerLiteral()
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statements() )+
@@ -326,16 +349,6 @@ public interface GJVoidVisitor<A> {
      * f1 -> AllowedArguments()
      */
     void visit(AllowedArgumentsRest n, A argu);
-
-    /**
-     * f0 -> MixStatement()
-     * | DetectStatement()
-     * | SplitStatement()
-     * | FunctionInvoke()
-     * | MathStatement()
-     * | VariableAlias()
-     */
-    void visit(RightOp n, A argu);
 
     /**
      * f0 -> Identifier()
@@ -503,6 +516,24 @@ public interface GJVoidVisitor<A> {
      * f0 -> Identifier()
      */
     void visit(VariableAlias n, A argu);
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <SECOND> | <MILLISECOND> | <MICROSECOND> | <HOUR> | <MINUTE> )+
+     */
+    void visit(TimeUnit n, A argu);
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <LITRE> | <MILLILITRE> | <MICROLITRE> )+
+     */
+    void visit(VolumeUnit n, A argu);
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <CELSIUS> | <FAHRENHEIT> )+
+     */
+    void visit(TempUnit n, A argu);
 
 }
 

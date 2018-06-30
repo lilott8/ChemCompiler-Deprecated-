@@ -1,10 +1,7 @@
 package parser;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,6 +15,7 @@ import ir.InvokeStatement;
 import parser.ast.AssignmentStatement;
 import parser.ast.BranchStatement;
 import parser.ast.DetectStatement;
+import parser.ast.DispenseStatement;
 import parser.ast.DrainStatement;
 import parser.ast.ElseBranchStatement;
 import parser.ast.ElseIfBranchStatement;
@@ -39,9 +37,8 @@ import parser.ast.TimesExpression;
 import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
 import shared.variable.AssignedVariable;
-import shared.variable.DefinedVariable;
+import shared.variable.ManifestVariable;
 import shared.variable.Method;
-import shared.variable.Property;
 import shared.variable.SensorVariable;
 import shared.variable.StationaryVariable;
 import shared.variable.Variable;
@@ -58,8 +55,10 @@ import static chemical.epa.ChemTypes.NAT;
 public class BSSymbolTable extends BSVisitor {
 
     public static final Logger logger = LogManager.getLogger(BSSymbolTable.class);
+    private int id = 0;
     // Arguments to functions, etc.
     private List<Variable> arguments = new ArrayList<>();
+    private String unit = "";
 
     public BSSymbolTable() {
     }
@@ -140,7 +139,7 @@ public class BSSymbolTable extends BSVisitor {
         n.f2.accept(this);
 
         // Build the symbol.
-        Variable f2 = new DefinedVariable(this.name);
+        Variable f2 = new ManifestVariable(this.name);
         f2.addScope(SymbolTable.INSTANCE.getCurrentScope());
         f2.addTypingConstraints(this.getTypingConstraints(f2));
         addVariable(f2);
@@ -339,7 +338,7 @@ public class BSSymbolTable extends BSVisitor {
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> ( IntegerLiteral() | Identifier() )
+     * f1 -> IntegerLiteral()
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statements() )+
@@ -354,7 +353,7 @@ public class BSSymbolTable extends BSVisitor {
 
         n.f1.accept(this);
         Variable f1 = new AssignedVariable<Integer>(this.name, SymbolTable.INSTANCE.getCurrentScope());
-        f1.setValue(Integer.parseInt(this.value));
+        f1.setValue(this.integerLiteral);
         f1.addTypingConstraint(NAT);
         addVariable(f1);
         SymbolTable.INSTANCE.addLocal(f1);
@@ -496,9 +495,19 @@ public class BSSymbolTable extends BSVisitor {
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            this.checkForOrCreateProperty("SECONDS");
         }
+        return this;
+    }
 
+    /**
+     * f0 -> <DISPENSE>
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> Identifier()
+     */
+    @Override
+    public BSVisitor visit(DispenseStatement n) {
+        n.f2.accept(this);
+        checkForOrCreateVariable();
         return this;
     }
 
@@ -516,11 +525,6 @@ public class BSSymbolTable extends BSVisitor {
 
         n.f3.accept(this);
         // Use the generated name for the integer.
-        Property f3 = new Property<Integer>(this.name, SymbolTable.INSTANCE.getCurrentScope());
-        f3.setValue(this.value);
-        f3.addTypingConstraint(NAT);
-        addVariable(f3);
-        SymbolTable.INSTANCE.addLocal(f3);
 
         return this;
     }
@@ -544,7 +548,6 @@ public class BSSymbolTable extends BSVisitor {
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            this.checkForOrCreateProperty("SECONDS");
         }
 
         return this;
@@ -567,23 +570,21 @@ public class BSSymbolTable extends BSVisitor {
      * f0 -> <HEAT>
      * f1 -> PrimaryExpression()
      * f2 -> <AT>
-     * f3 -> IntegerLiteral()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f3 -> TempUnit()
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     @Override
     public BSVisitor visit(HeatStatement n) {
-        // super.visit(n);
-
         n.f1.accept(this);
         this.checkForOrCreateVariable();
 
         n.f3.accept(this);
-        this.checkForOrCreateProperty("CELSIUS");
+
+        //this.checkForOrCreateProperty(f3);
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            this.checkForOrCreateProperty("SECONDS");
-
+            // this.checkForOrCreateProperty(f4);
         }
         return this;
     }
@@ -632,11 +633,11 @@ public class BSSymbolTable extends BSVisitor {
         return this;
     }
 
-
     private Variable checkForOrCreateVariable() {
         return checkForOrCreateVariable(new HashSet<>());
     }
 
+    /*
     private Property checkForOrCreateProperty(String units) {
         Property prop;
         Variable var = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getCurrentScope());
@@ -656,7 +657,7 @@ public class BSSymbolTable extends BSVisitor {
         }
         this.types.clear();
         return prop;
-    }
+    }*/
 
     private Variable checkForOrCreateVariable(Set<ChemTypes> inputTypes) {
         Variable declaration = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getCurrentScope());

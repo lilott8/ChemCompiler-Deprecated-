@@ -1,5 +1,6 @@
 package chemical.identification;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -74,7 +75,7 @@ public class InferenceIdentifier extends Identifier {
             default:
                 // naive name approach
             case 1:
-                results.addAll(this.searchByAliases(name));
+                results.addAll(this.searchByAliases("%" + name + "%"));
                 break;
         }
         return results;
@@ -105,7 +106,7 @@ public class InferenceIdentifier extends Identifier {
         String query = String.format("SELECT DISTINCT(c.pubchem_id), rg.epa_id FROM chemicals c " +
                 "LEFT JOIN chemicals_reactive_groups crg ON c.pubchem_id = crg.pubchem_id " +
                 "LEFT JOIN reactive_groups rg on crg.reactive_groups_id = rg.`id` " +
-                "WHERE c.%s = ?", Representation.getColumn(Representation.NAME));
+                "WHERE c.%s LIKE ?", Representation.getColumn(Representation.NAME));
         return this.issueQuery(query, name, "epa_id");
     }
 
@@ -141,13 +142,20 @@ public class InferenceIdentifier extends Identifier {
             rs.close();
         } catch (SQLException e) {
             logger.error(e.toString());
+            logger.info("Long: " + query);
             results.add(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
         }
-        database.closeConnection(connection);
+        // database.closeConnection(connection);
         return results;
     }
 
+    /**
+     * Search by string-based field.
+     */
     private Set<ChemTypes> issueQuery(String query, String parameter, String column) {
+        if (StringUtils.contains(parameter, "_")) {
+            parameter = StringUtils.replaceAll(parameter, "_", " ");
+        }
         Set<ChemTypes> results = new HashSet<>();
         DatabaseConnector database = ConnectorFactory.getConnection();
         Connection connection = database.getConnection();
@@ -168,10 +176,12 @@ public class InferenceIdentifier extends Identifier {
                 results.add(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
             }
         } catch (SQLException e) {
-            results.add(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
             logger.error(e.toString());
+            logger.info("String: " + query);
+            results.add(ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
         }
-        database.closeConnection(connection);
+        // database.closeConnection(connection);
+        logger.info(parameter + ": " + results);
         return results;
     }
 }

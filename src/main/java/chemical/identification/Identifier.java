@@ -118,6 +118,7 @@ public abstract class Identifier {
     public enum Representation {
         CAS_NUMBER, SMILES, NAME, INCHIKEY, FORMULA, PUBCHEM_ID;
 
+
         public static String getColumn(Representation r) {
             switch (r) {
                 default:

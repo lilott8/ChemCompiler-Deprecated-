@@ -8,7 +8,6 @@ import java.util.Set;
 
 import config.ConfigFactory;
 import shared.errors.UsageException;
-import shared.variable.Variable;
 import symboltable.SymbolTable;
 
 /**
@@ -18,9 +17,9 @@ import symboltable.SymbolTable;
  */
 public class UsageGovernor {
 
+    public static final Logger logger = LogManager.getLogger(UsageGovernor.class);
     private static Set<String> aliveVariables = new HashSet<>();
     private static Set<String> killedVariables = new HashSet<>();
-    public static final Logger logger = LogManager.getLogger(UsageGovernor.class);
     private static Set<String> globalVariables = new HashSet<>();
 
     public static void reset() {

@@ -14,6 +14,7 @@ import parser.ast.BranchStatement;
 import parser.ast.Conditional;
 import parser.ast.ConditionalParenthesis;
 import parser.ast.DetectStatement;
+import parser.ast.DispenseStatement;
 import parser.ast.DivideExpression;
 import parser.ast.DrainStatement;
 import parser.ast.ElseBranchStatement;
@@ -57,12 +58,15 @@ import parser.ast.RightOp;
 import parser.ast.SplitStatement;
 import parser.ast.Statements;
 import parser.ast.Stationary;
+import parser.ast.TempUnit;
+import parser.ast.TimeUnit;
 import parser.ast.TimesExpression;
 import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
 import parser.ast.TypingRest;
 import parser.ast.VariableAlias;
+import parser.ast.VolumeUnit;
 import parser.ast.WhileStatement;
 
 /**
@@ -155,6 +159,16 @@ public interface GJNoArguVisitor<R> {
     R visit(AssignmentStatement n);
 
     /**
+     * f0 -> MixStatement()
+     * | DetectStatement()
+     * | SplitStatement()
+     * | DispenseStatement()
+     * | FunctionInvoke()
+     * | VariableAlias()
+     */
+    R visit(RightOp n);
+
+    /**
      * f0 -> Type()
      * f1 -> ( TypingRest() )*
      */
@@ -193,10 +207,12 @@ public interface GJNoArguVisitor<R> {
 
     /**
      * f0 -> <MIX>
-     * f1 -> PrimaryExpression()
-     * f2 -> <WITH>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> PrimaryExpression()
+     * f3 -> <WITH>
+     * f4 -> ( VolumeUnit() <OF> )?
+     * f5 -> PrimaryExpression()
+     * f6 -> ( <FOR> TimeUnit() )?
      */
     R visit(MixStatement n);
 
@@ -215,11 +231,18 @@ public interface GJNoArguVisitor<R> {
     R visit(DrainStatement n);
 
     /**
+     * f0 -> <DISPENSE>
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> Identifier()
+     */
+    R visit(DispenseStatement n);
+
+    /**
      * f0 -> <HEAT>
      * f1 -> PrimaryExpression()
      * f2 -> <AT>
-     * f3 -> IntegerLiteral()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f3 -> TempUnit()
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     R visit(HeatStatement n);
 
@@ -228,13 +251,13 @@ public interface GJNoArguVisitor<R> {
      * f1 -> PrimaryExpression()
      * f2 -> <ON>
      * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     R visit(DetectStatement n);
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> ( IntegerLiteral() | Identifier() )
+     * f1 -> IntegerLiteral()
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statements() )+
@@ -326,16 +349,6 @@ public interface GJNoArguVisitor<R> {
      * f1 -> AllowedArguments()
      */
     R visit(AllowedArgumentsRest n);
-
-    /**
-     * f0 -> MixStatement()
-     * | DetectStatement()
-     * | SplitStatement()
-     * | FunctionInvoke()
-     * | MathStatement()
-     * | VariableAlias()
-     */
-    R visit(RightOp n);
 
     /**
      * f0 -> Identifier()
@@ -503,6 +516,24 @@ public interface GJNoArguVisitor<R> {
      * f0 -> Identifier()
      */
     R visit(VariableAlias n);
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <SECOND> | <MILLISECOND> | <MICROSECOND> | <HOUR> | <MINUTE> )+
+     */
+    R visit(TimeUnit n);
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <LITRE> | <MILLILITRE> | <MICROLITRE> )+
+     */
+    R visit(VolumeUnit n);
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <CELSIUS> | <FAHRENHEIT> )+
+     */
+    R visit(TempUnit n);
 
 }
 

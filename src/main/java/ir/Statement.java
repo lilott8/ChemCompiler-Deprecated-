@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.satsolver.constraints.SMTSolver;
 
@@ -21,7 +22,7 @@ public interface Statement extends Vertex, SMTSolver, Exportable, Convertable {
 
     Variable getOutputVariable();
 
-    Map<String, Variable> getProperties();
+    Map<String, Property> getProperties();
 
     String getMethodName();
 
@@ -35,7 +36,7 @@ public interface Statement extends Vertex, SMTSolver, Exportable, Convertable {
 
     void addOutputVariable(Variable variable);
 
-    void addProperty(String name, Variable variable);
+    void addProperty(String name, Property variable);
 
     Set<ChemTypes> getType();
 

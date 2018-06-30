@@ -28,10 +28,21 @@ public class DetectStatement extends BaseStatement {
 
     @Override
     public String compose(Variable variable) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
+        }
+
+        return sb.toString();
+    }
+
+    @Override
+    public String compose(Property property) {
+        StringBuilder sb = new StringBuilder();
+
+        for (ChemTypes t : property.getTypes()) {
+            sb.append("(assert (= ").append(SolverStrategy.getSMTName(property.getName(), t)).append(" true))").append(NL);
         }
 
         return sb.toString();
@@ -79,7 +90,7 @@ public class DetectStatement extends BaseStatement {
         }
       }
          */
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         Variable sensor = this.inputVariables.get(0);
         // Start Object.
         sb.append("{").append(NL);
@@ -100,7 +111,7 @@ public class DetectStatement extends BaseStatement {
         sb.append("}").append(NL);
         // don't forget the property
         if (this.properties.containsKey(Property.TIME)) {
-            Property time = (Property) this.properties.get(Property.TIME);
+            Property time = this.properties.get(Property.TIME);
             // The Temp
             sb.append(",{").append(NL);
             sb.append("\"INPUT_TYPE\" : \"PROPERTY\",").append(NL);

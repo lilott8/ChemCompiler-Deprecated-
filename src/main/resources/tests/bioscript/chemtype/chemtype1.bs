@@ -1,0 +1,8 @@
+manifest tetrachloroethylne
+manifest nitric_acid
+
+functions
+
+instructions
+
+a = mix tetrachloroethylne with 100L of nitric_acid

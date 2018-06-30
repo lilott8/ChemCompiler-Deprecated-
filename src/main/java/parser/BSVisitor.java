@@ -35,7 +35,10 @@ import parser.ast.NotEqualExpression;
 import parser.ast.NotExpression;
 import parser.ast.OrExpression;
 import parser.ast.RealLiteral;
+import parser.ast.TempUnit;
+import parser.ast.TimeUnit;
 import parser.ast.TrueLiteral;
+import parser.ast.VolumeUnit;
 import parser.visitor.GJNoArguDepthFirst;
 import shared.Step;
 import shared.variable.ConstVariable;
@@ -60,6 +63,9 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     public static final String INTEGER = "INTEGER";
     public static final String BOOLEAN = "BOOLEAN";
     public static final String CONST = "CONST";
+    public static final String TIME = "TIME";
+    public static final String VOLUME = "VOLUME";
+    public static final String TEMP = "TEMP";
     // Keep track of the instruction idCounter to input/outputs
     protected static Map<Integer, Statement> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
@@ -95,6 +101,9 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     private int realId = 0;
     private int booleanId = 0;
     private int integerId = 0;
+    protected String units = "";
+    protected int integerLiteral = -1;
+    protected double realLiteral = -1.0;
     private AtomicInteger instructionId = new AtomicInteger(0);
     private Deque<String> scope = new ArrayDeque<>();
 
@@ -150,15 +159,17 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     @Override
     public BSVisitor visit(IntegerLiteral n) {
         this.name = String.format("%s_%s", CONST, n.f0.toString());
-        this.constant = new ConstVariable<Integer>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
-        this.value = n.f0.toString();
-        this.constant.setValue(Integer.parseInt(n.f0.toString()));
-        this.constant.addTypingConstraint(NAT);
+        //this.constant = new ConstVariable<Integer>(this.name, SymbolTable.INSTANCE.getScopeByName(this.getCurrentScope()));
+        //this.value = n.f0.toString();
+        this.integerLiteral = Integer.parseInt(n.f0.toString());
+        //this.constant.setValue(Integer.parseInt(n.f0.toString()));
+        //this.constant.addTypingConstraint(NAT);
         this.types.add(NAT);
-        SymbolTable.INSTANCE.addLocal(this.constant);
-        SymbolTable.INSTANCE.addInput(this.constant);
+        //SymbolTable.INSTANCE.addLocal(this.constant);
+        //SymbolTable.INSTANCE.addInput(this.constant);
         return this;
     }
+
 
     /**
      * f0 -> <NAT>
@@ -276,7 +287,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     public BSVisitor visit(LessThanExpression n) {
         // TODO: check each side of the conditional for constant or chemical.
         n.f0.accept(this);
-        logger.info(this.name);
+        // logger.info(this.name);
         this.conditional += this.name;
         this.conditional += "<";
         n.f2.accept(this);
@@ -421,6 +432,72 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
         } else {
             return this.identifier.identifyCompoundForTypes(t.getName());
         }
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <SECOND> | <MILLISECOND> | <MICROSECOND> | <HOUR> | <MINUTE> )+
+     */
+    @Override
+    public BSVisitor visit(TimeUnit n) {
+        n.f0.accept(this);
+        this.units = "SECONDS";
+        if (n.f1.present()) {
+            if (StringUtils.equalsIgnoreCase(n.f1.toString(), "h")) {
+                this.integerLiteral = this.integerLiteral * 3600;
+            } else if (StringUtils.equalsIgnoreCase(n.f1.toString(), "m")) {
+                this.integerLiteral = this.integerLiteral * 60;
+            } else if (StringUtils.equalsIgnoreCase(n.f1.toString(), "us")) {
+                this.integerLiteral = this.integerLiteral / 1000000;
+            } else if (StringUtils.equalsIgnoreCase(n.f1.toString(), "ms")) {
+                this.integerLiteral = this.integerLiteral / 1000;
+            } else {
+                this.integerLiteral *= 1;
+            }
+        } else {
+            this.units = "SECONDS";
+        }
+        return this;
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <LITRE> | <MILLILITRE> | <MICROLITRE> )+
+     */
+    @Override
+    public BSVisitor visit(VolumeUnit n) {
+        n.f0.accept(this);
+        if (n.f1.present()) {
+            if (StringUtils.equalsIgnoreCase(n.f1.toString(), "L")) {
+                this.units = "LITRE";
+            } else if (StringUtils.equalsIgnoreCase(n.f1.toString(), "mL")) {
+                this.units = "MILLILITRE";
+            } else {
+                this.units = "MICROLITRE";
+            }
+        } else {
+            this.units = "MICROLITRE";
+        }
+        return super.visit(n);
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <CELSIUS> | <FAHRENHEIT> )+
+     */
+    @Override
+    public BSVisitor visit(TempUnit n) {
+        n.f0.accept(this);
+        if (n.f1.present()) {
+            if (StringUtils.equalsIgnoreCase(n.f1.toString(), "c")) {
+                this.units = "CELSIUS";
+            } else {
+                this.units = "FAHRENHEIT";
+            }
+        } else {
+            this.units = "CELSIUS";
+        }
+        return super.visit(n);
     }
 
     protected int getNextIntId() {

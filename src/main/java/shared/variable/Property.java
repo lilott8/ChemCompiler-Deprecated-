@@ -1,38 +1,68 @@
 package shared.variable;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import symboltable.Scope;
 
 /**
  * @created: 3/13/18
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Property<Value> extends Variable<Value> {
+public class Property {
 
     public static final String TIME = "TIME";
     public static final String VOLUME = "VOLUME";
     public static final String TEMP = "TEMP";
     public static final String QUANTITY = "QUANTITY";
+    public static final String CONDITIONAL = "CONDITIONAL";
 
-    String units;
+    private String name;
+    private String units;
+    private float value;
+    private Set<ChemTypes> types = new HashSet<>();
+    private String opType;
 
-    public Property(String name) {
-        super(name);
+    public Property(String name, String opType, String units, float value) {
+        this.name = name;
+        this.units = units;
+        this.value = value;
+        this.opType = opType;
+        this.types.add(ChemTypes.NAT);
+        this.types.add(ChemTypes.REAL);
     }
 
-    public Property(String name, Set<ChemTypes> type) {
-        super(name, type);
+    public Property(String name, String opType, String units, float value, Set<ChemTypes> types) {
+        this.name = name;
+        this.units = units;
+        this.value = value;
+        this.opType = opType;
+        this.types.addAll(types);
     }
 
-    public Property(String name, Scope scope) {
-        super(name, scope);
+    public String getName() {
+        return name;
     }
 
-    public Property(String name, Set<ChemTypes> type, Scope scope) {
-        super(name, type, scope);
+    public float getValue() {
+        return value;
+    }
+
+    public Set<ChemTypes> getTypes() {
+        return types;
+    }
+
+    public String getOpType() {
+        return opType;
+    }
+
+    public void addTypingConstraint(ChemTypes type) {
+        this.types.add(type);
+    }
+
+    public void addTypingConstraints(Set<ChemTypes> types) {
+        this.types.addAll(types);
     }
 
     public String getUnits() {
@@ -43,14 +73,12 @@ public class Property<Value> extends Variable<Value> {
         this.units = units;
     }
 
-    @Override
     public String buildDeclaration() {
         return null;
     }
 
-    @Override
     public String buildUsage() {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         return sb.toString();
     }
 }

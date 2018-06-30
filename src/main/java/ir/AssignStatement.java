@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -38,6 +39,11 @@ public class AssignStatement extends BaseStatement implements Assign {
     @Override
     public void setRightOp(Statement statement) {
         this.rightOp = statement;
+    }
+
+    @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
     }
 
     @Override

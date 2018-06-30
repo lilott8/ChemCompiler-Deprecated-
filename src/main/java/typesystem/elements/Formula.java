@@ -3,6 +3,7 @@ package typesystem.elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.rules.Rule;
 
@@ -18,7 +19,7 @@ public class Formula {
     public final int id;
     private List<Variable> output = new ArrayList<>();
     private List<Variable> input = new ArrayList<>();
-    private List<Variable> properties = new ArrayList<>();
+    private List<Property> properties = new ArrayList<>();
 
 
     public Formula(Rule.InstructionType type) {
@@ -42,7 +43,7 @@ public class Formula {
         return this;
     }
 
-    public Formula addProperty(Variable prop) {
+    public Formula addProperty(Property prop) {
         this.properties.add(prop);
         return this;
     }
@@ -55,7 +56,7 @@ public class Formula {
         return this.type;
     }
 
-    public List<Variable> getProperties() {
+    public List<Property> getProperties() {
         return this.properties;
     }
 

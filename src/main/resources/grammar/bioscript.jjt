@@ -61,6 +61,8 @@ TOKEN :
 |   <RETURN: "return">
 |   <FUNCTIONS: "functions">
 |   <INSTRUCTIONS: "instructions">
+|   <OF: "of">
+|   <DISPENSE: "dispense">
 }
 
 
@@ -91,7 +93,23 @@ TOKEN : {
 |   <FALSE: "false">
 |   <COMMA: ",">
 |   <COLON: ":">
+|   <BACKWARDSLASH: "\\">
+|   <UNDERSCORE: "_">
 }
+
+TOKEN : {
+    <MILLISECOND: "ms">
+|   <MICROSECOND: "us">
+|   <SECOND: "s">
+|   <MINUTE: "m">
+|   <HOUR: "h">
+|   <LITRE: "L">
+|   <MICROLITRE: "uL">
+|   <MILLILITRE: "mL">
+|   <CELSIUS: "c">
+|   <FAHRENHEIT: "f">
+}
+
 
 
 /* IDENTIFIERS */
@@ -100,9 +118,14 @@ TOKEN : /* LITERALS */
   <INTEGER_LITERAL: ( ["1"-"9"] (["0"-"9"])* | "0" ) >
 }
 
+TOKEN :
+{
+    <MATHOP: (<DIVIDE> | <MULTIPLY> | <ADD> | <MINUS>)+>
+}
+
 TOKEN : /* IDENTIFIERS */
 {
-  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)* >
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>|<UNDERSCORE>)* >
 |
   < #LETTER:
       [
@@ -202,6 +225,24 @@ void AssignmentStatement() :
     (TypingList())* Identifier() <ASSIGN> RightOp()
 }
 
+void RightOp() :
+{}
+{
+    LOOKAHEAD(<MIX>)
+        MixStatement()
+    |   LOOKAHEAD(<DETECT>)
+            DetectStatement()
+    |   LOOKAHEAD(<SPLIT>)
+            SplitStatement()
+    |   LOOKAHEAD(<DISPENSE>)
+            DispenseStatement()
+    |   LOOKAHEAD( <IDENTIFIER> <LPAREN> )
+            FunctionInvoke()
+    //|   LOOKAHEAD( (<IDENTIFIER>|<INTEGER_LITERAL>) <MATHOP> )
+    //        MathStatement()
+    |   VariableAlias()
+}
+
 void TypingList() :
 {}
 {
@@ -244,7 +285,7 @@ void FormalParameterRest() :
 void MixStatement() :
 {}
 {
-    <MIX> PrimaryExpression() <WITH> PrimaryExpression() (<FOR> IntegerLiteral())?
+    <MIX> (VolumeUnit() <OF>)? PrimaryExpression() <WITH> (VolumeUnit() <OF>)? PrimaryExpression() (<FOR> TimeUnit())?
 }
 
 void SplitStatement() :
@@ -259,24 +300,30 @@ void DrainStatement() :
     <DRAIN> PrimaryExpression()
 }
 
+void DispenseStatement() :
+{}
+{
+    <DISPENSE> (VolumeUnit() <OF>)? Identifier()
+}
+
 void HeatStatement() :
 {}
 {
-    <HEAT> PrimaryExpression() <AT> IntegerLiteral()
-    (<FOR> IntegerLiteral())?
+    <HEAT> PrimaryExpression() <AT> TempUnit()
+    (<FOR> TimeUnit())?
 }
 
 void DetectStatement() :
 {}
 {
     <DETECT> PrimaryExpression() <ON> PrimaryExpression()
-    (<FOR> IntegerLiteral())?
+    (<FOR> TimeUnit())?
 }
 
 void RepeatStatement() :
 {}
 {
-    <REPEAT> ( IntegerLiteral() | Identifier() ) <TIMES> <LBRACE> (Statements())+ <RBRACE>
+    <REPEAT> IntegerLiteral() <TIMES> <LBRACE> (Statements())+ <RBRACE>
 }
 
 void WhileStatement() :
@@ -359,22 +406,6 @@ void AllowedArgumentsRest() :
 {}
 {
   <COMMA> AllowedArguments()
-}
-
-void RightOp() :
-{}
-{
-    LOOKAHEAD(<MIX>)
-        MixStatement()
-    |   LOOKAHEAD(<DETECT>)
-            DetectStatement()
-    |   LOOKAHEAD(<SPLIT>)
-            SplitStatement()
-    |   LOOKAHEAD( <IDENTIFIER> <LPAREN> )
-            FunctionInvoke()
-    |   LOOKAHEAD(3)
-            MathStatement()
-    |   VariableAlias()
 }
 
 void PrimaryExpression() :
@@ -539,4 +570,29 @@ void VariableAlias() :
 {}
 {
     Identifier()
+}
+
+void TimeUnit() :
+{}
+{
+    IntegerLiteral()(<SECOND>
+    |   <MILLISECOND>
+    |   <MICROSECOND>
+    |   <HOUR>
+    |   <MINUTE>)?
+}
+
+void VolumeUnit():
+{}
+{
+    IntegerLiteral()(<LITRE>
+    |   <MILLILITRE>
+    |   <MICROLITRE>)?
+}
+
+void TempUnit():
+{}
+{
+    IntegerLiteral()(<CELSIUS>
+    |   <FAHRENHEIT>)?
 }

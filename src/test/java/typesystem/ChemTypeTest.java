@@ -14,7 +14,7 @@ import static utils.CommonUtils.runTest;
  */
 public class ChemTypeTest {
 
-    public static String root = "src/main/resources/tests/chemtype/";
+    public static String root = "src/main/resources/tests/bioscript/";
 
     /**
      * The following tests will fail in the "mix" stage.

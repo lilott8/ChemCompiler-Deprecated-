@@ -14,8 +14,9 @@ import parser.visitor.Visitor;
  * f0 -> MixStatement()
  * | DetectStatement()
  * | SplitStatement()
+ * | DispenseStatement()
  * | FunctionInvoke()
- * | MathStatement()
+ * | VariableAlias()
  */
 public class RightOp implements Node {
     public NodeChoice f0;

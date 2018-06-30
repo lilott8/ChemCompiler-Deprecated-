@@ -25,17 +25,15 @@ import symboltable.SymbolTable;
  */
 public abstract class BaseStatement implements Statement {
 
-    private static AtomicInteger idCounter = new AtomicInteger(0);
-
     public static final Logger logger = LogManager.getLogger(BaseStatement.class);
-
+    private static AtomicInteger idCounter = new AtomicInteger(0);
     protected boolean isBranch = false;
     protected boolean isAssign = false;
     protected boolean fallsThrough = false;
     protected boolean containsInvoke = false;
     protected Variable outputVariable;
     protected List<Variable> inputVariables = new ArrayList<>();
-    protected Map<String, Variable> properties = new HashMap<>();
+    protected Map<String, Property> properties = new HashMap<>();
     protected Set<ChemTypes> types = new HashSet<>();
     protected String name;
     protected String methodName = SymbolTable.DEFAULT_SCOPE;
@@ -95,12 +93,12 @@ public abstract class BaseStatement implements Statement {
     }
 
     @Override
-    public Map<String, Variable> getProperties() {
+    public Map<String, Property> getProperties() {
         return this.properties;
     }
 
     @Override
-    public void addProperty(String name, Variable variable) {
+    public void addProperty(String name, Property variable) {
         this.properties.put(name, variable);
     }
 
@@ -160,7 +158,7 @@ public abstract class BaseStatement implements Statement {
     protected String propertyToJson(String property) {
         StringBuilder sb = new StringBuilder();
         if (this.properties.containsKey(Property.TIME)) {
-            Property time = (Property) this.properties.get(Property.TIME);
+            Property time = this.properties.get(Property.TIME);
             // The Temp
             sb.append(",{").append(NL);
             sb.append("\"INPUT_TYPE\" : \"PROPERTY\",").append(NL);

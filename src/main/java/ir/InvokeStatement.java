@@ -8,8 +8,9 @@ import java.util.Map;
 
 import chemical.epa.ChemTypes;
 import parser.BSVisitor;
-import shared.variable.DefinedVariable;
+import shared.variable.ManifestVariable;
 import shared.variable.Method;
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
@@ -49,6 +50,11 @@ public class InvokeStatement extends BaseStatement implements Invoke {
     }
 
     @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
+    }
+
+    @Override
     public String toJson() {
         return this.toJson("");
     }
@@ -61,7 +67,7 @@ public class InvokeStatement extends BaseStatement implements Invoke {
      */
     @Override
     public String toJson(String indent) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         // logger.info(this.inputVariables);
         // logger.info(this.method.getIndexedParameters());
@@ -91,7 +97,7 @@ public class InvokeStatement extends BaseStatement implements Invoke {
             sb.append(",").append(NL);
             MathStatement statement = new MathStatement();
             statement.addInputVariable(this.method.getReturnStatement().getOutputVariable());
-            Variable v = new DefinedVariable<Integer>(BSVisitor.CONST + "_0");
+            Variable v = new ManifestVariable<Integer>(BSVisitor.CONST + "_0");
             v.addTypingConstraint(NAT);
             v.setValue(0);
             statement.addInputVariable(v);

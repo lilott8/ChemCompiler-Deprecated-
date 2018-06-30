@@ -3,6 +3,7 @@ package ir;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -27,13 +28,18 @@ public class MathStatement extends BaseStatement {
 
     @Override
     public String compose(Variable variable) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String compose(Property property) {
+        return defaultCompose(property);
     }
 
     public String toString() {

@@ -18,8 +18,8 @@ import compilation.datastructures.basicblock.BasicBlock;
 import compilation.datastructures.basicblock.BasicBlockEdge;
 import compilation.datastructures.cfg.CFG;
 import compilation.datastructures.node.InstructionNode;
-import reactivetable.StatisticCombinator;
 import shared.Phase;
+import shared.Statistics;
 import shared.Tuple;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
@@ -69,7 +69,7 @@ public class Inference implements shared.Phase {
 
     // Default Constructor
     public Inference() {
-        logger.error("You really should be doing type checking in the parsing phase.");
+        // logger.error("You really should be doing type checking in the parsing phase.");
         this.loadRules();
     }
 
@@ -96,7 +96,7 @@ public class Inference implements shared.Phase {
             this.inferConstraints(StringUtils.upperCase(edge.getClassification()), edge);
         }
 
-        // printStatistics();
+        logStatistics();
 
         return this.solver.setSatSolver(new Z3Strategy()).solveConstraints(this.instructions, this.variables);
     }
@@ -205,7 +205,7 @@ public class Inference implements shared.Phase {
         }
     }
 
-    private void printStatistics() {
+    private void logStatistics() {
         double average = 0;
         int total = 0;
         int max = 0;
@@ -225,7 +225,12 @@ public class Inference implements shared.Phase {
 
         average = total / ((double) medianContainer.size());
 
-        StatisticCombinator.writer.write(String.format("%d|%d|%d|%d|%.02f", min, max, total, findMedian(medianContainer), average));
+        Statistics.INSTANCE.addStatsCategory(Statistics.INFERENCE);
+
+        Statistics.INSTANCE.addRecord(Statistics.INFERENCE, "min types|max types|total types|median|average (Units: number of types)");
+        Statistics.INSTANCE.addRecord(Statistics.INFERENCE,
+                String.format("%d|%d|%d|%d|%.02f", min, max, total, findMedian(medianContainer), average));
+        // StatisticCombinator.writer.write(String.format("%d|%d|%d|%d|%.02f", min, max, total, findMedian(medianContainer), average));
     }
 
     private int findMedian(List<Integer> nums) {
@@ -234,12 +239,12 @@ public class Inference implements shared.Phase {
         return nums.get(middle);
     }
 
+    public String getOutput() {
+        return "";
+    }
+
     // Enum to determine what type the node in the CFG is.
     public enum InferenceType {
         TERM, INSTRUCTION, BRANCH
-    }
-
-    public String getOutput() {
-        return "";
     }
 }

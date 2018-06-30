@@ -12,6 +12,7 @@ public class VariableNode implements Serializable, Node {
     private VariableType declarationType;
     private int createdInOperation;
     private Variable variable;
+
     public VariableNode(VariableType type, Variable variable) {
         this.declarationType = type;
         this.variable = variable;

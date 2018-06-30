@@ -7,14 +7,12 @@ import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
 import compilation.datastructures.node.InstructionNode;
 import shared.variable.AssignedVariable;
-import shared.variable.DefinedVariable;
+import shared.variable.ManifestVariable;
 import shared.variable.Variable;
-import substance.Property;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;
 
 import static chemical.epa.ChemTypes.INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION;
-import static chemical.epa.ChemTypes.REAL;
 
 /**
  * @created: 7/27/17
@@ -61,7 +59,7 @@ public class Split extends NodeAnalyzer {
 
         Variable output = null;
         for (String s : node.getDef()) {
-            output = new DefinedVariable(s);
+            output = new ManifestVariable(s);
             if (input == null) {
                 // logger.warn("Input is null!?");
                 output.addTypingConstraint(INSUFFICIENT_INFORMATION_FOR_CLASSIFICATION);
@@ -72,12 +70,12 @@ public class Split extends NodeAnalyzer {
             addVariable(output);
         }
 
-        for (Property p : node.getInstruction().getProperties()) {
-            Variable prop = new shared.variable.Property(Rule.createHash(p.toString()), this.propertyTypes);
+        /*for (Property p : node.getInstruction().getProperties()) {
+            Property prop = new shared.variable.Property(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addVariable(prop);
-        }
+        }*/
 
         addInstruction(instruction);
         return this;

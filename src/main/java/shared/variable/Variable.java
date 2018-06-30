@@ -30,6 +30,7 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
     protected boolean isGlobal = false;
     protected boolean isVariable = false;
     protected boolean isConstant = false;
+    protected Property property;
 
     {
         this.id = this.getNewId();
@@ -37,6 +38,12 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
 
     public Variable(String name) {
         this.name = name;
+    }
+
+    public Variable(String name, Set<ChemTypes> type, Property property) {
+        this.name = name;
+        this.types.addAll(type);
+        this.property = property;
     }
 
     public Variable(String name, Set<ChemTypes> type) {
@@ -49,20 +56,34 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
         this.scope = scope;
     }
 
+    public Variable(String name, Set<ChemTypes> type, Scope scope, Property property) {
+        this.name = name;
+        this.types.addAll(type);
+        this.scope = scope;
+        this.property = property;
+    }
+
     public Variable(String name, Set<ChemTypes> type, Scope scope) {
         this.name = name;
         this.types.addAll(type);
         this.scope = scope;
     }
 
-    public Property converToProperty() {
-        return new Property(this.name, this.types, this.scope);
-    }
 
     //abstract public String buildReference();
     abstract public String buildUsage();
 
     abstract public String buildDeclaration();
+
+    public abstract String buildVariable();
+
+    public Property getProperty() {
+        return this.property;
+    }
+
+    public void setProperty(Property property) {
+        this.property = property;
+    }
 
     private int getNewId() {
         return idCounter.getAndIncrement();
@@ -199,7 +220,7 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
     public String redeclare() {
         StringBuilder sb = new StringBuilder();
         sb.append("\"VARIABLE_DECLARATION\" : {").append(NL);
-        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"ID\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"TYPE\" : \"VARIABLE\", ").append(NL);
         sb.append(this.addInferredTypes());

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -54,6 +55,11 @@ public class IfStatement extends BaseConditional {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
     }
 
     /**

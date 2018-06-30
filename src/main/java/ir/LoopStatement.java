@@ -1,5 +1,6 @@
 package ir;
 
+import shared.variable.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
@@ -27,13 +28,18 @@ public class LoopStatement extends BaseConditional {
     }
 
     @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
+    }
+
+    @Override
     public String toJson() {
         return this.toJson("");
     }
 
     @Override
     public String toJson(String indent) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         // Open object brace.
         sb.append("{").append(NL);
         sb.append("\"OPERATION\" : {").append(NL);
@@ -64,7 +70,7 @@ public class LoopStatement extends BaseConditional {
 
     public String print(String indent) {
         indent += "\t";
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         sb.append("Loop True Branch(").append(this.id).append(") :").append(NL);
         for (Statement s : this.trueBranch) {
             sb.append(indent).append("(").append(this.id).append(") ").append(s.print(indent)).append(NL);
@@ -73,7 +79,7 @@ public class LoopStatement extends BaseConditional {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         sb.append("Loop True Branch: ").append(NL);
         for (Statement s : this.trueBranch) {
             sb.append("\t").append(s).append(NL);
