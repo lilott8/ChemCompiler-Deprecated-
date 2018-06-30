@@ -95,6 +95,7 @@ TOKEN : {
 |   <COLON: ":">
 |   <BACKWARDSLASH: "\\">
 |   <UNDERSCORE: "_">
+|   <SEMICOLON: ";">
 }
 
 TOKEN : {
@@ -125,7 +126,7 @@ TOKEN :
 
 TOKEN : /* IDENTIFIERS */
 {
-  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>|<UNDERSCORE>)* >
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>|<UNDERSCORE>|<MINUS>|<SEMICOLON>)* >
 |
   < #LETTER:
       [

@@ -88,13 +88,9 @@ public class BSParser implements BSParserConstants {
      * Generated Token Manager.
      */
     public BSParserTokenManager token_source;
-    /**
-     * Current token.
-     */
+    /** Current token. */
     public Token token;
-    /**
-     * Next token.
-     */
+    /** Next token. */
     public Token jj_nt;
     JavaCharStream jj_input_stream;
     private int jj_ntk;
@@ -109,22 +105,17 @@ public class BSParser implements BSParserConstants {
     private int[] jj_lasttokens = new int[100];
     private int jj_endpos;
 
-    /**
-     * Constructor with InputStream.
-     */
+    /** Constructor with InputStream. */
     public BSParser(java.io.InputStream stream) {
         this(stream, null);
     }
 
-    /**
-     * Constructor with InputStream and supplied encoding
-     */
+    /** Constructor with InputStream and supplied encoding */
     public BSParser(java.io.InputStream stream, String encoding) {
         try {
             jj_input_stream = new JavaCharStream(stream, encoding, 1, 1);
         } catch (java.io.UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+            throw new RuntimeException(e); }
         token_source = new BSParserTokenManager(jj_input_stream);
         token = new Token();
         jj_ntk = -1;
@@ -133,9 +124,7 @@ public class BSParser implements BSParserConstants {
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
-    /**
-     * Constructor.
-     */
+    /** Constructor. */
     public BSParser(java.io.Reader stream) {
         jj_input_stream = new JavaCharStream(stream, 1, 1);
         token_source = new BSParserTokenManager(jj_input_stream);
@@ -146,9 +135,7 @@ public class BSParser implements BSParserConstants {
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
-    /**
-     * Constructor with generated Token Manager.
-     */
+    /** Constructor with generated Token Manager. */
     public BSParser(BSParserTokenManager tm) {
         token_source = tm;
         token = new Token();
@@ -159,15 +146,15 @@ public class BSParser implements BSParserConstants {
     }
 
     private static void jj_la1_init_0() {
-        jj_la1_0 = new int[]{0x10000000, 0x40000, 0x80000, 0x1000000, 0xe00e300, 0xe000000, 0xe000000, 0xe000000, 0x0, 0xe00e300, 0x40000000, 0xe300, 0xe000000, 0x0, 0x0, 0x6000000, 0x0, 0xe000000, 0x0, 0x0, 0x400, 0x0, 0x400, 0x400, 0xe00e300, 0xe00e300, 0xe00e300, 0x10000, 0x20000, 0xe00e300, 0xe00e300, 0x2000000, 0x0, 0x2000000, 0x2000000, 0x2000000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,};
+        jj_la1_0 = new int[]{0x10000000, 0x40000, 0x80000, 0x1000000, 0xe00e300, 0xe000000, 0xe000000, 0xe000000, 0x0, 0xe00e300, 0x40000000, 0xe300, 0xe000000, 0x0, 0x0, 0x6000000, 0x0, 0xe000000, 0x0, 0x0, 0x400, 0x0, 0x400, 0x400, 0xe00e300, 0xe00e300, 0xe00e300, 0x10000, 0x20000, 0xe00e300, 0xe00e300, 0x2000000, 0x0, 0x2000000, 0x2000000, 0x2000000, 0x0, 0x0, 0x0, 0x0,0x0,0x0,};
     }
 
     private static void jj_la1_init_1() {
-        jj_la1_1 = new int[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8000000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x4000000, 0x0, 0x4000000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3000000, 0x4000000, 0x3000000, 0x3000000, 0x3000000, 0xc0000000, 0xc0000000, 0x0, 0x0, 0x0, 0x0,};
+        jj_la1_1 = new int[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8000000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x4000000, 0x0, 0x4000000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3000000, 0x4000000, 0x3000000, 0x3000000, 0x3000000, 0x80000000, 0x80000000, 0x0, 0x0,0x0,0x0,};
     }
 
     private static void jj_la1_init_2() {
-        jj_la1_2 = new int[]{0x0, 0x0, 0x0, 0x0, 0x400, 0x0, 0x0, 0x400, 0x0, 0x400, 0x0, 0x400, 0x0, 0x400, 0x0, 0x0, 0x0, 0x0, 0x100, 0x100, 0x0, 0x100, 0x0, 0x0, 0x400, 0x400, 0x400, 0x0, 0x0, 0x400, 0x400, 0x500, 0x0, 0x500, 0x500, 0x100, 0x7, 0x7, 0x38, 0x38, 0xc0, 0xc0,};
+        jj_la1_2 = new int[]{0x0, 0x0, 0x0, 0x0, 0x800, 0x0, 0x0, 0x800, 0x0, 0x800, 0x0, 0x800, 0x0, 0x800, 0x0, 0x0, 0x0, 0x0, 0x200, 0x200, 0x0, 0x200, 0x0, 0x0, 0x800, 0x800, 0x800, 0x0, 0x0, 0x800, 0x800, 0xa00, 0x0, 0xa00, 0xa00, 0x200, 0xf, 0xf, 0x70, 0x70, 0x180,0x180,};
     }
 
     final public BSProgram BSProgram() throws ParseException {
@@ -190,7 +177,7 @@ public class BSParser implements BSParserConstants {
         label_1:
         while (true) {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case MODULE: {
+                case MODULE:{
                     break;
                 }
                 default:
@@ -204,7 +191,7 @@ public class BSParser implements BSParserConstants {
         label_2:
         while (true) {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case STATIONARY: {
+                case STATIONARY:{
                     break;
                 }
                 default:
@@ -220,7 +207,7 @@ public class BSParser implements BSParserConstants {
             n5 = Manifest();
             n4.addNode(n5);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case MANIFEST: {
+                case MANIFEST:{
                     break;
                 }
                 default:
@@ -234,7 +221,7 @@ public class BSParser implements BSParserConstants {
         label_4:
         while (true) {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case FUNCTION: {
+                case FUNCTION:{
                     break;
                 }
                 default:
@@ -251,7 +238,7 @@ public class BSParser implements BSParserConstants {
         while (true) {
             n13 = Statements();
             n12.addNode(n13);
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case DRAIN:
                 case HEAT:
                 case REPEAT:
@@ -260,7 +247,7 @@ public class BSParser implements BSParserConstants {
                 case REAL:
                 case NAT:
                 case MAT:
-                case IDENTIFIER: {
+                case IDENTIFIER:{
                     break;
                 }
                 default:
@@ -274,8 +261,7 @@ public class BSParser implements BSParserConstants {
         n15.endColumn++;
         n14 = JTBToolkit.makeNodeToken(n15);
         {
-            if ("" != null) return new BSProgram(n0, n2, n4, n6, n8, n10, n12, n14);
-        }
+            if ("" != null) return new BSProgram(n0, n2, n4, n6, n8, n10,n12,n14);}
         throw new Error("Missing return statement in function");
     }
 
@@ -287,8 +273,7 @@ public class BSParser implements BSParserConstants {
         n0 = JTBToolkit.makeNodeToken(n1);
         n2 = Identifier();
         {
-            if ("" != null) return new Module(n0, n2);
-        }
+            if ("" != null) return new Module(n0,n2);}
         throw new Error("Missing return statement in function");
     }
 
@@ -300,10 +285,10 @@ public class BSParser implements BSParserConstants {
         PrimaryExpression n4;
         n1 = jj_consume_token(STATIONARY);
         n0 = JTBToolkit.makeNodeToken(n1);
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case REAL:
             case NAT:
-            case MAT: {
+            case MAT:{
                 n3 = TypingList();
                 n2.addNode(n3);
                 break;
@@ -313,8 +298,7 @@ public class BSParser implements BSParserConstants {
         }
         n4 = PrimaryExpression();
         {
-            if ("" != null) return new Stationary(n0, n2, n4);
-        }
+            if ("" != null) return new Stationary(n0,n2,n4);}
         throw new Error("Missing return statement in function");
     }
 
@@ -326,10 +310,10 @@ public class BSParser implements BSParserConstants {
         PrimaryExpression n4;
         n1 = jj_consume_token(MANIFEST);
         n0 = JTBToolkit.makeNodeToken(n1);
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case REAL:
             case NAT:
-            case MAT: {
+            case MAT:{
                 n3 = TypingList();
                 n2.addNode(n3);
                 break;
@@ -339,8 +323,7 @@ public class BSParser implements BSParserConstants {
         }
         n4 = PrimaryExpression();
         {
-            if ("" != null) return new Manifest(n0, n2, n4);
-        }
+            if ("" != null) return new Manifest(n0,n2,n4);}
         throw new Error("Missing return statement in function");
     }
 
@@ -377,11 +360,11 @@ public class BSParser implements BSParserConstants {
         n3 = JTBToolkit.makeNodeToken(n4);
         label_6:
         while (true) {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case REAL:
                 case NAT:
                 case MAT:
-                case IDENTIFIER: {
+                case IDENTIFIER:{
                     break;
                 }
                 default:
@@ -395,7 +378,7 @@ public class BSParser implements BSParserConstants {
         n8 = jj_consume_token(RPAREN);
         n7 = JTBToolkit.makeNodeToken(n8);
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case COLON: {
+            case COLON:{
                 n10 = new NodeSequence(2);
                 n12 = jj_consume_token(COLON);
                 n11 = JTBToolkit.makeNodeToken(n12);
@@ -414,7 +397,7 @@ public class BSParser implements BSParserConstants {
         while (true) {
             n17 = Statements();
             n16.addNode(n17);
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case DRAIN:
                 case HEAT:
                 case REPEAT:
@@ -423,7 +406,7 @@ public class BSParser implements BSParserConstants {
                 case REAL:
                 case NAT:
                 case MAT:
-                case IDENTIFIER: {
+                case IDENTIFIER:{
                     break;
                 }
                 default:
@@ -433,7 +416,7 @@ public class BSParser implements BSParserConstants {
         }
         n16.nodes.trimToSize();
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case RETURN: {
+            case RETURN:{
                 n19 = new NodeSequence(2);
                 n21 = jj_consume_token(RETURN);
                 n20 = JTBToolkit.makeNodeToken(n21);
@@ -449,9 +432,7 @@ public class BSParser implements BSParserConstants {
         n24 = jj_consume_token(RBRACE);
         n23 = JTBToolkit.makeNodeToken(n24);
         {
-            if ("" != null)
-                return new FunctionDefinition(n0, n2, n3, n5, n7, n9, n14, n16, n18, n23);
-        }
+            if ("" != null) return new FunctionDefinition(n0, n2, n3, n5, n7, n9, n14, n16,n18,n23);}
         throw new Error("Missing return statement in function");
     }
 
@@ -469,32 +450,32 @@ public class BSParser implements BSParserConstants {
             n0 = new NodeChoice(n1, 0);
         } else {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case IF: {
+                case IF:{
                     n2 = BranchStatement();
                     n0 = new NodeChoice(n2, 1);
                     break;
                 }
-                case REPEAT: {
+                case REPEAT:{
                     n3 = RepeatStatement();
                     n0 = new NodeChoice(n3, 2);
                     break;
                 }
-                case WHILE: {
+                case WHILE:{
                     n4 = WhileStatement();
                     n0 = new NodeChoice(n4, 3);
                     break;
                 }
-                case HEAT: {
+                case HEAT:{
                     n5 = HeatStatement();
                     n0 = new NodeChoice(n5, 4);
                     break;
                 }
-                case DRAIN: {
+                case DRAIN:{
                     n6 = DrainStatement();
                     n0 = new NodeChoice(n6, 5);
                     break;
                 }
-                case IDENTIFIER: {
+                case IDENTIFIER:{
                     n7 = FunctionInvoke();
                     n0 = new NodeChoice(n7, 6);
                     break;
@@ -506,8 +487,7 @@ public class BSParser implements BSParserConstants {
             }
         }
         {
-            if ("" != null) return new Statements(n0);
-        }
+            if ("" != null) return new Statements(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -520,10 +500,10 @@ public class BSParser implements BSParserConstants {
         RightOp n5;
         label_8:
         while (true) {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case REAL:
                 case NAT:
-                case MAT: {
+                case MAT:{
                     break;
                 }
                 default:
@@ -539,8 +519,7 @@ public class BSParser implements BSParserConstants {
         n3 = JTBToolkit.makeNodeToken(n4);
         n5 = RightOp();
         {
-            if ("" != null) return new AssignmentStatement(n0, n2, n3, n5);
-        }
+            if ("" != null) return new AssignmentStatement(n0,n2,n3,n5);}
         throw new Error("Missing return statement in function");
     }
 
@@ -569,7 +548,7 @@ public class BSParser implements BSParserConstants {
             n0 = new NodeChoice(n5, 4);
         } else {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case IDENTIFIER: {
+                case IDENTIFIER:{
                     n6 = VariableAlias();
                     n0 = new NodeChoice(n6, 5);
                     break;
@@ -581,20 +560,18 @@ public class BSParser implements BSParserConstants {
             }
         }
         {
-            if ("" != null) return new RightOp(n0);
-        }
+            if ("" != null) return new RightOp(n0);}
         throw new Error("Missing return statement in function");
     }
 
-    final public TypingList TypingList() throws ParseException {
-        Type n0;
+    final public TypingList TypingList() throws ParseException {Type n0;
         NodeListOptional n1 = new NodeListOptional();
         TypingRest n2;
         n0 = Type();
         label_9:
         while (true) {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case COMMA: {
+                case COMMA:{
                     break;
                 }
                 default:
@@ -606,8 +583,7 @@ public class BSParser implements BSParserConstants {
         }
         n1.nodes.trimToSize();
         {
-            if ("" != null) return new TypingList(n0, n1);
-        }
+            if ("" != null) return new TypingList(n0,n1);}
         throw new Error("Missing return statement in function");
     }
 
@@ -621,12 +597,12 @@ public class BSParser implements BSParserConstants {
             n0 = new NodeChoice(n1, 0);
         } else {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case NAT: {
+                case NAT:{
                     n2 = NatLiteral();
                     n0 = new NodeChoice(n2, 1);
                     break;
                 }
-                case REAL: {
+                case REAL:{
                     n3 = RealLiteral();
                     n0 = new NodeChoice(n3, 2);
                     break;
@@ -638,8 +614,7 @@ public class BSParser implements BSParserConstants {
             }
         }
         {
-            if ("" != null) return new Type(n0);
-        }
+            if ("" != null) return new Type(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -651,8 +626,7 @@ public class BSParser implements BSParserConstants {
         n0 = JTBToolkit.makeNodeToken(n1);
         n2 = Type();
         {
-            if ("" != null) return new TypingRest(n0, n2);
-        }
+            if ("" != null) return new TypingRest(n0,n2);}
         throw new Error("Missing return statement in function");
     }
 
@@ -664,7 +638,7 @@ public class BSParser implements BSParserConstants {
         label_10:
         while (true) {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case COMMA: {
+                case COMMA:{
                     break;
                 }
                 default:
@@ -676,8 +650,7 @@ public class BSParser implements BSParserConstants {
         }
         n1.nodes.trimToSize();
         {
-            if ("" != null) return new FormalParameterList(n0, n1);
-        }
+            if ("" != null) return new FormalParameterList(n0,n1);}
         throw new Error("Missing return statement in function");
     }
 
@@ -687,10 +660,10 @@ public class BSParser implements BSParserConstants {
         Identifier n2;
         label_11:
         while (true) {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case REAL:
                 case NAT:
-                case MAT: {
+                case MAT:{
                     break;
                 }
                 default:
@@ -703,8 +676,7 @@ public class BSParser implements BSParserConstants {
         n0.nodes.trimToSize();
         n2 = Identifier();
         {
-            if ("" != null) return new FormalParameter(n0, n2);
-        }
+            if ("" != null) return new FormalParameter(n0,n2);}
         throw new Error("Missing return statement in function");
     }
 
@@ -716,8 +688,7 @@ public class BSParser implements BSParserConstants {
         n0 = JTBToolkit.makeNodeToken(n1);
         n2 = FormalParameter();
         {
-            if ("" != null) return new FormalParameterRest(n0, n2);
-        }
+            if ("" != null) return new FormalParameterRest(n0,n2);}
         throw new Error("Missing return statement in function");
     }
 
@@ -746,7 +717,7 @@ public class BSParser implements BSParserConstants {
         n1 = jj_consume_token(MIX);
         n0 = JTBToolkit.makeNodeToken(n1);
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case INTEGER_LITERAL: {
+            case INTEGER_LITERAL:{
                 n3 = new NodeSequence(2);
                 n4 = VolumeUnit();
                 n3.addNode(n4);
@@ -763,7 +734,7 @@ public class BSParser implements BSParserConstants {
         n9 = jj_consume_token(WITH);
         n8 = JTBToolkit.makeNodeToken(n9);
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case INTEGER_LITERAL: {
+            case INTEGER_LITERAL:{
                 n11 = new NodeSequence(2);
                 n12 = VolumeUnit();
                 n11.addNode(n12);
@@ -778,7 +749,7 @@ public class BSParser implements BSParserConstants {
         }
         n15 = PrimaryExpression();
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case FOR: {
+            case FOR:{
                 n17 = new NodeSequence(2);
                 n19 = jj_consume_token(FOR);
                 n18 = JTBToolkit.makeNodeToken(n19);
@@ -792,8 +763,7 @@ public class BSParser implements BSParserConstants {
                 jj_la1[20] = jj_gen;
         }
         {
-            if ("" != null) return new MixStatement(n0, n2, n7, n8, n10, n15, n16);
-        }
+            if ("" != null) return new MixStatement(n0, n2, n7, n8, n10,n15,n16);}
         throw new Error("Missing return statement in function");
     }
 
@@ -811,8 +781,7 @@ public class BSParser implements BSParserConstants {
         n3 = JTBToolkit.makeNodeToken(n4);
         n5 = IntegerLiteral();
         {
-            if ("" != null) return new SplitStatement(n0, n2, n3, n5);
-        }
+            if ("" != null) return new SplitStatement(n0,n2,n3,n5);}
         throw new Error("Missing return statement in function");
     }
 
@@ -824,8 +793,7 @@ public class BSParser implements BSParserConstants {
         n0 = JTBToolkit.makeNodeToken(n1);
         n2 = PrimaryExpression();
         {
-            if ("" != null) return new DrainStatement(n0, n2);
-        }
+            if ("" != null) return new DrainStatement(n0,n2);}
         throw new Error("Missing return statement in function");
     }
 
@@ -841,7 +809,7 @@ public class BSParser implements BSParserConstants {
         n1 = jj_consume_token(DISPENSE);
         n0 = JTBToolkit.makeNodeToken(n1);
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case INTEGER_LITERAL: {
+            case INTEGER_LITERAL:{
                 n3 = new NodeSequence(2);
                 n4 = VolumeUnit();
                 n3.addNode(n4);
@@ -856,8 +824,7 @@ public class BSParser implements BSParserConstants {
         }
         n7 = Identifier();
         {
-            if ("" != null) return new DispenseStatement(n0, n2, n7);
-        }
+            if ("" != null) return new DispenseStatement(n0,n2,n7);}
         throw new Error("Missing return statement in function");
     }
 
@@ -880,7 +847,7 @@ public class BSParser implements BSParserConstants {
         n3 = JTBToolkit.makeNodeToken(n4);
         n5 = TempUnit();
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case FOR: {
+            case FOR:{
                 n7 = new NodeSequence(2);
                 n9 = jj_consume_token(FOR);
                 n8 = JTBToolkit.makeNodeToken(n9);
@@ -894,8 +861,7 @@ public class BSParser implements BSParserConstants {
                 jj_la1[22] = jj_gen;
         }
         {
-            if ("" != null) return new HeatStatement(n0, n2, n3, n5, n6);
-        }
+            if ("" != null) return new HeatStatement(n0, n2,n3,n5,n6);}
         throw new Error("Missing return statement in function");
     }
 
@@ -918,7 +884,7 @@ public class BSParser implements BSParserConstants {
         n3 = JTBToolkit.makeNodeToken(n4);
         n5 = PrimaryExpression();
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case FOR: {
+            case FOR:{
                 n7 = new NodeSequence(2);
                 n9 = jj_consume_token(FOR);
                 n8 = JTBToolkit.makeNodeToken(n9);
@@ -932,8 +898,7 @@ public class BSParser implements BSParserConstants {
                 jj_la1[23] = jj_gen;
         }
         {
-            if ("" != null) return new DetectStatement(n0, n2, n3, n5, n6);
-        }
+            if ("" != null) return new DetectStatement(n0, n2,n3,n5,n6);}
         throw new Error("Missing return statement in function");
     }
 
@@ -960,7 +925,7 @@ public class BSParser implements BSParserConstants {
         while (true) {
             n8 = Statements();
             n7.addNode(n8);
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case DRAIN:
                 case HEAT:
                 case REPEAT:
@@ -969,7 +934,7 @@ public class BSParser implements BSParserConstants {
                 case REAL:
                 case NAT:
                 case MAT:
-                case IDENTIFIER: {
+                case IDENTIFIER:{
                     break;
                 }
                 default:
@@ -981,8 +946,7 @@ public class BSParser implements BSParserConstants {
         n10 = jj_consume_token(RBRACE);
         n9 = JTBToolkit.makeNodeToken(n10);
         {
-            if ("" != null) return new RepeatStatement(n0, n2, n3, n5, n7, n9);
-        }
+            if ("" != null) return new RepeatStatement(n0, n2, n3,n5,n7,n9);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1013,7 +977,7 @@ public class BSParser implements BSParserConstants {
         while (true) {
             n10 = Statements();
             n9.addNode(n10);
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case DRAIN:
                 case HEAT:
                 case REPEAT:
@@ -1022,7 +986,7 @@ public class BSParser implements BSParserConstants {
                 case REAL:
                 case NAT:
                 case MAT:
-                case IDENTIFIER: {
+                case IDENTIFIER:{
                     break;
                 }
                 default:
@@ -1034,8 +998,7 @@ public class BSParser implements BSParserConstants {
         n12 = jj_consume_token(RBRACE);
         n11 = JTBToolkit.makeNodeToken(n12);
         {
-            if ("" != null) return new WhileStatement(n0, n2, n4, n5, n7, n9, n11);
-        }
+            if ("" != null) return new WhileStatement(n0, n2, n4, n5,n7,n9,n11);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1070,7 +1033,7 @@ public class BSParser implements BSParserConstants {
         while (true) {
             n10 = Statements();
             n9.addNode(n10);
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case DRAIN:
                 case HEAT:
                 case REPEAT:
@@ -1079,7 +1042,7 @@ public class BSParser implements BSParserConstants {
                 case REAL:
                 case NAT:
                 case MAT:
-                case IDENTIFIER: {
+                case IDENTIFIER:{
                     break;
                 }
                 default:
@@ -1093,7 +1056,7 @@ public class BSParser implements BSParserConstants {
         label_15:
         while (true) {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case ELSE_IF: {
+                case ELSE_IF:{
                     break;
                 }
                 default:
@@ -1105,7 +1068,7 @@ public class BSParser implements BSParserConstants {
         }
         n13.nodes.trimToSize();
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case ELSE: {
+            case ELSE:{
                 n16 = ElseBranchStatement();
                 n15.addNode(n16);
                 break;
@@ -1114,8 +1077,7 @@ public class BSParser implements BSParserConstants {
                 jj_la1[28] = jj_gen;
         }
         {
-            if ("" != null) return new BranchStatement(n0, n2, n4, n5, n7, n9, n11, n13, n15);
-        }
+            if ("" != null) return new BranchStatement(n0, n2, n4, n5, n7, n9, n11,n13,n15);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1146,7 +1108,7 @@ public class BSParser implements BSParserConstants {
         while (true) {
             n10 = Statements();
             n9.addNode(n10);
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case DRAIN:
                 case HEAT:
                 case REPEAT:
@@ -1155,7 +1117,7 @@ public class BSParser implements BSParserConstants {
                 case REAL:
                 case NAT:
                 case MAT:
-                case IDENTIFIER: {
+                case IDENTIFIER:{
                     break;
                 }
                 default:
@@ -1167,8 +1129,7 @@ public class BSParser implements BSParserConstants {
         n12 = jj_consume_token(RBRACE);
         n11 = JTBToolkit.makeNodeToken(n12);
         {
-            if ("" != null) return new ElseIfBranchStatement(n0, n2, n4, n5, n7, n9, n11);
-        }
+            if ("" != null) return new ElseIfBranchStatement(n0, n2, n4, n5,n7,n9,n11);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1189,7 +1150,7 @@ public class BSParser implements BSParserConstants {
         while (true) {
             n5 = Statements();
             n4.addNode(n5);
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case DRAIN:
                 case HEAT:
                 case REPEAT:
@@ -1198,7 +1159,7 @@ public class BSParser implements BSParserConstants {
                 case REAL:
                 case NAT:
                 case MAT:
-                case IDENTIFIER: {
+                case IDENTIFIER:{
                     break;
                 }
                 default:
@@ -1210,8 +1171,7 @@ public class BSParser implements BSParserConstants {
         n7 = jj_consume_token(RBRACE);
         n6 = JTBToolkit.makeNodeToken(n7);
         {
-            if ("" != null) return new ElseBranchStatement(n0, n2, n4, n6);
-        }
+            if ("" != null) return new ElseBranchStatement(n0,n2,n4,n6);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1258,8 +1218,7 @@ public class BSParser implements BSParserConstants {
             throw new ParseException();
         }
         {
-            if ("" != null) return new Conditional(n0);
-        }
+            if ("" != null) return new Conditional(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1290,8 +1249,7 @@ public class BSParser implements BSParserConstants {
             throw new ParseException();
         }
         {
-            if ("" != null) return new MathStatement(n0);
-        }
+            if ("" != null) return new MathStatement(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1306,12 +1264,12 @@ public class BSParser implements BSParserConstants {
         n0 = Identifier();
         n2 = jj_consume_token(LPAREN);
         n1 = JTBToolkit.makeNodeToken(n2);
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case REAL:
             case TRUE:
             case FALSE:
             case INTEGER_LITERAL:
-            case IDENTIFIER: {
+            case IDENTIFIER:{
                 n4 = ArgumentList();
                 n3.addNode(n4);
                 break;
@@ -1322,8 +1280,7 @@ public class BSParser implements BSParserConstants {
         n6 = jj_consume_token(RPAREN);
         n5 = JTBToolkit.makeNodeToken(n6);
         {
-            if ("" != null) return new FunctionInvoke(n0, n1, n3, n5);
-        }
+            if ("" != null) return new FunctionInvoke(n0,n1,n3,n5);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1335,7 +1292,7 @@ public class BSParser implements BSParserConstants {
         label_18:
         while (true) {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                case COMMA: {
+                case COMMA:{
                     break;
                 }
                 default:
@@ -1347,8 +1304,7 @@ public class BSParser implements BSParserConstants {
         }
         n1.nodes.trimToSize();
         {
-            if ("" != null) return new ArgumentList(n0, n1);
-        }
+            if ("" != null) return new ArgumentList(n0,n1);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1360,8 +1316,7 @@ public class BSParser implements BSParserConstants {
         n0 = JTBToolkit.makeNodeToken(n1);
         n2 = AllowedArguments();
         {
-            if ("" != null) return new AllowedArgumentsRest(n0, n2);
-        }
+            if ("" != null) return new AllowedArgumentsRest(n0,n2);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1373,27 +1328,27 @@ public class BSParser implements BSParserConstants {
         IntegerLiteral n4;
         RealLiteral n5;
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case IDENTIFIER: {
+            case IDENTIFIER:{
                 n1 = Identifier();
                 n0 = new NodeChoice(n1, 0);
                 break;
             }
-            case TRUE: {
+            case TRUE:{
                 n2 = TrueLiteral();
                 n0 = new NodeChoice(n2, 1);
                 break;
             }
-            case FALSE: {
+            case FALSE:{
                 n3 = FalseLiteral();
                 n0 = new NodeChoice(n3, 2);
                 break;
             }
-            case INTEGER_LITERAL: {
+            case INTEGER_LITERAL:{
                 n4 = IntegerLiteral();
                 n0 = new NodeChoice(n4, 3);
                 break;
             }
-            case REAL: {
+            case REAL:{
                 n5 = RealLiteral();
                 n0 = new NodeChoice(n5, 4);
                 break;
@@ -1404,8 +1359,7 @@ public class BSParser implements BSParserConstants {
                 throw new ParseException();
         }
         {
-            if ("" != null) return new PrimaryExpression(n0);
-        }
+            if ("" != null) return new PrimaryExpression(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1415,8 +1369,7 @@ public class BSParser implements BSParserConstants {
         n1 = jj_consume_token(INTEGER_LITERAL);
         n0 = JTBToolkit.makeNodeToken(n1);
         {
-            if ("" != null) return new IntegerLiteral(n0);
-        }
+            if ("" != null) return new IntegerLiteral(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1426,8 +1379,7 @@ public class BSParser implements BSParserConstants {
         n1 = jj_consume_token(NAT);
         n0 = JTBToolkit.makeNodeToken(n1);
         {
-            if ("" != null) return new NatLiteral(n0);
-        }
+            if ("" != null) return new NatLiteral(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1437,8 +1389,7 @@ public class BSParser implements BSParserConstants {
         n1 = jj_consume_token(MAT);
         n0 = JTBToolkit.makeNodeToken(n1);
         {
-            if ("" != null) return new MatLiteral(n0);
-        }
+            if ("" != null) return new MatLiteral(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1448,8 +1399,7 @@ public class BSParser implements BSParserConstants {
         n1 = jj_consume_token(REAL);
         n0 = JTBToolkit.makeNodeToken(n1);
         {
-            if ("" != null) return new RealLiteral(n0);
-        }
+            if ("" != null) return new RealLiteral(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1459,8 +1409,7 @@ public class BSParser implements BSParserConstants {
         n1 = jj_consume_token(TRUE);
         n0 = JTBToolkit.makeNodeToken(n1);
         {
-            if ("" != null) return new TrueLiteral(n0);
-        }
+            if ("" != null) return new TrueLiteral(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1470,8 +1419,7 @@ public class BSParser implements BSParserConstants {
         n1 = jj_consume_token(FALSE);
         n0 = JTBToolkit.makeNodeToken(n1);
         {
-            if ("" != null) return new FalseLiteral(n0);
-        }
+            if ("" != null) return new FalseLiteral(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1481,8 +1429,7 @@ public class BSParser implements BSParserConstants {
         n1 = jj_consume_token(IDENTIFIER);
         n0 = JTBToolkit.makeNodeToken(n1);
         {
-            if ("" != null) return new Identifier(n0);
-        }
+            if ("" != null) return new Identifier(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1496,8 +1443,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new AndExpression(n0, n1, n3);
-        }
+            if ("" != null) return new AndExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1511,8 +1457,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new LessThanExpression(n0, n1, n3);
-        }
+            if ("" != null) return new LessThanExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1526,8 +1471,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new LessThanEqualExpression(n0, n1, n3);
-        }
+            if ("" != null) return new LessThanEqualExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1541,8 +1485,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new GreaterThanExpression(n0, n1, n3);
-        }
+            if ("" != null) return new GreaterThanExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1556,8 +1499,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new GreaterThanEqualExpression(n0, n1, n3);
-        }
+            if ("" != null) return new GreaterThanEqualExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1571,8 +1513,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new NotEqualExpression(n0, n1, n3);
-        }
+            if ("" != null) return new NotEqualExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1586,8 +1527,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new EqualityExpression(n0, n1, n3);
-        }
+            if ("" != null) return new EqualityExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1601,8 +1541,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new OrExpression(n0, n1, n3);
-        }
+            if ("" != null) return new OrExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1616,8 +1555,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new PlusExpression(n0, n1, n3);
-        }
+            if ("" != null) return new PlusExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1631,8 +1569,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new MinusExpression(n0, n1, n3);
-        }
+            if ("" != null) return new MinusExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1646,8 +1583,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new TimesExpression(n0, n1, n3);
-        }
+            if ("" != null) return new TimesExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1661,8 +1597,7 @@ public class BSParser implements BSParserConstants {
         n1 = JTBToolkit.makeNodeToken(n2);
         n3 = PrimaryExpression();
         {
-            if ("" != null) return new DivideExpression(n0, n1, n3);
-        }
+            if ("" != null) return new DivideExpression(n0,n1,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1674,8 +1609,7 @@ public class BSParser implements BSParserConstants {
         n0 = JTBToolkit.makeNodeToken(n1);
         n2 = PrimaryExpression();
         {
-            if ("" != null) return new NotExpression(n0, n2);
-        }
+            if ("" != null) return new NotExpression(n0,n2);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1691,8 +1625,7 @@ public class BSParser implements BSParserConstants {
         n4 = jj_consume_token(RPAREN);
         n3 = JTBToolkit.makeNodeToken(n4);
         {
-            if ("" != null) return new ConditionalParenthesis(n0, n2, n3);
-        }
+            if ("" != null) return new ConditionalParenthesis(n0,n2,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1708,8 +1641,7 @@ public class BSParser implements BSParserConstants {
         n4 = jj_consume_token(RPAREN);
         n3 = JTBToolkit.makeNodeToken(n4);
         {
-            if ("" != null) return new MathParenthesis(n0, n2, n3);
-        }
+            if ("" != null) return new MathParenthesis(n0,n2,n3);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1718,7 +1650,7 @@ public class BSParser implements BSParserConstants {
         Identifier n1;
         Primitives n2;
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case IDENTIFIER: {
+            case IDENTIFIER:{
                 n1 = Identifier();
                 n0 = new NodeChoice(n1, 0);
                 break;
@@ -1726,7 +1658,7 @@ public class BSParser implements BSParserConstants {
             case REAL:
             case TRUE:
             case FALSE:
-            case INTEGER_LITERAL: {
+            case INTEGER_LITERAL:{
                 n2 = Primitives();
                 n0 = new NodeChoice(n2, 1);
                 break;
@@ -1737,8 +1669,7 @@ public class BSParser implements BSParserConstants {
                 throw new ParseException();
         }
         {
-            if ("" != null) return new AllowedArguments(n0);
-        }
+            if ("" != null) return new AllowedArguments(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1749,22 +1680,22 @@ public class BSParser implements BSParserConstants {
         TrueLiteral n3;
         FalseLiteral n4;
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case INTEGER_LITERAL: {
+            case INTEGER_LITERAL:{
                 n1 = IntegerLiteral();
                 n0 = new NodeChoice(n1, 0);
                 break;
             }
-            case REAL: {
+            case REAL:{
                 n2 = RealLiteral();
                 n0 = new NodeChoice(n2, 1);
                 break;
             }
-            case TRUE: {
+            case TRUE:{
                 n3 = TrueLiteral();
                 n0 = new NodeChoice(n3, 2);
                 break;
             }
-            case FALSE: {
+            case FALSE:{
                 n4 = FalseLiteral();
                 n0 = new NodeChoice(n4, 3);
                 break;
@@ -1775,8 +1706,7 @@ public class BSParser implements BSParserConstants {
                 throw new ParseException();
         }
         {
-            if ("" != null) return new Primitives(n0);
-        }
+            if ("" != null) return new Primitives(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1784,8 +1714,7 @@ public class BSParser implements BSParserConstants {
         Identifier n0;
         n0 = Identifier();
         {
-            if ("" != null) return new VariableAlias(n0);
-        }
+            if ("" != null) return new VariableAlias(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1804,38 +1733,38 @@ public class BSParser implements BSParserConstants {
         NodeToken n11;
         Token n12;
         n0 = IntegerLiteral();
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case MILLISECOND:
             case MICROSECOND:
             case SECOND:
             case MINUTE:
             case HOUR: {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                    case SECOND: {
+                    case SECOND:{
                         n4 = jj_consume_token(SECOND);
                         n3 = JTBToolkit.makeNodeToken(n4);
                         n2 = new NodeChoice(n3, 0);
                         break;
                     }
-                    case MILLISECOND: {
+                    case MILLISECOND:{
                         n6 = jj_consume_token(MILLISECOND);
                         n5 = JTBToolkit.makeNodeToken(n6);
                         n2 = new NodeChoice(n5, 1);
                         break;
                     }
-                    case MICROSECOND: {
+                    case MICROSECOND:{
                         n8 = jj_consume_token(MICROSECOND);
                         n7 = JTBToolkit.makeNodeToken(n8);
                         n2 = new NodeChoice(n7, 2);
                         break;
                     }
-                    case HOUR: {
+                    case HOUR:{
                         n10 = jj_consume_token(HOUR);
                         n9 = JTBToolkit.makeNodeToken(n10);
                         n2 = new NodeChoice(n9, 3);
                         break;
                     }
-                    case MINUTE: {
+                    case MINUTE:{
                         n12 = jj_consume_token(MINUTE);
                         n11 = JTBToolkit.makeNodeToken(n12);
                         n2 = new NodeChoice(n11, 4);
@@ -1853,8 +1782,7 @@ public class BSParser implements BSParserConstants {
                 jj_la1[37] = jj_gen;
         }
         {
-            if ("" != null) return new TimeUnit(n0, n1);
-        }
+            if ("" != null) return new TimeUnit(n0,n1);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1869,24 +1797,24 @@ public class BSParser implements BSParserConstants {
         NodeToken n7;
         Token n8;
         n0 = IntegerLiteral();
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case LITRE:
             case MICROLITRE:
             case MILLILITRE: {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                    case LITRE: {
+                    case LITRE:{
                         n4 = jj_consume_token(LITRE);
                         n3 = JTBToolkit.makeNodeToken(n4);
                         n2 = new NodeChoice(n3, 0);
                         break;
                     }
-                    case MILLILITRE: {
+                    case MILLILITRE:{
                         n6 = jj_consume_token(MILLILITRE);
                         n5 = JTBToolkit.makeNodeToken(n6);
                         n2 = new NodeChoice(n5, 1);
                         break;
                     }
-                    case MICROLITRE: {
+                    case MICROLITRE:{
                         n8 = jj_consume_token(MICROLITRE);
                         n7 = JTBToolkit.makeNodeToken(n8);
                         n2 = new NodeChoice(n7, 2);
@@ -1904,8 +1832,7 @@ public class BSParser implements BSParserConstants {
                 jj_la1[39] = jj_gen;
         }
         {
-            if ("" != null) return new VolumeUnit(n0, n1);
-        }
+            if ("" != null) return new VolumeUnit(n0,n1);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1918,17 +1845,17 @@ public class BSParser implements BSParserConstants {
         NodeToken n5;
         Token n6;
         n0 = IntegerLiteral();
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case CELSIUS:
             case FAHRENHEIT: {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-                    case CELSIUS: {
+                    case CELSIUS:{
                         n4 = jj_consume_token(CELSIUS);
                         n3 = JTBToolkit.makeNodeToken(n4);
                         n2 = new NodeChoice(n3, 0);
                         break;
                     }
-                    case FAHRENHEIT: {
+                    case FAHRENHEIT:{
                         n6 = jj_consume_token(FAHRENHEIT);
                         n5 = JTBToolkit.makeNodeToken(n6);
                         n2 = new NodeChoice(n5, 1);
@@ -1946,8 +1873,7 @@ public class BSParser implements BSParserConstants {
                 jj_la1[41] = jj_gen;
         }
         {
-            if ("" != null) return new TempUnit(n0, n1);
-        }
+            if ("" != null) return new TempUnit(n0,n1);}
         throw new Error("Missing return statement in function");
     }
 
@@ -2203,24 +2129,24 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_37() {
-        return jj_scan_token(TRUE);
-    }
-
-    private boolean jj_3R_22() {
+    private boolean jj_3R_22()
+    {
         return jj_3R_30();
     }
 
-    private boolean jj_3R_71() {
+    private boolean jj_3R_71()
+    {
         return jj_scan_token(MICROSECOND);
     }
 
-    private boolean jj_3_13() {
+    private boolean jj_3_13()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(GREATERTHANEQUAL);
     }
 
-    private boolean jj_3R_43() {
+    private boolean jj_3R_43()
+    {
         if (jj_scan_token(MIX)) return true;
         Token xsp;
         xsp = jj_scanpos;
@@ -2235,39 +2161,43 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_70() {
+    private boolean jj_3R_70()
+    {
         return jj_scan_token(MILLISECOND);
     }
 
-    private boolean jj_3R_19() {
+    private boolean jj_3R_19()
+    {
         Token xsp;
         while (true) {
             xsp = jj_scanpos;
             if (jj_3R_22()) {
-                jj_scanpos = xsp;
-                break;
-            }
+                jj_scanpos = xsp; break; }
         }
         if (jj_3R_23()) return true;
         if (jj_scan_token(ASSIGN)) return true;
         return jj_3R_24();
     }
 
-    private boolean jj_3_12() {
+    private boolean jj_3_12()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(GREATERTHAN);
     }
 
-    private boolean jj_3R_69() {
+    private boolean jj_3R_69()
+    {
         return jj_scan_token(SECOND);
     }
 
-    private boolean jj_3_11() {
+    private boolean jj_3_11()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(LESSTHANEQUAL);
     }
 
-    private boolean jj_3R_63() {
+    private boolean jj_3R_63()
+    {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3R_69()) {
@@ -2286,16 +2216,19 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_40() {
+    private boolean jj_3R_40()
+    {
         return jj_scan_token(REAL);
     }
 
-    private boolean jj_3_10() {
+    private boolean jj_3_10()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(LESSTHAN);
     }
 
-    private boolean jj_3R_60() {
+    private boolean jj_3R_60()
+    {
         if (jj_3R_39()) return true;
         Token xsp;
         xsp = jj_scanpos;
@@ -2303,37 +2236,45 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3_9() {
+    private boolean jj_3_9()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(AND);
     }
 
-    private boolean jj_3_8() {
+    private boolean jj_3_8()
+    {
         return jj_scan_token(LPAREN);
     }
 
-    private boolean jj_3R_20() {
+    private boolean jj_3R_20()
+    {
         return jj_scan_token(MAT);
     }
 
-    private boolean jj_3_1() {
+    private boolean jj_3_1()
+    {
         return jj_3R_19();
     }
 
-    private boolean jj_3R_58() {
+    private boolean jj_3R_58()
+    {
         return jj_scan_token(NAT);
     }
 
-    private boolean jj_3R_48() {
+    private boolean jj_3R_48()
+    {
         return jj_3R_23();
     }
 
-    private boolean jj_3R_55() {
+    private boolean jj_3R_55()
+    {
         if (jj_scan_token(FOR)) return true;
         return jj_3R_60();
     }
 
-    private boolean jj_3R_44() {
+    private boolean jj_3R_44()
+    {
         if (jj_scan_token(DETECT)) return true;
         if (jj_3R_21()) return true;
         if (jj_scan_token(ON)) return true;
@@ -2344,31 +2285,38 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_81() {
+    private boolean jj_3R_81()
+    {
         return jj_3R_38();
     }
 
-    private boolean jj_3R_39() {
+    private boolean jj_3R_39()
+    {
         return jj_scan_token(INTEGER_LITERAL);
     }
 
-    private boolean jj_3R_80() {
+    private boolean jj_3R_80()
+    {
         return jj_3R_37();
     }
 
-    private boolean jj_3R_79() {
+    private boolean jj_3R_79()
+    {
         return jj_3R_40();
     }
 
-    private boolean jj_3R_78() {
+    private boolean jj_3R_78()
+    {
         return jj_3R_39();
     }
 
-    private boolean jj_3R_29() {
+    private boolean jj_3R_29()
+    {
         return jj_3R_40();
     }
 
-    private boolean jj_3R_77() {
+    private boolean jj_3R_77()
+    {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3R_78()) {
@@ -2384,27 +2332,33 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_28() {
+    private boolean jj_3R_28()
+    {
         return jj_3R_39();
     }
 
-    private boolean jj_3R_27() {
+    private boolean jj_3R_27()
+    {
         return jj_3R_38();
     }
 
-    private boolean jj_3R_26() {
+    private boolean jj_3R_26()
+    {
         return jj_3R_37();
     }
 
-    private boolean jj_3R_25() {
+    private boolean jj_3R_25()
+    {
         return jj_3R_23();
     }
 
-    private boolean jj_3R_75() {
+    private boolean jj_3R_75()
+    {
         return jj_3R_77();
     }
 
-    private boolean jj_3R_21() {
+    private boolean jj_3R_21()
+    {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3R_25()) {
@@ -2423,11 +2377,13 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_74() {
+    private boolean jj_3R_74()
+    {
         return jj_3R_23();
     }
 
-    private boolean jj_3R_64() {
+    private boolean jj_3R_64()
+    {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3R_74()) {
@@ -2437,38 +2393,46 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_51() {
+    private boolean jj_3R_51()
+    {
         if (jj_scan_token(COMMA)) return true;
         return jj_3R_41();
     }
 
-    private boolean jj_3R_76() {
+    private boolean jj_3R_76()
+    {
         if (jj_scan_token(COMMA)) return true;
         return jj_3R_64();
     }
 
-    private boolean jj_3R_50() {
+    private boolean jj_3R_50()
+    {
         return jj_3R_40();
     }
 
-    private boolean jj_3R_49() {
+    private boolean jj_3R_49()
+    {
         return jj_3R_58();
     }
 
-    private boolean jj_3R_56() {
+    private boolean jj_3R_56()
+    {
         if (jj_3R_59()) return true;
         return jj_scan_token(OF);
     }
 
-    private boolean jj_3_7() {
+    private boolean jj_3_7()
+    {
         return jj_3R_20();
     }
 
-    private boolean jj_3R_65() {
+    private boolean jj_3R_65()
+    {
         return jj_3R_76();
     }
 
-    private boolean jj_3R_41() {
+    private boolean jj_3R_41()
+    {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3_7()) {
@@ -2481,7 +2445,8 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_46() {
+    private boolean jj_3R_46()
+    {
         if (jj_scan_token(DISPENSE)) return true;
         Token xsp;
         xsp = jj_scanpos;
@@ -2489,41 +2454,42 @@ public class BSParser implements BSParserConstants {
         return jj_3R_23();
     }
 
-    private boolean jj_3R_61() {
+    private boolean jj_3R_61()
+    {
         if (jj_3R_64()) return true;
         Token xsp;
         while (true) {
             xsp = jj_scanpos;
             if (jj_3R_65()) {
-                jj_scanpos = xsp;
-                break;
-            }
+                jj_scanpos = xsp; break; }
         }
         return false;
     }
 
-    private boolean jj_3R_42() {
+    private boolean jj_3R_42()
+    {
         return jj_3R_51();
     }
 
-    private boolean jj_3R_57() {
+    private boolean jj_3R_57()
+    {
         return jj_3R_61();
     }
 
-    private boolean jj_3R_30() {
+    private boolean jj_3R_30()
+    {
         if (jj_3R_41()) return true;
         Token xsp;
         while (true) {
             xsp = jj_scanpos;
             if (jj_3R_42()) {
-                jj_scanpos = xsp;
-                break;
-            }
+                jj_scanpos = xsp; break; }
         }
         return false;
     }
 
-    private boolean jj_3R_47() {
+    private boolean jj_3R_47()
+    {
         if (jj_3R_23()) return true;
         if (jj_scan_token(LPAREN)) return true;
         Token xsp;
@@ -2532,91 +2498,111 @@ public class BSParser implements BSParserConstants {
         return jj_scan_token(RPAREN);
     }
 
-    private boolean jj_3_6() {
+    private boolean jj_3_6()
+    {
         if (jj_scan_token(IDENTIFIER)) return true;
         return jj_scan_token(LPAREN);
     }
 
-    private boolean jj_3_5() {
+    private boolean jj_3_5()
+    {
         return jj_scan_token(DISPENSE);
     }
 
-    private boolean jj_3_21() {
+    private boolean jj_3_21()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(DIVIDE);
     }
 
-    private boolean jj_3R_36() {
+    private boolean jj_3R_36()
+    {
         return jj_3R_48();
     }
 
-    private boolean jj_3_4() {
+    private boolean jj_3_4()
+    {
         return jj_scan_token(SPLIT);
     }
 
-    private boolean jj_3_20() {
+    private boolean jj_3_20()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(MULTIPLY);
     }
 
-    private boolean jj_3R_35() {
+    private boolean jj_3R_35()
+    {
         return jj_3R_47();
     }
 
-    private boolean jj_3R_45() {
+    private boolean jj_3R_45()
+    {
         if (jj_scan_token(SPLIT)) return true;
         if (jj_3R_21()) return true;
         if (jj_scan_token(INTO)) return true;
         return jj_3R_39();
     }
 
-    private boolean jj_3_3() {
+    private boolean jj_3_3()
+    {
         return jj_scan_token(DETECT);
     }
 
-    private boolean jj_3_19() {
+    private boolean jj_3_19()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(MINUS);
     }
 
-    private boolean jj_3R_68() {
+    private boolean jj_3R_68()
+    {
         return jj_scan_token(MICROLITRE);
     }
 
-    private boolean jj_3R_34() {
+    private boolean jj_3R_34()
+    {
         return jj_3R_46();
     }
 
-    private boolean jj_3_2() {
+    private boolean jj_3_2()
+    {
         return jj_scan_token(MIX);
     }
 
-    private boolean jj_3_18() {
+    private boolean jj_3_18()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(ADD);
     }
 
-    private boolean jj_3R_67() {
+    private boolean jj_3R_67()
+    {
         return jj_scan_token(MILLILITRE);
     }
 
-    private boolean jj_3R_33() {
+    private boolean jj_3R_33()
+    {
         return jj_3R_45();
     }
 
-    private boolean jj_3R_66() {
+    private boolean jj_3R_66()
+    {
         return jj_scan_token(LITRE);
     }
 
-    private boolean jj_3_17() {
+    private boolean jj_3_17()
+    {
         return jj_scan_token(LPAREN);
     }
 
-    private boolean jj_3R_32() {
+    private boolean jj_3R_32()
+    {
         return jj_3R_44();
     }
 
-    private boolean jj_3R_62() {
+    private boolean jj_3R_62()
+    {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3R_66()) {
@@ -2629,15 +2615,18 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_23() {
+    private boolean jj_3R_23()
+    {
         return jj_scan_token(IDENTIFIER);
     }
 
-    private boolean jj_3R_31() {
+    private boolean jj_3R_31()
+    {
         return jj_3R_43();
     }
 
-    private boolean jj_3R_59() {
+    private boolean jj_3R_59()
+    {
         if (jj_3R_39()) return true;
         Token xsp;
         xsp = jj_scanpos;
@@ -2645,7 +2634,8 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_24() {
+    private boolean jj_3R_24()
+    {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3R_31()) {
@@ -2667,95 +2657,49 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_54() {
+    private boolean jj_3R_54()
+    {
         if (jj_scan_token(FOR)) return true;
         return jj_3R_60();
     }
 
-    private boolean jj_3R_38() {
+    private boolean jj_3R_38()
+    {
         return jj_scan_token(FALSE);
     }
 
-    private boolean jj_3R_53() {
+    private boolean jj_3R_53()
+    {
         if (jj_3R_59()) return true;
         return jj_scan_token(OF);
     }
 
-    private boolean jj_3_16() {
+    private boolean jj_3_16()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(OR);
     }
 
-    private boolean jj_3_15() {
+    private boolean jj_3_15()
+    {
         if (jj_3R_21()) return true;
         return jj_scan_token(EQUALITY);
     }
 
-    private boolean jj_3R_73() {
+    private boolean jj_3R_73()
+    {
         return jj_scan_token(MINUTE);
     }
 
-    private boolean jj_3R_72() {
+    private boolean jj_3R_72()
+    {
         return jj_scan_token(HOUR);
     }
 
-    private boolean jj_3R_52() {
+    private boolean jj_3R_52()
+    {
         if (jj_3R_59()) return true;
         return jj_scan_token(OF);
-    }
-
-    private boolean jj_3_14() {
-        if (jj_3R_21()) return true;
-        return jj_scan_token(NOTEQUAL);
-    }
-
-    /**
-     * Reinitialise.
-     */
-    public void ReInit(java.io.InputStream stream) {
-        ReInit(stream, null);
-    }
-
-    /**
-     * Reinitialise.
-     */
-    public void ReInit(java.io.InputStream stream, String encoding) {
-        try {
-            jj_input_stream.ReInit(stream, encoding, 1, 1);
-        } catch (java.io.UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        token_source.ReInit(jj_input_stream);
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
-    /**
-     * Reinitialise.
-     */
-    public void ReInit(java.io.Reader stream) {
-        jj_input_stream.ReInit(stream, 1, 1);
-        token_source.ReInit(jj_input_stream);
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
-    /**
-     * Reinitialise.
-     */
-    public void ReInit(BSParserTokenManager tm) {
-        token_source = tm;
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
     private Token jj_consume_token(int kind) throws ParseException {
@@ -2782,6 +2726,56 @@ public class BSParser implements BSParserConstants {
         throw generateParseException();
     }
 
+    private boolean jj_3_14()
+    {
+        if (jj_3R_21()) return true;
+        return jj_scan_token(NOTEQUAL);
+    }
+
+    private boolean jj_3R_37() {
+        return jj_scan_token(TRUE);
+    }
+
+    /** Reinitialise. */
+    public void ReInit(java.io.InputStream stream) {
+        ReInit(stream, null);
+    }
+
+    /** Reinitialise. */
+    public void ReInit(java.io.InputStream stream, String encoding) {
+        try {
+            jj_input_stream.ReInit(stream, encoding, 1, 1);
+        } catch (java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException(e); }
+        token_source.ReInit(jj_input_stream);
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
+        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    }
+
+    /** Reinitialise. */
+    public void ReInit(java.io.Reader stream) {
+        jj_input_stream.ReInit(stream, 1, 1);
+        token_source.ReInit(jj_input_stream);
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
+        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    }
+
+    /** Reinitialise. */
+    public void ReInit(BSParserTokenManager tm) {
+        token_source = tm;
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
+        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    }
+
     private boolean jj_scan_token(int kind) {
         if (jj_scanpos == jj_lastpos) {
             jj_la--;
@@ -2798,8 +2792,7 @@ public class BSParser implements BSParserConstants {
             Token tok = token;
             while (tok != null && tok != jj_scanpos) {
                 i++;
-                tok = tok.next;
-            }
+                tok = tok.next; }
             if (tok != null) jj_add_error_token(kind, i);
         }
         if (jj_scanpos.kind != kind) return true;
@@ -2807,9 +2800,7 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    /**
-     * Get the next Token.
-     */
+    /** Get the next Token. */
     final public Token getNextToken() {
         if (token.next != null) token = token.next;
         else token = token.next = token_source.getNextToken();
@@ -2818,9 +2809,7 @@ public class BSParser implements BSParserConstants {
         return token;
     }
 
-    /**
-     * Get the specific Token.
-     */
+    /** Get the specific Token. */
     final public Token getToken(int index) {
         Token t = token;
         for (int i = 0; i < index; i++) {
@@ -2848,7 +2837,7 @@ public class BSParser implements BSParserConstants {
             }
             jj_entries_loop:
             for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext(); ) {
-                int[] oldentry = (int[]) (it.next());
+                int[] oldentry = (int[])(it.next());
                 if (oldentry.length == jj_expentry.length) {
                     for (int i = 0; i < jj_expentry.length; i++) {
                         if (oldentry[i] != jj_expentry[i]) {
@@ -2863,12 +2852,10 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    /**
-     * Generate ParseException.
-     */
+    /** Generate ParseException. */
     public ParseException generateParseException() {
         jj_expentries.clear();
-        boolean[] la1tokens = new boolean[77];
+        boolean[] la1tokens = new boolean[78];
         if (jj_kind >= 0) {
             la1tokens[jj_kind] = true;
             jj_kind = -1;
@@ -2876,19 +2863,19 @@ public class BSParser implements BSParserConstants {
         for (int i = 0; i < 42; i++) {
             if (jj_la1[i] == jj_gen) {
                 for (int j = 0; j < 32; j++) {
-                    if ((jj_la1_0[i] & (1 << j)) != 0) {
+                    if ((jj_la1_0[i] & (1 <<j)) != 0) {
                         la1tokens[j] = true;
                     }
                     if ((jj_la1_1[i] & (1 << j)) != 0) {
-                        la1tokens[32 + j] = true;
+                        la1tokens[32+j] = true;
                     }
                     if ((jj_la1_2[i] & (1 << j)) != 0) {
-                        la1tokens[64 + j] = true;
+                        la1tokens[64+j] = true;
                     }
                 }
             }
         }
-        for (int i = 0; i < 77; i++) {
+        for (int i = 0; i < 78; i++) {
             if (la1tokens[i]) {
                 jj_expentry = new int[1];
                 jj_expentry[0] = i;
@@ -2905,15 +2892,11 @@ public class BSParser implements BSParserConstants {
         return new ParseException(token, exptokseq, tokenImage);
     }
 
-    /**
-     * Enable tracing.
-     */
+    /** Enable tracing. */
     final public void enable_tracing() {
     }
 
-    /**
-     * Disable tracing.
-     */
+    /** Disable tracing. */
     final public void disable_tracing() {
     }
 
@@ -2988,14 +2971,12 @@ public class BSParser implements BSParserConstants {
                                 jj_3_20();
                                 break;
                             case 20:
-                                jj_3_21();
-                                break;
+                                jj_3_21(); break;
                         }
                     }
                     p = p.next;
                 } while (p != null);
-            } catch (LookaheadSuccess ls) {
-            }
+            } catch (LookaheadSuccess ls) { }
         }
         jj_rescan = false;
     }
@@ -3004,9 +2985,7 @@ public class BSParser implements BSParserConstants {
         JJCalls p = jj_2_rtns[index];
         while (p.gen > jj_gen) {
             if (p.next == null) {
-                p = p.next = new JJCalls();
-                break;
-            }
+                p = p.next = new JJCalls(); break; }
             p = p.next;
         }
         p.gen = jj_gen + xla - jj_la;
@@ -3015,8 +2994,7 @@ public class BSParser implements BSParserConstants {
     }
 
     @SuppressWarnings("serial")
-    static private final class LookaheadSuccess extends java.lang.Error {
-    }
+    static private final class LookaheadSuccess extends java.lang.Error { }
 
     static final class JJCalls {
         int gen;
@@ -3024,5 +3002,4 @@ public class BSParser implements BSParserConstants {
         int arg;
         JJCalls next;
     }
-
 }

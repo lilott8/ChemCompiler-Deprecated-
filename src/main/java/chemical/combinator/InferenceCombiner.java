@@ -33,12 +33,14 @@ public class InferenceCombiner implements Combiner {
                         logger.debug(t1 + " + " + t2 + " generates: " + EpaManager.INSTANCE.getReaction(t1, t2));
                     }
                 } else {
+                    logger.warn("Mixing: " + t1 + " and " + t2 + " apparently doesn't blow stuff up?");
                     if (EpaManager.INSTANCE.validate(t1, t2)) {
                         chemTypes.addAll(EpaManager.INSTANCE.lookUp(t1, t2));
                     }
                 }
             }
         }
+        logger.info(chemTypes);
 
         return chemTypes;
     }
