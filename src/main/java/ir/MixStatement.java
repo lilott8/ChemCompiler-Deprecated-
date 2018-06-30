@@ -132,24 +132,7 @@ public class MixStatement extends BaseStatement {
         int x = 0;
         for (Variable v : this.inputVariables) {
             // Open the object tag.
-            sb.append("{").append(NL);
             sb.append(v.buildUsage());
-            if (!this.properties.isEmpty()) {
-                sb.append(",").append(NL);
-                if (this.properties.containsKey(Property.VOLUME)) {
-                    sb.append("\"VOLUME\" : {").append(NL);
-                    sb.append("\"VALUE\" : ").append(this.properties.get(Property.VOLUME).getValue()).append(",").append(NL);
-                    sb.append("\"UNITS\" : ").append("\"mL\"").append(NL);
-                    sb.append("}").append(NL);
-                }
-            } else {
-                sb.append(",").append(NL);
-                sb.append("\"VOLUME\" : {").append(NL);
-                sb.append("\"VALUE\" : ").append(10).append(",").append(NL);
-                sb.append("\"UNITS\" : ").append("\"mL\"").append(NL);
-                sb.append("}").append(NL);
-                sb.append("}").append(NL);
-            }
             if (x < this.inputVariables.size() - 1) {
                 sb.append(",").append(NL);
             }

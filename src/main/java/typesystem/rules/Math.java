@@ -6,7 +6,7 @@ import java.util.Set;
 import chemical.epa.ChemTypes;
 import compilation.datastructures.node.InstructionNode;
 import shared.variable.AssignedVariable;
-import shared.variable.DefinedVariable;
+import shared.variable.ManifestVariable;
 import shared.variable.Variable;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;
@@ -34,7 +34,7 @@ public class Math extends NodeAnalyzer {
         // There can be only one input variable.
         Variable input = null;
         for (String s : node.getUse()) {
-            input = new DefinedVariable(s);
+            input = new ManifestVariable(s);
             Set<ChemTypes> set = new HashSet<>();
             set.addAll(this.getTypingConstraints(input));
             if (set.isEmpty()) {

@@ -33,16 +33,12 @@ import parser.ast.PlusExpression;
 import parser.ast.RepeatStatement;
 import parser.ast.SplitStatement;
 import parser.ast.Stationary;
-import parser.ast.TempUnit;
-import parser.ast.TimeUnit;
 import parser.ast.TimesExpression;
-import parser.ast.VolumeUnit;
 import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
 import shared.variable.AssignedVariable;
-import shared.variable.DefinedVariable;
+import shared.variable.ManifestVariable;
 import shared.variable.Method;
-import shared.variable.Property;
 import shared.variable.SensorVariable;
 import shared.variable.StationaryVariable;
 import shared.variable.Variable;
@@ -143,7 +139,7 @@ public class BSSymbolTable extends BSVisitor {
         n.f2.accept(this);
 
         // Build the symbol.
-        Variable f2 = new DefinedVariable(this.name);
+        Variable f2 = new ManifestVariable(this.name);
         f2.addScope(SymbolTable.INSTANCE.getCurrentScope());
         f2.addTypingConstraints(this.getTypingConstraints(f2));
         addVariable(f2);

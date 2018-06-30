@@ -7,9 +7,8 @@ import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
 import compilation.datastructures.node.InstructionNode;
 import shared.variable.AssignedVariable;
-import shared.variable.DefinedVariable;
+import shared.variable.ManifestVariable;
 import shared.variable.Variable;
-import substance.Property;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;
 
@@ -52,7 +51,7 @@ public class Detect extends NodeAnalyzer {
         // There can be only one output variable.
         Variable output = null;
         for (String s : node.getDef()) {
-            output = new DefinedVariable(s);
+            output = new ManifestVariable(s);
             output.addTypingConstraint(REAL);
             instruction.addOutputVariable(output);
             addVariable(output);

@@ -10,7 +10,7 @@ import chemical.epa.ChemTypes;
 import chemical.identification.Identifier;
 import chemical.identification.IdentifierFactory;
 import compilation.datastructures.node.InstructionNode;
-import shared.variable.DefinedVariable;
+import shared.variable.ManifestVariable;
 import shared.variable.Variable;
 import substance.Property;
 import typesystem.Inference.InferenceType;
@@ -50,7 +50,7 @@ public abstract class NodeAnalyzer extends Rule {
 
     protected Formula gatherProperties(Formula instruction, List<Property> properties) {
         for (Property p : properties) {
-            Variable prop = new DefinedVariable(Rule.createHash(p.toString()), this.propertyTypes);
+            Variable prop = new ManifestVariable(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addInputVariable(prop);
             addVariable(prop);

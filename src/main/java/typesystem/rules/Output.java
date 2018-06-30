@@ -1,9 +1,8 @@
 package typesystem.rules;
 
 import compilation.datastructures.node.InstructionNode;
-import shared.variable.DefinedVariable;
+import shared.variable.ManifestVariable;
 import shared.variable.Variable;
-import substance.Property;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;
 
@@ -29,7 +28,7 @@ public class Output extends NodeAnalyzer {
 
         Variable input = null;
         for (String s : node.getUse()) {
-            input = new DefinedVariable(s);
+            input = new ManifestVariable(s);
             input.addTypingConstraints(this.getTypingConstraints(input));
             instruction.addInputVariable(input);
             addVariable(input);

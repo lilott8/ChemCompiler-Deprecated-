@@ -8,7 +8,7 @@ import java.util.Map;
 
 import chemical.epa.ChemTypes;
 import parser.BSVisitor;
-import shared.variable.DefinedVariable;
+import shared.variable.ManifestVariable;
 import shared.variable.Method;
 import shared.variable.Property;
 import shared.variable.Variable;
@@ -97,7 +97,7 @@ public class InvokeStatement extends BaseStatement implements Invoke {
             sb.append(",").append(NL);
             MathStatement statement = new MathStatement();
             statement.addInputVariable(this.method.getReturnStatement().getOutputVariable());
-            Variable v = new DefinedVariable<Integer>(BSVisitor.CONST + "_0");
+            Variable v = new ManifestVariable<Integer>(BSVisitor.CONST + "_0");
             v.addTypingConstraint(NAT);
             v.setValue(0);
             statement.addInputVariable(v);

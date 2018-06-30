@@ -75,7 +75,7 @@ public class InferenceIdentifier extends Identifier {
             default:
                 // naive name approach
             case 1:
-                results.addAll(this.searchByAliases(name));
+                results.addAll(this.searchByAliases("%" + name + "%"));
                 break;
         }
         return results;
@@ -106,7 +106,7 @@ public class InferenceIdentifier extends Identifier {
         String query = String.format("SELECT DISTINCT(c.pubchem_id), rg.epa_id FROM chemicals c " +
                 "LEFT JOIN chemicals_reactive_groups crg ON c.pubchem_id = crg.pubchem_id " +
                 "LEFT JOIN reactive_groups rg on crg.reactive_groups_id = rg.`id` " +
-                "WHERE c.%s = ?", Representation.getColumn(Representation.NAME));
+                "WHERE c.%s LIKE ?", Representation.getColumn(Representation.NAME));
         return this.issueQuery(query, name, "epa_id");
     }
 

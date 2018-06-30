@@ -30,7 +30,7 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
     protected boolean isGlobal = false;
     protected boolean isVariable = false;
     protected boolean isConstant = false;
-    private Property property;
+    protected Property property;
 
     {
         this.id = this.getNewId();
