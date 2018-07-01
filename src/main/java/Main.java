@@ -31,11 +31,11 @@ public class Main {
         }
 
         // Run compilation.
-        Compiler compiler = new Compiler(config);
-        compiler.compile();
+        // Compiler compiler = new Compiler(config);
+        // compiler.compile();
         //compiler.runAllOps();
         //logger.debug(compiler.getControlFlow());
-        // runner();
+        runner();
 
         try {
             if (!ConnectorFactory.getConnection().getConnection().isClosed()) {
@@ -91,9 +91,9 @@ public class Main {
         compile.add("src/main/resources/tests/elisa/oxycodone.json");
 
         // Real world Tests. (24-33)
-        compile.add("src/main/resources/tests/realworld/aiha1.json");
-        compile.add("src/main/resources/tests/realworld/aiha2.json");
-        compile.add("src/main/resources/tests/realworld/aiha3.json");
+        compile.add("src/main/resources/tests/bioscript/realworld/aiha1.bs");
+        compile.add("src/main/resources/tests/bioscript/realworld/aiha2.bs");
+        compile.add("src/main/resources/tests/bioscript/realworld/aiha3.bs");
         compile.add("src/main/resources/tests/realworld/fail1.json");
         compile.add("src/main/resources/tests/realworld/fail2.json");
         compile.add("src/main/resources/tests/realworld/fail3.json");
@@ -116,7 +116,7 @@ public class Main {
         // c = compile.get(0);
         // c = compile.get(1);
         // c = compile.get(2);
-        c = compile.get(3);
+        // c = compile.get(3);
 
         // c = compile.get(4);
         // c = compile.get(5);
@@ -143,7 +143,7 @@ public class Main {
         // c = compile.get(23);
 
         // Real World Tests.
-        // c = compile.get(24);
+        c = compile.get(24);
         // c = compile.get(25);
         // c = compile.get(26);
         // c = compile.get(27);
@@ -159,8 +159,8 @@ public class Main {
         StatisticCombinator.writer.push(c);
         long inferenceTime, compileTime, beginTime = 0;
         logger.info("Running: " + c);
-        String args = String.format("-c %s -p typesystem " +
-                "%s -d -nf -i -drm -classify 16 -o /Users/jason/Desktop/\n", c, DBArgs.getDBArgs());
+        String args = String.format("-c %s -ts error " +
+                "%s -d -nf -epadefs src/main/resources/epa.xml -drm -classify 4 -o /Users/jason/Desktop/\n", c, DBArgs.getDBArgs());
         cli = new CliWrapper();
         cli.parseCommandLine(StringUtils.split(args));
 
@@ -170,7 +170,7 @@ public class Main {
         compileTime = System.nanoTime() - beginTime;
 
         beginTime = System.nanoTime();
-        compiler.runAllOps();
+        // compiler.runAllOps();
         inferenceTime = System.nanoTime() - beginTime;
 
         StatisticCombinator.writer.push("compile time: " + compileTime);

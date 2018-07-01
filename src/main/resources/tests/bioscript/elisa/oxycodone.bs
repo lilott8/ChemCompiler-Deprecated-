@@ -1,0 +1,26 @@
+stationary heroin_enzyme
+
+module fluorescence
+
+manifest oxycodone_enzyme
+manifest urine_sample
+manifest tmb_substrate
+manifest distilled_water
+manifest stop_reagent
+
+a = Move 20uL of urine_sample to oxycodone_enzyme
+a = Move 100uL of Oxycodone-Conjugate to a for 60s
+heat a at 23c for 60m
+drain a
+
+repeat 6 times {
+  a = mix 350uL of distilled_water to oxycodone_enzyme for 45s
+  drain a
+}
+
+b = mix 100uL of tmb_substrate to oxycodone_enzyme
+heat b at 23c for 30m
+b = mix 100uL of stop_reagent with b for 60s
+
+urine_reading = detect fluorescence oo oxycodone_enzyme for 30m
+drain b

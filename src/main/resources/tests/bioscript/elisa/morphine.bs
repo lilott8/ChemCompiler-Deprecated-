@@ -1,0 +1,29 @@
+stationary morphine_enzyme
+
+module fluorescence
+
+manifest urine_sample
+manifest morphine_conjugate
+manifest distilled_water
+manifest tmb_substrate
+manifest morphine_enzyme
+manifest stop_reagent
+
+functions
+
+instructions
+
+a = mix 20uL of Urine-Sample with morphine_enzyme
+b = mix 100uL of Morphine-Conjugate with morphine_enzyme for 60s
+heat b at 23 C for 60m
+
+repeat 6 times {
+  b = mix 350uL of distilled_water with morphine_enzyme for 45s
+  drain b
+}
+
+c = mix 100uL of tmb_substrate with morphine_enzyme
+heat c at 23 C for 30m
+d = mix c with 100uL of stop_reagent for 60s
+
+urine_reading = detect fluorescence of d for 30m

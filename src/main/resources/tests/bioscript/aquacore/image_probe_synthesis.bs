@@ -1,0 +1,22 @@
+manifest ion_exchange_beads
+manifest fluoride_ions_f
+manifest mecn_solution
+manifest VEXZGXHMUGYJMC-UHFFFAOYSA-N
+
+functions
+
+instructions
+
+mixture = mix 10uL of ion_exchange_beads with 10uL of fluoride_ions_f for 30s
+
+heat mixture at 100 C for 30s
+heat mixture at 120 C for 30s
+heat mixture at 135 C for 3min
+
+mixture = mix mixture with 10uL of mecn_solution for 30s
+
+heat mixture at 100 C for 30s
+heat mixture at 120 C for 50s
+
+mixture = mix mixture with 10uL of VEXZGXHMUGYJMC-UHFFFAOYSA-N for 60s
+heat mixture at 60 C for 60s
