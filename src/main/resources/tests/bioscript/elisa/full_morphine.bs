@@ -1,0 +1,74 @@
+stationary Antigen1
+stationary Antigen2
+stationary Antigen3
+
+module fluorescence
+
+manifest morphine_conjugate
+manifest negative_standard
+manifest diluted_sample
+manifest positive_standard
+manifest distilled_water
+manifest tmb_substrate
+manifest stop_reagent
+
+functions
+
+instructions
+
+# Step 2
+a = mix 20uL of negative_standard with Antigen1
+b = mix 20uL of positive_standard with Antigen2
+c = mix 20uL of diluted_sample with Antigen3
+
+# Step 3
+a = mix 100uL of morphine_conjugate with a for 60s
+b = mix 100uL of morphine_conjugate with b for 60s
+c = mix 100uL of morphine_conjugate with c for 60s
+
+# Step 5
+heat a at 23 C for 60m
+heat b at 23 C for 60m
+heat c at 23 C for 60m
+
+# Step 6
+drain a
+drain b
+drain c
+
+repeat 6 times {
+  a = mix 350uL of distilled_water with Antigen1 for 45s
+  b = mix 350uL of distilled_water with Antigen2 for 45s
+  c = mix 350uL of distilled_water with Antigen3 for 45s
+
+  Drain a
+  Drain b
+  Drain c
+
+}
+# Step 7 Dry...
+
+# Step 8
+a = mix 100uL of tmb_substrate with Antigen1
+b = mix 100uL of tmb_substrate with Antigen2
+c = mix 100uL of tmb_substrate with Antigen3
+
+# Step 9
+heat a at 23 C for 30m
+heat b at 23 C for 30m
+heat c at 23 C for 30m
+
+# Step 10
+a = mix stop_reagent with 100uL of a for 60s
+b = mix stop_reagent with 100uL of b for 60s
+c = mix stop_reagent with 100uL of c for 60s
+
+# Step 11
+negative_reading = detect fluorescence on a for 30m
+positive_reading = detect fluorescence on b for 30m
+sample_reading = detect fluorescence on c for 30m
+
+# End
+Drain a
+Drain b
+Drain c

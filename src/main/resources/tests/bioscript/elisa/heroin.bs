@@ -1,0 +1,30 @@
+stationary heroin_enzyme
+
+module fluorescence
+
+manifest Heroin-Conjugate
+manifest urine_sample
+manifest tmb_substrate
+manifest distilled_water
+manifest stop_reagent
+
+functions
+
+instructions
+
+a = Move 20uL of urine_sample to heroin_enzyme
+a = 100uL of heroin_conjugate to a for 60s
+heat a at 23c for 60m
+drain a
+
+repeat 6 times {
+  b = mix 350uL of distilled_water to heroin_enzyme for 45s
+  drain heroin_enzyme
+}
+
+c = mix 100uL of tmb_substrate to heroin_enzyme
+heat c at 23c for 30m
+c = mix stop_reagent with 100uL of c for 60s
+
+urine_reading = detect fluorescence on c for 30m
+drain c

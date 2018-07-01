@@ -1,0 +1,3 @@
+Mixture = Mix Sample with Reagent for 50s
+Perform Capillary Electrophoresis ( 9 cm at 223 V/cm) on Mixture Seperate with electrophoresis buffer
+Measure the fluorescence of Mixture for 10s
