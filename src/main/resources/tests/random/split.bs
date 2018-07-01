@@ -1,0 +1,21 @@
+module aaaaa
+manifest temp
+
+functions
+
+instructions
+
+x = split temp into 3
+
+y = mix x1 with x2
+
+z = detect aaaaa on y
+
+if (z < 5) {
+    drain x1
+    if (z < 5) {
+        drain x2
+    }
+} else {
+    drain x2
+}

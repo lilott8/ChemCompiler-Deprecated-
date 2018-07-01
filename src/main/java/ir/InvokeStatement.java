@@ -86,22 +86,22 @@ public class InvokeStatement extends BaseStatement implements Invoke {
         }
 
         // TODO: figure out how to return numbers.
-        if (!this.method.getReturnStatement().getOutputVariable().getTypes().contains(ChemTypes.getNums())) {
+        if (!this.method.getReturnStatement().getOutputVariables().get(0).getTypes().contains(ChemTypes.getNums())) {
             sb.append(",").append(NL);
             MixStatement statement = new MixStatement();
-            statement.addInputVariable(this.method.getReturnStatement().getOutputVariable());
-            statement.addInputVariable(this.method.getReturnStatement().getOutputVariable());
-            statement.addOutputVariable(this.outputVariable);
+            statement.addInputVariable(this.method.getReturnStatement().getOutputVariables().get(0));
+            statement.addInputVariable(this.method.getReturnStatement().getOutputVariables().get(0));
+            statement.addOutputVariable(this.outputVariables.get(0));
             sb.append(statement.toJson());
         } else {
             sb.append(",").append(NL);
             MathStatement statement = new MathStatement();
-            statement.addInputVariable(this.method.getReturnStatement().getOutputVariable());
+            statement.addInputVariable(this.method.getReturnStatement().getOutputVariables().get(0));
             Variable v = new ManifestVariable<Integer>(BSVisitor.CONST + "_0");
             v.addTypingConstraint(NAT);
             v.setValue(0);
             statement.addInputVariable(v);
-            statement.addOutputVariable(this.outputVariable);
+            statement.addOutputVariable(this.outputVariables.get(0));
             sb.append(statement.toJson());
         }
 

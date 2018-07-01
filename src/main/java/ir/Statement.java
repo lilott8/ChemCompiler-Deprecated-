@@ -20,7 +20,7 @@ public interface Statement extends Vertex, SMTSolver, Exportable, Convertable {
 
     List<Variable> getInputVariables();
 
-    Variable getOutputVariable();
+    List<Variable> getOutputVariables();
 
     Map<String, Property> getProperties();
 

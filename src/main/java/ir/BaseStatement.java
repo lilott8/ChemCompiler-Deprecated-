@@ -31,7 +31,7 @@ public abstract class BaseStatement implements Statement {
     protected boolean isAssign = false;
     protected boolean fallsThrough = false;
     protected boolean containsInvoke = false;
-    protected Variable outputVariable;
+    protected List<Variable> outputVariables = new ArrayList<>();
     protected List<Variable> inputVariables = new ArrayList<>();
     protected Map<String, Property> properties = new HashMap<>();
     protected Set<ChemTypes> types = new HashSet<>();
@@ -85,11 +85,11 @@ public abstract class BaseStatement implements Statement {
 
     @Override
     public void addOutputVariable(Variable variable) {
-        this.outputVariable = variable;
+        this.outputVariables.add(variable);
     }
 
-    public Variable getOutputVariable() {
-        return outputVariable;
+    public List<Variable> getOutputVariables() {
+        return outputVariables;
     }
 
     @Override
@@ -141,7 +141,7 @@ public abstract class BaseStatement implements Statement {
         String name;
         if (!this.isAssign && !this.isBranch) {
             if (this.inputVariables.isEmpty()) {
-                name = this.outputVariable.getName();
+                name = this.outputVariables.get(0).getName();
             } else {
                 name = this.inputVariables.get(0).getName();
             }

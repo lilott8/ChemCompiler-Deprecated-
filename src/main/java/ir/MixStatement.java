@@ -131,6 +131,7 @@ public class MixStatement extends BaseStatement {
         sb.append("\"INPUTS\" : [").append(NL);
         int x = 0;
         for (Variable v : this.inputVariables) {
+            logger.info(v.getClass().getName());
             // Open the object tag.
             sb.append(v.buildUsage());
             if (x < this.inputVariables.size() - 1) {
@@ -142,10 +143,10 @@ public class MixStatement extends BaseStatement {
         sb.append("],").append(NL);
         sb.append("\"OUTPUTS\" : [").append(NL);
         // Open the tag.
-        sb.append("{").append(NL);
-        sb.append(this.outputVariable.redeclare());
+        // sb.append("{").append(NL);
+        sb.append(this.outputVariables.get(0).redeclare());
         // Close the open tag.
-        sb.append("}").append(NL);
+        // sb.append("}").append(NL);
         sb.append("]").append(NL);
         // Closes the OPERATION.
         sb.append("}").append(NL);

@@ -259,7 +259,6 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
                 this.name = n.f0.toString();
             }
         }
-
         return this;
     }
 

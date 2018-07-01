@@ -129,7 +129,7 @@ public class DetectStatement extends BaseStatement {
         sb.append("],").append(NL);
         // Add the outputs (there are none).
         sb.append("\"OUTPUTS\" : [").append(NL);
-        sb.append(this.outputVariable.buildDeclaration()).append(NL);
+        sb.append(this.outputVariables.get(0).buildDeclaration()).append(NL);
         // Close the output array.
         sb.append("]").append(NL);
         // Close Operation.

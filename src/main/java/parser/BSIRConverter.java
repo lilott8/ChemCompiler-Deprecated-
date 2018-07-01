@@ -47,6 +47,7 @@ import parser.ast.Manifest;
 import parser.ast.MinusExpression;
 import parser.ast.Module;
 import parser.ast.PlusExpression;
+import parser.ast.Primitives;
 import parser.ast.RepeatStatement;
 import parser.ast.Stationary;
 import parser.ast.TimesExpression;
@@ -54,6 +55,7 @@ import parser.ast.VariableAlias;
 import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
 import shared.io.strings.Experiment;
+import shared.variable.AssignedVariable;
 import shared.variable.Property;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
@@ -444,13 +446,19 @@ public class BSIRConverter extends BSVisitor {
     /**
      * f0 -> <IF>
      * f1 -> <LPAREN>
-     * f2 -> Expression()
-     * f3 -> <RPAREN>
-     * f4 -> <LBRACE>
-     * f5 -> ( Statement() )+
-     * f6 -> <RBRACE>
-     * f7 -> ( ElseIfStatement() )*
-     * f8 -> ( ElseStatement() )?
+     * f2 -> Identifier()
+     * f3 -> Conditional()
+     * f4 -> Primitives()
+     * f5 -> <RPAREN>
+     * f6 -> <LBRACE>
+     * f7 -> ( Statements() )+
+     * f8 -> <RBRACE>
+     * f9 -> ( ElseIfBranchStatement() )*
+     * f10 -> ( ElseBranchStatement() )?
+     *
+     *
+     *
+     * ((IntegerLiteral)n.f1.choice).f0.toString()
      */
     @Override
     public BSVisitor visit(BranchStatement n) {
@@ -461,16 +469,23 @@ public class BSIRConverter extends BSVisitor {
         // Get the expression.
         this.inConditional = true;
         n.f2.accept(this);
+        String conditional = this.name;
+        n.f3.accept(this);
+        conditional += n.f3.f0.choice.toString();
+        n.f4.accept(this);
+        conditional += this.integerLiteral;
+        logger.warn(conditional);
         this.inConditional = false;
 
         Conditional elseBranch = null;
 
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
 
+
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 this.getCurrentScope());
 
-        Conditional branch = new IfStatement(this.conditional, true);
+        Conditional branch = new IfStatement(conditional, true);
         branch.setScopeName(scopeName);
         branch.setMethodName(this.methodStack.peek());
         instructions.put(branch.getId(), branch);
@@ -480,18 +495,18 @@ public class BSIRConverter extends BSVisitor {
         this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
 
         // Get the statement(s).
-        n.f5.accept(this);
+        n.f7.accept(this);
 
-        if (n.f7.present() || n.f8.present()) {
+        if (n.f9.present() || n.f10.present()) {
             boolean fromElseIf = false;
             // Parse the elseIf(s)
-            if (n.f7.present()) {
+            if (n.f9.present()) {
                 fromElseIf = true;
                 throw new InvalidSyntaxException("\"else if\" statements are not allowed.");
             }
 
             // Parse the else
-            if (n.f8.present()) {
+            if (n.f10.present()) {
                 scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
                 this.newScope(scopeName);
                 elseBranch = new IfStatement("", false);
@@ -503,7 +518,7 @@ public class BSIRConverter extends BSVisitor {
                 // this.controlStack.push(elseBranch);
 
                 // Grab the statements.
-                n.f8.accept(this);
+                n.f9.accept(this);
 
                 // Set the false branch
                 if (!fromElseIf) {
@@ -524,6 +539,19 @@ public class BSIRConverter extends BSVisitor {
         this.endScope();
 
         return this;
+    }
+
+    /**
+     * f0 -> <LESSTHAN>
+     * | <LESSTHANEQUAL>
+     * | <NOTEQUAL>
+     * | <EQUALITY>
+     * | <GREATERTHAN>
+     * | <GREATERTHANEQUAL>
+     */
+    @Override
+    public BSVisitor visit(parser.ast.Conditional n) {
+        return super.visit(n);
     }
 
     /**
@@ -608,7 +636,6 @@ public class BSIRConverter extends BSVisitor {
         Statement mix = new MixStatement();
         mix.addInputVariable(f2);
         mix.addInputVariable(f3);
-        logger.warn("Mix is assigning a value to: " + this.assignTo);
         mix.addOutputVariable(this.assignTo);
 
         Property f6;
@@ -685,7 +712,13 @@ public class BSIRConverter extends BSVisitor {
         Statement split = new SplitStatement();
         split.addInputVariable(f1);
         split.addProperty(Property.QUANTITY, f3);
-        split.addOutputVariable(this.assignTo);
+        String name;
+        for (int x = 1; x <= this.integerLiteral; x++) {
+            name = this.assignTo.getName() + x;
+            Variable var = SymbolTable.INSTANCE.searchScopeHierarchy(name, this.getCurrentScope());
+            split.addOutputVariable(var);
+        }
+        // split.addOutputVariable(this.assignTo);
 
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);

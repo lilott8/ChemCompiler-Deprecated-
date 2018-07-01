@@ -43,7 +43,7 @@ public class MathStatement extends BaseStatement {
     }
 
     public String toString() {
-        return "Input: " + this.inputVariables + "\t output: " + this.outputVariable;
+        return "Input: " + this.inputVariables + "\t output: " + this.outputVariables;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class MathStatement extends BaseStatement {
         sb.append("\"OUTPUTS\" : [").append(NL);
         // Open the tag.
         sb.append("{").append(NL);
-        sb.append(this.outputVariable.redeclare());
+        sb.append(this.outputVariables.get(0).redeclare());
         // Close the open tag.
         sb.append("}").append(NL);
         sb.append("]").append(NL);

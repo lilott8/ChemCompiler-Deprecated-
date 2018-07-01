@@ -78,7 +78,7 @@ public class DispenseStatement extends BaseStatement {
         sb.append("\"OUTPUTS\" : [").append(NL);
         // Open the tag.
         sb.append("{").append(NL);
-        sb.append(this.outputVariable.redeclare());
+        sb.append(this.outputVariables.get(0).redeclare());
         // Close the open tag.
         sb.append("}").append(NL);
         sb.append("]").append(NL);
