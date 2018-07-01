@@ -65,13 +65,12 @@ public class BasicBlock implements Serializable {
 
 
     public Boolean containsInstruction(int index) {
-        boolean retVal = false;
         for (InstructionNode instr : instructions) {
             if (instr.getId() == index) {
-                retVal = true;
+                return true;
             }
         }
-        return retVal;
+        return false;
     }
 
 

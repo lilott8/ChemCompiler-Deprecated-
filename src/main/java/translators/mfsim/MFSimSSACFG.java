@@ -36,13 +36,12 @@ public class MFSimSSACFG {
 
     public MFSimSSACFG(CFG controlFlowGraph, MFSimSSATranslator.IDGen uniqueID) {
         uniqueIDGen = uniqueID;
-        dags = new LinkedHashMap<Integer, MFSimSSADAG>();
-        conditionalGroups = new LinkedHashMap<Integer, List<BasicBlockEdge>>();
+        dags = new LinkedHashMap<>();
+        conditionalGroups = new LinkedHashMap<>();
 
         for (BasicBlock bb : controlFlowGraph.getBasicBlocks().values()) {
             MFSimSSADAG dag = new MFSimSSADAG(bb, uniqueID, ((StaticSingleAssignment) controlFlowGraph).getVariableStack());
             dags.put(bb.getId(), dag);
-            //logger.info(dag);
         }
         ListIterator<BasicBlockEdge> e = controlFlowGraph.getBasicBlockEdges().listIterator();
         while (e.hasNext()) {
@@ -50,34 +49,37 @@ public class MFSimSSACFG {
             int backup = 0;
             //for each conditional group, source and destination must have executable instructions (not just phi/sigma)
 
-
             List<BasicBlockEdge> conditionalGroup;
 
             if (conditionalGroups.containsKey(edge.getSource())) {
                 conditionalGroup = conditionalGroups.get(edge.getSource());
             } else {
-                conditionalGroup = new ArrayList<BasicBlockEdge>();
+                conditionalGroup = new ArrayList<>();
             }
 
             List<InstructionNode> instructions = controlFlowGraph.getBasicBlock(edge.getSource()).getInstructions();
 
-            if (!(containsLegitInstructions(instructions))) {
-                //source has no executable instructions
-                // if destination does, we need to connect to correct source
-                // find correct conditional group if it exists:
-                // create edge between correct source and sink
-                //logger.warn("source is not legit");
+            if (!(containsLegitInstructions(instructions)) || instructions.get(instructions.size()-1).getInstruction() instanceof Output) {
                 e.remove();
                 continue;
             }
 
             if (!(containsLegitInstructions(controlFlowGraph.getBasicBlock(edge.getDestination()).getInstructions()))) {
-                List<BasicBlockEdge> destEdges = controlFlowGraph.getBasicBlockEdgesBySource(edge.getDestination());
-                if (destEdges.size() < 2)
-                    continue;
                 e.remove();
-                //dest has no executable instructions -- this must be a loop entry
-                //get entry and exit edges
+                List<BasicBlockEdge> destEdges = controlFlowGraph.getBasicBlockEdgesBySource(edge.getDestination());
+
+
+                boolean peaked = false;
+                while (destEdges.size() == 1) { // find destination with legitimate statements
+                    if (!(containsLegitInstructions(controlFlowGraph.getBasicBlock(destEdges.get(0).getDestination()).getInstructions()))) {
+                        destEdges = controlFlowGraph.getBasicBlockEdgesBySource(destEdges.get(0).getDestination());
+                        peaked = true;
+                    }
+                    else
+                        break;
+                }
+                //dest has no executable instructions -- this must be a loop entry or pointing to one
+                // get entry and exit edges
                 // replace the repeat entry
                 Iterator<BasicBlockEdge> d = destEdges.iterator();
                 String cond = "";
@@ -87,14 +89,18 @@ public class MFSimSSACFG {
                     if (dest.getType().equals("repeat")) {
                         head = dest.getDestination();
                         cond = dest.getCondition();
-                        e.add(new BasicBlockEdge(edge.getSource(), dest.getDestination(), "UNCONDITIONAL"));//": " + dest.getCondition(), "REPEAT"));
+                        e.add(new BasicBlockEdge(edge.getSource(), dest.getDestination(), "UNCONDITIONAL"));
                         e.previous();
                         d.remove();
                     }
                 }
                 // dest edges should now only have a single edge, the exit edge --- we need to connect exit edge
                 // from the end of the repeat loop for MFSim
-                List<BasicBlockEdge> killEdges = controlFlowGraph.getBasicBlockEdgesByDest(edge.getDestination());
+                List<BasicBlockEdge> killEdges;
+                if (peaked) {
+                    killEdges = controlFlowGraph.getBasicBlockEdgesBySource(head);
+                } else
+                    killEdges = controlFlowGraph.getBasicBlockEdgesByDest(edge.getDestination());
                 Iterator<BasicBlockEdge> k = killEdges.iterator();
                 d = destEdges.iterator();
                 while (k.hasNext()) {
@@ -119,7 +125,7 @@ public class MFSimSSACFG {
                 }
 
                 if (destEdges.size() > 0 || killEdges.size() > 0) {
-                    logger.fatal("why is there anything left?");
+                    logger.fatal("Error translating to MFSim");
                     logger.fatal(destEdges);
                     logger.fatal(killEdges);
                 }
@@ -129,8 +135,6 @@ public class MFSimSSACFG {
             conditionalGroup.add(edge);
             if (instructions.get(instructions.size() - 1).getInstruction() instanceof Output) {
                 // do not add group
-            //} else if (!containsLegitInstructions(instructions)) { //destination does not contain legit
-                //do not add group
             } else
                 conditionalGroups.put(edge.getSource(), conditionalGroup);
         }
@@ -150,7 +154,7 @@ public class MFSimSSACFG {
         String ret = "NAME(" + filename + ")\n\n";
 
         for (MFSimSSADAG dag : dags.values()) {
-            if (!(dag.getNodes().size() == 0) && !(dag.getTransferInNode().size() == 0 && dag.getTransferOutNode().size() == 0))
+            if (!(dag.getNodes().size() == 0))// !(dag.getTransferInNode().size() == 0 || dag.getTransferOutNode().size() == 0))
                 ret += "DAG(" + dag.getName() + ")\n";
             else {
                 String index = dag.getName().substring(dag.getName().lastIndexOf('G') + 1);
@@ -254,9 +258,7 @@ public class MFSimSSACFG {
         logger.warn(edge + "type: " + edge.getType());
         if (edge.getType().equals("repeat")) {
             ret += ", RUN_COUNT, LT, " + dags.get(bbID).getName() + ", " + edge.getCondition() + ")\n";
-//        } else if (false/*edge is while*/) {
-//
-        } else {// (edge.getConditional().getConditionalType() == BasicBlockEdge.ConditionalType.lte) {
+        } else { // sensor reading control flow
             MFSimSSADAG dag = dags.get(bbID);
             Integer nodeID = 0;
             for (MFSimSSANode node : dag.getNodes().values()) {
@@ -269,29 +271,10 @@ public class MFSimSSACFG {
                     + dag.getName() + ", "
                     + nodeID.toString() + ", "
                     + theDigits + ")\n";
-//            logger.warn("Hard-coding ONE_SENSOR");
         }
-//        } else { //only supporting a single sensor for now
-//            ret += ", ONE_SENSOR, " + this.buildMFSimConditional(edge.getConditional()) + nodeID")\n";
-//            // ret += ", " + edge.getConditional().toString() + ")\n";
-//            // ret += ", <INSERT CONDITION HERE>)\n";
-//        }
         return ret;
     }
 
-    private String buildMFSimConditional(ConditionalNode node) {
-        StringBuilder sb = new StringBuilder();
-        // Get left operand of conditional:
-        sb.append(node.getRightOperand());
-        // Get right operand:
-        sb.append(node.getRightOperand());
-        // Get the conditional (<, >=, etc), in string form:
-        sb.append(node.getConditional());
-        // Get the conditional as a type(lt, lte, etc):
-        sb.append(node.getConditionalType());
-
-        return sb.toString();
-    }
 
     private String getUnconditionalJump(String Source) {
         Integer expressionID = this.uniqueIDGen.getNextID();

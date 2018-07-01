@@ -37,7 +37,42 @@ public class Main {
         // runner();
 
         try {
-            BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/biocoder/pcr_droplet_replenishment.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/neurotransmitter_sensing.json"); /* split only to one node */
+
+
+            /* confirmed parsing correctly */
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/biocoder/pcr_droplet_replenishment.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/pcr.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/glucose_detection.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/image_probe_synth.json");
+            /* aiha assays all translate properly, but mfsim is expecting names without special symbols */
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/aiha1.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/aiha2.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/aiha3.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/mustard_gas.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/safety_zone.json");
+            /* elisa assays */
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/dilution.json");
+
+
+
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/broad_spectrum_opiate.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/ciprofloxacin.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/diazepam.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/fentanyl.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/full_morphine.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/heroine.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/morphine.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/oxycodone.json");
+
+            /* extra */
+
+            BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/contrived/pcr_probabilistic.json");
+
+
+            /* opiate immunoassay positive/false */
+
+
         }
         catch (FileNotFoundException e) {
             logger.error(e.getMessage());

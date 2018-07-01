@@ -33,6 +33,8 @@ public abstract class MFSimSSANode {
 
     }
 
+    public List<Integer> getSuccessorIDs() { return successorIDs; }
+
     public Integer getID() {
         return nodeID;
     }
@@ -58,16 +60,16 @@ public abstract class MFSimSSANode {
                     case MICROSECOND:
                         return (long) p.getQuantity() / 1000000; //microsecond to second
                     default:
-                        logger.warn("Using template time.");
+
                 }
             }
         }
-        logger.warn("Using template time.");
-        return 2;  //template time
+        logger.warn("Using template time of 2s.");
+        return (long) 2;  //template time
     }
 
     protected enum OperationClassifier {
-        COOL, DETECT, DILUTE, DISPENSE, HEAT, GENERAL, MIX, SPLIT, STORE, OUTPUT, TRANSFER_IN, TRANSFER_OUT;
+        COOL, DETECT, DILUTE, DISPENSE, HEAT, GENERAL, MIX, SPLIT, STORE, OUTPUT, TRANSFER_IN, TRANSFER_OUT, REACT;
 
         public String toString() {
             switch (this) {
@@ -95,6 +97,8 @@ public abstract class MFSimSSANode {
                     return "TRANSFER_IN";
                 case TRANSFER_OUT:
                     return "TRANSFER_OUT";
+                case REACT:
+                    return "REACT";
                 default:
                     return "UNKNOWN_OPERATION";
             }

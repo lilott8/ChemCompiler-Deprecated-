@@ -15,7 +15,7 @@ public class MFSimSSASplit extends MFSimSSANode {
 
     public MFSimSSASplit(Integer id, Split splitNode) {
         super(id, OperationClassifier.SPLIT, splitNode.getName());
-        numOutput = splitNode.getInputs().size();
+        numOutput = splitNode.getOutputs().size();
         time = getTime(splitNode);
 
     }
