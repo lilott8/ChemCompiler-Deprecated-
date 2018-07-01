@@ -37,10 +37,11 @@ import parser.ast.Stationary;
 import parser.ast.TimesExpression;
 import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
+import shared.properties.Volume;
 import shared.variable.AssignedVariable;
 import shared.variable.ManifestVariable;
 import shared.variable.Method;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.SensorVariable;
 import shared.variable.StationaryVariable;
 import shared.variable.Variable;
@@ -112,7 +113,7 @@ public class BSSymbolTable extends BSVisitor {
         Variable f2 = new StationaryVariable(this.name);
         f2.addScope(SymbolTable.INSTANCE.getCurrentScope());
         f2.addTypingConstraints(this.getTypingConstraints(f2));
-        f2.setProperty(new Property("unknown", Property.VOLUME, "L", 10000));
+        f2.setProperty(new Volume("unknown", "L", 10000));
         SymbolTable.INSTANCE.addLocal(f2);
         SymbolTable.INSTANCE.addInput(f2);
         addVariable(f2);
@@ -145,7 +146,7 @@ public class BSSymbolTable extends BSVisitor {
         Variable f2 = new ManifestVariable(this.name);
         f2.addScope(SymbolTable.INSTANCE.getCurrentScope());
         f2.addTypingConstraints(this.getTypingConstraints(f2));
-        f2.setProperty(new Property("unknown", Property.VOLUME, "L", 10000));
+        f2.setProperty(new Volume("unknown", "L", 10000));
         addVariable(f2);
         // End type checking.
 

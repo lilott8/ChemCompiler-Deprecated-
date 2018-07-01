@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import chemical.epa.ChemTypes;
 import shared.variable.Method;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
 

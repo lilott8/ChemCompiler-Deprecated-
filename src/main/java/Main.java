@@ -30,11 +30,11 @@ public class Main {
             logger.info("You are in debug mode");
         }
         // Run compilation.
-        Compiler compiler = new Compiler(config);
-        compiler.compile();
+        // Compiler compiler = new Compiler(config);
+        // compiler.compile();
         //compiler.runAllOps();
         //logger.debug(compiler.getControlFlow());
-        // runner();
+        runner();
 
         try {
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/neurotransmitter_sensing.json"); /* split only to one node */
@@ -105,10 +105,10 @@ public class Main {
         List<String> compile = new ArrayList<>();
 
         // Aquacore Tests. (0-3)
-        compile.add("src/main/resources/tests/aquacoreassays/glucose_detection.json");
-        compile.add("src/main/resources/tests/aquacoreassays/image_probe_synth.json");
-        compile.add("src/main/resources/tests/aquacoreassays/neurotransmitter_sensing.json");
-        compile.add("src/main/resources/tests/aquacoreassays/pcr.json");
+        compile.add("src/main/resources/tests/bioscript/aquacore/glucose_detection.bs");
+        compile.add("src/main/resources/tests/bioscript/aquacore/image_probe_synthesis.bs");
+        compile.add("src/main/resources/tests/bioscript/aquacore/neurotransmitter_sensing.bs");
+        compile.add("src/main/resources/tests/bioscript/aquacore/pcr.bs");
 
         // Chemtrails Tests. (4-7)
         compile.add("src/main/resources/tests/bioscript/chemtype1.json");
@@ -126,15 +126,15 @@ public class Main {
         compile.add("src/main/resources/tests/contrived/split.json");
 
         // Elisa Tests. (15-23)
-        compile.add("src/main/resources/tests/elisa/broad_spectrum_opiate.json");
-        compile.add("src/main/resources/tests/elisa/ciprofloxacin.json");
-        compile.add("src/main/resources/tests/elisa/diazepam.json");
-        compile.add("src/main/resources/tests/elisa/dilution.json");
-        compile.add("src/main/resources/tests/elisa/fentanyl.json");
-        compile.add("src/main/resources/tests/elisa/full_morphine.json");
-        compile.add("src/main/resources/tests/elisa/heroine.json");
-        compile.add("src/main/resources/tests/elisa/morphine.json");
-        compile.add("src/main/resources/tests/elisa/oxycodone.json");
+        compile.add("src/main/resources/tests/bioscript/elisa/broad_spectrum_opiate.bs");
+        compile.add("src/main/resources/tests/bioscript/elisa/ciprofloxacin.bs");
+        compile.add("src/main/resources/tests/bioscript/elisa/diazepam.bs");
+        compile.add("src/main/resources/tests/bioscript/elisa/dilution.bs");
+        compile.add("src/main/resources/tests/bioscript/elisa/fentanyl.bs");
+        compile.add("src/main/resources/tests/bioscript/elisa/full_morphine.bs");
+        compile.add("src/main/resources/tests/bioscript/elisa/heroin.bs");
+        compile.add("src/main/resources/tests/bioscript/elisa/morphine.bs");
+        compile.add("src/main/resources/tests/bioscript/elisa/oxycodone.bs");
 
         // Real world Tests. (24-33)
         compile.add("src/main/resources/tests/bioscript/realworld/aiha1.bs");
@@ -161,7 +161,9 @@ public class Main {
         //0-34
         // c = compile.get(0);
         // c = compile.get(1);
+        // Cannot run Neurotransmitter
         // c = compile.get(2);
+        // Cannot run PCR
         // c = compile.get(3);
 
         // c = compile.get(4);
@@ -186,10 +188,10 @@ public class Main {
         // c = compile.get(20);
         // c = compile.get(21);
         // c = compile.get(22);
-        // c = compile.get(23);
+        c = compile.get(23);
 
         // Real World Tests.
-        c = compile.get(24);
+        // c = compile.get(24);
         // c = compile.get(25);
         // c = compile.get(26);
         // c = compile.get(27);
@@ -204,9 +206,11 @@ public class Main {
         StatisticCombinator.writer.push("=====================================");
         StatisticCombinator.writer.push(c);
         long inferenceTime, compileTime, beginTime = 0;
+        String additional = DBArgs.getDBArgs();
+        additional = "";
         logger.info("Running: " + c);
         String args = String.format("-c %s -ts error " +
-                "%s -d -nf -epadefs src/main/resources/epa.xml -drm -classify 4 -o /Users/jason/Desktop/\n", c, DBArgs.getDBArgs());
+                "%s -d -nf -epadefs src/main/resources/epa.xml -drm -classify 4 -o /Users/jason/Desktop/\n", c, additional);
         cli = new CliWrapper();
         cli.parseCommandLine(StringUtils.split(args));
 

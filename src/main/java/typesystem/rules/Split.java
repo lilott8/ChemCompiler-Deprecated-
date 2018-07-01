@@ -71,7 +71,7 @@ public class Split extends NodeAnalyzer {
         }
 
         /*for (Property p : node.getInstruction().getProperties()) {
-            Property prop = new shared.variable.Property(Rule.createHash(p.toString()), this.propertyTypes);
+            Property prop = new shared.properties.Property(Rule.createHash(p.toString()), this.propertyTypes);
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addVariable(prop);

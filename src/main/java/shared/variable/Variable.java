@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import chemical.epa.ChemTypes;
+import shared.properties.Property;
 import symboltable.Scope;
 
 import static ir.Statement.NL;

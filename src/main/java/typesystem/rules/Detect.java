@@ -6,6 +6,8 @@ import java.util.Set;
 import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
 import compilation.datastructures.node.InstructionNode;
+import shared.properties.Property;
+import shared.properties.Time;
 import shared.variable.AssignedVariable;
 import shared.variable.ManifestVariable;
 import shared.variable.Variable;
@@ -58,7 +60,7 @@ public class Detect extends NodeAnalyzer {
         }
 
         for (substance.Property p : node.getInstruction().getProperties()) {
-            shared.variable.Property prop = new shared.variable.Property(Rule.createHash(p.toString()), "", p.getUnit().toString(), p.getQuantity());
+            Property prop = new Time(Rule.createHash(p.toString()), p.getUnit().toString(), p.getQuantity());
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addProperty(prop);

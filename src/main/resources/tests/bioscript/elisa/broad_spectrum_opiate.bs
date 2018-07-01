@@ -1,27 +1,31 @@
+module fluorescence
+
 stationary Anti_Morphine
 stationary Anti_Oxy
 stationary Anti_Fentanyl
 stationary Anti_Ciprofloxcin
 stationary Anti_Heroin
 
-module fluorescence
-
 manifest UrineSample
+
+functions
+
+instructions
 
 a = mix 10uL of UrineSample with Anti_Morphine
 b = mix 10uL of UrineSample with Anti_Oxy
-c = mix 10uL of UrineSample with Anti_Fentanyl
+cc = mix 10uL of UrineSample with Anti_Fentanyl
 d = mix 10uL of UrineSample with Anti_Ciprofloxcin
-e = mix 10uL of UrineSample with Anit_Heroin
+e = mix 10uL of UrineSample with Anti_Heroin
 
-MorphineReading = detect fluorescence of a for 5s
-OxyReading = detect fluorescence of b for 5s
-FentanylReading = detect fluorescence of c for 5s
-CiproReading = detect fluorescence of d for 5s
-HeroinReading = detect fluorescence of e for 5s
+MorphineReading = detect fluorescence on a for 5s
+OxyReading = detect fluorescence on b for 5s
+FentanylReading = detect fluorescence on cc for 5s
+CiproReading = detect fluorescence on d for 5s
+HeroinReading = detect fluorescence on e for 5s
 
-Drain Anti_Morphine
-Drain Anti_Oxy
-Drain Anti_Fentanyl
-Drain Anti_Ciprofloxcin
-Drain Anti_Heroin
+drain Anti_Morphine
+drain Anti_Oxy
+drain Anti_Fentanyl
+drain Anti_Ciprofloxcin
+drain Anti_Heroin

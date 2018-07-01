@@ -4,7 +4,7 @@ functions
 
 instructions
 
-PCRMix = dispense 10uL of PCRMasterMix
+PCRMix = dispense 100uL of PCRMasterMix
 
 heat PCRMix at 95c for 5s
 

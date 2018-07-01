@@ -15,7 +15,7 @@ import java.util.Set;
 import chemical.epa.ChemTypes;
 import config.ConfigFactory;
 import config.InferenceConfig;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;

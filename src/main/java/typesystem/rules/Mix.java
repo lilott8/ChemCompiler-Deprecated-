@@ -6,6 +6,8 @@ import java.util.Set;
 import chemical.epa.ChemTypes;
 import chemical.epa.EpaManager;
 import compilation.datastructures.node.InstructionNode;
+import shared.properties.Property;
+import shared.properties.Time;
 import shared.variable.AssignedVariable;
 import shared.variable.ManifestVariable;
 import shared.variable.Variable;
@@ -77,7 +79,7 @@ public class Mix extends NodeAnalyzer {
 
         // Get the properties of the instruction if they exist
         for (substance.Property p : node.getInstruction().getProperties()) {
-            shared.variable.Property prop = new shared.variable.Property(Rule.createHash(p.toString()), "", p.getUnit().toString(), p.getQuantity());
+            Property prop = new Time(Rule.createHash(p.toString()), p.getUnit().toString(), p.getQuantity());
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addProperty(prop);

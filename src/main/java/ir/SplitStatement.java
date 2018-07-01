@@ -3,7 +3,7 @@ package ir;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -56,6 +56,13 @@ public class SplitStatement extends BaseStatement {
         sb.append("\"CLASSIFICATION\" : \"SPLIT\",").append(NL);
         sb.append("\"INPUTS\" : [").append(NL);
         sb.append(this.inputVariables.get(0).buildUsage()).append(NL);
+        // This *has* to be defined.
+        if (this.properties.containsKey(Property.QUANTITY)) {
+            sb.append(",");
+            sb.append(this.properties.get(Property.QUANTITY).buildUsage());
+        } else {
+            logger.fatal("Splits *must* contain a split size.");
+        }
         // Closes the open bracket.
         sb.append("],").append(NL);
         sb.append("\"OUTPUTS\" : [").append(NL);

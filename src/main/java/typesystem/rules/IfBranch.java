@@ -3,8 +3,8 @@ package typesystem.rules;
 import org.apache.commons.lang3.StringUtils;
 
 import compilation.datastructures.basicblock.BasicBlockEdge;
-import shared.variable.Property;
-import shared.variable.Variable;
+import shared.properties.Conditional;
+import shared.properties.Property;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;
 
@@ -28,23 +28,23 @@ public class IfBranch extends EdgeAnalyzer {
         //Formula instruction = new Formula(edge.getId(), InstructionType.BRANCH);
         Formula instruction = new Formula(InstructionType.BRANCH);
 
-        Property output = new Property(Rule.createHash(edge.getConditional().toString()), Property.CONDITIONAL, "", -1);
+        Property output = new Conditional(Rule.createHash(edge.getConditional().toString()), "", -1);
         output.addTypingConstraint(NAT);
         addProperty(output);
 
         Property left;
         if (isNumeric(edge.getConditional().getLeftOperand())) {
-            left = new Property(Rule.createHash(edge.getConditional().getLeftOperand()), Property.CONDITIONAL, "", -1);
+            left = new Conditional(Rule.createHash(edge.getConditional().getLeftOperand()), "", -1);
         } else {
-            left = new Property(edge.getConditional().getLeftOperand(), Property.CONDITIONAL, "", -1);
+            left = new Conditional(edge.getConditional().getLeftOperand(), "", -1);
         }
         // We have to do this separately because if we don't have a typing,
         // Then it must be a real.
-        if (properties.containsKey(left.getName())) {
-            left.addTypingConstraints(variables.get(left.getName()).getTypingConstraints());
-        } else {
+        //if (properties.containsKey(left.getName())) {
+        //    left.addTypingConstraints(variables.get(left.getName()).getTypingConstraints());
+        //} else {
             left.addTypingConstraint(REAL);
-        }
+        //}
         addProperty(left);
 
         instruction.addProperty(left);
@@ -54,9 +54,9 @@ public class IfBranch extends EdgeAnalyzer {
         if (!StringUtils.isEmpty(edge.getConditional().getRightOperand())) {
             Property right;
             if (isNumeric(edge.getConditional().getRightOperand())) {
-                right = new Property(Rule.createHash(edge.getConditional().getRightOperand()), Property.CONDITIONAL, "", -1);
+                right = new Conditional(Rule.createHash(edge.getConditional().getRightOperand()), "", -1);
             } else {
-                right = new Property(edge.getConditional().getRightOperand(), Property.CONDITIONAL, "", -1);
+                right = new Conditional(edge.getConditional().getRightOperand(), "", -1);
             }
             // We have to do this separately because if we don't have a typing,
             // Then it must be a real.

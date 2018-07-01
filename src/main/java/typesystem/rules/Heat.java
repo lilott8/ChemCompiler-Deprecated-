@@ -1,8 +1,9 @@
 package typesystem.rules;
 
 import compilation.datastructures.node.InstructionNode;
+import shared.properties.Time;
 import shared.variable.AssignedVariable;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;
@@ -42,7 +43,7 @@ public class Heat extends NodeAnalyzer {
         addVariable(output);
 
         for (substance.Property p : node.getInstruction().getProperties()) {
-            Property prop = new Property(Rule.createHash(p.toString()), "", p.getUnit().toString(), p.getQuantity());
+            Property prop = new Time(Rule.createHash(p.toString()), p.getUnit().toString(), p.getQuantity());
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addProperty(prop);

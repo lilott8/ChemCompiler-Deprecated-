@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.satsolver.constraints.SMTSolver;
 

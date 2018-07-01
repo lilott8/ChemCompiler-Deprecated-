@@ -1,6 +1,6 @@
 package ir;
 
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 

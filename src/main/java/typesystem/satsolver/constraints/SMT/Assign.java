@@ -3,7 +3,7 @@ package typesystem.satsolver.constraints.SMT;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.SMTSolver;

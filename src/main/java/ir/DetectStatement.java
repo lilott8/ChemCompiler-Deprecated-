@@ -3,7 +3,7 @@ package ir;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -103,27 +103,18 @@ public class DetectStatement extends BaseStatement {
         // Open the input array.
         sb.append("\"INPUTS\" : [").append(NL);
         Variable chemical = this.inputVariables.get(1);
-        sb.append("{").append(NL);
-        sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
-        sb.append("\"STATIONARY\" : {").append(NL);
-        sb.append("\"NAME\" : \"").append(chemical.getName()).append("\"").append(NL);
-        sb.append("}").append(NL);
-        sb.append("}").append(NL);
+        sb.append(this.inputVariables.get(1).buildUsage());
+        //sb.append("{").append(NL);
+        //sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
+        //sb.append("\"STATIONARY\" : {").append(NL);
+        //sb.append("\"NAME\" : \"").append(chemical.getName()).append("\"").append(NL);
+        //sb.append("}").append(NL);
+        //sb.append("}").append(NL);
         // don't forget the property
         if (this.properties.containsKey(Property.TIME)) {
-            Property time = this.properties.get(Property.TIME);
+            sb.append(",");
             // The Temp
-            sb.append(",{").append(NL);
-            sb.append("\"INPUT_TYPE\" : \"PROPERTY\",").append(NL);
-            sb.append("\"PROPERTY\" : {").append(NL);
-            sb.append("\"TIME\" : ");
-            // Temp object.
-            sb.append("{").append(NL);
-            sb.append("\"VALUE\" : ").append(time.getValue()).append(", ").append(NL);
-            sb.append("\"UNITS\" : ").append("\"").append(time.getUnits()).append("\"").append(NL);
-            sb.append("}").append(NL);
-            sb.append("}").append(NL);
-            sb.append("}").append(NL);
+            sb.append(this.properties.get(Property.TIME).buildUsage());
         }
         // Close the input array.
         sb.append("],").append(NL);

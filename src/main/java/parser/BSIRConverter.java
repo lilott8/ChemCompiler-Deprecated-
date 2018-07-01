@@ -47,7 +47,6 @@ import parser.ast.Manifest;
 import parser.ast.MinusExpression;
 import parser.ast.Module;
 import parser.ast.PlusExpression;
-import parser.ast.Primitives;
 import parser.ast.RepeatStatement;
 import parser.ast.Stationary;
 import parser.ast.TimesExpression;
@@ -55,8 +54,11 @@ import parser.ast.VariableAlias;
 import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
 import shared.io.strings.Experiment;
-import shared.variable.AssignedVariable;
-import shared.variable.Property;
+import shared.properties.Property;
+import shared.properties.Quantity;
+import shared.properties.Temperature;
+import shared.properties.Time;
+import shared.properties.Volume;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
 
@@ -609,23 +611,24 @@ public class BSIRConverter extends BSVisitor {
         Property f1;
         if (n.f1.present()) {
             n.f1.accept(this);
-            f1 = new Property(this.name, Property.VOLUME, this.units, this.integerLiteral);
+            f1 = new Volume(this.name, this.units, this.integerLiteral);
         } else {
-            f1 = new Property("unknown", Property.VOLUME, "uL", 10);
+            f1 = new Volume("unknown", "MICROLITRE", 10);
         }
 
         // Get the name.
         n.f2.accept(this);
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 this.getCurrentScope());
+        logger.info("looking for: " + this.name);
         f2.setProperty(f1);
 
         Property f4;
         if (n.f4.present()) {
             n.f4.accept(this);
-            f4 = new Property(this.name, Property.VOLUME, this.units, this.integerLiteral);
+            f4 = new Volume(this.name, this.units, this.integerLiteral);
         } else {
-            f4 = new Property("unknown", Property.VOLUME, "uL", 10);
+            f4 = new Volume("unknown", "MICROLITRE", 10);
         }
         n.f5.accept(this);
         Variable f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
@@ -641,9 +644,9 @@ public class BSIRConverter extends BSVisitor {
         Property f6;
         if (n.f6.present()) {
             n.f6.accept(this);
-            f6 = new Property(this.name, Property.TIME, this.units, this.integerLiteral);
+            f6 = new Time(this.name, this.units, this.integerLiteral);
         } else {
-            f6 = new Property("unknown", Property.TIME, "SECONDS", 1);
+            f6 = new Time("unknown", "SECONDS", 1);
         }
         mix.addProperty(Property.TIME, f6);
 
@@ -669,9 +672,9 @@ public class BSIRConverter extends BSVisitor {
         Property f1;
         if (n.f1.present()) {
             n.f1.accept(this);
-            f1 = new Property(this.name, Property.VOLUME, this.units, this.integerLiteral);
+            f1 = new Volume(this.name, this.units, this.integerLiteral);
         } else {
-            f1 = new Property("unknown", Property.VOLUME, "uL", 10);
+            f1 = new Volume("unknown", "MICROLITRE", 10);
         }
         n.f2.accept(this);
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
@@ -706,7 +709,7 @@ public class BSIRConverter extends BSVisitor {
                 this.getCurrentScope());
         // Get the name.
         n.f3.accept(this);
-        Property f3 = new Property("SPLIT", Property.QUANTITY, "SPLIT", this.integerLiteral);
+        Property f3 = new Quantity("SPLIT", "SPLIT", this.integerLiteral);
 
         // Build the IR data structure.
         Statement split = new SplitStatement();
@@ -757,10 +760,10 @@ public class BSIRConverter extends BSVisitor {
         Property f4;
         if (n.f4.present()) {
             n.f4.accept(this);
-            f4 = new Property(this.name, Property.TIME, this.units, this.integerLiteral);
+            f4 = new Time(this.name, this.units, this.integerLiteral);
             // Add f4 to the data structure.
         } else {
-            f4 = new Property("unknown", Property.TIME, "SECONDS", 10);
+            f4 = new Time("unknown", "SECONDS", 10);
         }
         detect.addProperty(Property.TIME, f4);
 
@@ -813,7 +816,7 @@ public class BSIRConverter extends BSVisitor {
                 this.getCurrentScope());
         // Get the name.
         n.f3.accept(this);
-        Property f3 = new Property(this.name, Property.TEMP, this.units, this.integerLiteral);
+        Property f3 = new Temperature(this.name, this.units, this.integerLiteral);
 
         // Build the IR data structure.
         Statement heat = new HeatStatement(String.format("%s-%d",
@@ -823,7 +826,7 @@ public class BSIRConverter extends BSVisitor {
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            Property f4 = new Property(this.name, Property.TIME, this.units, (float) this.integerLiteral);
+            Property f4 = new Time(this.name, this.units, (float) this.integerLiteral);
             // Add f4 to the data structure.
             heat.addProperty(Property.TIME, f4);
         }

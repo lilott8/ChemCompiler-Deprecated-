@@ -10,7 +10,7 @@ import chemical.epa.ChemTypes;
 import parser.BSVisitor;
 import shared.variable.ManifestVariable;
 import shared.variable.Method;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 

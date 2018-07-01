@@ -3,6 +3,7 @@ package shared.variable;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.properties.Property;
 import symboltable.Scope;
 
 import static ir.Statement.NL;
@@ -47,10 +48,15 @@ public class StationaryVariable<Value> extends Variable<Value> {
 
     public String buildUsage() {
         StringBuilder sb = new StringBuilder();
-
+        sb.append("{").append(NL);
         sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
         sb.append("\"STATIONARY\" : {").append(NL);
         sb.append("\"NAME\" : \"").append(this.name).append("\"").append(NL);
+        if (this.property != null) {
+            sb.append(", ").append(NL);
+            sb.append(this.property.buildUsage()).append(NL);
+        }
+        sb.append("}").append(NL);
         sb.append("}").append(NL);
 
         return sb.toString();
