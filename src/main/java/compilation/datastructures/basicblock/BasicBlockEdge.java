@@ -129,6 +129,28 @@ public class BasicBlockEdge implements Serializable {
         return this.conditional;
     }
 
+    public String getMFSimConditional(ConditionalNode t) {
+        switch (t.getConditionalType()) {
+            case lt:
+                return "LT";
+            case lte:
+                return "LoE";
+            case gt:
+                return "GT";
+            case gte:
+                return "GoE";
+            case eq:
+                return "EQUAL";
+            case neq:
+                return "NOT";
+            case un:
+                return "UNCOND";
+            default:
+                logger.fatal("Could not parse conditional for MFSim translation: " + t.toString());
+                return "null";
+        }
+    }
+
     public enum ConditionalType {
         un {
             public String toString() {
@@ -137,7 +159,7 @@ public class BasicBlockEdge implements Serializable {
         },
         repeat {
             public String toString() {
-                return " ";
+                return "repeat";
             }
         },
         lt {
@@ -167,7 +189,7 @@ public class BasicBlockEdge implements Serializable {
         },
         neq {
             public String toString() {
-                return "";
+                return "!=";
             }
         };
 
@@ -177,7 +199,7 @@ public class BasicBlockEdge implements Serializable {
                 case un:
                     return "";
                 case repeat:
-                    return " ";
+                    return "repeat";
                 case lt:
                     return "<";
                 case lte:

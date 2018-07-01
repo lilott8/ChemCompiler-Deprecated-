@@ -102,9 +102,12 @@ public class MFSimSSADAG {
                 } else if (instruction instanceof React) {
                     n = new MFSimSSACool(uniqueIdGen.getNextID(), (React) instruction);
                 } else if (instruction instanceof Dispense) {
-                    Instance input = (Instance) instruction.getInputs().values().toArray()[0];
-                    Instance output = (Instance) instruction.getOutputs().values().toArray()[0];
-                    n = new MFSimSSADispense(uniqueIdGen.getNextID(), output.getName(), input.getName(), Math.round(input.getSubstance().getVolume().getQuantity()));
+                    //Instance input = (Instance) instruction.getInputs().values().toArray()[0];
+                    //Instance output = (Instance) instruction.getOutputs().values().toArray()[0];
+                    //n = new MFSimSSADispense(uniqueIdGen.getNextID(), output.getName(), input.getName(), Math.round(input.getSubstance().getVolume().getQuantity()));
+                    //this.dispense.add((MFSimSSADispense)n);
+                    //continue;
+                    n = null;
                 } else {
                     logger.fatal("Unknown Conversion for: " + instruction.toString());
                     n = null;
@@ -136,13 +139,16 @@ public class MFSimSSADAG {
 
                 }
                 if (!changed) {
-                    logger.warn("Setting template volume amount");
-                    amount = 999;
+                    logger.warn("Setting template volume amount for 10uL");
+                    amount = 10;
                 }
                 MFSimSSADispense dis = new MFSimSSADispense(this.uniqueIdGen.getNextID(), dispense, dispense, amount);
                 if (n != null)
                     dis.addSuccessor(n.getID());
-                this.dispense.add(dis);
+                else
+                    node.put(instructionNode.getId(), dis);
+                if (n != null)
+                    this.dispense.add(dis);
             }
             if (n != null)
                 node.put(instructionNode.getId(), n);
@@ -187,7 +193,13 @@ public class MFSimSSADAG {
                     for (InstructionNode instruction : bb.getInstructions()) {
                         if (instruction.getId() < 0)
                             continue;
-                        in.addSuccessor(node.get(instruction.getId()).getID());
+
+                        //find first node the transferred in droplet it used in
+
+                        if (instruction.getUse().contains(in.getTransferedSymbol()))
+                            in.addSuccessor(node.get(instruction.getId()).getID());
+                        else
+                            in.addSuccessor(node.get(in.getID()).getID());
                         break;
                     }
                     //in.addSuccessor(nodes.get(bb.getStatements().get(0).getId()).getID());

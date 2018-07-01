@@ -101,6 +101,33 @@ public class Compiler {
         return experimentControlFlowGraphs;
     }
 
+    public void compile(int x) {
+        this.benchtop = Benchtop.INSTANCE;
+        try {
+            for (String experimentKey : this.benchtop.getExperiments().keySet()) {
+                for (Experiment experiment : this.benchtop.getExperiments().get(experimentKey)) {
+                    this.controlFlow = CFGBuilder.buildControlFlowGraph(experiment);
+                    this.SSI = new StaticSingleInformation(this.controlFlow);
+
+                    logger.fatal(this.SSI);
+
+                    //replaces basic graph with dependancy sliced versions
+                    for (BasicBlock bb : this.SSI.getBasicBlocks().values()) {
+                        this.SSI.newBasicBlock(new DependencySlicedBasicBlock(bb, this.SSI));
+                    }
+
+                    DependencySlicedBasicBlock.getInOutSets(this.SSI);
+                    experimentControlFlowGraphs.add(this.SSI);
+                }
+            }
+        } catch (Exception e) {
+            logger.fatal(e);
+            e.printStackTrace();
+        }
+
+        this.runTranslations();
+    }
+
     public void compile() {
 
         for (Map.Entry<String, List<Phase>> entry : this.phases.entrySet()) {

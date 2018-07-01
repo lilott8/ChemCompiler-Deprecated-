@@ -1,18 +1,11 @@
 {
   "EXPERIMENT" : {
-    "NAME" : "PCR",
+    "NAME" : "pcr",
     "INPUTS" : [
       {
         "VARIABLE_DECLARATION" : {
-          "ID" : "PCR",
-          "NAME" : "PCR",
-          "TYPE" : "CHEMICAL"
-        }
-      },
-      {
-        "VARIABLE_DECLARATION" : {
-          "ID" : "Separation Medium",
-          "NAME" : "Separation Medium",
+          "ID" : "PCRMasterMix",
+          "NAME" : "PCRMasterMix",
           "TYPE" : "CHEMICAL"
         }
       }
@@ -21,13 +14,13 @@
       {
         "OPERATION" : {
           "NAME" : "VARIABLE_DECLARATION",
-          "ID" : "7597473312637949718",
+          "ID" : "1",
           "CLASSIFICATION" : "VARIABLE",
           "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "PCR",
+                "NAME" : "PCRMasterMix",
                 "VOLUME" : {
                   "VALUE" : "10",
                   "UNITS" : "UL"
@@ -38,8 +31,8 @@
           "OUTPUTS" : [
             {
               "VARIABLE_DECLARATION" : {
-                "ID" : "PCR Mixture",
-                "NAME" : "PCR Mixture",
+                "ID" : "PCRMix",
+                "NAME" : "PCRMix",
                 "TYPE" : "CHEMICAL"
               }
             }
@@ -47,22 +40,53 @@
         }
       },
       {
+        "OPERATION" : {
+          "NAME" : "HEAT",
+          "ID" : "2",
+          "CLASSIFICATION" : "HEAT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "PCRMix"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TEMPERATURE" : {
+                "VALUE" : "95",
+                "UNITS" : "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE" : "PROPERTY",
+              "TIME" : {
+                "VALUE" : "5",
+                "UNITS" : "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
         "OPERATION" :  {
           "NAME" : "REPEAT",
-          "ID" : "1294012199300382715",
+          "ID" : "3",
           "CLASSIFICATION" : "CFG_LOOP",
           "LOOP_NUM" : "20",
           "OPERATIONS" : [
             {
               "OPERATION" : {
                 "NAME" : "HEAT",
-                "ID" : "1294012199300382752",
+                "ID" : "4",
                 "CLASSIFICATION" : "HEAT",
                 "INPUTS" : [
                   {
                     "INPUT_TYPE" : "VARIABLE",
                     "VARIABLE" : {
-                      "NAME" : "PCR Mixture"
+                      "NAME" : "PCRMix"
                     }
                   },
                   {
@@ -87,13 +111,13 @@
             {
               "OPERATION" : {
                 "NAME" : "HEAT",
-                "ID" : "1294012199300382821",
+                "ID" : "5",
                 "CLASSIFICATION" : "HEAT",
                 "INPUTS" : [
                   {
                     "INPUT_TYPE" : "VARIABLE",
                     "VARIABLE" : {
-                      "NAME" : "PCR Mixture"
+                      "NAME" : "PCRMix"
                     }
                   },
                   {
@@ -119,96 +143,39 @@
         }
       },
       {
-        "OPERATION": {
-          "NAME": "Mix",
-          "ID": "689377168877303071",
-          "CLASSIFICATION": "MIX",
-          "INPUTS": [
-            {
-              "INPUT_TYPE": "VARIABLE",
-              "VARIABLE": {
-                "NAME": "PCR Mixture"
-              }
-            },
-            {
-              "INPUT_TYPE": "VARIABLE",
-              "CHEMICAL": {
-                "VARIABLE": {
-                  "NAME": "Separation Medium"
-                },
-                "VOLUME": {
-                  "VALUE": "10",
-                  "UNITS": "UL"
-                }
-              }
-            }
-          ],
-          "OUTPUTS": [
-          ]
-        }
-      },
-      {
-        "OPERATION": {
-          "NAME": "SPLIT",
-          "ID": "689377168877303423",
-          "CLASSIFICATION": "SPLIT",
-          "INPUTS": [
-            {
-              "INPUT_TYPE": "VARIABLE",
-              "VARIABLE": {
-                "NAME": "PCR Mixture"
-              }
-            },
-            {
-              "INPUT_TYPE": "PROPERTY",
-              "PROPERTY": {
-                "TYPE": "SPLIT_NUM",
-                "VALUE": "2",
-                "UNITS": ""
-              }
-            }
-          ],
-          "OUTPUTS": [
-            {
-              "VARIABLE": {
-                "ID": "PCR Mixture",
-                "NAME": "PCR Mixture",
-                "TYPE": "CHEMICAL",
-                "VOLUME": {
-                }
-              }
-            },
-            {
-              "VARIABLE": {
-                "ID": "Waste",
-                "NAME": "Waste",
-                "TYPE": "CHEMICAL",
-                "VOLUME": {
-                }
-              }
-            }
-          ]
-        }
-      },
-      {
         "OPERATION" : {
           "NAME" : "Measure Fluorescence",
-          "ID" : "1294012199300636842",
+          "ID" : "6",
           "CLASSIFICATION" : "DETECT",
           "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
-                "NAME" : "PCR Mixture"
+                "NAME" : "PCRMix"
               }
             },
             {
               "INPUT_TYPE" : "PROPERTY",
-              "PROPERTY" : {
-                "TIME" : {
-                  "VALUE" : "3",
-                  "UNITS" : "MINUTE"
-                }
+              "TIME" : {
+                "VALUE" : "3",
+                "UNITS" : "MINUTE"
+              }
+            }
+          ],
+          "OUTPUTS" : [
+          ]
+        }
+      },
+      {
+        "OPERATION" : {
+          "NAME" : "Drain",
+          "ID" : "7",
+          "CLASSIFICATION" : "OUTPUT",
+          "INPUTS" : [
+            {
+              "INPUT_TYPE" : "VARIABLE",
+              "VARIABLE" : {
+                "NAME" : "PCRMix"
               }
             }
           ],

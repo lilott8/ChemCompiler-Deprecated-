@@ -2,18 +2,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.SQLException;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cli.CliWrapper;
+//import cli.DBArgs;
 import cli.DBArgs;
 import compilation.Compiler;
 import config.Config;
 import config.ConfigFactory;
+import parsing.BioScript.BenchtopParser;
 import reactivetable.StatisticCombinator;
-import shared.Statistics;
-import shared.io.database.ConnectorFactory;
 
 
 public class Main {
@@ -29,27 +29,38 @@ public class Main {
         if (config.isDebug()) {
             logger.info("You are in debug mode");
         }
-
         // Run compilation.
-        // Compiler compiler = new Compiler(config);
-        // compiler.compile();
+        Compiler compiler = new Compiler(config);
+        compiler.compile();
         //compiler.runAllOps();
         //logger.debug(compiler.getControlFlow());
-        runner();
+        // runner();
 
         try {
-            if (!ConnectorFactory.getConnection().getConnection().isClosed()) {
-                ConnectorFactory.getConnection().closeConnection(ConnectorFactory.getConnection().getConnection());
-            }
-        } catch (SQLException e) {
-            logger.error("Problem closing the last database connection.");
-            logger.fatal(e.toString());
+            BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/biocoder/pcr_droplet_replenishment.json");
         }
-
-        if (config.printStatistics()) {
-            logger.warn(Statistics.INSTANCE.printStats());
+        catch (FileNotFoundException e) {
+            logger.error(e.getMessage());
         }
+        // Compiler compiler = new Compiler(config);
+        // compiler.compile(1);
     }
+
+//    public static void main(String[] args) {
+//        // Build the command line parser
+//        CliWrapper cli = new CliWrapper();
+//        cli.parseCommandLine(args);
+//
+//        Config config = ConfigFactory.getConfig();
+//
+//        if (config.isDebug()) {
+//            logger.info("You are in debug mode");
+//        }
+//
+//        // Run compilation.
+//        Compiler compiler = new Compiler(config);
+//        compiler.compile();
+//    }
 
     public static final void abandonShip(String message) throws Exception {
         throw new Exception(message);
