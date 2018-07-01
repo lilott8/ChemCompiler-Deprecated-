@@ -89,11 +89,9 @@
               }            },
             {
               "INPUT_TYPE" : "PROPERTY",
-              "PROPERTY" : {
-                "TIME" : {
-                  "VALUE" : "30",
-                  "UNITS" : "SECOND"
-                }
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "SECOND"
               }
             }
           ],
@@ -172,11 +170,9 @@
               }            },
             {
               "INPUT_TYPE" : "PROPERTY",
-              "PROPERTY" : {
-                "TIME" : {
-                  "VALUE" : "30",
-                  "UNITS" : "SECOND"
-                }
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "SECOND"
               }
             }
           ],
@@ -255,11 +251,9 @@
               }            },
             {
               "INPUT_TYPE" : "PROPERTY",
-              "PROPERTY" : {
-                "TIME" : {
-                  "VALUE" : "30",
-                  "UNITS" : "SECOND"
-                }
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "SECOND"
               }
             }
           ],
@@ -338,11 +332,9 @@
               }            },
             {
               "INPUT_TYPE" : "PROPERTY",
-              "PROPERTY" : {
-                "TIME" : {
-                  "VALUE" : "30",
-                  "UNITS" : "SECOND"
-                }
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "SECOND"
               }
             }
           ],
@@ -421,11 +413,9 @@
               }            },
             {
               "INPUT_TYPE" : "PROPERTY",
-              "PROPERTY" : {
-                "TIME" : {
-                  "VALUE" : "30",
-                  "UNITS" : "SECOND"
-                }
+              "TIME" : {
+                "VALUE" : "30",
+                "UNITS" : "SECOND"
               }
             }
           ],

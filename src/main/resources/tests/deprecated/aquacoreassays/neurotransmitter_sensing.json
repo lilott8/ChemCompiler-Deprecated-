@@ -169,11 +169,9 @@
             },
             {
               "INPUT_TYPE" : "PROPERTY",
-              "PROPERTY" : {
-                "TIME" : {
-                  "VALUE" : "10",
-                  "UNITS" : "SECOND"
-                }
+              "TIME" : {
+                "VALUE" : "10",
+                "UNITS" : "SECOND"
               }
             }
           ],

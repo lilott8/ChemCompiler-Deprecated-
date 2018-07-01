@@ -1,5 +1,6 @@
 package translators.mfsim;
 
+import compilation.datastructures.basicblock.DependencySlicedBasicBlock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,17 +27,7 @@ import executable.instructions.React;
 import executable.instructions.Split;
 import executable.instructions.Store;
 import substance.Chemical;
-import translators.mfsim.operationnode.MFSimSSACool;
-import translators.mfsim.operationnode.MFSimSSADetect;
-import translators.mfsim.operationnode.MFSimSSADispense;
-import translators.mfsim.operationnode.MFSimSSAHeat;
-import translators.mfsim.operationnode.MFSimSSAMix;
-import translators.mfsim.operationnode.MFSimSSANode;
-import translators.mfsim.operationnode.MFSimSSAOutput;
-import translators.mfsim.operationnode.MFSimSSASplit;
-import translators.mfsim.operationnode.MFSimSSAStorage;
-import translators.mfsim.operationnode.MFSimSSATransferIn;
-import translators.mfsim.operationnode.MFSimSSATransferOut;
+import translators.mfsim.operationnode.*;
 import variable.Instance;
 
 /**
@@ -74,6 +65,10 @@ public class MFSimSSADAG {
             }
         }
 
+        // id, def
+        // if def is never used, drain
+        ArrayList<InstructionNode> needToDrain = new ArrayList<>();
+
         for (Integer numInstructions = 0; numInstructions < bb.getInstructions().size(); numInstructions++) {
             InstructionNode instructionNode = bb.getInstructions().get(numInstructions);
 
@@ -100,7 +95,9 @@ public class MFSimSSADAG {
                 } else if (instruction instanceof Output) {
                     n = new MFSimSSAOutput(uniqueIdGen.getNextID(), (Output) instruction);
                 } else if (instruction instanceof React) {
-                    n = new MFSimSSACool(uniqueIdGen.getNextID(), (React) instruction);
+                    n = new MFSimSSAReact(uniqueIdGen.getNextID(), (React) instruction);
+                    //n = new MFSimSSAHeat(uniqueIdGen.getNextID(), (React) instruction);
+                    //n = new MFSimSSACool(uniqueIdGen.getNextID(), (React) instruction);
                 } else if (instruction instanceof Dispense) {
                     //Instance input = (Instance) instruction.getInputs().values().toArray()[0];
                     //Instance output = (Instance) instruction.getOutputs().values().toArray()[0];
@@ -153,6 +150,19 @@ public class MFSimSSADAG {
             if (n != null)
                 node.put(instructionNode.getId(), n);
 
+            for (InstructionNode successor : instructionNode.getSucc()) {
+                boolean outputUsed = false;
+                for (String output : instructionNode.getOutputSymbols()) {
+                    if (successor.getInputSymbols().contains(output))
+                        outputUsed = true;
+                }
+                if (!outputUsed) {
+                    needToDrain.add(instructionNode);
+                }
+            }
+
+            if (instructionNode.getInstruction() != null && instructionNode.getSucc().size() == 0)
+                needToDrain.add(instructionNode);
 
         }
 
@@ -177,9 +187,26 @@ public class MFSimSSADAG {
             if (node.containsKey(edge.getDestination())) {//I am a child of
                 Integer destination = node.get(edge.getDestination()).getID();
                 if (node.containsKey(edge.getSource())) { //another node
-                    MFSimSSANode node = this.node.get(edge.getSource());
-                    if (node.getID() < destination)
-                        node.addSuccessor(destination);
+                    InstructionNode source = getInstructionNodeByID(bb, edge.getSource());
+                    //check if destination uses node's outputs
+                    InstructionNode dest = getInstructionNodeByID(bb, edge.getDestination());
+                    if (source.getOutputSymbols().size() > 0) {
+                        for (String output : source.getOutputSymbols()) {
+                            if (dest.getInputSymbols().contains(output)) {
+                                MFSimSSANode node = this.node.get(source.getId());
+                                node.addSuccessor(destination);
+                            }
+                        }
+                    } else {
+                        for (String input : source.getInputSymbols()) {
+                            if (dest.getInputSymbols().contains(input)) {
+                                MFSimSSANode node = this.node.get(source.getId());
+                                node.addSuccessor(destination);
+                            }
+                        }
+                    }
+                    //if (node.getID() < destination)
+                    //    node.addSuccessor(destination);
                 } else if (transIn.containsKey(edge.getSource())) {
                     MFSimSSATransferIn node = transIn.get(edge.getSource()).get(destination);
                     if (node.getID() < destination)
@@ -230,6 +257,27 @@ public class MFSimSSADAG {
             }
         }
 
+        for (InstructionNode drain : needToDrain) {
+            if (drain.getInstruction() instanceof Output)
+                continue;
+            if (!(node.get(drain.getId()).getSuccessorIDs().size() > 0)) {
+                MFSimSSAOutput out = new MFSimSSAOutput(uniqueIdGen.getNextID(), new Output("Drain"));
+                node.put(out.getID(), out);
+                node.get(drain.getId()).addSuccessor(out.getID());
+            }
+        }
+
+
+    }
+
+    private InstructionNode getInstructionNodeByID(BasicBlock bb, Integer id) {
+        List<InstructionNode> instructions = bb.getInstructions();
+        for (Integer j = 0; j < instructions.size(); ++j) {
+            InstructionNode node = instructions.get(j);
+            if (node.getId() == id)
+                return node;
+        }
+        return null;
     }
 
     public Map<Integer, MFSimSSANode> getNodes() {
