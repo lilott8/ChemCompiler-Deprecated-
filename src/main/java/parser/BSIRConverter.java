@@ -619,8 +619,7 @@ public class BSIRConverter extends BSVisitor {
 
         // Get the name.
         n.f2.accept(this);
-        Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                this.getCurrentScope());
+        Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
         f2.setProperty(f1);
 
         Property f4;
@@ -631,14 +630,13 @@ public class BSIRConverter extends BSVisitor {
             f4 = new Volume("unknown", "UL", 10);
         }
         n.f5.accept(this);
-        Variable f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                this.getCurrentScope());
-        f3.setProperty(f4);
+        Variable f5 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
+        f5.setProperty(f4);
 
         // Build the IR data structure.
         Statement mix = new MixStatement();
         mix.addInputVariable(f2);
-        mix.addInputVariable(f3);
+        mix.addInputVariable(f5);
         mix.addOutputVariable(this.assignTo);
 
         Property f6;
