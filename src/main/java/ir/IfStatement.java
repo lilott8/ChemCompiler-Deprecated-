@@ -136,6 +136,8 @@ public class IfStatement extends BaseConditional {
             }
             // Close false branch.
             sb.append("]").append(NL);
+        } else {
+            sb.append(",\"FALSE_BRANCH\": [],\"ELSEIF_BRANCH\": []").append(NL);
         }
         // Close Operation brace.
         sb.append("}").append(NL);

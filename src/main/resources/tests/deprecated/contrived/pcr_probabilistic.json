@@ -222,10 +222,6 @@
                 ]
               }
             }
-          ],
-          "FALSE_BRANCH" : [
-          ],
-          "ELSEIF_BRANCH" : [
           ]
         }
       },
