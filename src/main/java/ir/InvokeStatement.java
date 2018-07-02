@@ -8,9 +8,11 @@ import java.util.Map;
 
 import chemical.epa.ChemTypes;
 import parser.BSVisitor;
+import parser.ast.Manifest;
 import shared.variable.ManifestVariable;
 import shared.variable.Method;
 import shared.properties.Property;
+import shared.variable.NamedVariable;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
@@ -88,9 +90,13 @@ public class InvokeStatement extends BaseStatement implements Invoke {
         // TODO: figure out how to return numbers.
         if (!this.method.getReturnStatement().getOutputVariables().get(0).getTypes().contains(ChemTypes.getNums())) {
             sb.append(",").append(NL);
-            MixStatement statement = new MixStatement();
+            Statement statement = new MixStatement();
+
             statement.addInputVariable(this.method.getReturnStatement().getOutputVariables().get(0));
-            statement.addInputVariable(this.method.getReturnStatement().getOutputVariables().get(0));
+            Variable v = this.method.getReturnStatement().getOutputVariables().get(0);
+            Variable copy = new NamedVariable(v);
+
+            statement.addInputVariable(copy);
             statement.addOutputVariable(this.outputVariables.get(0));
             sb.append(statement.toJson());
         } else {

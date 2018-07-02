@@ -441,7 +441,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     @Override
     public BSVisitor visit(TimeUnit n) {
         n.f0.accept(this);
-        this.units = "SECONDS";
+        this.units = "SECOND";
         if (n.f1.present()) {
             String choice = ((NodeChoice) n.f1.node).choice.toString();
             if (StringUtils.equalsIgnoreCase(choice, "h")) {
@@ -456,7 +456,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
                 this.integerLiteral *= 1;
             }
         } else {
-            this.units = "SECONDS";
+            this.units = "SECOND";
         }
         return this;
     }
@@ -471,14 +471,14 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
         if (n.f1.present()) {
             String choice = ((NodeChoice) n.f1.node).choice.toString();
             if (StringUtils.equalsIgnoreCase(choice, "L")) {
-                this.units = "LITRE";
+                this.units = "L";
             } else if (StringUtils.equalsIgnoreCase(choice, "mL")) {
-                this.units = "MILLILITRE";
+                this.units = "ML";
             } else {
-                this.units = "MICROLITRE";
+                this.units = "UL";
             }
         } else {
-            this.units = "MICROLITRE";
+            this.units = "UL";
         }
         return super.visit(n);
     }

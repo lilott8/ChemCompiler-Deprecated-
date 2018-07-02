@@ -43,7 +43,7 @@ public class LoopStatement extends BaseConditional {
         // Open object brace.
         sb.append("{").append(NL);
         sb.append("\"OPERATION\" : {").append(NL);
-        sb.append("\"NAME\" : \"LOOP\",").append(NL);
+        sb.append("\"NAME\" : \"REPEAT\",").append(NL);
         sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
         sb.append("\"CLASSIFICATION\" : \"CFG_LOOP\",").append(NL);
         sb.append("\"CONDITION\" : \"").append(this.condition).append("\",").append(NL);

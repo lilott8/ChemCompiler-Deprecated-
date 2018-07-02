@@ -27,6 +27,10 @@ public class NamedVariable<Value> extends Variable<Value> {
         super(name);
     }
 
+    public NamedVariable(Variable v) {
+        super(v.getName(), v.getTypingConstraints(), v.getScope());
+    }
+
     public NamedVariable(String name, Set<ChemTypes> type) {
         super(name, type);
     }

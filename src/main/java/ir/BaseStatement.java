@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import sun.plugin.dom.exception.InvalidStateException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import chemical.epa.ChemTypes;
+import shared.errors.InvalidSyntaxException;
 import shared.variable.Method;
 import shared.properties.Property;
 import shared.variable.Variable;
@@ -188,6 +191,11 @@ public abstract class BaseStatement implements Statement {
                         variables.add(params.get(counter));
                     }
                     counter++;
+                }
+            } else {
+                Variable v = SymbolTable.INSTANCE.getScopedSymbol(method.getName(), this.inputVariables.get(x).getName());
+                if (v != null) {
+                    variables.add(v);
                 }
             }
         }

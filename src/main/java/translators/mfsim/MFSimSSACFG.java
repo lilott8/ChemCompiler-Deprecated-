@@ -233,8 +233,8 @@ public class MFSimSSACFG {
             bw = new BufferedWriter(fw);
             bw.write(this.toString(cfgFileName));
         } catch (IOException ioe) {
-            logger.fatal("IOException occured when writing the cfg file for " + filename);
-            logger.fatal(ioe.getStackTrace());
+            logger.fatal("IOException occurred when writing the cfg file for " + filename);
+            logger.fatal(ioe.getMessage());
         } finally {
             try {
                 if (bw != null)
@@ -261,7 +261,7 @@ public class MFSimSSACFG {
                 bw.write(dagContents);
             } catch (IOException ioe) {
                 logger.fatal(dagFileName + ": IOException");
-                logger.fatal(ioe.getStackTrace());
+                ioe.getStackTrace();
             } finally {
                 try {
                     if (bw != null)

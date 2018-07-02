@@ -12,6 +12,8 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import parser.ast.Manifest;
+import shared.variable.ManifestVariable;
 import shared.variable.Method;
 import shared.variable.Variable;
 
@@ -165,7 +167,10 @@ public enum SymbolTable {
         if (this.scopes.containsKey(scope) && this.scopes.get(scope).symbols.containsKey(varName)) {
             var = this.scopes.get(scope).symbols.get(varName);
         } else {
-            logger.warn(String.format("%s doesn't exist in scope %s", varName, this.scopeStack.peek().getName()));
+            var = searchScopeHierarchy(scope, varName);
+            if (!(var instanceof ManifestVariable)) {
+                var = null;
+            }
         }
         return var;
     }

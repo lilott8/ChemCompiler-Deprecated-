@@ -615,7 +615,7 @@ public class BSIRConverter extends BSVisitor {
             n.f1.accept(this);
             f1 = new Volume(this.name, this.units, this.integerLiteral);
         } else {
-            f1 = new Volume("unknown", "MICROLITRE", 10);
+            f1 = new Volume("unknown", "UL", 10);
         }
 
         // Get the name.
@@ -629,7 +629,7 @@ public class BSIRConverter extends BSVisitor {
             n.f4.accept(this);
             f4 = new Volume(this.name, this.units, this.integerLiteral);
         } else {
-            f4 = new Volume("unknown", "MICROLITRE", 10);
+            f4 = new Volume("unknown", "UL", 10);
         }
         n.f5.accept(this);
         Variable f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
@@ -647,7 +647,7 @@ public class BSIRConverter extends BSVisitor {
             n.f6.accept(this);
             f6 = new Time(this.name, this.units, this.integerLiteral);
         } else {
-            f6 = new Time("unknown", "SECONDS", 1);
+            f6 = new Time("unknown", "SECOND", 1);
         }
         mix.addProperty(Property.TIME, f6);
 
@@ -675,7 +675,7 @@ public class BSIRConverter extends BSVisitor {
             n.f1.accept(this);
             f1 = new Volume(this.name, this.units, this.integerLiteral);
         } else {
-            f1 = new Volume("unknown", "MICROLITRE", 10);
+            f1 = new Volume("unknown", "UL", 10);
         }
         n.f2.accept(this);
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
