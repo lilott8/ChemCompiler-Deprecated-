@@ -60,6 +60,7 @@ import parser.ast.Stationary;
 import parser.ast.TempUnit;
 import parser.ast.TimeUnit;
 import parser.ast.TimesExpression;
+import parser.ast.TraditionalConditional;
 import parser.ast.TrueLiteral;
 import parser.ast.Type;
 import parser.ast.TypingList;
@@ -81,7 +82,7 @@ public class BSParser implements BSParserConstants {
         jj_la1_init_2();
     }
 
-    final private int[] jj_la1 = new int[42];
+    final private int[] jj_la1 = new int[43];
     final private JJCalls[] jj_2_rtns = new JJCalls[21];
     final private LookaheadSuccess jj_ls = new LookaheadSuccess();
     /**
@@ -120,7 +121,7 @@ public class BSParser implements BSParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
+        for (int i = 0; i < 43; i++) jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
@@ -131,7 +132,7 @@ public class BSParser implements BSParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
+        for (int i = 0; i < 43; i++) jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
@@ -141,20 +142,20 @@ public class BSParser implements BSParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
+        for (int i = 0; i < 43; i++) jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
     private static void jj_la1_init_0() {
-        jj_la1_0 = new int[]{0x10000000, 0x40000, 0x80000, 0x1000000, 0xe00e300, 0xe000000, 0xe000000, 0xe000000, 0x0, 0xe00e300, 0x40000000, 0xe300, 0xe000000, 0x0, 0x0, 0x6000000, 0x0, 0xe000000, 0x0, 0x0, 0x400, 0x0, 0x400, 0x400, 0xe00e300, 0xe00e300, 0xe00e300, 0x10000, 0x20000, 0xe00e300, 0xe00e300, 0x2000000, 0x0, 0x2000000, 0x2000000, 0x2000000, 0x0, 0x0, 0x0, 0x0,0x0,0x0,};
+        jj_la1_0 = new int[]{0x10000000, 0x40000, 0x80000, 0x1000000, 0xe00e300, 0xe000000, 0xe000000, 0xe000000, 0x0, 0xe00e300, 0x40000000, 0xe300, 0xe000000, 0x0, 0x0, 0x6000000, 0x0, 0xe000000, 0x0, 0x0, 0x400, 0x0, 0x400, 0x400, 0xe00e300, 0xe00e300, 0xe00e300, 0x10000, 0x20000, 0xe00e300, 0xe00e300, 0x0, 0x2000000, 0x0, 0x2000000, 0x2000000, 0x2000000, 0x0, 0x0, 0x0, 0x0,0x0,0x0,};
     }
 
     private static void jj_la1_init_1() {
-        jj_la1_1 = new int[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8000000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x4000000, 0x0, 0x4000000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3000000, 0x4000000, 0x3000000, 0x3000000, 0x3000000, 0x80000000, 0x80000000, 0x0, 0x0,0x0,0x0,};
+        jj_la1_1 = new int[]{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8000000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x4000000, 0x0, 0x4000000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xfc000, 0x3000000, 0x4000000, 0x3000000, 0x3000000, 0x3000000, 0x80000000, 0x80000000, 0x0, 0x0,0x0,0x0,};
     }
 
     private static void jj_la1_init_2() {
-        jj_la1_2 = new int[]{0x0, 0x0, 0x0, 0x0, 0x800, 0x0, 0x0, 0x800, 0x0, 0x800, 0x0, 0x800, 0x0, 0x800, 0x0, 0x0, 0x0, 0x0, 0x200, 0x200, 0x0, 0x200, 0x0, 0x0, 0x800, 0x800, 0x800, 0x0, 0x0, 0x800, 0x800, 0xa00, 0x0, 0xa00, 0xa00, 0x200, 0xf, 0xf, 0x70, 0x70, 0x180,0x180,};
+        jj_la1_2 = new int[]{0x0, 0x0, 0x0, 0x0, 0x800, 0x0, 0x0, 0x800, 0x0, 0x800, 0x0, 0x800, 0x0, 0x800, 0x0, 0x0, 0x0, 0x0, 0x200, 0x200, 0x0, 0x200, 0x0, 0x0, 0x800, 0x800, 0x800, 0x0, 0x0, 0x800, 0x800, 0x0, 0xa00, 0x0, 0xa00, 0xa00, 0x200, 0xf, 0xf, 0x70, 0x70, 0x180,0x180,};
     }
 
     final public BSProgram BSProgram() throws ParseException {
@@ -176,7 +177,7 @@ public class BSParser implements BSParserConstants {
         Token n15;
         label_1:
         while (true) {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case MODULE:{
                     break;
                 }
@@ -190,7 +191,7 @@ public class BSParser implements BSParserConstants {
         n0.nodes.trimToSize();
         label_2:
         while (true) {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case STATIONARY:{
                     break;
                 }
@@ -206,7 +207,7 @@ public class BSParser implements BSParserConstants {
         while (true) {
             n5 = Manifest();
             n4.addNode(n5);
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case MANIFEST:{
                     break;
                 }
@@ -220,7 +221,7 @@ public class BSParser implements BSParserConstants {
         n6 = JTBToolkit.makeNodeToken(n7);
         label_4:
         while (true) {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case FUNCTION:{
                     break;
                 }
@@ -377,7 +378,7 @@ public class BSParser implements BSParserConstants {
         n5.nodes.trimToSize();
         n8 = jj_consume_token(RPAREN);
         n7 = JTBToolkit.makeNodeToken(n8);
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case COLON:{
                 n10 = new NodeSequence(2);
                 n12 = jj_consume_token(COLON);
@@ -415,7 +416,7 @@ public class BSParser implements BSParserConstants {
             }
         }
         n16.nodes.trimToSize();
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case RETURN:{
                 n19 = new NodeSequence(2);
                 n21 = jj_consume_token(RETURN);
@@ -449,7 +450,7 @@ public class BSParser implements BSParserConstants {
             n1 = AssignmentStatement();
             n0 = new NodeChoice(n1, 0);
         } else {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case IF:{
                     n2 = BranchStatement();
                     n0 = new NodeChoice(n2, 1);
@@ -547,7 +548,7 @@ public class BSParser implements BSParserConstants {
             n5 = FunctionInvoke();
             n0 = new NodeChoice(n5, 4);
         } else {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case IDENTIFIER:{
                     n6 = VariableAlias();
                     n0 = new NodeChoice(n6, 5);
@@ -570,7 +571,7 @@ public class BSParser implements BSParserConstants {
         n0 = Type();
         label_9:
         while (true) {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case COMMA:{
                     break;
                 }
@@ -596,7 +597,7 @@ public class BSParser implements BSParserConstants {
             n1 = MatLiteral();
             n0 = new NodeChoice(n1, 0);
         } else {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case NAT:{
                     n2 = NatLiteral();
                     n0 = new NodeChoice(n2, 1);
@@ -637,7 +638,7 @@ public class BSParser implements BSParserConstants {
         n0 = FormalParameter();
         label_10:
         while (true) {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case COMMA:{
                     break;
                 }
@@ -716,7 +717,7 @@ public class BSParser implements BSParserConstants {
         TimeUnit n20;
         n1 = jj_consume_token(MIX);
         n0 = JTBToolkit.makeNodeToken(n1);
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case INTEGER_LITERAL:{
                 n3 = new NodeSequence(2);
                 n4 = VolumeUnit();
@@ -733,7 +734,7 @@ public class BSParser implements BSParserConstants {
         n7 = PrimaryExpression();
         n9 = jj_consume_token(WITH);
         n8 = JTBToolkit.makeNodeToken(n9);
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case INTEGER_LITERAL:{
                 n11 = new NodeSequence(2);
                 n12 = VolumeUnit();
@@ -748,7 +749,7 @@ public class BSParser implements BSParserConstants {
                 jj_la1[19] = jj_gen;
         }
         n15 = PrimaryExpression();
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case FOR:{
                 n17 = new NodeSequence(2);
                 n19 = jj_consume_token(FOR);
@@ -808,7 +809,7 @@ public class BSParser implements BSParserConstants {
         Identifier n7;
         n1 = jj_consume_token(DISPENSE);
         n0 = JTBToolkit.makeNodeToken(n1);
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case INTEGER_LITERAL:{
                 n3 = new NodeSequence(2);
                 n4 = VolumeUnit();
@@ -846,7 +847,7 @@ public class BSParser implements BSParserConstants {
         n4 = jj_consume_token(AT);
         n3 = JTBToolkit.makeNodeToken(n4);
         n5 = TempUnit();
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case FOR:{
                 n7 = new NodeSequence(2);
                 n9 = jj_consume_token(FOR);
@@ -883,7 +884,7 @@ public class BSParser implements BSParserConstants {
         n4 = jj_consume_token(ON);
         n3 = JTBToolkit.makeNodeToken(n4);
         n5 = PrimaryExpression();
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case FOR:{
                 n7 = new NodeSequence(2);
                 n9 = jj_consume_token(FOR);
@@ -1007,32 +1008,36 @@ public class BSParser implements BSParserConstants {
         Token n1;
         NodeToken n2;
         Token n3;
-        Conditional n4;
-        NodeToken n5;
-        Token n6;
+        Identifier n4;
+        Conditional n5;
+        Primitives n6;
         NodeToken n7;
         Token n8;
-        NodeList n9 = new NodeList();
-        Statements n10;
-        NodeToken n11;
-        Token n12;
-        NodeListOptional n13 = new NodeListOptional();
-        ElseIfBranchStatement n14;
-        NodeOptional n15 = new NodeOptional();
-        ElseBranchStatement n16;
+        NodeToken n9;
+        Token n10;
+        NodeList n11 = new NodeList();
+        Statements n12;
+        NodeToken n13;
+        Token n14;
+        NodeListOptional n15 = new NodeListOptional();
+        ElseIfBranchStatement n16;
+        NodeOptional n17 = new NodeOptional();
+        ElseBranchStatement n18;
         n1 = jj_consume_token(IF);
         n0 = JTBToolkit.makeNodeToken(n1);
         n3 = jj_consume_token(LPAREN);
         n2 = JTBToolkit.makeNodeToken(n3);
-        n4 = Conditional();
-        n6 = jj_consume_token(RPAREN);
-        n5 = JTBToolkit.makeNodeToken(n6);
-        n8 = jj_consume_token(LBRACE);
+        n4 = Identifier();
+        n5 = Conditional();
+        n6 = Primitives();
+        n8 = jj_consume_token(RPAREN);
         n7 = JTBToolkit.makeNodeToken(n8);
+        n10 = jj_consume_token(LBRACE);
+        n9 = JTBToolkit.makeNodeToken(n10);
         label_14:
         while (true) {
-            n10 = Statements();
-            n9.addNode(n10);
+            n12 = Statements();
+            n11.addNode(n12);
             switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case DRAIN:
                 case HEAT:
@@ -1050,12 +1055,12 @@ public class BSParser implements BSParserConstants {
                     break label_14;
             }
         }
-        n9.nodes.trimToSize();
-        n12 = jj_consume_token(RBRACE);
-        n11 = JTBToolkit.makeNodeToken(n12);
+        n11.nodes.trimToSize();
+        n14 = jj_consume_token(RBRACE);
+        n13 = JTBToolkit.makeNodeToken(n14);
         label_15:
         while (true) {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case ELSE_IF:{
                     break;
                 }
@@ -1063,21 +1068,21 @@ public class BSParser implements BSParserConstants {
                     jj_la1[27] = jj_gen;
                     break label_15;
             }
-            n14 = ElseIfBranchStatement();
-            n13.addNode(n14);
+            n16 = ElseIfBranchStatement();
+            n15.addNode(n16);
         }
-        n13.nodes.trimToSize();
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case ELSE:{
-                n16 = ElseBranchStatement();
-                n15.addNode(n16);
+        n15.nodes.trimToSize();
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
+            case ELSE: {
+                n18 = ElseBranchStatement();
+                n17.addNode(n18);
                 break;
             }
             default:
                 jj_la1[28] = jj_gen;
         }
         {
-            if ("" != null) return new BranchStatement(n0, n2, n4, n5, n7, n9, n11,n13,n15);}
+            if ("" != null) return new BranchStatement(n0, n2, n4, n5, n6, n7, n9, n11, n13,n15,n17);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1171,11 +1176,73 @@ public class BSParser implements BSParserConstants {
         n7 = jj_consume_token(RBRACE);
         n6 = JTBToolkit.makeNodeToken(n7);
         {
-            if ("" != null) return new ElseBranchStatement(n0,n2,n4,n6);}
+            if ("" != null) return new ElseBranchStatement(n0, n2, n4, n6);
+        }
         throw new Error("Missing return statement in function");
     }
 
     final public Conditional Conditional() throws ParseException {
+        NodeChoice n0;
+        NodeToken n1;
+        Token n2;
+        NodeToken n3;
+        Token n4;
+        NodeToken n5;
+        Token n6;
+        NodeToken n7;
+        Token n8;
+        NodeToken n9;
+        Token n10;
+        NodeToken n11;
+        Token n12;
+        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            case LESSTHAN: {
+                n2 = jj_consume_token(LESSTHAN);
+                n1 = JTBToolkit.makeNodeToken(n2);
+                n0 = new NodeChoice(n1, 0);
+                break;
+            }
+            case LESSTHANEQUAL: {
+                n4 = jj_consume_token(LESSTHANEQUAL);
+                n3 = JTBToolkit.makeNodeToken(n4);
+                n0 = new NodeChoice(n3, 1);
+                break;
+            }
+            case NOTEQUAL: {
+                n6 = jj_consume_token(NOTEQUAL);
+                n5 = JTBToolkit.makeNodeToken(n6);
+                n0 = new NodeChoice(n5, 2);
+                break;
+            }
+            case EQUALITY: {
+                n8 = jj_consume_token(EQUALITY);
+                n7 = JTBToolkit.makeNodeToken(n8);
+                n0 = new NodeChoice(n7, 3);
+                break;
+            }
+            case GREATERTHAN: {
+                n10 = jj_consume_token(GREATERTHAN);
+                n9 = JTBToolkit.makeNodeToken(n10);
+                n0 = new NodeChoice(n9, 4);
+                break;
+            }
+            case GREATERTHANEQUAL: {
+                n12 = jj_consume_token(GREATERTHANEQUAL);
+                n11 = JTBToolkit.makeNodeToken(n12);
+                n0 = new NodeChoice(n11, 5);
+                break;
+            }
+            default:
+                jj_la1[31] = jj_gen;
+                jj_consume_token(-1);
+                throw new ParseException();
+        }
+        {
+            if ("" != null) return new Conditional(n0);}
+        throw new Error("Missing return statement in function");
+    }
+
+    final public TraditionalConditional TraditionalConditional() throws ParseException {
         NodeChoice n0;
         ConditionalParenthesis n1;
         AndExpression n2;
@@ -1218,7 +1285,7 @@ public class BSParser implements BSParserConstants {
             throw new ParseException();
         }
         {
-            if ("" != null) return new Conditional(n0);}
+            if ("" != null) return new TraditionalConditional(n0);}
         throw new Error("Missing return statement in function");
     }
 
@@ -1275,7 +1342,7 @@ public class BSParser implements BSParserConstants {
                 break;
             }
             default:
-                jj_la1[31] = jj_gen;
+                jj_la1[32] = jj_gen;
         }
         n6 = jj_consume_token(RPAREN);
         n5 = JTBToolkit.makeNodeToken(n6);
@@ -1291,12 +1358,12 @@ public class BSParser implements BSParserConstants {
         n0 = AllowedArguments();
         label_18:
         while (true) {
-            switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+            switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                 case COMMA:{
                     break;
                 }
                 default:
-                    jj_la1[32] = jj_gen;
+                    jj_la1[33] = jj_gen;
                     break label_18;
             }
             n2 = AllowedArgumentsRest();
@@ -1327,7 +1394,7 @@ public class BSParser implements BSParserConstants {
         FalseLiteral n3;
         IntegerLiteral n4;
         RealLiteral n5;
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case IDENTIFIER:{
                 n1 = Identifier();
                 n0 = new NodeChoice(n1, 0);
@@ -1354,7 +1421,7 @@ public class BSParser implements BSParserConstants {
                 break;
             }
             default:
-                jj_la1[33] = jj_gen;
+                jj_la1[34] = jj_gen;
                 jj_consume_token(-1);
                 throw new ParseException();
         }
@@ -1613,6 +1680,25 @@ public class BSParser implements BSParserConstants {
         throw new Error("Missing return statement in function");
     }
 
+    private boolean jj_3R_22() {
+        return jj_3R_30();
+    }
+
+    private boolean jj_3R_43() {
+        if (jj_scan_token(MIX)) return true;
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_52()) jj_scanpos = xsp;
+        if (jj_3R_21()) return true;
+        if (jj_scan_token(WITH)) return true;
+        xsp = jj_scanpos;
+        if (jj_3R_53()) jj_scanpos = xsp;
+        if (jj_3R_21()) return true;
+        xsp = jj_scanpos;
+        if (jj_3R_54()) jj_scanpos = xsp;
+        return false;
+    }
+
     final public ConditionalParenthesis ConditionalParenthesis() throws ParseException {
         NodeToken n0;
         Token n1;
@@ -1627,6 +1713,58 @@ public class BSParser implements BSParserConstants {
         {
             if ("" != null) return new ConditionalParenthesis(n0,n2,n3);}
         throw new Error("Missing return statement in function");
+    }
+
+    private boolean jj_3R_81() {
+        return jj_3R_38();
+    }
+
+    private boolean jj_3R_39() {
+        return jj_scan_token(INTEGER_LITERAL);
+    }
+
+    private boolean jj_3R_80() {
+        return jj_3R_37();
+    }
+
+    private boolean jj_3R_79() {
+        return jj_3R_40();
+    }
+
+    private boolean jj_3R_78() {
+        return jj_3R_39();
+    }
+
+    private boolean jj_3R_29() {
+        return jj_3R_40();
+    }
+
+    private boolean jj_3R_77() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_78()) {
+            jj_scanpos = xsp;
+            if (jj_3R_79()) {
+                jj_scanpos = xsp;
+                if (jj_3R_80()) {
+                    jj_scanpos = xsp;
+                    return jj_3R_81();
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_28() {
+        return jj_3R_39();
+    }
+
+    private boolean jj_3R_27() {
+        return jj_3R_38();
+    }
+
+    private boolean jj_3R_26() {
+        return jj_3R_37();
     }
 
     final public MathParenthesis MathParenthesis() throws ParseException {
@@ -1645,11 +1783,52 @@ public class BSParser implements BSParserConstants {
         throw new Error("Missing return statement in function");
     }
 
+    private boolean jj_3R_25() {
+        return jj_3R_23();
+    }
+
+    private boolean jj_3R_75() {
+        return jj_3R_77();
+    }
+
+    private boolean jj_3R_21() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_25()) {
+            jj_scanpos = xsp;
+            if (jj_3R_26()) {
+                jj_scanpos = xsp;
+                if (jj_3R_27()) {
+                    jj_scanpos = xsp;
+                    if (jj_3R_28()) {
+                        jj_scanpos = xsp;
+                        return jj_3R_29();
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_74() {
+        return jj_3R_23();
+    }
+
+    private boolean jj_3R_64() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_74()) {
+            jj_scanpos = xsp;
+            return jj_3R_75();
+        }
+        return false;
+    }
+
     final public AllowedArguments AllowedArguments() throws ParseException {
         NodeChoice n0;
         Identifier n1;
         Primitives n2;
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case IDENTIFIER:{
                 n1 = Identifier();
                 n0 = new NodeChoice(n1, 0);
@@ -1664,7 +1843,7 @@ public class BSParser implements BSParserConstants {
                 break;
             }
             default:
-                jj_la1[34] = jj_gen;
+                jj_la1[35] = jj_gen;
                 jj_consume_token(-1);
                 throw new ParseException();
         }
@@ -1679,7 +1858,7 @@ public class BSParser implements BSParserConstants {
         RealLiteral n2;
         TrueLiteral n3;
         FalseLiteral n4;
-        switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+        switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case INTEGER_LITERAL:{
                 n1 = IntegerLiteral();
                 n0 = new NodeChoice(n1, 0);
@@ -1701,13 +1880,18 @@ public class BSParser implements BSParserConstants {
                 break;
             }
             default:
-                jj_la1[35] = jj_gen;
+                jj_la1[36] = jj_gen;
                 jj_consume_token(-1);
                 throw new ParseException();
         }
         {
             if ("" != null) return new Primitives(n0);}
         throw new Error("Missing return statement in function");
+    }
+
+    private boolean jj_3R_76() {
+        if (jj_scan_token(COMMA)) return true;
+        return jj_3R_64();
     }
 
     final public VariableAlias VariableAlias() throws ParseException {
@@ -1739,7 +1923,7 @@ public class BSParser implements BSParserConstants {
             case SECOND:
             case MINUTE:
             case HOUR: {
-                switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+                switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                     case SECOND:{
                         n4 = jj_consume_token(SECOND);
                         n3 = JTBToolkit.makeNodeToken(n4);
@@ -1771,7 +1955,7 @@ public class BSParser implements BSParserConstants {
                         break;
                     }
                     default:
-                        jj_la1[36] = jj_gen;
+                        jj_la1[37] = jj_gen;
                         jj_consume_token(-1);
                         throw new ParseException();
                 }
@@ -1779,7 +1963,7 @@ public class BSParser implements BSParserConstants {
                 break;
             }
             default:
-                jj_la1[37] = jj_gen;
+                jj_la1[38] = jj_gen;
         }
         {
             if ("" != null) return new TimeUnit(n0,n1);}
@@ -1801,7 +1985,7 @@ public class BSParser implements BSParserConstants {
             case LITRE:
             case MICROLITRE:
             case MILLILITRE: {
-                switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+                switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                     case LITRE:{
                         n4 = jj_consume_token(LITRE);
                         n3 = JTBToolkit.makeNodeToken(n4);
@@ -1821,7 +2005,7 @@ public class BSParser implements BSParserConstants {
                         break;
                     }
                     default:
-                        jj_la1[38] = jj_gen;
+                        jj_la1[39] = jj_gen;
                         jj_consume_token(-1);
                         throw new ParseException();
                 }
@@ -1829,7 +2013,7 @@ public class BSParser implements BSParserConstants {
                 break;
             }
             default:
-                jj_la1[39] = jj_gen;
+                jj_la1[40] = jj_gen;
         }
         {
             if ("" != null) return new VolumeUnit(n0,n1);}
@@ -1848,7 +2032,7 @@ public class BSParser implements BSParserConstants {
         switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
             case CELSIUS:
             case FAHRENHEIT: {
-                switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+                switch ((jj_ntk == -1) ? jj_ntk_f():jj_ntk) {
                     case CELSIUS:{
                         n4 = jj_consume_token(CELSIUS);
                         n3 = JTBToolkit.makeNodeToken(n4);
@@ -1862,7 +2046,7 @@ public class BSParser implements BSParserConstants {
                         break;
                     }
                     default:
-                        jj_la1[40] = jj_gen;
+                        jj_la1[41] = jj_gen;
                         jj_consume_token(-1);
                         throw new ParseException();
                 }
@@ -1870,7 +2054,7 @@ public class BSParser implements BSParserConstants {
                 break;
             }
             default:
-                jj_la1[41] = jj_gen;
+                jj_la1[42] = jj_gen;
         }
         {
             if ("" != null) return new TempUnit(n0,n1);}
@@ -1901,6 +2085,10 @@ public class BSParser implements BSParserConstants {
         }
     }
 
+    private boolean jj_3R_50() {
+        return jj_3R_40();
+    }
+
     private boolean jj_2_3(int xla) {
         jj_la = xla;
         jj_lastpos = jj_scanpos = token;
@@ -1911,6 +2099,10 @@ public class BSParser implements BSParserConstants {
         } finally {
             jj_save(2, xla);
         }
+    }
+
+    private boolean jj_3R_49() {
+        return jj_3R_58();
     }
 
     private boolean jj_2_4(int xla) {
@@ -1937,6 +2129,15 @@ public class BSParser implements BSParserConstants {
         }
     }
 
+    private boolean jj_3R_56() {
+        if (jj_3R_59()) return true;
+        return jj_scan_token(OF);
+    }
+
+    private boolean jj_3_7() {
+        return jj_3R_20();
+    }
+
     private boolean jj_2_6(int xla) {
         jj_la = xla;
         jj_lastpos = jj_scanpos = token;
@@ -1959,6 +2160,28 @@ public class BSParser implements BSParserConstants {
         } finally {
             jj_save(6, xla);
         }
+    }
+
+    private boolean jj_3R_41()
+    {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3_7()) {
+            jj_scanpos = xsp;
+            if (jj_3R_49()) {
+                jj_scanpos = xsp;
+                return jj_3R_50();
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_46() {
+        if (jj_scan_token(DISPENSE)) return true;
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_56()) jj_scanpos = xsp;
+        return jj_3R_23();
     }
 
     private boolean jj_2_8(int xla) {
@@ -2021,6 +2244,10 @@ public class BSParser implements BSParserConstants {
         }
     }
 
+    private boolean jj_3R_42() {
+        return jj_3R_51();
+    }
+
     private boolean jj_2_13(int xla) {
         jj_la = xla;
         jj_lastpos = jj_scanpos = token;
@@ -2081,6 +2308,11 @@ public class BSParser implements BSParserConstants {
         }
     }
 
+    private boolean jj_3_6() {
+        if (jj_scan_token(IDENTIFIER)) return true;
+        return jj_scan_token(LPAREN);
+    }
+
     private boolean jj_2_18(int xla) {
         jj_la = xla;
         jj_lastpos = jj_scanpos = token;
@@ -2103,6 +2335,10 @@ public class BSParser implements BSParserConstants {
         } finally {
             jj_save(18, xla);
         }
+    }
+
+    private boolean jj_3_5() {
+        return jj_scan_token(DISPENSE);
     }
 
     private boolean jj_2_20(int xla) {
@@ -2129,41 +2365,8 @@ public class BSParser implements BSParserConstants {
         }
     }
 
-    private boolean jj_3R_22()
-    {
-        return jj_3R_30();
-    }
-
-    private boolean jj_3R_71()
-    {
-        return jj_scan_token(MICROSECOND);
-    }
-
-    private boolean jj_3_13()
-    {
-        if (jj_3R_21()) return true;
-        return jj_scan_token(GREATERTHANEQUAL);
-    }
-
-    private boolean jj_3R_43()
-    {
-        if (jj_scan_token(MIX)) return true;
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_52()) jj_scanpos = xsp;
-        if (jj_3R_21()) return true;
-        if (jj_scan_token(WITH)) return true;
-        xsp = jj_scanpos;
-        if (jj_3R_53()) jj_scanpos = xsp;
-        if (jj_3R_21()) return true;
-        xsp = jj_scanpos;
-        if (jj_3R_54()) jj_scanpos = xsp;
-        return false;
-    }
-
-    private boolean jj_3R_70()
-    {
-        return jj_scan_token(MILLISECOND);
+    private boolean jj_3R_36() {
+        return jj_3R_48();
     }
 
     private boolean jj_3R_19()
@@ -2179,77 +2382,8 @@ public class BSParser implements BSParserConstants {
         return jj_3R_24();
     }
 
-    private boolean jj_3_12()
-    {
-        if (jj_3R_21()) return true;
-        return jj_scan_token(GREATERTHAN);
-    }
-
-    private boolean jj_3R_69()
-    {
-        return jj_scan_token(SECOND);
-    }
-
-    private boolean jj_3_11()
-    {
-        if (jj_3R_21()) return true;
-        return jj_scan_token(LESSTHANEQUAL);
-    }
-
-    private boolean jj_3R_63()
-    {
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_69()) {
-            jj_scanpos = xsp;
-            if (jj_3R_70()) {
-                jj_scanpos = xsp;
-                if (jj_3R_71()) {
-                    jj_scanpos = xsp;
-                    if (jj_3R_72()) {
-                        jj_scanpos = xsp;
-                        return jj_3R_73();
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean jj_3R_40()
-    {
-        return jj_scan_token(REAL);
-    }
-
-    private boolean jj_3_10()
-    {
-        if (jj_3R_21()) return true;
-        return jj_scan_token(LESSTHAN);
-    }
-
-    private boolean jj_3R_60()
-    {
-        if (jj_3R_39()) return true;
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_63()) jj_scanpos = xsp;
-        return false;
-    }
-
-    private boolean jj_3_9()
-    {
-        if (jj_3R_21()) return true;
-        return jj_scan_token(AND);
-    }
-
-    private boolean jj_3_8()
-    {
-        return jj_scan_token(LPAREN);
-    }
-
-    private boolean jj_3R_20()
-    {
-        return jj_scan_token(MAT);
+    private boolean jj_3_4() {
+        return jj_scan_token(SPLIT);
     }
 
     private boolean jj_3_1()
@@ -2257,14 +2391,15 @@ public class BSParser implements BSParserConstants {
         return jj_3R_19();
     }
 
-    private boolean jj_3R_58()
-    {
-        return jj_scan_token(NAT);
+    private boolean jj_3R_35() {
+        return jj_3R_47();
     }
 
-    private boolean jj_3R_48()
-    {
-        return jj_3R_23();
+    private boolean jj_3R_45() {
+        if (jj_scan_token(SPLIT)) return true;
+        if (jj_3R_21()) return true;
+        if (jj_scan_token(INTO)) return true;
+        return jj_3R_39();
     }
 
     private boolean jj_3R_55()
@@ -2285,145 +2420,12 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_81()
-    {
-        return jj_3R_38();
+    private boolean jj_3_3() {
+        return jj_scan_token(DETECT);
     }
 
-    private boolean jj_3R_39()
-    {
-        return jj_scan_token(INTEGER_LITERAL);
-    }
-
-    private boolean jj_3R_80()
-    {
-        return jj_3R_37();
-    }
-
-    private boolean jj_3R_79()
-    {
-        return jj_3R_40();
-    }
-
-    private boolean jj_3R_78()
-    {
-        return jj_3R_39();
-    }
-
-    private boolean jj_3R_29()
-    {
-        return jj_3R_40();
-    }
-
-    private boolean jj_3R_77()
-    {
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_78()) {
-            jj_scanpos = xsp;
-            if (jj_3R_79()) {
-                jj_scanpos = xsp;
-                if (jj_3R_80()) {
-                    jj_scanpos = xsp;
-                    return jj_3R_81();
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean jj_3R_28()
-    {
-        return jj_3R_39();
-    }
-
-    private boolean jj_3R_27()
-    {
-        return jj_3R_38();
-    }
-
-    private boolean jj_3R_26()
-    {
-        return jj_3R_37();
-    }
-
-    private boolean jj_3R_25()
-    {
-        return jj_3R_23();
-    }
-
-    private boolean jj_3R_75()
-    {
-        return jj_3R_77();
-    }
-
-    private boolean jj_3R_21()
-    {
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_25()) {
-            jj_scanpos = xsp;
-            if (jj_3R_26()) {
-                jj_scanpos = xsp;
-                if (jj_3R_27()) {
-                    jj_scanpos = xsp;
-                    if (jj_3R_28()) {
-                        jj_scanpos = xsp;
-                        return jj_3R_29();
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean jj_3R_74()
-    {
-        return jj_3R_23();
-    }
-
-    private boolean jj_3R_64()
-    {
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_74()) {
-            jj_scanpos = xsp;
-            return jj_3R_75();
-        }
-        return false;
-    }
-
-    private boolean jj_3R_51()
-    {
-        if (jj_scan_token(COMMA)) return true;
-        return jj_3R_41();
-    }
-
-    private boolean jj_3R_76()
-    {
-        if (jj_scan_token(COMMA)) return true;
-        return jj_3R_64();
-    }
-
-    private boolean jj_3R_50()
-    {
-        return jj_3R_40();
-    }
-
-    private boolean jj_3R_49()
-    {
-        return jj_3R_58();
-    }
-
-    private boolean jj_3R_56()
-    {
-        if (jj_3R_59()) return true;
-        return jj_scan_token(OF);
-    }
-
-    private boolean jj_3_7()
-    {
-        return jj_3R_20();
+    private boolean jj_3R_34() {
+        return jj_3R_46();
     }
 
     private boolean jj_3R_65()
@@ -2431,27 +2433,8 @@ public class BSParser implements BSParserConstants {
         return jj_3R_76();
     }
 
-    private boolean jj_3R_41()
-    {
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3_7()) {
-            jj_scanpos = xsp;
-            if (jj_3R_49()) {
-                jj_scanpos = xsp;
-                return jj_3R_50();
-            }
-        }
-        return false;
-    }
-
-    private boolean jj_3R_46()
-    {
-        if (jj_scan_token(DISPENSE)) return true;
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_56()) jj_scanpos = xsp;
-        return jj_3R_23();
+    private boolean jj_3_2() {
+        return jj_scan_token(MIX);
     }
 
     private boolean jj_3R_61()
@@ -2466,26 +2449,14 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_42()
-    {
-        return jj_3R_51();
-    }
-
     private boolean jj_3R_57()
     {
         return jj_3R_61();
     }
 
-    private boolean jj_3R_30()
-    {
-        if (jj_3R_41()) return true;
-        Token xsp;
-        while (true) {
-            xsp = jj_scanpos;
-            if (jj_3R_42()) {
-                jj_scanpos = xsp; break; }
-        }
-        return false;
+    private boolean jj_3R_51() {
+        if (jj_scan_token(COMMA)) return true;
+        return jj_3R_41();
     }
 
     private boolean jj_3R_47()
@@ -2498,55 +2469,16 @@ public class BSParser implements BSParserConstants {
         return jj_scan_token(RPAREN);
     }
 
-    private boolean jj_3_6()
-    {
-        if (jj_scan_token(IDENTIFIER)) return true;
-        return jj_scan_token(LPAREN);
-    }
-
-    private boolean jj_3_5()
-    {
-        return jj_scan_token(DISPENSE);
-    }
-
     private boolean jj_3_21()
     {
         if (jj_3R_21()) return true;
         return jj_scan_token(DIVIDE);
     }
 
-    private boolean jj_3R_36()
-    {
-        return jj_3R_48();
-    }
-
-    private boolean jj_3_4()
-    {
-        return jj_scan_token(SPLIT);
-    }
-
     private boolean jj_3_20()
     {
         if (jj_3R_21()) return true;
         return jj_scan_token(MULTIPLY);
-    }
-
-    private boolean jj_3R_35()
-    {
-        return jj_3R_47();
-    }
-
-    private boolean jj_3R_45()
-    {
-        if (jj_scan_token(SPLIT)) return true;
-        if (jj_3R_21()) return true;
-        if (jj_scan_token(INTO)) return true;
-        return jj_3R_39();
-    }
-
-    private boolean jj_3_3()
-    {
-        return jj_scan_token(DETECT);
     }
 
     private boolean jj_3_19()
@@ -2560,82 +2492,12 @@ public class BSParser implements BSParserConstants {
         return jj_scan_token(MICROLITRE);
     }
 
-    private boolean jj_3R_34()
-    {
-        return jj_3R_46();
-    }
-
-    private boolean jj_3_2()
-    {
-        return jj_scan_token(MIX);
-    }
-
-    private boolean jj_3_18()
-    {
+    private boolean jj_3_18() {
         if (jj_3R_21()) return true;
         return jj_scan_token(ADD);
     }
 
-    private boolean jj_3R_67()
-    {
-        return jj_scan_token(MILLILITRE);
-    }
-
-    private boolean jj_3R_33()
-    {
-        return jj_3R_45();
-    }
-
-    private boolean jj_3R_66()
-    {
-        return jj_scan_token(LITRE);
-    }
-
-    private boolean jj_3_17()
-    {
-        return jj_scan_token(LPAREN);
-    }
-
-    private boolean jj_3R_32()
-    {
-        return jj_3R_44();
-    }
-
-    private boolean jj_3R_62()
-    {
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_66()) {
-            jj_scanpos = xsp;
-            if (jj_3R_67()) {
-                jj_scanpos = xsp;
-                return jj_3R_68();
-            }
-        }
-        return false;
-    }
-
-    private boolean jj_3R_23()
-    {
-        return jj_scan_token(IDENTIFIER);
-    }
-
-    private boolean jj_3R_31()
-    {
-        return jj_3R_43();
-    }
-
-    private boolean jj_3R_59()
-    {
-        if (jj_3R_39()) return true;
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_62()) jj_scanpos = xsp;
-        return false;
-    }
-
-    private boolean jj_3R_24()
-    {
+    private boolean jj_3R_24() {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3R_31()) {
@@ -2657,21 +2519,77 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    private boolean jj_3R_54()
-    {
+    private boolean jj_3R_54() {
         if (jj_scan_token(FOR)) return true;
         return jj_3R_60();
     }
 
-    private boolean jj_3R_38()
+    private boolean jj_3R_67()
     {
+        return jj_scan_token(MILLILITRE);
+    }
+
+    private boolean jj_3R_53() {
+        if (jj_3R_59()) return true;
+        return jj_scan_token(OF);
+    }
+
+    private boolean jj_3R_66()
+    {
+        return jj_scan_token(LITRE);
+    }
+
+    private boolean jj_3_17()
+    {
+        return jj_scan_token(LPAREN);
+    }
+
+    private boolean jj_3R_52() {
+        if (jj_3R_59()) return true;
+        return jj_scan_token(OF);
+    }
+
+    private boolean jj_3R_62()
+    {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_66()) {
+            jj_scanpos = xsp;
+            if (jj_3R_67()) {
+                jj_scanpos = xsp;
+                return jj_3R_68();
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_23()
+    {
+        return jj_scan_token(IDENTIFIER);
+    }
+
+    private boolean jj_3R_59()
+    {
+        if (jj_3R_39()) return true;
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_62()) jj_scanpos = xsp;
+        return false;
+    }
+
+    private boolean jj_3R_38() {
         return jj_scan_token(FALSE);
     }
 
-    private boolean jj_3R_53()
-    {
-        if (jj_3R_59()) return true;
-        return jj_scan_token(OF);
+    private boolean jj_3R_30() {
+        if (jj_3R_41()) return true;
+        Token xsp;
+        while (true) {
+            xsp = jj_scanpos;
+            if (jj_3R_42()) {
+                jj_scanpos = xsp; break; }
+        }
+        return false;
     }
 
     private boolean jj_3_16()
@@ -2696,10 +2614,174 @@ public class BSParser implements BSParserConstants {
         return jj_scan_token(HOUR);
     }
 
-    private boolean jj_3R_52()
+    private boolean jj_3_14()
     {
-        if (jj_3R_59()) return true;
-        return jj_scan_token(OF);
+        if (jj_3R_21()) return true;
+        return jj_scan_token(NOTEQUAL);
+    }
+
+    private boolean jj_3R_37() {
+        return jj_scan_token(TRUE);
+    }
+
+    private boolean jj_3R_71() {
+        return jj_scan_token(MICROSECOND);
+    }
+
+    private boolean jj_3_13() {
+        if (jj_3R_21()) return true;
+        return jj_scan_token(GREATERTHANEQUAL);
+    }
+
+    private boolean jj_3R_70() {
+        return jj_scan_token(MILLISECOND);
+    }
+
+    private boolean jj_3_12() {
+        if (jj_3R_21()) return true;
+        return jj_scan_token(GREATERTHAN);
+    }
+
+    private boolean jj_3R_69() {
+        return jj_scan_token(SECOND);
+    }
+
+    private boolean jj_3_11() {
+        if (jj_3R_21()) return true;
+        return jj_scan_token(LESSTHANEQUAL);
+    }
+
+    private boolean jj_3R_63() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_69()) {
+            jj_scanpos = xsp;
+            if (jj_3R_70()) {
+                jj_scanpos = xsp;
+                if (jj_3R_71()) {
+                    jj_scanpos = xsp;
+                    if (jj_3R_72()) {
+                        jj_scanpos = xsp;
+                        return jj_3R_73();
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean jj_3R_40() {
+        return jj_scan_token(REAL);
+    }
+
+    private boolean jj_3R_33() {
+        return jj_3R_45();
+    }
+
+    private boolean jj_3_10() {
+        if (jj_3R_21()) return true;
+        return jj_scan_token(LESSTHAN);
+    }
+
+    /** Reinitialise. */
+    public void ReInit(java.io.InputStream stream) {
+        ReInit(stream, null);
+    }
+
+    private boolean jj_3R_60() {
+        if (jj_3R_39()) return true;
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_63()) jj_scanpos = xsp;
+        return false;
+    }
+
+    private boolean jj_3R_32() {
+        return jj_3R_44();
+    }
+
+    private boolean jj_3_9() {
+        if (jj_3R_21()) return true;
+        return jj_scan_token(AND);
+    }
+
+    private boolean jj_3R_31() {
+        return jj_3R_43();
+    }
+
+    private boolean jj_3_8() {
+        return jj_scan_token(LPAREN);
+    }
+
+    private boolean jj_3R_20() {
+        return jj_scan_token(MAT);
+    }
+
+    private boolean jj_3R_58() {
+        return jj_scan_token(NAT);
+    }
+
+    private boolean jj_3R_48() {
+        return jj_3R_23();
+    }
+
+    /** Reinitialise. */
+    public void ReInit(java.io.InputStream stream, String encoding) {
+        try {
+            jj_input_stream.ReInit(stream, encoding, 1, 1);
+        } catch (java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException(e); }
+        token_source.ReInit(jj_input_stream);
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 43; i++) jj_la1[i] = -1;
+        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    }
+
+
+    /**
+     * Get the next Token.
+     */
+    final public Token getNextToken() {
+        if (token.next != null) token = token.next;
+        else token = token.next = token_source.getNextToken();
+        jj_ntk = -1;
+        jj_gen++;
+        return token;
+    }
+
+    /**
+     * Get the specific Token.
+     */
+    final public Token getToken(int index) {
+        Token t = token;
+        for (int i = 0; i < index; i++) {
+            if (t.next != null) t = t.next;
+            else t = t.next = token_source.getNextToken();
+        }
+        return t;
+    }
+
+    /** Reinitialise. */
+    public void ReInit(java.io.Reader stream) {
+        jj_input_stream.ReInit(stream, 1, 1);
+        token_source.ReInit(jj_input_stream);
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 43; i++) jj_la1[i] = -1;
+        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    }
+
+    /** Reinitialise. */
+    public void ReInit(BSParserTokenManager tm) {
+        token_source = tm;
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 43; i++) jj_la1[i] = -1;
+        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
     }
 
     private Token jj_consume_token(int kind) throws ParseException {
@@ -2726,56 +2808,6 @@ public class BSParser implements BSParserConstants {
         throw generateParseException();
     }
 
-    private boolean jj_3_14()
-    {
-        if (jj_3R_21()) return true;
-        return jj_scan_token(NOTEQUAL);
-    }
-
-    private boolean jj_3R_37() {
-        return jj_scan_token(TRUE);
-    }
-
-    /** Reinitialise. */
-    public void ReInit(java.io.InputStream stream) {
-        ReInit(stream, null);
-    }
-
-    /** Reinitialise. */
-    public void ReInit(java.io.InputStream stream, String encoding) {
-        try {
-            jj_input_stream.ReInit(stream, encoding, 1, 1);
-        } catch (java.io.UnsupportedEncodingException e) {
-            throw new RuntimeException(e); }
-        token_source.ReInit(jj_input_stream);
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
-    /** Reinitialise. */
-    public void ReInit(java.io.Reader stream) {
-        jj_input_stream.ReInit(stream, 1, 1);
-        token_source.ReInit(jj_input_stream);
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
-    /** Reinitialise. */
-    public void ReInit(BSParserTokenManager tm) {
-        token_source = tm;
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 42; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
     private boolean jj_scan_token(int kind) {
         if (jj_scanpos == jj_lastpos) {
             jj_la--;
@@ -2790,9 +2822,7 @@ public class BSParser implements BSParserConstants {
         if (jj_rescan) {
             int i = 0;
             Token tok = token;
-            while (tok != null && tok != jj_scanpos) {
-                i++;
-                tok = tok.next; }
+            while (tok != null && tok != jj_scanpos) { i++; tok = tok.next; }
             if (tok != null) jj_add_error_token(kind, i);
         }
         if (jj_scanpos.kind != kind) return true;
@@ -2800,28 +2830,9 @@ public class BSParser implements BSParserConstants {
         return false;
     }
 
-    /** Get the next Token. */
-    final public Token getNextToken() {
-        if (token.next != null) token = token.next;
-        else token = token.next = token_source.getNextToken();
-        jj_ntk = -1;
-        jj_gen++;
-        return token;
-    }
-
-    /** Get the specific Token. */
-    final public Token getToken(int index) {
-        Token t = token;
-        for (int i = 0; i < index; i++) {
-            if (t.next != null) t = t.next;
-            else t = t.next = token_source.getNextToken();
-        }
-        return t;
-    }
-
     private int jj_ntk_f() {
         if ((jj_nt = token.next) == null)
-            return (jj_ntk = (token.next = token_source.getNextToken()).kind);
+            return (jj_ntk = (token.next=token_source.getNextToken()).kind);
         else
             return (jj_ntk = jj_nt.kind);
     }
@@ -2836,7 +2847,7 @@ public class BSParser implements BSParserConstants {
                 jj_expentry[i] = jj_lasttokens[i];
             }
             jj_entries_loop:
-            for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext(); ) {
+            for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext();) {
                 int[] oldentry = (int[])(it.next());
                 if (oldentry.length == jj_expentry.length) {
                     for (int i = 0; i < jj_expentry.length; i++) {
@@ -2860,16 +2871,16 @@ public class BSParser implements BSParserConstants {
             la1tokens[jj_kind] = true;
             jj_kind = -1;
         }
-        for (int i = 0; i < 42; i++) {
+        for (int i = 0; i < 43; i++) {
             if (jj_la1[i] == jj_gen) {
                 for (int j = 0; j < 32; j++) {
-                    if ((jj_la1_0[i] & (1 <<j)) != 0) {
+                    if ((jj_la1_0[i] & (1<<j)) != 0) {
                         la1tokens[j] = true;
                     }
-                    if ((jj_la1_1[i] & (1 << j)) != 0) {
-                        la1tokens[32+j] = true;
+                    if ((jj_la1_1[i] & (1<<j)) != 0) {
+                        la1tokens[32 + j] = true;
                     }
-                    if ((jj_la1_2[i] & (1 << j)) != 0) {
+                    if ((jj_la1_2[i] & (1<<j)) != 0) {
                         la1tokens[64+j] = true;
                     }
                 }
@@ -2892,14 +2903,6 @@ public class BSParser implements BSParserConstants {
         return new ParseException(token, exptokseq, tokenImage);
     }
 
-    /** Enable tracing. */
-    final public void enable_tracing() {
-    }
-
-    /** Disable tracing. */
-    final public void disable_tracing() {
-    }
-
     private void jj_rescan_token() {
         jj_rescan = true;
         for (int i = 0; i < 21; i++) {
@@ -2907,8 +2910,7 @@ public class BSParser implements BSParserConstants {
                 JJCalls p = jj_2_rtns[i];
                 do {
                     if (p.gen > jj_gen) {
-                        jj_la = p.arg;
-                        jj_lastpos = jj_scanpos = p.first;
+                        jj_la = p.arg; jj_lastpos = jj_scanpos = p.first;
                         switch (i) {
                             case 0:
                                 jj_3_1();
@@ -2970,27 +2972,37 @@ public class BSParser implements BSParserConstants {
                             case 19:
                                 jj_3_20();
                                 break;
-                            case 20:
-                                jj_3_21(); break;
+                            case 20: jj_3_21(); break;
                         }
                     }
                     p = p.next;
                 } while (p != null);
-            } catch (LookaheadSuccess ls) { }
+            } catch(LookaheadSuccess ls) { }
         }
         jj_rescan = false;
+    }
+
+    /**
+     * Enable tracing.
+     */
+    final public void enable_tracing() {
+    }
+
+    /**
+     * Disable tracing.
+     */
+    final public void disable_tracing() {
     }
 
     private void jj_save(int index, int xla) {
         JJCalls p = jj_2_rtns[index];
         while (p.gen > jj_gen) {
-            if (p.next == null) {
-                p = p.next = new JJCalls(); break; }
+            if (p.next == null) { p = p.next = new JJCalls();
+                break;
+            }
             p = p.next;
         }
-        p.gen = jj_gen + xla - jj_la;
-        p.first = token;
-        p.arg = xla;
+        p.gen = jj_gen + xla - jj_la; p.first = token; p.arg = xla;
     }
 
     @SuppressWarnings("serial")
@@ -3002,4 +3014,5 @@ public class BSParser implements BSParserConstants {
         int arg;
         JJCalls next;
     }
+
 }

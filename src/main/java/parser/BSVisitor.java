@@ -31,6 +31,7 @@ import parser.ast.LessThanExpression;
 import parser.ast.MatLiteral;
 import parser.ast.MathParenthesis;
 import parser.ast.NatLiteral;
+import parser.ast.NodeChoice;
 import parser.ast.NotEqualExpression;
 import parser.ast.NotExpression;
 import parser.ast.OrExpression;
@@ -259,7 +260,6 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
                 this.name = n.f0.toString();
             }
         }
-
         return this;
     }
 
@@ -364,7 +364,7 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     public BSVisitor visit(EqualityExpression n) {
         n.f0.accept(this);
         this.conditional += this.name;
-        this.conditional += "==";
+        this.conditional += "||";
         n.f2.accept(this);
         this.conditional += this.name;
         return this;
@@ -443,13 +443,14 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
         n.f0.accept(this);
         this.units = "SECONDS";
         if (n.f1.present()) {
-            if (StringUtils.equalsIgnoreCase(n.f1.toString(), "h")) {
+            String choice = ((NodeChoice) n.f1.node).choice.toString();
+            if (StringUtils.equalsIgnoreCase(choice, "h")) {
                 this.integerLiteral = this.integerLiteral * 3600;
-            } else if (StringUtils.equalsIgnoreCase(n.f1.toString(), "m")) {
+            } else if (StringUtils.equalsIgnoreCase(choice, "m")) {
                 this.integerLiteral = this.integerLiteral * 60;
-            } else if (StringUtils.equalsIgnoreCase(n.f1.toString(), "us")) {
+            } else if (StringUtils.equalsIgnoreCase(choice, "us")) {
                 this.integerLiteral = this.integerLiteral / 1000000;
-            } else if (StringUtils.equalsIgnoreCase(n.f1.toString(), "ms")) {
+            } else if (StringUtils.equalsIgnoreCase(choice, "ms")) {
                 this.integerLiteral = this.integerLiteral / 1000;
             } else {
                 this.integerLiteral *= 1;
@@ -468,9 +469,10 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     public BSVisitor visit(VolumeUnit n) {
         n.f0.accept(this);
         if (n.f1.present()) {
-            if (StringUtils.equalsIgnoreCase(n.f1.toString(), "L")) {
+            String choice = ((NodeChoice) n.f1.node).choice.toString();
+            if (StringUtils.equalsIgnoreCase(choice, "L")) {
                 this.units = "LITRE";
-            } else if (StringUtils.equalsIgnoreCase(n.f1.toString(), "mL")) {
+            } else if (StringUtils.equalsIgnoreCase(choice, "mL")) {
                 this.units = "MILLILITRE";
             } else {
                 this.units = "MICROLITRE";
@@ -489,7 +491,8 @@ public abstract class BSVisitor extends GJNoArguDepthFirst<BSVisitor> implements
     public BSVisitor visit(TempUnit n) {
         n.f0.accept(this);
         if (n.f1.present()) {
-            if (StringUtils.equalsIgnoreCase(n.f1.toString(), "c")) {
+            String choice = ((NodeChoice) n.f1.node).choice.toString();
+            if (StringUtils.equalsIgnoreCase(choice, "c")) {
                 this.units = "CELSIUS";
             } else {
                 this.units = "FAHRENHEIT";

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import chemical.epa.ChemTypes;
+import shared.properties.Property;
 import symboltable.Scope;
 
 import static ir.Statement.NL;
@@ -219,11 +220,13 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
 
     public String redeclare() {
         StringBuilder sb = new StringBuilder();
+        sb.append("{").append(NL);
         sb.append("\"VARIABLE_DECLARATION\" : {").append(NL);
         sb.append("\"ID\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"TYPE\" : \"VARIABLE\", ").append(NL);
         sb.append(this.addInferredTypes());
+        sb.append("}").append(NL);
         sb.append("}").append(NL);
         return sb.toString();
     }

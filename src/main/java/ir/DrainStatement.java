@@ -1,6 +1,6 @@
 package ir;
 
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
@@ -94,10 +94,8 @@ public class DrainStatement extends BaseStatement {
         sb.append("\"CLASSIFICATION\" : \"OUTPUT\",").append(NL);
         // Open the input array.
         sb.append("\"INPUTS\" : [").append(NL);
-        sb.append("{").append(NL);
         sb.append(this.inputVariables.get(0).buildUsage()).append(NL);
         // buildUsage cannot close this tag.
-        sb.append("}").append(NL);
         // sb.append("{").append(NL);
         // sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
         // sb.append("\"STATIONARY\" : {").append(NL);

@@ -1,6 +1,6 @@
 package ir;
 
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
@@ -55,18 +55,16 @@ public class DispenseStatement extends BaseStatement {
         if (!this.properties.isEmpty()) {
             sb.append(",").append(NL);
             if (this.properties.containsKey(Property.VOLUME)) {
-                sb.append("\"VOLUME\" : {").append(NL);
-                sb.append("\"VALUE\" : ").append(this.properties.get(Property.VOLUME).getValue()).append(",").append(NL);
-                sb.append("\"UNITS\" : ").append("\"mL\"").append(NL);
-                sb.append("}").append(NL);
+                sb.append(this.properties.get(Property.VOLUME).buildUsage()).append(NL);
             }
         } else {
-            sb.append(",").append(NL);
+            /*sb.append(",").append(NL);
             sb.append("\"VOLUME\" : {").append(NL);
             sb.append("\"VALUE\" : ").append(10).append(",").append(NL);
             sb.append("\"UNITS\" : ").append("\"mL\"").append(NL);
             sb.append("}").append(NL);
-            sb.append("}").append(NL);
+            sb.append("}").append(NL);*/
+            logger.fatal("Volume property should never be empty!");
         }
         // closing variable
         sb.append("}").append(NL);
@@ -77,10 +75,8 @@ public class DispenseStatement extends BaseStatement {
         sb.append("],").append(NL);
         sb.append("\"OUTPUTS\" : [").append(NL);
         // Open the tag.
-        sb.append("{").append(NL);
-        sb.append(this.outputVariable.redeclare());
+        sb.append(this.outputVariables.get(0).redeclare());
         // Close the open tag.
-        sb.append("}").append(NL);
         sb.append("]").append(NL);
         // operation
         sb.append("}").append(NL);

@@ -1,33 +1,33 @@
-stationary antigen
-
 module fluorescence
+
+stationary antigen
 
 manifest urine_sample
 manifest fentanyl_conjugate
 manifest tmb_substrate
 manifest distilled_water
-manifest stop_reagents
+manifest stop_reagent
 
 functions
 
 instructions
 
-a = mix 20uL of urine_sample to antigen
+a = mix 20uL of urine_sample with antigen
 
-b = mix 100uL of fentanyl_conjugate to a for 60s
+b = mix 100uL of fentanyl_conjugate with a for 60s
 
-heat b at 23 C for 60m
+heat b at 23c for 60m
 
 drain b
 
 repeat 6 times {
-  z = mix 350uL of distilled_water to a for 45s
+  z = mix 350uL of distilled_water with a for 45s
   drain z
 }
 
-a = mix 100uL of tmb_substrate to a
+a = mix 100uL of tmb_substrate with a
 
-heat a at 23 C for 30m
+heat a at 23c for 30m
 
 a = mix a with 100uL of stop_reagent for 60s
 

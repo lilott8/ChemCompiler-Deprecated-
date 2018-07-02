@@ -1,6 +1,8 @@
 package typesystem.rules;
 
 import compilation.datastructures.node.InstructionNode;
+import shared.properties.Property;
+import shared.properties.Volume;
 import shared.variable.ManifestVariable;
 import shared.variable.Variable;
 import typesystem.Inference.InferenceType;
@@ -35,7 +37,7 @@ public class Output extends NodeAnalyzer {
         }
 
         for (substance.Property p : node.getInstruction().getProperties()) {
-            shared.variable.Property prop = new shared.variable.Property(Rule.createHash(p.toString()), "", p.getUnit().toString(), p.getQuantity());
+            Property prop = new Volume(Rule.createHash(p.toString()), p.getUnit().toString(), p.getQuantity());
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
             addProperty(prop);

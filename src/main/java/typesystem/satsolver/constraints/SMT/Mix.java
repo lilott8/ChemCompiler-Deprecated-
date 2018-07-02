@@ -10,7 +10,7 @@ import java.util.Set;
 import chemical.combinator.CombinerFactory;
 import chemical.epa.ChemTypes;
 import chemical.epa.EpaManager;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.SMTSolver;

@@ -4,73 +4,9 @@
 
 package parser.visitor;
 
-import java.util.Enumeration;
+import parser.ast.*;
 
-import parser.ast.AllowedArguments;
-import parser.ast.AllowedArgumentsRest;
-import parser.ast.AndExpression;
-import parser.ast.ArgumentList;
-import parser.ast.AssignmentStatement;
-import parser.ast.BSProgram;
-import parser.ast.BranchStatement;
-import parser.ast.Conditional;
-import parser.ast.ConditionalParenthesis;
-import parser.ast.DetectStatement;
-import parser.ast.DispenseStatement;
-import parser.ast.DivideExpression;
-import parser.ast.DrainStatement;
-import parser.ast.ElseBranchStatement;
-import parser.ast.ElseIfBranchStatement;
-import parser.ast.EqualityExpression;
-import parser.ast.FalseLiteral;
-import parser.ast.FormalParameter;
-import parser.ast.FormalParameterList;
-import parser.ast.FormalParameterRest;
-import parser.ast.FunctionDefinition;
-import parser.ast.FunctionInvoke;
-import parser.ast.GreaterThanEqualExpression;
-import parser.ast.GreaterThanExpression;
-import parser.ast.HeatStatement;
-import parser.ast.Identifier;
-import parser.ast.IntegerLiteral;
-import parser.ast.LessThanEqualExpression;
-import parser.ast.LessThanExpression;
-import parser.ast.Manifest;
-import parser.ast.MatLiteral;
-import parser.ast.MathParenthesis;
-import parser.ast.MathStatement;
-import parser.ast.MinusExpression;
-import parser.ast.MixStatement;
-import parser.ast.Module;
-import parser.ast.NatLiteral;
-import parser.ast.Node;
-import parser.ast.NodeList;
-import parser.ast.NodeListOptional;
-import parser.ast.NodeOptional;
-import parser.ast.NodeSequence;
-import parser.ast.NodeToken;
-import parser.ast.NotEqualExpression;
-import parser.ast.NotExpression;
-import parser.ast.OrExpression;
-import parser.ast.PlusExpression;
-import parser.ast.PrimaryExpression;
-import parser.ast.Primitives;
-import parser.ast.RealLiteral;
-import parser.ast.RepeatStatement;
-import parser.ast.RightOp;
-import parser.ast.SplitStatement;
-import parser.ast.Statements;
-import parser.ast.Stationary;
-import parser.ast.TempUnit;
-import parser.ast.TimeUnit;
-import parser.ast.TimesExpression;
-import parser.ast.TrueLiteral;
-import parser.ast.Type;
-import parser.ast.TypingList;
-import parser.ast.TypingRest;
-import parser.ast.VariableAlias;
-import parser.ast.VolumeUnit;
-import parser.ast.WhileStatement;
+import java.util.*;
 
 /**
  * Provides default methods which visit each node in the tree in depth-first
@@ -462,13 +398,15 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
     /**
      * f0 -> <IF>
      * f1 -> <LPAREN>
-     * f2 -> Conditional()
-     * f3 -> <RPAREN>
-     * f4 -> <LBRACE>
-     * f5 -> ( Statements() )+
-     * f6 -> <RBRACE>
-     * f7 -> ( ElseIfBranchStatement() )*
-     * f8 -> ( ElseBranchStatement() )?
+     * f2 -> Identifier()
+     * f3 -> Conditional()
+     * f4 -> Primitives()
+     * f5 -> <RPAREN>
+     * f6 -> <LBRACE>
+     * f7 -> ( Statements() )+
+     * f8 -> <RBRACE>
+     * f9 -> ( ElseIfBranchStatement() )*
+     * f10 -> ( ElseBranchStatement() )?
      */
     public R visit(BranchStatement n, A argu) {
         R _ret = null;
@@ -481,6 +419,8 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
         n.f6.accept(this, argu);
         n.f7.accept(this, argu);
         n.f8.accept(this, argu);
+        n.f9.accept(this, argu);
+        n.f10.accept(this, argu);
         return _ret;
     }
 
@@ -521,6 +461,20 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
     }
 
     /**
+     * f0 -> <LESSTHAN>
+     * | <LESSTHANEQUAL>
+     * | <NOTEQUAL>
+     * | <EQUALITY>
+     * | <GREATERTHAN>
+     * | <GREATERTHANEQUAL>
+     */
+    public R visit(Conditional n, A argu) {
+        R _ret = null;
+        n.f0.accept(this, argu);
+        return _ret;
+    }
+
+    /**
      * f0 -> ConditionalParenthesis()
      * | AndExpression()
      * | LessThanExpression()
@@ -531,7 +485,7 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
      * | EqualityExpression()
      * | OrExpression()
      */
-    public R visit(Conditional n, A argu) {
+    public R visit(TraditionalConditional n, A argu) {
         R _ret = null;
         n.f0.accept(this, argu);
         return _ret;
@@ -889,7 +843,7 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
 
     /**
      * f0 -> IntegerLiteral()
-     * f1 -> ( <SECOND> | <MILLISECOND> | <MICROSECOND> | <HOUR> | <MINUTE> )+
+     * f1 -> ( <SECOND> | <MILLISECOND> | <MICROSECOND> | <HOUR> | <MINUTE> )?
      */
     public R visit(TimeUnit n, A argu) {
         R _ret = null;
@@ -900,7 +854,7 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
 
     /**
      * f0 -> IntegerLiteral()
-     * f1 -> ( <LITRE> | <MILLILITRE> | <MICROLITRE> )+
+     * f1 -> ( <LITRE> | <MILLILITRE> | <MICROLITRE> )?
      */
     public R visit(VolumeUnit n, A argu) {
         R _ret = null;
@@ -911,7 +865,7 @@ public class GJDepthFirst<R, A> implements GJVisitor<R, A> {
 
     /**
      * f0 -> IntegerLiteral()
-     * f1 -> ( <CELSIUS> | <FAHRENHEIT> )+
+     * f1 -> ( <CELSIUS> | <FAHRENHEIT> )?
      */
     public R visit(TempUnit n, A argu) {
         R _ret = null;

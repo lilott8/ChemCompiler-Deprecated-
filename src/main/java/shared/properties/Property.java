@@ -1,4 +1,4 @@
-package shared.variable;
+package shared.properties;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +10,7 @@ import chemical.epa.ChemTypes;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class Property {
+public abstract class Property {
 
     public static final String TIME = "TIME";
     public static final String VOLUME = "VOLUME";
@@ -18,26 +18,23 @@ public class Property {
     public static final String QUANTITY = "QUANTITY";
     public static final String CONDITIONAL = "CONDITIONAL";
 
-    private String name;
-    private String units;
-    private float value;
-    private Set<ChemTypes> types = new HashSet<>();
-    private String opType;
+    protected String name;
+    protected String units;
+    protected float value;
+    protected Set<ChemTypes> types = new HashSet<>();
 
-    public Property(String name, String opType, String units, float value) {
+    public Property(String name, String units, float value) {
         this.name = name;
         this.units = units;
         this.value = value;
-        this.opType = opType;
         this.types.add(ChemTypes.NAT);
         this.types.add(ChemTypes.REAL);
     }
 
-    public Property(String name, String opType, String units, float value, Set<ChemTypes> types) {
+    public Property(String name, String units, float value, Set<ChemTypes> types) {
         this.name = name;
         this.units = units;
         this.value = value;
-        this.opType = opType;
         this.types.addAll(types);
     }
 
@@ -51,10 +48,6 @@ public class Property {
 
     public Set<ChemTypes> getTypes() {
         return types;
-    }
-
-    public String getOpType() {
-        return opType;
     }
 
     public void addTypingConstraint(ChemTypes type) {
@@ -73,12 +66,13 @@ public class Property {
         this.units = units;
     }
 
-    public String buildDeclaration() {
-        return null;
-    }
+    public abstract String buildDeclaration();
 
-    public String buildUsage() {
-        StringBuilder sb = new StringBuilder();
-        return sb.toString();
+    public abstract String buildUsage();
+
+    protected String getUnitsAndValue() {
+        String result = "\"VALUE\":" + this.value + "," + System.lineSeparator();
+        result += "\"UNITS\": \"" + this.units + "\"" + System.lineSeparator();
+        return result;
     }
 }

@@ -14,6 +14,7 @@ import ir.Invoke;
 import ir.InvokeStatement;
 import parser.ast.AssignmentStatement;
 import parser.ast.BranchStatement;
+import parser.ast.Conditional;
 import parser.ast.DetectStatement;
 import parser.ast.DispenseStatement;
 import parser.ast.DrainStatement;
@@ -36,9 +37,11 @@ import parser.ast.Stationary;
 import parser.ast.TimesExpression;
 import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
+import shared.properties.Volume;
 import shared.variable.AssignedVariable;
 import shared.variable.ManifestVariable;
 import shared.variable.Method;
+import shared.properties.Property;
 import shared.variable.SensorVariable;
 import shared.variable.StationaryVariable;
 import shared.variable.Variable;
@@ -110,6 +113,7 @@ public class BSSymbolTable extends BSVisitor {
         Variable f2 = new StationaryVariable(this.name);
         f2.addScope(SymbolTable.INSTANCE.getCurrentScope());
         f2.addTypingConstraints(this.getTypingConstraints(f2));
+        f2.setProperty(new Volume("unknown", "L", 10000));
         SymbolTable.INSTANCE.addLocal(f2);
         SymbolTable.INSTANCE.addInput(f2);
         addVariable(f2);
@@ -142,6 +146,7 @@ public class BSSymbolTable extends BSVisitor {
         Variable f2 = new ManifestVariable(this.name);
         f2.addScope(SymbolTable.INSTANCE.getCurrentScope());
         f2.addTypingConstraints(this.getTypingConstraints(f2));
+        f2.setProperty(new Volume("unknown", "L", 10000));
         addVariable(f2);
         // End type checking.
 
@@ -163,9 +168,6 @@ public class BSSymbolTable extends BSVisitor {
      */
     @Override
     public BSVisitor visit(AssignmentStatement n) {
-        // Get the expression done before we get the identifier.
-        // That way we can set the appropriate instruction.
-        n.f3.accept(this);
         // Once we have established the expression,
         // We can identify the identifier.
         n.f1.accept(this);
@@ -184,9 +186,14 @@ public class BSSymbolTable extends BSVisitor {
         } else {
             f1.addTypingConstraints(this.getTypingConstraints(f1));
         }
+        this.assignTo = f1;
         addVariable(f1);
         SymbolTable.INSTANCE.addLocal(f1);
         this.types.clear();
+
+        // Get the expression done before we get the identifier.
+        // That way we can set the appropriate instruction.
+        n.f3.accept(this);
         return this;
     }
 
@@ -384,15 +391,30 @@ public class BSSymbolTable extends BSVisitor {
     }
 
     /**
+     * f0 -> <LESSTHAN>
+     * | <LESSTHANEQUAL>
+     * | <NOTEQUAL>
+     * | <EQUALITY>
+     * | <GREATERTHAN>
+     * | <GREATERTHANEQUAL>
+     */
+    @Override
+    public BSVisitor visit(Conditional n) {
+        return super.visit(n);
+    }
+
+    /**
      * f0 -> <IF>
      * f1 -> <LPAREN>
-     * f2 -> Expression()
-     * f3 -> <RPAREN>
-     * f4 -> <LBRACE>
-     * f5 -> ( Statement() )+
-     * f6 -> <RBRACE>
-     * f7 -> ( ElseIfStatement() )*
-     * f8 -> ( ElseStatement() )?
+     * f2 -> Identifier()
+     * f3 -> Conditional()
+     * f4 -> Primitives()
+     * f5 -> <RPAREN>
+     * f6 -> <LBRACE>
+     * f7 -> ( Statements() )+
+     * f8 -> <RBRACE>
+     * f9 -> ( ElseIfBranchStatement() )*
+     * f10 -> ( ElseBranchStatement() )?
      */
     @Override
     public BSVisitor visit(BranchStatement n) {
@@ -416,12 +438,12 @@ public class BSSymbolTable extends BSVisitor {
         // Return back to old scoping.
         SymbolTable.INSTANCE.endScope();
 
-        if (n.f7.present()) {
-            n.f7.accept(this);
+        if (n.f9.present()) {
+            n.f9.accept(this);
         }
 
-        if (n.f8.present()) {
-            n.f8.accept(this);
+        if (n.f10.present()) {
+            n.f10.accept(this);
         }
 
         return this;
@@ -519,12 +541,19 @@ public class BSSymbolTable extends BSVisitor {
      */
     @Override
     public BSVisitor visit(SplitStatement n) {
+        // logger.info(this.assignTo);
+        String assigned = this.assignTo.getName();
         //super.visit(n);
         n.f1.accept(this);
         checkForOrCreateVariable();
 
+        Set<ChemTypes> types = new HashSet<ChemTypes>(SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope()).getTypes());
+
         n.f3.accept(this);
-        // Use the generated name for the integer.
+        for (int x = 0; x <= this.integerLiteral; x++) {
+            this.name = assigned + x;
+            checkForOrCreateVariable(types);
+        }
 
         return this;
     }

@@ -1,7 +1,7 @@
 package ir;
 
 
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
@@ -54,35 +54,14 @@ public class HeatStatement extends BaseNop {
         // The Variable.
         // sb.append("{").append(NL);
         // sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
-        sb.append("{").append(NL);
-        sb.append(this.inputVariables.get(0).buildUsage());
-        // BuildUsage cannot close this.
-        sb.append("}, ").append(NL);
-        //sb.append("\"VARIABLE\" : ").append(NL);
-        //sb.append("\"").append(this.inputVariables.get(0).getName()).append("\"").append(NL);
-
-        // Close the Variable.
-        //sb.append("},").append(NL);
-
+        sb.append(this.inputVariables.get(0).buildUsage()).append(",").append(NL);
         // The Temperature.
-        sb.append("{").append(NL);
-        sb.append("\"INPUT_TYPE\" : \"PROPERTY\",").append(NL);
-        sb.append("\"TEMPERATURE\" : ");
-        // Temp object.
-        sb.append("{").append(NL);
-        // Property temp = (Property) this.properties.get(Property.TEMP);
-        // sb.append("\"VALUE\" : ").append(temp.getValue()).append(", ").append(NL);
-        // sb.append("\"UNITS\" : ").append("\"").append(temp.getUnits()).append("\"").append(NL);
+        sb.append(this.properties.get(Property.TEMP).buildUsage());
 
-        // Property temp = (Property) this.properties.get(Property.TEMP);
-        sb.append("\"VALUE\" : ").append(30).append(", ").append(NL);
-        sb.append("\"UNITS\" : ").append("\"").append("C").append("\"").append(NL);
-        // Close temp object.
-        sb.append("}").append(NL);
-        // close variable.
-        sb.append("}").append(NL);
-
-        sb.append(this.propertyToJson(Property.TIME));
+        if (this.properties.containsKey(Property.TIME)) {
+            sb.append(",");
+            sb.append(this.properties.get(Property.TIME).buildUsage());
+        }
 
         sb.append("],").append(NL);
         sb.append("\"OUTPUTS\" : []").append(NL);

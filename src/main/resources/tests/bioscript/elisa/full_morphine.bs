@@ -1,8 +1,8 @@
+module fluorescence
+
 stationary Antigen1
 stationary Antigen2
 stationary Antigen3
-
-module fluorescence
 
 manifest morphine_conjugate
 manifest negative_standard
@@ -16,59 +16,49 @@ functions
 
 instructions
 
-# Step 2
 a = mix 20uL of negative_standard with Antigen1
 b = mix 20uL of positive_standard with Antigen2
-c = mix 20uL of diluted_sample with Antigen3
+cc = mix 20uL of diluted_sample with Antigen3
 
-# Step 3
 a = mix 100uL of morphine_conjugate with a for 60s
 b = mix 100uL of morphine_conjugate with b for 60s
-c = mix 100uL of morphine_conjugate with c for 60s
+cc = mix 100uL of morphine_conjugate with cc for 60s
 
-# Step 5
-heat a at 23 C for 60m
-heat b at 23 C for 60m
-heat c at 23 C for 60m
+heat a at 23c for 60m
+heat b at 23c for 60m
+heat cc at 23c for 60m
 
-# Step 6
 drain a
 drain b
-drain c
+drain cc
 
 repeat 6 times {
-  a = mix 350uL of distilled_water with Antigen1 for 45s
-  b = mix 350uL of distilled_water with Antigen2 for 45s
-  c = mix 350uL of distilled_water with Antigen3 for 45s
+  aa = mix 350uL of distilled_water with Antigen1 for 45s
+  bb = mix 350uL of distilled_water with Antigen2 for 45s
+  cc = mix 350uL of distilled_water with Antigen3 for 45s
 
-  Drain a
-  Drain b
-  Drain c
+  drain aa
+  drain bb
+  drain cc
 
 }
-# Step 7 Dry...
 
-# Step 8
-a = mix 100uL of tmb_substrate with Antigen1
-b = mix 100uL of tmb_substrate with Antigen2
-c = mix 100uL of tmb_substrate with Antigen3
+aa = mix 100uL of tmb_substrate with Antigen1
+bb = mix 100uL of tmb_substrate with Antigen2
+cc = mix 100uL of tmb_substrate with Antigen3
 
-# Step 9
-heat a at 23 C for 30m
-heat b at 23 C for 30m
-heat c at 23 C for 30m
+heat aa at 23c for 30m
+heat bb at 23c for 30m
+heat cc at 23c for 30m
 
-# Step 10
-a = mix stop_reagent with 100uL of a for 60s
-b = mix stop_reagent with 100uL of b for 60s
-c = mix stop_reagent with 100uL of c for 60s
+aa = mix stop_reagent with 100uL of aa for 60s
+bb = mix stop_reagent with 100uL of bb for 60s
+cc = mix stop_reagent with 100uL of cc for 60s
 
-# Step 11
-negative_reading = detect fluorescence on a for 30m
-positive_reading = detect fluorescence on b for 30m
-sample_reading = detect fluorescence on c for 30m
+negative_reading = detect fluorescence on aa for 30m
+positive_reading = detect fluorescence on bb for 30m
+sample_reading = detect fluorescence on cc for 30m
 
-# End
-Drain a
-Drain b
-Drain c
+drain aa
+drain bb
+drain cc

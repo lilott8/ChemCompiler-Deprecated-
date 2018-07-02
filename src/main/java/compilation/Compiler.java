@@ -168,6 +168,7 @@ public class Compiler {
 
                     DependencySlicedBasicBlock.getInOutSets(this.SSI);
                     experimentControlFlowGraphs.add(this.SSI);
+                    logger.fatal(this.SSI);
                 }
             }
             long finish = System.nanoTime() - start;

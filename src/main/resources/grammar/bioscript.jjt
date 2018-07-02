@@ -336,7 +336,7 @@ void WhileStatement() :
 void BranchStatement() :
 {}
 {
-    <IF> <LPAREN> Conditional() <RPAREN> <LBRACE> (Statements())+ <RBRACE>
+    <IF> <LPAREN> Identifier() Conditional() Primitives() <RPAREN> <LBRACE> (Statements())+ <RBRACE>
     ( ElseIfBranchStatement() )*
     ( ElseBranchStatement() ) ?
 }
@@ -354,6 +354,12 @@ void ElseBranchStatement() :
 }
 
 void Conditional() :
+{}
+{
+    <LESSTHAN> | <LESSTHANEQUAL> | <NOTEQUAL> | <EQUALITY> | <GREATERTHAN> | <GREATERTHANEQUAL>
+}
+
+void TraditionalConditional() :
 {}
 {
     LOOKAHEAD( <LPAREN> )
