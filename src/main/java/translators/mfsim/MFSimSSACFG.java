@@ -3,6 +3,7 @@ package translators.mfsim;
 import com.google.common.base.CharMatcher;
 import compilation.datastructures.ssa.PHIInstruction;
 import compilation.datastructures.ssi.SigmaInstruction;
+import executable.instructions.Instruction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,6 +23,8 @@ import executable.instructions.Output;
 import translators.mfsim.operationnode.MFSimSSANode;
 import translators.mfsim.operationnode.MFSimSSATransferIn;
 import translators.mfsim.operationnode.MFSimSSATransferOut;
+import variable.Instance;
+import variable.Variable;
 
 /**
  * Created by chriscurtis on 10/28/16.
@@ -60,8 +63,19 @@ public class MFSimSSACFG {
             List<InstructionNode> instructions = controlFlowGraph.getBasicBlock(edge.getSource()).getInstructions();
 
             if (!(containsLegitInstructions(instructions)) || instructions.get(instructions.size()-1).getInstruction() instanceof Output) {
-                e.remove();
-                continue;
+                boolean stationary = false;
+                InstructionNode node = instructions.get(instructions.size()-1);
+                if (node.getInstruction() instanceof Output) {
+                    for (Variable var : instructions.get(instructions.size() - 1).getInstruction().getInputs().values()) {
+                        if (var instanceof Instance && ((Instance) var).getIsStationary()) {
+                            stationary = true;
+                        }
+                    }
+                }
+                if (!stationary) {
+                    e.remove();
+                    continue;
+                }
             }
 
             if (!(containsLegitInstructions(controlFlowGraph.getBasicBlock(edge.getDestination()).getInstructions()))) {
@@ -134,6 +148,14 @@ public class MFSimSSACFG {
 
             conditionalGroup.add(edge);
             if (instructions.get(instructions.size() - 1).getInstruction() instanceof Output) {
+                boolean stationary = false;
+                for (Variable var : instructions.get(instructions.size()-1).getInstruction().getInputs().values()) {
+                    if (var instanceof Instance && ((Instance) var).getIsStationary()) {
+                        stationary = true;
+                    }
+                }
+                if (stationary)
+                    conditionalGroups.put(edge.getSource(), conditionalGroup);
                 // do not add group
             } else
                 conditionalGroups.put(edge.getSource(), conditionalGroup);

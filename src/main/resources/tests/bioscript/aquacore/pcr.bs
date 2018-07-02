@@ -2,6 +2,10 @@ module fluorescence
 
 manifest pcr_mixture
 
+functions
+
+instructions
+
 a = dispense pcr_mixture
 
 heat a at 95 C for 5s

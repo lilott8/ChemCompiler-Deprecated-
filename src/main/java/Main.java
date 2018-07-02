@@ -8,7 +8,6 @@ import java.util.List;
 
 import cli.CliWrapper;
 //import cli.DBArgs;
-import cli.DBArgs;
 import compilation.Compiler;
 import config.Config;
 import config.ConfigFactory;
@@ -30,18 +29,12 @@ public class Main {
             logger.info("You are in debug mode");
         }
         // Run compilation.
-        Compiler compiler = new Compiler(config);
-        compiler.compile();
-        //compiler.runAllOps();
-        //logger.debug(compiler.getControlFlow());
-        // runner();
-
         try {
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/neurotransmitter_sensing.json"); /* split only to one node */
 
-
             /* confirmed parsing correctly */
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/biocoder/pcr_droplet_replenishment.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/contrived/pcr_probabilistic.json");
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/pcr.json");
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/glucose_detection.json");
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/image_probe_synth.json");
@@ -52,11 +45,10 @@ public class Main {
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/mustard_gas.json");
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/safety_zone.json");
             /* elisa assays */
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/dilution.json");
-
-
-
+            BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/dilution.json");
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/broad_spectrum_opiate.json");
+
+
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/ciprofloxacin.json");
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/diazepam.json");
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/fentanyl.json");
@@ -65,11 +57,6 @@ public class Main {
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/morphine.json");
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/oxycodone.json");
 
-            /* extra */
-
-            BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/contrived/pcr_probabilistic.json");
-
-
             /* opiate immunoassay positive/false */
 
 
@@ -77,12 +64,33 @@ public class Main {
         catch (FileNotFoundException e) {
             logger.error(e.getMessage());
         }
-        // Compiler compiler = new Compiler(config);
-        // compiler.compile(1);
+        Compiler compiler = new Compiler(config);
+        compiler.compile(1);
     }
 
 //    public static void main(String[] args) {
 //        // Build the command line parser
+//
+//
+//        /*test*/
+//        //aiha1.bs
+//        /* 
+//          aiha2.bs
+//          aiha3.bs
+//          pcr_droplet_replenishment.bs
+//          probabilisitc_pcr.bs
+//          pcr.bs
+//          glucose_detection.bs
+//          image_probe_synthesis.bs
+//          mustard_gas.bs
+//          safety_zone.bs
+//          dilution.bs
+//          ....react assays....
+//          broad_spectrum_opiate.bs
+//          ....
+//
+//         */
+//
 //        CliWrapper cli = new CliWrapper();
 //        cli.parseCommandLine(args);
 //
@@ -201,30 +209,30 @@ public class Main {
         // c = compile.get(33);
 
         //for (String c : compile) {
-        StatisticCombinator.writer.push("=====================================");
-        StatisticCombinator.writer.push(c);
-        long inferenceTime, compileTime, beginTime = 0;
-        logger.info("Running: " + c);
-        String args = String.format("-c %s -ts error " +
-                "%s -d -nf -epadefs src/main/resources/epa.xml -drm -classify 4 -o /Users/jason/Desktop/\n", c, DBArgs.getDBArgs());
-        cli = new CliWrapper();
-        cli.parseCommandLine(StringUtils.split(args));
-
-        compiler = new Compiler(ConfigFactory.getConfig());
-        beginTime = System.nanoTime();
-        compiler.compile();
-        compileTime = System.nanoTime() - beginTime;
-
-        beginTime = System.nanoTime();
-        // compiler.runAllOps();
-        inferenceTime = System.nanoTime() - beginTime;
-
-        StatisticCombinator.writer.push("compile time: " + compileTime);
-        StatisticCombinator.writer.push("typesystem time: " + inferenceTime);
-
-        StatisticCombinator.writer.push("=====================================");
-        StatisticCombinator.writer.flush();
-        //}
-        StatisticCombinator.writer.sendDoneSignal();
+//        StatisticCombinator.writer.push("=====================================");
+//        StatisticCombinator.writer.push(c);
+//        long inferenceTime, compileTime, beginTime = 0;
+//        logger.info("Running: " + c);
+//        String args = String.format("-c %s -ts error " +
+//                "%s -d -nf -epadefs src/main/resources/epa.xml -drm -classify 4 -o /Users/jason/Desktop/\n", c, DBArgs.getDBArgs());
+//        cli = new CliWrapper();
+//        cli.parseCommandLine(StringUtils.split(args));
+//
+//        compiler = new Compiler(ConfigFactory.getConfig());
+//        beginTime = System.nanoTime();
+//        compiler.compile();
+//        compileTime = System.nanoTime() - beginTime;
+//
+//        beginTime = System.nanoTime();
+//        // compiler.runAllOps();
+//        inferenceTime = System.nanoTime() - beginTime;
+//
+//        StatisticCombinator.writer.push("compile time: " + compileTime);
+//        StatisticCombinator.writer.push("typesystem time: " + inferenceTime);
+//
+//        StatisticCombinator.writer.push("=====================================");
+//        StatisticCombinator.writer.flush();
+//        //}
+//        StatisticCombinator.writer.sendDoneSignal();
     }
 }
