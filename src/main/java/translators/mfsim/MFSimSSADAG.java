@@ -4,12 +4,7 @@ import compilation.datastructures.basicblock.DependencySlicedBasicBlock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import compilation.datastructures.InstructionEdge;
 import compilation.datastructures.basicblock.BasicBlock;
@@ -29,6 +24,7 @@ import executable.instructions.Store;
 import substance.Chemical;
 import translators.mfsim.operationnode.*;
 import variable.Instance;
+import variable.Variable;
 
 /**
  * Created by chriscurtis on 10/28/16.
@@ -67,7 +63,7 @@ public class MFSimSSADAG {
 
         // id, def
         // if def is never used, drain
-        ArrayList<InstructionNode> needToDrain = new ArrayList<>();
+        HashSet<InstructionNode> needToDrain = new HashSet<>();
 
         for (Integer numInstructions = 0; numInstructions < bb.getInstructions().size(); numInstructions++) {
             InstructionNode instructionNode = bb.getInstructions().get(numInstructions);
@@ -82,7 +78,17 @@ public class MFSimSSADAG {
             MFSimSSANode n = null;
             Instruction instruction = instructionNode.getInstruction();
             if (instruction != null) {
-                if (instruction instanceof Combine) {
+                boolean stationaryInput = false;
+                for (Variable v : instruction.getInputs().values()) {
+                    if (v instanceof Instance && ((Instance) v).getIsStationary()) {
+                        stationaryInput = true;
+                        n = new MFSimSSAReact(uniqueIdGen.getNextID(), instruction, (Instance) v);
+                        break;
+                    }
+                }
+                if (stationaryInput) {
+                    // already created
+                } else if (instruction instanceof Combine) {
                     n = new MFSimSSAMix(uniqueIdGen.getNextID(), (Combine) instruction);
                 } else if (instruction instanceof Detect) {
                     n = new MFSimSSADetect(uniqueIdGen.getNextID(), (Detect) instruction);
@@ -95,7 +101,7 @@ public class MFSimSSADAG {
                 } else if (instruction instanceof Output) {
                     n = new MFSimSSAOutput(uniqueIdGen.getNextID(), (Output) instruction);
                 } else if (instruction instanceof React) {
-                    n = new MFSimSSAReact(uniqueIdGen.getNextID(), (React) instruction);
+                    //n = new MFSimSSAReact(uniqueIdGen.getNextID(), (React) instruction);
                     //n = new MFSimSSAHeat(uniqueIdGen.getNextID(), (React) instruction);
                     //n = new MFSimSSACool(uniqueIdGen.getNextID(), (React) instruction);
                 } else if (instruction instanceof Dispense) {
@@ -112,51 +118,130 @@ public class MFSimSSADAG {
             }
 
             for (String dispense : instructionNode.getDispenseSymbols()) {
+//                boolean dontDispense = false;
+//                boolean stationary = false;
                 if (instructionNode.getInstruction().getInputs().get(dispense) instanceof Instance
-                        && ((Instance) instructionNode.getInstruction().getInputs().get(dispense)).getIsStationary())
+                        && ((Instance) instructionNode.getInstruction().getInputs().get(dispense)).getIsStationary()) {
                     continue;
+//                    stationary = true;
+//                    if (!(instructionNode.getInstruction() instanceof Combine)
+//                            && !(instructionNode.getInstruction() instanceof Output)
+//                            && !(instructionNode.getInstruction() instanceof Heat))
+//                        dontDispense = true;
+                }
 
                 // get dispense amount
                 Integer amount = 0;  //template amount
                 Boolean changed = false;
                 for (String input : instruction.getInputs().keySet()) {
-                    if (variableStack.containsKey(input)) {
-                        if (instruction.getInputs().get(input) instanceof Instance) {
-                            if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
-                                if (((Instance) instruction.getInputs().get(input)).getSubstance().getVolume() == null) {
-                                    amount = 10;
-                                    logger.warn("Using a default volume.");
-                                } else {
-                                    amount = (int) ((Instance) instruction.getInputs().get(input)).getSubstance().getVolume().getQuantity();
+                    if (input.equals(dispense)) {
+                        if (variableStack.containsKey(input)) {
+                            if (instruction.getInputs().get(input) instanceof Instance) {
+                                if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
+                                    if (((Instance) instruction.getInputs().get(input)).getSubstance().getVolume() == null) {
+                                        amount = 10;
+                                        logger.warn("Using a default volume.");
+                                    } else {
+                                        amount = (int) ((Instance) instruction.getInputs().get(input)).getSubstance().getVolume().getQuantity();
+                                    }
+                                    changed = true;
                                 }
-                                changed = true;
                             }
                         }
                     }
-
                 }
                 if (!changed) {
                     logger.warn("Setting template volume amount for 10uL");
                     amount = 10;
                 }
+//                if (dontDispense)
+//                    continue;
                 MFSimSSADispense dis = new MFSimSSADispense(this.uniqueIdGen.getNextID(), dispense, dispense, amount);
-                if (n != null)
+                if (n != null) {
+//                    boolean already = false;
+//                    if (stationary) {
+//                        for (MFSimSSADispense d : this.dispense) {
+//                            if (d.getName().equals(dispense)) {
+//                                already = true;
+//                                dis = d;
+//                            }
+//                        }
+//                    }
+//                    if (!already) {
+//                        dis.addSuccessor(n.getID());
+//                        this.dispense.add(dis);
+//                    }
+//                    else {
+//                        dis.addSuccessor(n.getID());
+//                    }
                     dis.addSuccessor(n.getID());
+                    this.dispense.add(dis);
+                }
                 else
                     node.put(instructionNode.getId(), dis);
-                if (n != null)
-                    this.dispense.add(dis);
+                //if (n != null)
+
             }
             if (n != null)
                 node.put(instructionNode.getId(), n);
 
-            for (InstructionNode successor : instructionNode.getSucc()) {
+            if (n instanceof MFSimSSAOutput) {
+                for (Variable input : instructionNode.getInstruction().getInputs().values()) {
+                    if (input instanceof Instance && ((Instance) input).getIsStationary())
+                            node.remove(instructionNode.getId());
+                }
+                continue;
+            }
+
+            ArrayList<InstructionEdge> stationaryEdges = new ArrayList<>();
+//            for (InstructionEdge edge : bb.getEdges()) {
+//                if (edge.getSource().equals(instructionNode.getId()))
+//                    stationaryEdges.add(edge);
+//            }
+            for (InstructionNode succ : instructionNode.getSucc()) {
+                if (getInstructionNodeByID(bb, succ.getId()) != null)
+                    stationaryEdges.add(new InstructionEdge(instructionNode.getId(), succ.getId()));
+            }
+
+            for (InstructionEdge stedge : stationaryEdges) {
+            //for (InstructionNode successor : instructionNode.getSucc()) {
+                InstructionNode successor = getInstructionNodeByID(bb, stedge.getDestination());
                 boolean outputUsed = false;
+                boolean isStationary = false;
+                boolean inputUsed = false;
                 for (String output : instructionNode.getOutputSymbols()) {
                     if (successor.getInputSymbols().contains(output))
                         outputUsed = true;
                 }
-                if (!outputUsed) {
+
+
+
+                for (String input : instructionNode.getInputSymbols()) {
+                    if (successor.getInputSymbols().contains(input)) {
+                        inputUsed = true;
+                    }
+                }
+
+                if ((!outputUsed && !inputUsed) || isStationary) {
+//                    instructionNode.getSucc().remove(successor);  /* is this doing anything */
+//                    ListIterator<InstructionEdge> edgeListIterator = bb.getEdges().listIterator();
+//                    while (edgeListIterator.hasNext()) {
+//                        InstructionEdge edge = edgeListIterator.next();
+//                        if (edge.getSource().equals(instructionNode.getId()) && edge.getDestination().equals(successor.getId())) {
+//                            edgeListIterator.remove();
+//                            break;
+//                        }
+//                    }
+                    if (!isStationary && (!outputUsed && !inputUsed)) {
+                        ListIterator<InstructionEdge> edgeListIterator = bb.getEdges().listIterator();
+                        while (edgeListIterator.hasNext()) {
+                            InstructionEdge edge = edgeListIterator.next();
+                            if (edge.getSource().equals(instructionNode.getId()) && edge.getDestination().equals(successor.getId())) {
+                                edgeListIterator.remove();
+                                break;
+                            }
+                        }
+                    }
                     needToDrain.add(instructionNode);
                 }
             }
@@ -178,7 +263,7 @@ public class MFSimSSADAG {
             }
             MFSimSSATransferOut transOut = new MFSimSSATransferOut(uniqueIdGen.getNextID(), transferOutDroplet, transferOutDroplet);
             if (this.transOut.get(transOut.getID()) == null) {
-                this.transOut.put(transOut.getID(), new ArrayList<MFSimSSATransferOut>());
+                this.transOut.put(transOut.getID(), new ArrayList<>());
             }
             this.transOut.get(transOut.getID()).add(transOut);
         }
@@ -221,11 +306,11 @@ public class MFSimSSADAG {
                         if (instruction.getId() < 0)
                             continue;
 
-                        //find first node the transferred in droplet it used in
+                        //find first node the transferred in droplet is used in
 
                         if (instruction.getUse().contains(in.getTransferedSymbol()))
                             in.addSuccessor(node.get(instruction.getId()).getID());
-                        else
+                        else if (node.containsKey(in.getID()))
                             in.addSuccessor(node.get(in.getID()).getID());
                         break;
                     }

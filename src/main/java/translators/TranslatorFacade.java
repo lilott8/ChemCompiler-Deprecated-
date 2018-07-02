@@ -37,7 +37,8 @@ public class TranslatorFacade implements Facade {
     public void start() {
         for (Map.Entry<TRANSLATORS, Translator> t : this.translators.entrySet()) {
             logger.info("Running transform: " + t.getKey() + ".");
-            t.getValue().runTranslation(this.controlFlowGraph).toFile(this.config.getOutputDir() + this.controlFlowGraph.getID());
+            t.getValue().runTranslation(this.controlFlowGraph).toFile(this.config.getOutputDir()
+                    + this.config.getOutputDir().substring(0, this.config.getOutputDir().lastIndexOf("/")));
             logger.info("Done running: " + t.getKey() + " transform.");
 
         }

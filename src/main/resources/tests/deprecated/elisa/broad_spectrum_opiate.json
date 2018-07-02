@@ -48,9 +48,9 @@
     "INSTRUCTIONS" : [
       {
         "OPERATION" : {
-          "NAME" : "REACT",
+          "NAME" : "MIX",
           "ID" : "1294012199298527743",
-          "CLASSIFICATION" : "REACT",
+          "CLASSIFICATION" : "MIX",
           "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
@@ -77,9 +77,9 @@
       },
       {
         "OPERATION" : {
-          "NAME" : "REACT",
+          "NAME" : "MIX",
           "ID" : "1294012199298527843",
-          "CLASSIFICATION" : "REACT",
+          "CLASSIFICATION" : "MIX",
           "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
@@ -106,9 +106,9 @@
       },
       {
         "OPERATION" : {
-          "NAME" : "REACT",
+          "NAME" : "MIX",
           "ID" : "1294012199298527953",
-          "CLASSIFICATION" : "REACT",
+          "CLASSIFICATION" : "MIX",
           "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
@@ -135,9 +135,9 @@
       },
       {
         "OPERATION" : {
-          "NAME" : "REACT",
+          "NAME" : "MIX",
           "ID" : "1294012199298528089",
-          "CLASSIFICATION" : "REACT",
+          "CLASSIFICATION" : "MIX",
           "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
@@ -164,9 +164,9 @@
       },
       {
         "OPERATION" : {
-          "NAME" : "REACT",
+          "NAME" : "MIX",
           "ID" : "1294012199298528251",
-          "CLASSIFICATION" : "REACT",
+          "CLASSIFICATION" : "MIX",
           "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
