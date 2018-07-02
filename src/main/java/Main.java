@@ -88,8 +88,8 @@ public class Main {
 //        /*
 //          mustard_gas.bs
 //          safety_zone.bs
-//          pcr.bs
-//          probabilisitc_pcr.bs
+//                  pcr.bs
+//                  probabilisitc_pcr.bs
 //          glucose_detection.bs
 //          image_probe_synthesis.bs
 //          pcr_droplet_replenishment.bs

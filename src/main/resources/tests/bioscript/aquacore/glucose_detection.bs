@@ -1,7 +1,6 @@
 module fluorescence
 
-stationary reagent
-
+manifest reagent
 manifest glucose
 manifest distilled_water
 manifest Sample
