@@ -37,7 +37,14 @@ public class ManifestVariable<Value> extends Variable<Value> {
 
     @Override
     public String buildDrain() {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("{").append(NL);
+        sb.append("\"INPUT_TYPE\":\"VARIABLE\",").append(NL);
+        sb.append("\"VARIABLE\":").append("{").append(NL);
+        sb.append("\"NAME\":\"").append(this.name).append("\"").append(NL);
+        sb.append("}").append(NL);
+        sb.append("}").append(NL);
+        return sb.toString();
     }
 
     @Override
