@@ -140,7 +140,6 @@ public class MFSimSSADAG {
                                 if (((Instance) instruction.getInputs().get(input)).getSubstance() instanceof Chemical) {
                                     if (((Instance) instruction.getInputs().get(input)).getSubstance().getVolume() == null) {
                                         amount = 10;
-                                        logger.warn("Using a default volume.");
                                     } else {
                                         amount = (int) ((Instance) instruction.getInputs().get(input)).getSubstance().getVolume().getQuantity();
                                     }
@@ -151,7 +150,6 @@ public class MFSimSSADAG {
                     }
                 }
                 if (!changed) {
-                    logger.warn("Setting template volume amount for 10uL");
                     amount = 10;
                 }
 //                if (dontDispense)
