@@ -8,7 +8,7 @@ import chemical.epa.EpaManager;
 import compilation.datastructures.node.InstructionNode;
 import shared.properties.Property;
 import shared.properties.Time;
-import shared.variable.AssignedVariable;
+import shared.variable.NamedVariable;
 import shared.variable.ManifestVariable;
 import shared.variable.Variable;
 import typesystem.Inference.InferenceType;
@@ -41,7 +41,7 @@ public class Mix extends NodeAnalyzer {
         Variable input = null;
         // Right hand side values (a = mix input with input)
         for (String in : node.getUse()) {
-            input = new AssignedVariable(in);
+            input = new NamedVariable(in);
             // If we have seen this before, we can just pull the old types.
             if (variables.containsKey(input.getVarName())) {
                 input.addTypingConstraints(variables.get(input.getVarName()).getTypingConstraints());

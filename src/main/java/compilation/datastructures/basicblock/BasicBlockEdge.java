@@ -32,6 +32,7 @@ public class BasicBlockEdge implements Serializable {
     private int id;
 
     public BasicBlockEdge(Integer source, Integer destination, String condition) {
+
         this.source = source;
         this.destination = destination;
         this.condition = condition;

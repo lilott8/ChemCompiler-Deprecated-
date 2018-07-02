@@ -1,5 +1,8 @@
 package shared.variable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
@@ -12,25 +15,27 @@ import static ir.Statement.NL;
  * @since: 0.1
  * @project: ChemicalCompiler
  */
-public class AssignedVariable<Value> extends Variable<Value> {
+public class NamedVariable<Value> extends Variable<Value> {
+
+    public static final Logger logger = LogManager.getLogger(NamedVariable.class);
 
     {
         this.isVariable = true;
     }
 
-    public AssignedVariable(String name) {
+    public NamedVariable(String name) {
         super(name);
     }
 
-    public AssignedVariable(String name, Set<ChemTypes> type) {
+    public NamedVariable(String name, Set<ChemTypes> type) {
         super(name, type);
     }
 
-    public AssignedVariable(String name, Scope scope) {
+    public NamedVariable(String name, Scope scope) {
         super(name, scope);
     }
 
-    public AssignedVariable(String name, Set<ChemTypes> type, Scope scope) {
+    public NamedVariable(String name, Set<ChemTypes> type, Scope scope) {
         super(name, type, scope);
     }
 
@@ -55,8 +60,15 @@ public class AssignedVariable<Value> extends Variable<Value> {
         StringBuilder sb = new StringBuilder();
         sb.append("{").append(NL);
         sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
+        sb.append("\"CHEMICAL\":").append("{").append(NL);
         sb.append("\"VARIABLE\" : {").append(NL);
         sb.append("\"NAME\" : \"").append(this.name).append("\"").append(NL);
+        if (this.property != null) {
+            sb.append("},").append(NL);
+            sb.append(this.property.buildUsage()).append(NL);
+        } else {
+            sb.append("}").append(NL);
+        }
         sb.append("}").append(NL);
         sb.append("}").append(NL);
 

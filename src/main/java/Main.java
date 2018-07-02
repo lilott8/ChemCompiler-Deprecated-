@@ -30,13 +30,13 @@ public class Main {
             logger.info("You are in debug mode");
         }
         // Run compilation.
-        // Compiler compiler = new Compiler(config);
-        // compiler.compile();
+        Compiler compiler = new Compiler(config);
+        compiler.compile();
         //compiler.runAllOps();
         //logger.debug(compiler.getControlFlow());
-        runner();
+        // runner();
 
-        try {
+        //try {
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/neurotransmitter_sensing.json"); /* split only to one node */
 
 
@@ -67,16 +67,16 @@ public class Main {
 
             /* extra */
 
-            BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/contrived/pcr_probabilistic.json");
+            // BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/contrived/pcr_probabilistic.json");
 
 
             /* opiate immunoassay positive/false */
 
 
-        }
+        /*}
         catch (FileNotFoundException e) {
             logger.error(e.getMessage());
-        }
+        }*/
         // Compiler compiler = new Compiler(config);
         // compiler.compile(1);
     }

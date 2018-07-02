@@ -7,18 +7,8 @@ manifest y
 
 functions
 
-function doThis(mat chem) : mat {
-    drain chem3
-    drain a
-    drain chem
-    return chem
-}
-
 function doThis2(mat chem, mat chem3, chem4) {
     a = mix chem with chem3
-    repeat 4 times {
-        drain chem
-    }
     b = mix a with chem4
     return b
 }
@@ -27,6 +17,4 @@ instructions
 
 awesome = mix x with y
 a = doThis2(chemical1, chemical2, awesome)
-awesome = mix a with b
-
-x = 5 + 5
+awesome = mix a with y

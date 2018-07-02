@@ -1,8 +1,8 @@
 module fluorescence
 
 stationary heroin_enzyme
+stationary oxycodone_enzyme
 
-manifest oxycodone_enzyme
 manifest oxycodone_conjugate
 manifest urine_sample
 manifest tmb_substrate

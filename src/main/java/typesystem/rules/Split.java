@@ -6,7 +6,7 @@ import java.util.Set;
 import chemical.epa.ChemTypes;
 import chemical.identification.IdentifierFactory;
 import compilation.datastructures.node.InstructionNode;
-import shared.variable.AssignedVariable;
+import shared.variable.NamedVariable;
 import shared.variable.ManifestVariable;
 import shared.variable.Variable;
 import typesystem.Inference.InferenceType;
@@ -45,7 +45,7 @@ public class Split extends NodeAnalyzer {
 
         Variable input = null;
         for (String s : node.getUse()) {
-            input = new AssignedVariable(s);
+            input = new NamedVariable(s);
             input.addTypingConstraints(this.getTypingConstraints(input));
             if (!input.getTypingConstraints().contains(ChemTypes.getMaterials())) {
                 input.addTypingConstraints(IdentifierFactory.getIdentifier().identifyCompoundForTypes(input.getName()));

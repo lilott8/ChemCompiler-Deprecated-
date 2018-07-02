@@ -38,10 +38,9 @@ import parser.ast.TimesExpression;
 import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
 import shared.properties.Volume;
-import shared.variable.AssignedVariable;
+import shared.variable.NamedVariable;
 import shared.variable.ManifestVariable;
 import shared.variable.Method;
-import shared.properties.Property;
 import shared.variable.SensorVariable;
 import shared.variable.StationaryVariable;
 import shared.variable.Variable;
@@ -174,7 +173,7 @@ public class BSSymbolTable extends BSVisitor {
         // Search the hierarchy for the output var.
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getCurrentScope());
         if (f1 == null) {
-            f1 = new AssignedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
+            f1 = new NamedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
             if (n.f0.present()) {
                 n.f0.accept(this);
                 f1.addTypingConstraints(this.getTypingConstraints(f1));
@@ -239,7 +238,7 @@ public class BSSymbolTable extends BSVisitor {
         // Get the name of the method.
         n.f1.accept(this);
         // The method belongs to the parent scope.
-        // Variable f1 = new AssignedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
+        // Variable f1 = new NamedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
         // Now we have a new scope
         SymbolTable.INSTANCE.newScope(this.name);
         // Start a new scope.
@@ -331,7 +330,7 @@ public class BSSymbolTable extends BSVisitor {
         n.f0.accept(this);
         // Go fetch the name
         n.f1.accept(this);
-        Variable f1 = new AssignedVariable(this.name, this.types, SymbolTable.INSTANCE.getCurrentScope());
+        Variable f1 = new NamedVariable(this.name, this.types, SymbolTable.INSTANCE.getCurrentScope());
         f1.addTypingConstraints(this.types);
         // save the record.
         SymbolTable.INSTANCE.addLocal(f1);
@@ -359,7 +358,7 @@ public class BSSymbolTable extends BSVisitor {
         SymbolTable.INSTANCE.newScope(scopeName);
 
         n.f1.accept(this);
-        Variable f1 = new AssignedVariable<Integer>(this.name, SymbolTable.INSTANCE.getCurrentScope());
+        Variable f1 = new NamedVariable<Integer>(this.name, SymbolTable.INSTANCE.getCurrentScope());
         f1.setValue(this.integerLiteral);
         f1.addTypingConstraint(NAT);
         addVariable(f1);
@@ -425,7 +424,7 @@ public class BSSymbolTable extends BSVisitor {
         SymbolTable.INSTANCE.newScope(scopeName);
         // Build the variable that resolves a branch evaluation.
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
-        Variable term = new AssignedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
+        Variable term = new NamedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
         term.addTypingConstraint(NAT);
         addVariable(term);
         // End type checking.
@@ -466,7 +465,7 @@ public class BSSymbolTable extends BSVisitor {
 
         // Begin type checking.
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
-        Variable term = new AssignedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
+        Variable term = new NamedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
         term.addTypingConstraint(NAT);
         addVariable(term);
         // End type checking.
@@ -691,7 +690,7 @@ public class BSSymbolTable extends BSVisitor {
     private Variable checkForOrCreateVariable(Set<ChemTypes> inputTypes) {
         Variable declaration = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, SymbolTable.INSTANCE.getCurrentScope());
         if (declaration == null) {
-            declaration = new AssignedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
+            declaration = new NamedVariable(this.name, SymbolTable.INSTANCE.getCurrentScope());
             if (inputTypes.isEmpty()) {
                 declaration.addTypingConstraints(this.getTypingConstraints(declaration));
             } else {

@@ -27,3 +27,4 @@ heat cc at 23c for 30m
 d = mix cc with 100uL of stop_reagent for 60s
 
 urine_reading = detect fluorescence on d for 30m
+drain d

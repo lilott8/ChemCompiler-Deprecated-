@@ -43,6 +43,7 @@ import parser.ast.FormalParameterList;
 import parser.ast.FormalParameterRest;
 import parser.ast.FunctionDefinition;
 import parser.ast.FunctionInvoke;
+import parser.ast.IntegerLiteral;
 import parser.ast.Manifest;
 import parser.ast.MinusExpression;
 import parser.ast.Module;
@@ -394,6 +395,7 @@ public class BSIRConverter extends BSVisitor {
         this.name = String.format("%s_%s", CONST, n.f0.toString());
         // Build the new IR data structure.
         LoopStatement loop = new LoopStatement(this.name);
+        loop.setCondition(n.f1.f0.toString());
         loop.setScopeName(scopeName);
         loop.setMethodName(this.methodStack.peek());
         this.types.clear();
@@ -620,7 +622,6 @@ public class BSIRConverter extends BSVisitor {
         n.f2.accept(this);
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 this.getCurrentScope());
-        logger.info("looking for: " + this.name);
         f2.setProperty(f1);
 
         Property f4;

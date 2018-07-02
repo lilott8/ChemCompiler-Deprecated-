@@ -23,7 +23,9 @@ public class ConditionalNode implements Node {
 
     public ConditionalNode(ConditionalType condition, String operands) {
         this.conditionalType = condition;
-        setOperands(operands);
+        if (!StringUtils.isEmpty(operands)) {
+            this.setOperands(operands);
+        }
     }
 
     private void setOperands(String condition) {
