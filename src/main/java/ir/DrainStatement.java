@@ -95,7 +95,7 @@ public class DrainStatement extends BaseStatement {
         // Open the input array.
         sb.append("\"INPUTS\" : [").append(NL);
         // Build the input variable.
-        sb.append(this.inputVariables.get(0).buildUsage()).append(NL);
+        sb.append(this.inputVariables.get(0).buildDrain()).append(NL);
         // Close the input array.
         sb.append("],").append(NL);
         // Add the outputs (there are none).
