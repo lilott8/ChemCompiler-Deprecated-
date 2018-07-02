@@ -478,7 +478,6 @@ public class BSIRConverter extends BSVisitor {
         conditional += n.f3.f0.choice.toString();
         n.f4.accept(this);
         conditional += this.integerLiteral;
-        logger.warn(conditional);
         this.inConditional = false;
 
         Conditional elseBranch = null;
@@ -815,6 +814,7 @@ public class BSIRConverter extends BSVisitor {
         n.f1.accept(this);
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 this.getCurrentScope());
+
         // Get the name.
         n.f3.accept(this);
         Property f3 = new Temperature(this.name, this.units, this.integerLiteral);
@@ -822,6 +822,7 @@ public class BSIRConverter extends BSVisitor {
         // Build the IR data structure.
         Statement heat = new HeatStatement(String.format("%s-%d",
                 HeatStatement.INSTRUCTION, this.getNextInstructionId()));
+
         heat.addInputVariable(f1);
         heat.addProperty(Property.TEMP, f3);
 

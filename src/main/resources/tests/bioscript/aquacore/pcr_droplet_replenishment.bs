@@ -1,5 +1,3 @@
-module weight
-
 manifest PCRMasterMix
 manifest Template
 
@@ -7,7 +5,7 @@ functions
 
 instructions
 
-PCRMix = mix 50mL of PCRMasterMix with 50mL of Template for 1s
+PCRMix = mix 50 uL of PCRMasterMix with 50 uL of Template for 1s
 
 repeat 50 times {
   heat PCRMix at 95c for 20s
