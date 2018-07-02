@@ -78,6 +78,8 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
 
     public abstract String buildDrain();
 
+    public abstract String buildHeat();
+
     public abstract String buildVariable();
 
     public Property getProperty() {
