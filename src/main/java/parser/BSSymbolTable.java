@@ -433,7 +433,7 @@ public class BSSymbolTable extends BSVisitor {
         // Get the expression.
         n.f2.accept(this);
         // Get the statement.
-        n.f5.accept(this);
+        n.f7.accept(this);
         // Return back to old scoping.
         SymbolTable.INSTANCE.endScope();
 
@@ -540,7 +540,6 @@ public class BSSymbolTable extends BSVisitor {
      */
     @Override
     public BSVisitor visit(SplitStatement n) {
-        // logger.info(this.assignTo);
         String assigned = this.assignTo.getName();
         //super.visit(n);
         n.f1.accept(this);
