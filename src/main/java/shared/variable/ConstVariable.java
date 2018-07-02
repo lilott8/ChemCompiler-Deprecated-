@@ -40,6 +40,11 @@ public class ConstVariable<Value> extends Variable<Value> {
     }
 
     @Override
+    public String buildDrain() {
+        return null;
+    }
+
+    @Override
     public String buildUsage() {
         StringBuilder sb = new StringBuilder();
         //sb.append("{").append(NL);
