@@ -4,66 +4,9 @@
 
 package parser.visitor;
 
-import parser.ast.AllowedArguments;
-import parser.ast.AllowedArgumentsRest;
-import parser.ast.AndExpression;
-import parser.ast.ArgumentList;
-import parser.ast.AssignmentStatement;
-import parser.ast.BSProgram;
-import parser.ast.BranchStatement;
-import parser.ast.Conditional;
-import parser.ast.ConditionalParenthesis;
-import parser.ast.DetectStatement;
-import parser.ast.DivideExpression;
-import parser.ast.DrainStatement;
-import parser.ast.ElseBranchStatement;
-import parser.ast.ElseIfBranchStatement;
-import parser.ast.EqualityExpression;
-import parser.ast.FalseLiteral;
-import parser.ast.FormalParameter;
-import parser.ast.FormalParameterList;
-import parser.ast.FormalParameterRest;
-import parser.ast.FunctionDefinition;
-import parser.ast.FunctionInvoke;
-import parser.ast.GreaterThanEqualExpression;
-import parser.ast.GreaterThanExpression;
-import parser.ast.HeatStatement;
-import parser.ast.Identifier;
-import parser.ast.IntegerLiteral;
-import parser.ast.LessThanEqualExpression;
-import parser.ast.LessThanExpression;
-import parser.ast.Manifest;
-import parser.ast.MatLiteral;
-import parser.ast.MathParenthesis;
-import parser.ast.MathStatement;
-import parser.ast.MinusExpression;
-import parser.ast.MixStatement;
-import parser.ast.Module;
-import parser.ast.NatLiteral;
-import parser.ast.NodeList;
-import parser.ast.NodeListOptional;
-import parser.ast.NodeOptional;
-import parser.ast.NodeSequence;
-import parser.ast.NodeToken;
-import parser.ast.NotEqualExpression;
-import parser.ast.NotExpression;
-import parser.ast.OrExpression;
-import parser.ast.PlusExpression;
-import parser.ast.PrimaryExpression;
-import parser.ast.Primitives;
-import parser.ast.RealLiteral;
-import parser.ast.RepeatStatement;
-import parser.ast.RightOp;
-import parser.ast.SplitStatement;
-import parser.ast.Statements;
-import parser.ast.Stationary;
-import parser.ast.TimesExpression;
-import parser.ast.TrueLiteral;
-import parser.ast.Type;
-import parser.ast.TypingList;
-import parser.ast.TypingRest;
-import parser.ast.VariableAlias;
-import parser.ast.WhileStatement;
+import parser.ast.*;
+
+import java.util.*;
 
 /**
  * All GJ visitors with no argument must implement this interface.
@@ -155,6 +98,16 @@ public interface GJNoArguVisitor<R> {
     R visit(AssignmentStatement n);
 
     /**
+     * f0 -> MixStatement()
+     * | DetectStatement()
+     * | SplitStatement()
+     * | DispenseStatement()
+     * | FunctionInvoke()
+     * | VariableAlias()
+     */
+    R visit(RightOp n);
+
+    /**
      * f0 -> Type()
      * f1 -> ( TypingRest() )*
      */
@@ -193,10 +146,12 @@ public interface GJNoArguVisitor<R> {
 
     /**
      * f0 -> <MIX>
-     * f1 -> PrimaryExpression()
-     * f2 -> <WITH>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> PrimaryExpression()
+     * f3 -> <WITH>
+     * f4 -> ( VolumeUnit() <OF> )?
+     * f5 -> PrimaryExpression()
+     * f6 -> ( <FOR> TimeUnit() )?
      */
     R visit(MixStatement n);
 
@@ -215,11 +170,18 @@ public interface GJNoArguVisitor<R> {
     R visit(DrainStatement n);
 
     /**
+     * f0 -> <DISPENSE>
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> Identifier()
+     */
+    R visit(DispenseStatement n);
+
+    /**
      * f0 -> <HEAT>
      * f1 -> PrimaryExpression()
      * f2 -> <AT>
-     * f3 -> IntegerLiteral()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f3 -> TempUnit()
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     R visit(HeatStatement n);
 
@@ -228,13 +190,13 @@ public interface GJNoArguVisitor<R> {
      * f1 -> PrimaryExpression()
      * f2 -> <ON>
      * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     R visit(DetectStatement n);
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> ( IntegerLiteral() | Identifier() )
+     * f1 -> IntegerLiteral()
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statements() )+
@@ -256,13 +218,15 @@ public interface GJNoArguVisitor<R> {
     /**
      * f0 -> <IF>
      * f1 -> <LPAREN>
-     * f2 -> Conditional()
-     * f3 -> <RPAREN>
-     * f4 -> <LBRACE>
-     * f5 -> ( Statements() )+
-     * f6 -> <RBRACE>
-     * f7 -> ( ElseIfBranchStatement() )*
-     * f8 -> ( ElseBranchStatement() )?
+     * f2 -> Identifier()
+     * f3 -> Conditional()
+     * f4 -> Primitives()
+     * f5 -> <RPAREN>
+     * f6 -> <LBRACE>
+     * f7 -> ( Statements() )+
+     * f8 -> <RBRACE>
+     * f9 -> ( ElseIfBranchStatement() )*
+     * f10 -> ( ElseBranchStatement() )?
      */
     R visit(BranchStatement n);
 
@@ -286,6 +250,16 @@ public interface GJNoArguVisitor<R> {
     R visit(ElseBranchStatement n);
 
     /**
+     * f0 -> <LESSTHAN>
+     * | <LESSTHANEQUAL>
+     * | <NOTEQUAL>
+     * | <EQUALITY>
+     * | <GREATERTHAN>
+     * | <GREATERTHANEQUAL>
+     */
+    R visit(Conditional n);
+
+    /**
      * f0 -> ConditionalParenthesis()
      * | AndExpression()
      * | LessThanExpression()
@@ -296,7 +270,7 @@ public interface GJNoArguVisitor<R> {
      * | EqualityExpression()
      * | OrExpression()
      */
-    R visit(Conditional n);
+    R visit(TraditionalConditional n);
 
     /**
      * f0 -> MathParenthesis()
@@ -326,16 +300,6 @@ public interface GJNoArguVisitor<R> {
      * f1 -> AllowedArguments()
      */
     R visit(AllowedArgumentsRest n);
-
-    /**
-     * f0 -> MixStatement()
-     * | DetectStatement()
-     * | SplitStatement()
-     * | FunctionInvoke()
-     * | MathStatement()
-     * | VariableAlias()
-     */
-    R visit(RightOp n);
 
     /**
      * f0 -> Identifier()
@@ -503,6 +467,24 @@ public interface GJNoArguVisitor<R> {
      * f0 -> Identifier()
      */
     R visit(VariableAlias n);
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <SECOND> | <MILLISECOND> | <MICROSECOND> | <HOUR> | <MINUTE> )?
+     */
+    R visit(TimeUnit n);
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <LITRE> | <MILLILITRE> | <MICROLITRE> )?
+     */
+    R visit(VolumeUnit n);
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <CELSIUS> | <FAHRENHEIT> )?
+     */
+    R visit(TempUnit n);
 
 }
 

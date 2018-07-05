@@ -4,69 +4,9 @@
 
 package parser.visitor;
 
-import java.util.Enumeration;
+import parser.ast.*;
 
-import parser.ast.AllowedArguments;
-import parser.ast.AllowedArgumentsRest;
-import parser.ast.AndExpression;
-import parser.ast.ArgumentList;
-import parser.ast.AssignmentStatement;
-import parser.ast.BSProgram;
-import parser.ast.BranchStatement;
-import parser.ast.Conditional;
-import parser.ast.ConditionalParenthesis;
-import parser.ast.DetectStatement;
-import parser.ast.DivideExpression;
-import parser.ast.DrainStatement;
-import parser.ast.ElseBranchStatement;
-import parser.ast.ElseIfBranchStatement;
-import parser.ast.EqualityExpression;
-import parser.ast.FalseLiteral;
-import parser.ast.FormalParameter;
-import parser.ast.FormalParameterList;
-import parser.ast.FormalParameterRest;
-import parser.ast.FunctionDefinition;
-import parser.ast.FunctionInvoke;
-import parser.ast.GreaterThanEqualExpression;
-import parser.ast.GreaterThanExpression;
-import parser.ast.HeatStatement;
-import parser.ast.Identifier;
-import parser.ast.IntegerLiteral;
-import parser.ast.LessThanEqualExpression;
-import parser.ast.LessThanExpression;
-import parser.ast.Manifest;
-import parser.ast.MatLiteral;
-import parser.ast.MathParenthesis;
-import parser.ast.MathStatement;
-import parser.ast.MinusExpression;
-import parser.ast.MixStatement;
-import parser.ast.Module;
-import parser.ast.NatLiteral;
-import parser.ast.Node;
-import parser.ast.NodeList;
-import parser.ast.NodeListOptional;
-import parser.ast.NodeOptional;
-import parser.ast.NodeSequence;
-import parser.ast.NodeToken;
-import parser.ast.NotEqualExpression;
-import parser.ast.NotExpression;
-import parser.ast.OrExpression;
-import parser.ast.PlusExpression;
-import parser.ast.PrimaryExpression;
-import parser.ast.Primitives;
-import parser.ast.RealLiteral;
-import parser.ast.RepeatStatement;
-import parser.ast.RightOp;
-import parser.ast.SplitStatement;
-import parser.ast.Statements;
-import parser.ast.Stationary;
-import parser.ast.TimesExpression;
-import parser.ast.TrueLiteral;
-import parser.ast.Type;
-import parser.ast.TypingList;
-import parser.ast.TypingRest;
-import parser.ast.VariableAlias;
-import parser.ast.WhileStatement;
+import java.util.*;
 
 /**
  * Provides default methods which visit each node in the tree in depth-first
@@ -242,6 +182,20 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
     }
 
     /**
+     * f0 -> MixStatement()
+     * | DetectStatement()
+     * | SplitStatement()
+     * | DispenseStatement()
+     * | FunctionInvoke()
+     * | VariableAlias()
+     */
+    public R visit(RightOp n) {
+        R _ret = null;
+        n.f0.accept(this);
+        return _ret;
+    }
+
+    /**
      * f0 -> Type()
      * f1 -> ( TypingRest() )*
      */
@@ -309,10 +263,12 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
 
     /**
      * f0 -> <MIX>
-     * f1 -> PrimaryExpression()
-     * f2 -> <WITH>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> PrimaryExpression()
+     * f3 -> <WITH>
+     * f4 -> ( VolumeUnit() <OF> )?
+     * f5 -> PrimaryExpression()
+     * f6 -> ( <FOR> TimeUnit() )?
      */
     public R visit(MixStatement n) {
         R _ret = null;
@@ -321,6 +277,8 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
         n.f2.accept(this);
         n.f3.accept(this);
         n.f4.accept(this);
+        n.f5.accept(this);
+        n.f6.accept(this);
         return _ret;
     }
 
@@ -351,11 +309,24 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
     }
 
     /**
+     * f0 -> <DISPENSE>
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> Identifier()
+     */
+    public R visit(DispenseStatement n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        n.f2.accept(this);
+        return _ret;
+    }
+
+    /**
      * f0 -> <HEAT>
      * f1 -> PrimaryExpression()
      * f2 -> <AT>
-     * f3 -> IntegerLiteral()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f3 -> TempUnit()
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     public R visit(HeatStatement n) {
         R _ret = null;
@@ -372,7 +343,7 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
      * f1 -> PrimaryExpression()
      * f2 -> <ON>
      * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     public R visit(DetectStatement n) {
         R _ret = null;
@@ -386,7 +357,7 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> ( IntegerLiteral() | Identifier() )
+     * f1 -> IntegerLiteral()
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
      * f4 -> ( Statements() )+
@@ -427,13 +398,15 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
     /**
      * f0 -> <IF>
      * f1 -> <LPAREN>
-     * f2 -> Conditional()
-     * f3 -> <RPAREN>
-     * f4 -> <LBRACE>
-     * f5 -> ( Statements() )+
-     * f6 -> <RBRACE>
-     * f7 -> ( ElseIfBranchStatement() )*
-     * f8 -> ( ElseBranchStatement() )?
+     * f2 -> Identifier()
+     * f3 -> Conditional()
+     * f4 -> Primitives()
+     * f5 -> <RPAREN>
+     * f6 -> <LBRACE>
+     * f7 -> ( Statements() )+
+     * f8 -> <RBRACE>
+     * f9 -> ( ElseIfBranchStatement() )*
+     * f10 -> ( ElseBranchStatement() )?
      */
     public R visit(BranchStatement n) {
         R _ret = null;
@@ -446,6 +419,8 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
         n.f6.accept(this);
         n.f7.accept(this);
         n.f8.accept(this);
+        n.f9.accept(this);
+        n.f10.accept(this);
         return _ret;
     }
 
@@ -486,6 +461,20 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
     }
 
     /**
+     * f0 -> <LESSTHAN>
+     * | <LESSTHANEQUAL>
+     * | <NOTEQUAL>
+     * | <EQUALITY>
+     * | <GREATERTHAN>
+     * | <GREATERTHANEQUAL>
+     */
+    public R visit(Conditional n) {
+        R _ret = null;
+        n.f0.accept(this);
+        return _ret;
+    }
+
+    /**
      * f0 -> ConditionalParenthesis()
      * | AndExpression()
      * | LessThanExpression()
@@ -496,7 +485,7 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
      * | EqualityExpression()
      * | OrExpression()
      */
-    public R visit(Conditional n) {
+    public R visit(TraditionalConditional n) {
         R _ret = null;
         n.f0.accept(this);
         return _ret;
@@ -549,20 +538,6 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
         R _ret = null;
         n.f0.accept(this);
         n.f1.accept(this);
-        return _ret;
-    }
-
-    /**
-     * f0 -> MixStatement()
-     * | DetectStatement()
-     * | SplitStatement()
-     * | FunctionInvoke()
-     * | MathStatement()
-     * | VariableAlias()
-     */
-    public R visit(RightOp n) {
-        R _ret = null;
-        n.f0.accept(this);
         return _ret;
     }
 
@@ -857,13 +832,46 @@ public class GJNoArguDepthFirst<R> implements GJNoArguVisitor<R> {
         return _ret;
     }
 
-   /**
-    * f0 -> Identifier()
-    */
-   public R visit(VariableAlias n) {
-      R _ret = null;
-      n.f0.accept(this);
-      return _ret;
-   }
+    /**
+     * f0 -> Identifier()
+     */
+    public R visit(VariableAlias n) {
+        R _ret = null;
+        n.f0.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <SECOND> | <MILLISECOND> | <MICROSECOND> | <HOUR> | <MINUTE> )?
+     */
+    public R visit(TimeUnit n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <LITRE> | <MILLILITRE> | <MICROLITRE> )?
+     */
+    public R visit(VolumeUnit n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        return _ret;
+    }
+
+    /**
+     * f0 -> IntegerLiteral()
+     * f1 -> ( <CELSIUS> | <FAHRENHEIT> )?
+     */
+    public R visit(TempUnit n) {
+        R _ret = null;
+        n.f0.accept(this);
+        n.f1.accept(this);
+        return _ret;
+    }
 
 }

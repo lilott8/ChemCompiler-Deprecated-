@@ -60,7 +60,7 @@
           "NAME" : "SPLIT",
           "ID" : "7597473312639055162",
           "CLASSIFICATION" : "SPLIT",
-          "INPUTS:" : [
+          "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
@@ -150,7 +150,7 @@
           "NAME" : "SPLIT",
           "ID" : "7597473312639056535",
           "CLASSIFICATION" : "SPLIT",
-          "INPUTS:" : [
+          "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
@@ -240,7 +240,7 @@
           "NAME" : "SPLIT",
           "ID" : "7597473312639058362",
           "CLASSIFICATION" : "SPLIT",
-          "INPUTS:" : [
+          "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
@@ -330,7 +330,7 @@
           "NAME" : "SPLIT",
           "ID" : "7597473312639059112",
           "CLASSIFICATION" : "SPLIT",
-          "INPUTS:" : [
+          "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {
@@ -420,7 +420,7 @@
           "NAME" : "SPLIT",
           "ID" : "7597473312639059910",
           "CLASSIFICATION" : "SPLIT",
-          "INPUTS:" : [
+          "INPUTS" : [
             {
               "INPUT_TYPE" : "VARIABLE",
               "VARIABLE" : {

@@ -11,15 +11,12 @@ import parser.visitor.Visitor;
 
 /**
  * Grammar production:
- * f0 -> ConditionalParenthesis()
- * | AndExpression()
- * | LessThanExpression()
- * | LessThanEqualExpression()
- * | GreaterThanExpression()
- * | GreaterThanEqualExpression()
- * | NotEqualExpression()
- * | EqualityExpression()
- * | OrExpression()
+ * f0 -> <LESSTHAN>
+ *       | <LESSTHANEQUAL>
+ *       | <NOTEQUAL>
+ *       | <EQUALITY>
+ *       | <GREATERTHAN>
+ *       | <GREATERTHANEQUAL>
  */
 public class Conditional implements Node {
     public NodeChoice f0;
@@ -35,11 +32,9 @@ public class Conditional implements Node {
     public <R, A> R accept(GJVisitor<R, A> v, A argu) {
         return v.visit(this, argu);
     }
-
     public <R> R accept(GJNoArguVisitor<R> v) {
         return v.visit(this);
     }
-
     public <A> void accept(GJVoidVisitor<A> v, A argu) {
         v.visit(this, argu);
     }

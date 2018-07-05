@@ -2,15 +2,11 @@ package translators.mfsim;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.events.EventException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.NoSuchElementException;
 
 import compilation.datastructures.cfg.CFG;
 import config.CommonConfig;
-import config.Config;
 import config.ConfigFactory;
 import config.TranslateConfig;
 import shared.io.file.write.FileWriter;

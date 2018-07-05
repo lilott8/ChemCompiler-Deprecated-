@@ -1,5 +1,8 @@
 package shared.substances;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +16,7 @@ import chemical.epa.ChemTypes;
  */
 public abstract class BaseCompound<T> {
 
+    public static final Logger logger = LogManager.getLogger(BaseCompound.class);
     protected long id = -1;
     protected Set<ChemTypes> reactiveGroups = new HashSet<>();
     protected String name = "unknown";
@@ -31,6 +35,7 @@ public abstract class BaseCompound<T> {
         this.id = id;
         this.name = name;
         this.reactiveGroups = reactiveGroups;
+        logger.info(name + ": " + reactiveGroups);
     }
 
     public abstract T getRepresentation();

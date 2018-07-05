@@ -15,6 +15,7 @@ import parser.visitor.Visitor;
  * | TrueLiteral()
  * | FalseLiteral()
  * | IntegerLiteral()
+ * | RealLiteral()
  */
 public class PrimaryExpression implements Node {
     public NodeChoice f0;

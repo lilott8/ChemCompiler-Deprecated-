@@ -6,7 +6,7 @@ import java.util.Set;
 import chemical.combinator.CombinerFactory;
 import chemical.epa.ChemTypes;
 import chemical.epa.EpaManager;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -83,6 +83,10 @@ public class MixStatement extends BaseStatement {
         return sb.toString();
     }
 
+    @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
+    }
 
     /**
      * This is the common case! This builds the form: t1 \in output ^ t2 \in output => lu(t1, t2)
@@ -127,38 +131,24 @@ public class MixStatement extends BaseStatement {
         sb.append("\"INPUTS\" : [").append(NL);
         int x = 0;
         for (Variable v : this.inputVariables) {
-            // Open the object tag.
-            sb.append("{").append(NL);
             sb.append(v.buildUsage());
-            if (!this.properties.isEmpty()) {
-                sb.append(",").append(NL);
-                if (this.properties.containsKey(Property.VOLUME)) {
-                    sb.append("\"VOLUME\" : {").append(NL);
-                    sb.append("\"VALUE\" : ").append(this.properties.get(Property.VOLUME).getValue()).append(",").append(NL);
-                    sb.append("\"UNITS\" : ").append("\"mL\"").append(NL);
-                    sb.append("}").append(NL);
-                }
-            } else {
-                sb.append(",").append(NL);
-                sb.append("\"VOLUME\" : {").append(NL);
-                sb.append("\"VALUE\" : ").append(10).append(",").append(NL);
-                sb.append("\"UNITS\" : ").append("\"mL\"").append(NL);
-                sb.append("}").append(NL);
-                sb.append("}").append(NL);
-            }
             if (x < this.inputVariables.size() - 1) {
                 sb.append(",").append(NL);
             }
             x++;
         }
+        if (this.properties.containsKey(Property.TIME)) {
+            sb.append(",").append(NL);
+            sb.append(this.properties.get(Property.TIME).buildUsage()).append(NL);
+        }
         // Closes the open bracket.
         sb.append("],").append(NL);
         sb.append("\"OUTPUTS\" : [").append(NL);
         // Open the tag.
-        sb.append("{").append(NL);
-        sb.append(this.outputVariable.redeclare());
+        // sb.append("{").append(NL);
+        sb.append(this.outputVariables.get(0).redeclare());
         // Close the open tag.
-        sb.append("}").append(NL);
+        // sb.append("}").append(NL);
         sb.append("]").append(NL);
         // Closes the OPERATION.
         sb.append("}").append(NL);

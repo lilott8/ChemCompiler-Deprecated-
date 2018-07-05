@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -26,7 +27,6 @@ public class IfStatement extends BaseConditional {
     public IfStatement(String condition, boolean isTrue) {
         super(INSTRUCTION, condition);
         this.isTrue = isTrue;
-        logger.warn("Why is the condition coming in as a string?");
     }
 
     @Override
@@ -55,6 +55,11 @@ public class IfStatement extends BaseConditional {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
     }
 
     /**
@@ -131,6 +136,8 @@ public class IfStatement extends BaseConditional {
             }
             // Close false branch.
             sb.append("]").append(NL);
+        } else {
+            sb.append(",\"FALSE_BRANCH\": [],\"ELSEIF_BRANCH\": []").append(NL);
         }
         // Close Operation brace.
         sb.append("}").append(NL);

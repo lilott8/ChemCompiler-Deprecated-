@@ -17,7 +17,8 @@ public class CommonUtils {
     public static boolean runTest(String file) {
         String args = String.format("-c %s -p typesystem " +
                 "%s " +
-                "-d -nf -i -classify 16\n", file, DBArgs.getDBArgs());
+                //"-d -nf -i -classify 16\n", file, DBArgs.getDBArgs());
+        "");
         CliWrapper cli = new CliWrapper();
         cli.parseCommandLine(StringUtils.split(args));
         //LogManager.getLogger(CommonUtils.class).info(ConfigFactory.getConfig().getFilesForCompilation());
@@ -25,7 +26,7 @@ public class CommonUtils {
         compiler.compile();
         Inference inference = new Inference();
         compiler.runAllOps();
-        // We can do this because the test has only one experiment!
+        // We can do this because the elisa has only one experiment!
         return inference.runPhase(compiler.getExperiments().get(0));
     }
 }

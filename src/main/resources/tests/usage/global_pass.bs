@@ -1,0 +1,11 @@
+manifest chemical1
+manifest chemical2
+manifest chemical3
+
+functions
+
+instructions
+
+a = mix chemical1 with chemical2
+b = mix chemical1 with chemical3
+c = mix chemical2 with chemical3

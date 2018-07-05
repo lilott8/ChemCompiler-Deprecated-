@@ -3,7 +3,7 @@ package ir;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -28,13 +28,18 @@ public class SplitStatement extends BaseStatement {
 
     @Override
     public String compose(Variable variable) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
     }
 
     @Override
@@ -50,19 +55,25 @@ public class SplitStatement extends BaseStatement {
         sb.append("\"NAME\" : \"SPLIT\",").append(NL);
         sb.append("\"CLASSIFICATION\" : \"SPLIT\",").append(NL);
         sb.append("\"INPUTS\" : [").append(NL);
-        sb.append("{").append(NL);
         sb.append(this.inputVariables.get(0).buildUsage()).append(NL);
-        sb.append("}").append(NL);
+        // This *has* to be defined.
+        if (this.properties.containsKey(Property.QUANTITY)) {
+            sb.append(",");
+            sb.append(this.properties.get(Property.QUANTITY).buildUsage());
+        } else {
+            logger.fatal("Splits *must* contain a split size.");
+        }
         // Closes the open bracket.
         sb.append("],").append(NL);
         sb.append("\"OUTPUTS\" : [").append(NL);
         int splitSize = (int) this.properties.get(Property.QUANTITY).getValue();
-        for (int x = 0; x <= splitSize; x++) {
+        int x = 0;
+        for (Variable output : this.outputVariables) {
             sb.append("{").append(NL);
             sb.append("\"VARIABLE\" :").append(NL);
             sb.append("{").append(NL);
-            sb.append("\"ID\" : \"").append(this.outputVariable.getName()).append(x).append("\",").append(NL);
-            sb.append("\"NAME\" : \"").append(this.outputVariable.getName()).append(x).append("\",").append(NL);
+            sb.append("\"ID\" : \"").append(output.getName()).append("\",").append(NL);
+            sb.append("\"NAME\" : \"").append(output.getName()).append("\",").append(NL);
             sb.append("\"TYPE\" : \"CHEMICAL\",").append(NL);
             sb.append(this.inputVariables.get(0).addInferredTypes());
             if (this.properties.containsKey(Property.VOLUME)) {
@@ -78,7 +89,7 @@ public class SplitStatement extends BaseStatement {
         }
         sb.append("]").append(NL);
         // There might need to be a comma in the empty quotes.
-        //sb.append(this.outputVariable.buildDeclaration()).append("").append(NL);
+        //sb.append(this.outputVariables.buildDeclaration()).append("").append(NL);
         sb.append("}").append(NL);
         // Closes the OPERATION.
         //sb.append("}").append(NL);

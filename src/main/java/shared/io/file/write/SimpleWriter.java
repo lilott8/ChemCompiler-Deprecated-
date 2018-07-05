@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class SimpleWriter extends FileWriter {
 
-    public static final Logger logger = LogManager.getLogger(ThreadedWriter.class);
+    public static final Logger logger = LogManager.getLogger(SimpleWriter.class);
 
     public SimpleWriter() {
         super();

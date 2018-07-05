@@ -23,7 +23,9 @@ public class ConditionalNode implements Node {
 
     public ConditionalNode(ConditionalType condition, String operands) {
         this.conditionalType = condition;
-        setOperands(operands);
+        if (!StringUtils.isEmpty(operands)) {
+            this.setOperands(operands);
+        }
     }
 
     private void setOperands(String condition) {
@@ -49,6 +51,14 @@ public class ConditionalNode implements Node {
 
     public String getRightOperand() {
         return this.rightOperand;
+    }
+
+    public String getConditional() {
+        return this.conditionalType.toString(this.conditionalType);
+    }
+
+    public ConditionalType getConditionalType() {
+        return this.conditionalType;
     }
 
     public String toString() {

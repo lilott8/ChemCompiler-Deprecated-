@@ -6,10 +6,11 @@ import java.util.Set;
 import chemical.epa.ChemTypes;
 import chemical.epa.EpaManager;
 import compilation.datastructures.node.InstructionNode;
-import shared.variable.AssignedVariable;
-import shared.variable.DefinedVariable;
+import shared.properties.Property;
+import shared.properties.Time;
+import shared.variable.NamedVariable;
+import shared.variable.ManifestVariable;
 import shared.variable.Variable;
-import substance.Property;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;
 
@@ -40,7 +41,7 @@ public class Mix extends NodeAnalyzer {
         Variable input = null;
         // Right hand side values (a = mix input with input)
         for (String in : node.getUse()) {
-            input = new AssignedVariable(in);
+            input = new NamedVariable(in);
             // If we have seen this before, we can just pull the old types.
             if (variables.containsKey(input.getVarName())) {
                 input.addTypingConstraints(variables.get(input.getVarName()).getTypingConstraints());
@@ -60,12 +61,12 @@ public class Mix extends NodeAnalyzer {
         if (!node.getDef().isEmpty()) {
             // There will only ever be one def for a mix.
             for (String out : node.getDef()) {
-                output = new DefinedVariable(out);
+                output = new ManifestVariable(out);
                 output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
             }
         } else {
             // Otherwise, get the last use.
-            output = new DefinedVariable(input.getVarName());
+            output = new ManifestVariable(input.getVarName());
             output.addTypingConstraints(EpaManager.INSTANCE.lookUp(groupings));
         }
 
@@ -77,11 +78,11 @@ public class Mix extends NodeAnalyzer {
         addVariable(output);
 
         // Get the properties of the instruction if they exist
-        for (Property p : node.getInstruction().getProperties()) {
-            Variable prop = new shared.variable.Property(Rule.createHash(p.toString()), this.propertyTypes);
+        for (substance.Property p : node.getInstruction().getProperties()) {
+            Property prop = new Time(Rule.createHash(p.toString()), p.getUnit().toString(), p.getQuantity());
             prop.addTypingConstraint(REAL);
             instruction.addProperty(prop);
-            addVariable(prop);
+            addProperty(prop);
         }
 
         addInstruction(instruction);

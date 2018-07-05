@@ -17,6 +17,7 @@ import compilation.datastructures.dominatortree.DominatorTree;
 import compilation.datastructures.node.InstructionNode;
 import compilation.datastructures.ssi.SigmaInstruction;
 import config.ConfigFactory;
+import variable.Variable;
 
 /**
  * Created by chriscurtis on 3/13/17.
@@ -125,7 +126,6 @@ public abstract class StaticSingleAssignment extends CFG {
             }
             variableStack.put(symbol, symbols);
         }
-        logger.debug(this.entry);
         this.renameSearch(this.entry);
     }
 
@@ -133,18 +133,28 @@ public abstract class StaticSingleAssignment extends CFG {
         ArrayList<String> oldLHS = new ArrayList<String>();
         for (InstructionNode instruction : bb.getInstructions()) {
             if (!(instruction instanceof PHIInstruction || instruction instanceof GlobalAssignment || instruction instanceof SigmaInstruction)) {
-                ArrayList<String> symbols = new ArrayList<String>(instruction.getInstruction().getInputs().keySet());
+
+                ArrayList<Variable> vars = new ArrayList<>(instruction.getInstruction().getInputsAsList());
+                // ArrayList<String> symbols = new ArrayList<String>(instruction.getInstruction().getInputs().keySet());
                 //needed deep copy to allow the removal of old symbols
-                for (String symbol : symbols) {
-                    int index = instruction.getInputSymbols().indexOf(symbol);
-                    if (variableStack.get(symbol) == null) {
-                        logger.fatal("Cannot find symbol: " + symbol);
-                        throw new IllegalStateException(symbol + " was not properly defined.");
+                for (Variable v : vars) {
+                    int index = instruction.getInputSymbols().indexOf(v.getName());
+                    if (variableStack.get(v.getName()) == null) {
+                        logger.fatal("Cannot find symbol: " + v.getName());
+                        throw new IllegalStateException(v.getName() + " was not properly defined.");
                     }
-                    instruction.getInputSymbols().set(index, variableStack.get(symbol).peek().getVariable(whichSucc(bb.getId(), variableStack.get(symbol).peek().getOriginID())));
+                    instruction.getInputSymbols().set(index, variableStack.get(v.getName()).peek().getVariable(whichSucc(bb.getId(), variableStack.get(v.getName()).peek().getOriginID())));
+                }
+                //for (String symbol : symbols) {
+                //    int index = instruction.getInputSymbols().indexOf(symbol);
+                //    if (variableStack.get(symbol) == null) {
+                //        logger.fatal("Cannot find symbol: " + symbol);
+                //        throw new IllegalStateException(symbol + " was not properly defined.");
+                //    }
+                //    instruction.getInputSymbols().set(index, variableStack.get(symbol).peek().getVariable(whichSucc(bb.getId(), variableStack.get(symbol).peek().getOriginID())));
 //                    instruction.getInstruction().getInputs().put(variableStack.get(symbol).peek(),instruction.getInstruction().getInputs().get(symbol));
 //                    instruction.getInstruction().getInputs().remove(symbol);
-                }
+                //}
             }
             ArrayList<String> newOutputSymbols = new ArrayList<String>();
             String oldSymbol = "";

@@ -1,5 +1,6 @@
 package ir;
 
+import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
@@ -16,7 +17,7 @@ public interface Assign extends Statement {
 
     void setRightOp(Statement statement);
 
-    Variable getOutputVariable();
+    List<Variable> getOutputVariables();
 
     Set<ChemTypes> getTypes();
 }

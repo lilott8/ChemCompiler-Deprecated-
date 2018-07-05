@@ -23,6 +23,7 @@ public class Scope {
     private int frameSize = 0;
     // Will probably never be used, but jic.
     private Visibility type = Visibility.GLOBAL;
+
     public Scope(String name) {
         this.name = name;
     }

@@ -1,6 +1,5 @@
 package translators;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,7 +37,7 @@ public class TranslatorFacade implements Facade {
     public void start() {
         for (Map.Entry<TRANSLATORS, Translator> t : this.translators.entrySet()) {
             logger.info("Running transform: " + t.getKey() + ".");
-            t.getValue().runTranslation(this.controlFlowGraph).toFile(this.config.getOutputDir() + this.controlFlowGraph.getID());
+            t.getValue().runTranslation(this.controlFlowGraph).toFile(this.config.getOutputDir());
             logger.info("Done running: " + t.getKey() + " transform.");
 
         }

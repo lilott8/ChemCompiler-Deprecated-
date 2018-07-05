@@ -20,4 +20,6 @@ public interface CommonConfig {
     int getNumberOfThreads();
 
     boolean monitorResources();
+
+    boolean printStatistics();
 }

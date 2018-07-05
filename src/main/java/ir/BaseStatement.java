@@ -4,6 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import sun.plugin.dom.exception.InvalidStateException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,8 +15,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import chemical.epa.ChemTypes;
+import shared.errors.InvalidSyntaxException;
 import shared.variable.Method;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
 
@@ -25,17 +28,15 @@ import symboltable.SymbolTable;
  */
 public abstract class BaseStatement implements Statement {
 
-    private static AtomicInteger idCounter = new AtomicInteger(0);
-
     public static final Logger logger = LogManager.getLogger(BaseStatement.class);
-
+    private static AtomicInteger idCounter = new AtomicInteger(0);
     protected boolean isBranch = false;
     protected boolean isAssign = false;
     protected boolean fallsThrough = false;
     protected boolean containsInvoke = false;
-    protected Variable outputVariable;
+    protected List<Variable> outputVariables = new ArrayList<>();
     protected List<Variable> inputVariables = new ArrayList<>();
-    protected Map<String, Variable> properties = new HashMap<>();
+    protected Map<String, Property> properties = new HashMap<>();
     protected Set<ChemTypes> types = new HashSet<>();
     protected String name;
     protected String methodName = SymbolTable.DEFAULT_SCOPE;
@@ -87,20 +88,20 @@ public abstract class BaseStatement implements Statement {
 
     @Override
     public void addOutputVariable(Variable variable) {
-        this.outputVariable = variable;
+        this.outputVariables.add(variable);
     }
 
-    public Variable getOutputVariable() {
-        return outputVariable;
+    public List<Variable> getOutputVariables() {
+        return outputVariables;
     }
 
     @Override
-    public Map<String, Variable> getProperties() {
+    public Map<String, Property> getProperties() {
         return this.properties;
     }
 
     @Override
-    public void addProperty(String name, Variable variable) {
+    public void addProperty(String name, Property variable) {
         this.properties.put(name, variable);
     }
 
@@ -143,7 +144,7 @@ public abstract class BaseStatement implements Statement {
         String name;
         if (!this.isAssign && !this.isBranch) {
             if (this.inputVariables.isEmpty()) {
-                name = this.outputVariable.getName();
+                name = this.outputVariables.get(0).getName();
             } else {
                 name = this.inputVariables.get(0).getName();
             }
@@ -160,7 +161,7 @@ public abstract class BaseStatement implements Statement {
     protected String propertyToJson(String property) {
         StringBuilder sb = new StringBuilder();
         if (this.properties.containsKey(Property.TIME)) {
-            Property time = (Property) this.properties.get(Property.TIME);
+            Property time = this.properties.get(Property.TIME);
             // The Temp
             sb.append(",{").append(NL);
             sb.append("\"INPUT_TYPE\" : \"PROPERTY\",").append(NL);
@@ -191,9 +192,17 @@ public abstract class BaseStatement implements Statement {
                     }
                     counter++;
                 }
+            } else {
+                Variable v = SymbolTable.INSTANCE.searchScopeHierarchy(this.inputVariables.get(x).getName(), method.getName());
+                if (v != null) {
+                    variables.add(v);
+                } else {
+                    logger.fatal("We cannot find a variable: " + this.inputVariables.get(x).getName());
+                }
             }
         }
         this.inputVariables.clear();
+        logger.info(variables);
         this.inputVariables.addAll(variables);
     }
 }

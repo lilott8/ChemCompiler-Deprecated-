@@ -1,5 +1,6 @@
 package ir;
 
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
@@ -33,6 +34,11 @@ public class ReturnStatement extends BaseStatement {
 
     @Override
     public String compose(Variable variable) {
+        return null;
+    }
+
+    @Override
+    public String compose(Property property) {
         return null;
     }
 }

@@ -15,6 +15,7 @@ import java.util.Set;
 import chemical.epa.ChemTypes;
 import config.ConfigFactory;
 import config.InferenceConfig;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.Inference.InferenceType;
 import typesystem.elements.Formula;
@@ -29,9 +30,11 @@ public abstract class Rule {
     // Keep track of the instruction id to input/outputs
     protected static Map<Integer, Formula> instructions = new LinkedHashMap<>();
     protected static Map<String, Variable> variables = new HashMap<>();
+    protected static Map<String, Property> properties = new HashMap<>();
     protected final Logger logger;
     protected InferenceType type;
     protected InferenceConfig config = ConfigFactory.getConfig();
+
     protected Rule(InferenceType type) {
         this.type = type;
         this.logger = LogManager.getLogger(Rule.class);
@@ -50,6 +53,12 @@ public abstract class Rule {
         if (!variables.containsKey(t.getName())) {
             variables.put(t.getName(), t);
         } else {
+        }
+    }
+
+    protected static void addProperty(Property p) {
+        if (!properties.containsKey(p.getName())) {
+            properties.put(p.getName(), p);
         }
     }
 

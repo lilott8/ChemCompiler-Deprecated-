@@ -3,7 +3,7 @@ package ir;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import shared.variable.Property;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -28,10 +28,21 @@ public class DetectStatement extends BaseStatement {
 
     @Override
     public String compose(Variable variable) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
+        }
+
+        return sb.toString();
+    }
+
+    @Override
+    public String compose(Property property) {
+        StringBuilder sb = new StringBuilder();
+
+        for (ChemTypes t : property.getTypes()) {
+            sb.append("(assert (= ").append(SolverStrategy.getSMTName(property.getName(), t)).append(" true))").append(NL);
         }
 
         return sb.toString();
@@ -79,7 +90,7 @@ public class DetectStatement extends BaseStatement {
         }
       }
          */
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         Variable sensor = this.inputVariables.get(0);
         // Start Object.
         sb.append("{").append(NL);
@@ -92,33 +103,24 @@ public class DetectStatement extends BaseStatement {
         // Open the input array.
         sb.append("\"INPUTS\" : [").append(NL);
         Variable chemical = this.inputVariables.get(1);
-        sb.append("{").append(NL);
-        sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
-        sb.append("\"STATIONARY\" : {").append(NL);
-        sb.append("\"NAME\" : \"").append(chemical.getName()).append("\"").append(NL);
-        sb.append("}").append(NL);
-        sb.append("}").append(NL);
+        sb.append(this.inputVariables.get(1).buildUsage());
+        //sb.append("{").append(NL);
+        //sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
+        //sb.append("\"STATIONARY\" : {").append(NL);
+        //sb.append("\"NAME\" : \"").append(chemical.getName()).append("\"").append(NL);
+        //sb.append("}").append(NL);
+        //sb.append("}").append(NL);
         // don't forget the property
         if (this.properties.containsKey(Property.TIME)) {
-            Property time = (Property) this.properties.get(Property.TIME);
+            sb.append(",");
             // The Temp
-            sb.append(",{").append(NL);
-            sb.append("\"INPUT_TYPE\" : \"PROPERTY\",").append(NL);
-            sb.append("\"PROPERTY\" : {").append(NL);
-            sb.append("\"TIME\" : ");
-            // Temp object.
-            sb.append("{").append(NL);
-            sb.append("\"VALUE\" : ").append(time.getValue()).append(", ").append(NL);
-            sb.append("\"UNITS\" : ").append("\"").append(time.getUnits()).append("\"").append(NL);
-            sb.append("}").append(NL);
-            sb.append("}").append(NL);
-            sb.append("}").append(NL);
+            sb.append(this.properties.get(Property.TIME).buildUsage());
         }
         // Close the input array.
         sb.append("],").append(NL);
         // Add the outputs (there are none).
         sb.append("\"OUTPUTS\" : [").append(NL);
-        sb.append(this.outputVariable.buildDeclaration()).append(NL);
+        sb.append(this.outputVariables.get(0).buildDeclaration()).append(NL);
         // Close the output array.
         sb.append("]").append(NL);
         // Close Operation.

@@ -2,6 +2,9 @@ package compilation.datastructures.node;
 
 //import chemicalInteractions.ChemicalInteraction;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -9,12 +12,15 @@ import java.util.List;
 import java.util.Set;
 
 import executable.instructions.Instruction;
+import shared.variable.Variable;
 import substance.Property;
 
 /**
  * Created by chriscurtis on 9/28/16.
  */
 public class InstructionNode implements Serializable, Node {
+
+    public static final Logger logger = LogManager.getLogger(InstructionNode.class);
 
     protected List<String> inputSymbols = new ArrayList<>();
     protected List<String> outputSymbols = new ArrayList<>();
@@ -148,7 +154,11 @@ public class InstructionNode implements Serializable, Node {
         if (instruction == null) {
             return;
         }
-        inputSymbols.addAll(instruction.getInputs().keySet());
+        //inputSymbols.addAll(instruction.getInputs().keySet());
+        for (variable.Variable v : instruction.getInputsAsList()) {
+            inputSymbols.add(v.getName());
+        }
+        //inputSymbols.addAll(instruction.getInputsAsList());
         outputSymbols.addAll(instruction.getOutputs().keySet());
     }
 

@@ -3,9 +3,12 @@ package ir;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -22,7 +25,7 @@ public class AssignStatement extends BaseStatement implements Assign {
     public static final String INSTRUCTION = "ASSIGN";
     public static final String VERB = "VARAIBLE_DECLARATION";
 
-    Variable leftOpt;
+    List<Variable> leftOpt = new ArrayList<>();
     Statement rightOp;
 
     public AssignStatement() {
@@ -32,7 +35,7 @@ public class AssignStatement extends BaseStatement implements Assign {
 
     @Override
     public void setLeftOp(Variable variable) {
-        this.leftOpt = variable;
+        this.leftOpt.add(variable);
     }
 
     @Override
@@ -41,13 +44,18 @@ public class AssignStatement extends BaseStatement implements Assign {
     }
 
     @Override
-    public Variable getOutputVariable() {
+    public String compose(Property property) {
+        return super.defaultCompose(property);
+    }
+
+    @Override
+    public List<Variable> getOutputVariables() {
         return this.leftOpt;
     }
 
     @Override
     public Set<ChemTypes> getTypes() {
-        return this.leftOpt.getTypes();
+        return this.leftOpt.get(0).getTypes();
     }
 
     @Override
@@ -57,7 +65,7 @@ public class AssignStatement extends BaseStatement implements Assign {
 
     @Override
     public String compose(Formula instruction) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         // Only output matters here Output = arbitrary input at beginning of file.
         for (Variable v : instruction.getOutput()) {
@@ -69,7 +77,7 @@ public class AssignStatement extends BaseStatement implements Assign {
 
     @Override
     public String compose(Variable variable) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         for (ChemTypes t : (Set<ChemTypes>) variable.getTypes()) {
             sb.append("(assert (= ").append(SolverStrategy.getSMTName(variable.getScopedName(), t)).append(" true))").append(NL);
@@ -86,11 +94,9 @@ public class AssignStatement extends BaseStatement implements Assign {
     @Override
     public String toJson(String indent) {
         if (this.rightOp.containsInvoke()) {
-            logger.warn("not addressing invocations yet.");
         }
 
         if (this.containsInvoke) {
-            logger.error("We have a function call!");
         }
 
         return this.rightOp.toJson();

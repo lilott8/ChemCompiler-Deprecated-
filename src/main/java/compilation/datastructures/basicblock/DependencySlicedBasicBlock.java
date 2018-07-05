@@ -19,6 +19,7 @@ import compilation.datastructures.ssa.PHIInstruction;
 import compilation.datastructures.ssa.StaticSingleAssignment;
 import compilation.datastructures.ssi.SigmaInstruction;
 import compilation.symboltable.UsageGovernor;
+import variable.Variable;
 
 /**
  * Created by Tyson on 4/13/17.
@@ -142,7 +143,10 @@ public class DependencySlicedBasicBlock extends BasicBlock {
                 Set<String> _uses = new LinkedHashSet<>();
                 if (instr.getInstruction() != null) {
                     _defs.addAll(instr.getInstruction().getOutputs().keySet());
-                    _uses.addAll(instr.getInstruction().getInputs().keySet());
+                    for (Variable v : instr.getInstruction().getInputsAsList()) {
+                        _uses.add(v.getName());
+                    }
+                    // _uses.addAll(instr.getInstruction().getInputs().keySet());
                 } else {
                     if (instr instanceof PHIInstruction) {
                         _defs.add(((PHIInstruction) instr).getOriginalName());
@@ -234,11 +238,13 @@ public class DependencySlicedBasicBlock extends BasicBlock {
 
         //Get Dispense symbols
         for (InstructionNode instruction : instructions) {
-            for (String instructionInput : instruction.getInstruction().getInputs().keySet()) {
-                if (CFG.getEntry().getDefinitions().contains(instructionInput)) {
-                    instruction.addImplicitDispense(instructionInput);
+            for (Variable v : instruction.getInstruction().getInputsAsList()) {
+                if (CFG.getEntry().getDefinitions().contains(v.getName())) {
+                    instruction.addImplicitDispense(v.getName());
                 }
             }
+            //for (String instructionInput : instruction.getInstruction().getInputs().keySet()) {
+            //}
         }
 
 

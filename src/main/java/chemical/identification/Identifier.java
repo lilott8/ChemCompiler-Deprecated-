@@ -99,9 +99,9 @@ public abstract class Identifier {
         Pattern pattern = Pattern.compile(inchiKeyRegEx);
         Matcher matcher = pattern.matcher(chemical);
 
-        return (chemical.length() == 25
-                && StringUtils.equals(Character.toString(chemical.charAt(14)), "-")
-                && matcher.find());
+        return (chemical.length() == 27
+                && StringUtils.equals(Character.toString(chemical.charAt(14)), "-"));
+        //&& matcher.find());
     }
 
     public abstract BaseCompound identifyCompound(String name);
@@ -117,6 +117,7 @@ public abstract class Identifier {
      */
     public enum Representation {
         CAS_NUMBER, SMILES, NAME, INCHIKEY, FORMULA, PUBCHEM_ID;
+
 
         public static String getColumn(Representation r) {
             switch (r) {

@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
-import compilation.Compiler;
 import ir.AssignStatement;
 import ir.Conditional;
 import ir.DetectStatement;
@@ -26,10 +25,7 @@ import ir.ManifestStatement;
 import ir.MathStatement;
 import ir.MixStatement;
 import ir.ModuleStatement;
-import ir.Nop;
 import ir.ReturnStatement;
-import ir.SinkStatement;
-import ir.SourceStatement;
 import ir.SplitStatement;
 import ir.Statement;
 import ir.StatementBlock;
@@ -39,6 +35,7 @@ import parser.ast.AllowedArgumentsRest;
 import parser.ast.ArgumentList;
 import parser.ast.AssignmentStatement;
 import parser.ast.BranchStatement;
+import parser.ast.DispenseStatement;
 import parser.ast.ElseBranchStatement;
 import parser.ast.ElseIfBranchStatement;
 import parser.ast.FormalParameter;
@@ -46,6 +43,7 @@ import parser.ast.FormalParameterList;
 import parser.ast.FormalParameterRest;
 import parser.ast.FunctionDefinition;
 import parser.ast.FunctionInvoke;
+import parser.ast.IntegerLiteral;
 import parser.ast.Manifest;
 import parser.ast.MinusExpression;
 import parser.ast.Module;
@@ -57,7 +55,11 @@ import parser.ast.VariableAlias;
 import parser.ast.WhileStatement;
 import shared.errors.InvalidSyntaxException;
 import shared.io.strings.Experiment;
-import shared.variable.Property;
+import shared.properties.Property;
+import shared.properties.Quantity;
+import shared.properties.Temperature;
+import shared.properties.Time;
+import shared.properties.Volume;
 import shared.variable.Variable;
 import symboltable.SymbolTable;
 
@@ -378,10 +380,10 @@ public class BSIRConverter extends BSVisitor {
 
     /**
      * f0 -> <REPEAT>
-     * f1 -> ( IntegerLiteral() | Identifier() )
+     * f1 -> IntegerLiteral()
      * f2 -> <TIMES>
      * f3 -> <LBRACE>
-     * f4 -> ( Statement() )+
+     * f4 -> ( Statements() )+
      * f5 -> <RBRACE>
      */
     @Override
@@ -389,11 +391,11 @@ public class BSIRConverter extends BSVisitor {
         String scopeName = String.format("%s_%d", REPEAT, this.getNextScopeId());
         this.newScope(scopeName);
 
-        Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                this.getCurrentScope());
-
+        n.f1.accept(this);
+        this.name = String.format("%s_%s", CONST, n.f0.toString());
         // Build the new IR data structure.
-        LoopStatement loop = new LoopStatement(f1.getVarName());
+        LoopStatement loop = new LoopStatement(this.name);
+        loop.setCondition(n.f1.f0.toString());
         loop.setScopeName(scopeName);
         loop.setMethodName(this.methodStack.peek());
         this.types.clear();
@@ -424,7 +426,6 @@ public class BSIRConverter extends BSVisitor {
         this.newScope(scopeName);
         n.f1.accept(this);
 
-        logger.warn("While conditional is not being parse completely.");
         n.f2.accept(this);
         //Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
         //        this.getCurrentScope());
@@ -449,17 +450,22 @@ public class BSIRConverter extends BSVisitor {
     /**
      * f0 -> <IF>
      * f1 -> <LPAREN>
-     * f2 -> Expression()
-     * f3 -> <RPAREN>
-     * f4 -> <LBRACE>
-     * f5 -> ( Statement() )+
-     * f6 -> <RBRACE>
-     * f7 -> ( ElseIfStatement() )*
-     * f8 -> ( ElseStatement() )?
+     * f2 -> Identifier()
+     * f3 -> Conditional()
+     * f4 -> Primitives()
+     * f5 -> <RPAREN>
+     * f6 -> <LBRACE>
+     * f7 -> ( Statements() )+
+     * f8 -> <RBRACE>
+     * f9 -> ( ElseIfBranchStatement() )*
+     * f10 -> ( ElseBranchStatement() )?
+     *
+     *
+     *
+     * ((IntegerLiteral)n.f1.choice).f0.toString()
      */
     @Override
     public BSVisitor visit(BranchStatement n) {
-        logger.info("branch statement 1");
         // Build the scope for the If Statement.
         String scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
         // Create a new scope.
@@ -467,16 +473,22 @@ public class BSIRConverter extends BSVisitor {
         // Get the expression.
         this.inConditional = true;
         n.f2.accept(this);
+        String conditional = this.name;
+        n.f3.accept(this);
+        conditional += n.f3.f0.choice.toString();
+        n.f4.accept(this);
+        conditional += this.integerLiteral;
         this.inConditional = false;
 
         Conditional elseBranch = null;
 
         this.name = String.format("%s_%d", INTEGER, this.getNextIntId());
 
+
         Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 this.getCurrentScope());
 
-        Conditional branch = new IfStatement(this.conditional, true);
+        Conditional branch = new IfStatement(conditional, true);
         branch.setScopeName(scopeName);
         branch.setMethodName(this.methodStack.peek());
         instructions.put(branch.getId(), branch);
@@ -486,18 +498,18 @@ public class BSIRConverter extends BSVisitor {
         this.listBlocks.push(new StatementBlock(this.getCurrentScope()));
 
         // Get the statement(s).
-        n.f5.accept(this);
+        n.f7.accept(this);
 
-        if (n.f7.present() || n.f8.present()) {
+        if (n.f9.present() || n.f10.present()) {
             boolean fromElseIf = false;
             // Parse the elseIf(s)
-            if (n.f7.present()) {
+            if (n.f9.present()) {
                 fromElseIf = true;
                 throw new InvalidSyntaxException("\"else if\" statements are not allowed.");
             }
 
             // Parse the else
-            if (n.f8.present()) {
+            if (n.f10.present()) {
                 scopeName = String.format("%s_%d", BRANCH, this.getNextScopeId());
                 this.newScope(scopeName);
                 elseBranch = new IfStatement("", false);
@@ -509,7 +521,7 @@ public class BSIRConverter extends BSVisitor {
                 // this.controlStack.push(elseBranch);
 
                 // Grab the statements.
-                n.f8.accept(this);
+                n.f9.accept(this);
 
                 // Set the false branch
                 if (!fromElseIf) {
@@ -530,6 +542,19 @@ public class BSIRConverter extends BSVisitor {
         this.endScope();
 
         return this;
+    }
+
+    /**
+     * f0 -> <LESSTHAN>
+     * | <LESSTHANEQUAL>
+     * | <NOTEQUAL>
+     * | <EQUALITY>
+     * | <GREATERTHAN>
+     * | <GREATERTHANEQUAL>
+     */
+    @Override
+    public BSVisitor visit(parser.ast.Conditional n) {
+        return super.visit(n);
     }
 
     /**
@@ -575,34 +600,53 @@ public class BSIRConverter extends BSVisitor {
 
     /**
      * f0 -> <MIX>
-     * f1 -> PrimaryExpression()
-     * f2 -> <WITH>
-     * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> PrimaryExpression()
+     * f3 -> <WITH>
+     * f4 -> ( VolumeUnit() <OF> )?
+     * f5 -> PrimaryExpression()
+     * f6 -> ( <FOR> TimeUnit() )?
      */
     @Override
     public BSVisitor visit(parser.ast.MixStatement n) {
+        Property f1;
+        if (n.f1.present()) {
+            n.f1.accept(this);
+            f1 = new Volume(this.name, this.units, this.integerLiteral);
+        } else {
+            f1 = new Volume("unknown", "UL", 10);
+        }
+
         // Get the name.
-        n.f1.accept(this);
-        Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                this.getCurrentScope());
-        n.f3.accept(this);
-        Variable f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                this.getCurrentScope());
+        n.f2.accept(this);
+        Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
+        f2.setProperty(f1);
+
+        Property f4;
+        if (n.f4.present()) {
+            n.f4.accept(this);
+            f4 = new Volume(this.name, this.units, this.integerLiteral);
+        } else {
+            f4 = new Volume("unknown", "UL", 10);
+        }
+        n.f5.accept(this);
+        Variable f5 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
+        f5.setProperty(f4);
 
         // Build the IR data structure.
         Statement mix = new MixStatement();
-        mix.addInputVariable(f1);
-        mix.addInputVariable(f3);
+        mix.addInputVariable(f2);
+        mix.addInputVariable(f5);
         mix.addOutputVariable(this.assignTo);
 
-        if (n.f4.present()) {
-            n.f4.accept(this);
-            Variable<Integer> f4 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                    this.getCurrentScope());
-            // Add f4 to the data structure.
-            mix.addProperty(Property.TIME, f4);
+        Property f6;
+        if (n.f6.present()) {
+            n.f6.accept(this);
+            f6 = new Time(this.name, this.units, this.integerLiteral);
+        } else {
+            f6 = new Time("unknown", "SECOND", 1);
         }
+        mix.addProperty(Property.TIME, f6);
 
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);
@@ -612,6 +656,39 @@ public class BSIRConverter extends BSVisitor {
         instructions.put(assign.getId(), assign);
         // this.addStatement(assign);
         this.addStatement(mix);
+
+        return this;
+    }
+
+    /**
+     * f0 -> <DISPENSE>
+     * f1 -> ( VolumeUnit() <OF> )?
+     * f2 -> Identifier()
+     */
+    @Override
+    public BSVisitor visit(DispenseStatement n) {
+        Property f1;
+        if (n.f1.present()) {
+            n.f1.accept(this);
+            f1 = new Volume(this.name, this.units, this.integerLiteral);
+        } else {
+            f1 = new Volume("unknown", "UL", 10);
+        }
+        n.f2.accept(this);
+        Variable f2 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
+        f2.setProperty(f1);
+
+        Statement dispense = new ir.DispenseStatement();
+        dispense.addInputVariable(f2);
+        dispense.addProperty(Property.VOLUME, f1);
+        dispense.addOutputVariable(this.assignTo);
+
+        AssignStatement assign = new AssignStatement();
+        assign.setLeftOp(this.assignTo);
+        assign.setRightOp(dispense);
+        dispense.setMethodName(this.methodStack.peek());
+
+        this.addStatement(dispense);
 
         return this;
     }
@@ -630,14 +707,19 @@ public class BSIRConverter extends BSVisitor {
                 this.getCurrentScope());
         // Get the name.
         n.f3.accept(this);
-        Variable<Integer> f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                this.getCurrentScope());
+        Property f3 = new Quantity("SPLIT", "SPLIT", this.integerLiteral);
 
         // Build the IR data structure.
         Statement split = new SplitStatement();
         split.addInputVariable(f1);
         split.addProperty(Property.QUANTITY, f3);
-        split.addOutputVariable(this.assignTo);
+        String name;
+        for (int x = 1; x <= this.integerLiteral; x++) {
+            name = this.assignTo.getName() + x;
+            Variable var = SymbolTable.INSTANCE.searchScopeHierarchy(name, this.getCurrentScope());
+            split.addOutputVariable(var);
+        }
+        // split.addOutputVariable(this.assignTo);
 
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);
@@ -655,7 +737,7 @@ public class BSIRConverter extends BSVisitor {
      * f1 -> PrimaryExpression()
      * f2 -> <ON>
      * f3 -> PrimaryExpression()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     @Override
     public BSVisitor visit(parser.ast.DetectStatement n) {
@@ -673,14 +755,15 @@ public class BSIRConverter extends BSVisitor {
         detect.addInputVariable(f3);
         detect.addOutputVariable(this.assignTo);
 
+        Property f4;
         if (n.f4.present()) {
             n.f4.accept(this);
-            logger.warn("this.getNextIntId is being used in detect");
-            Variable f4 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
-                    this.getCurrentScope());
+            f4 = new Time(this.name, this.units, this.integerLiteral);
             // Add f4 to the data structure.
-            detect.addProperty(Property.TIME, f4);
+        } else {
+            f4 = new Time("unknown", "SECONDS", 10);
         }
+        detect.addProperty(Property.TIME, f4);
 
         AssignStatement assign = new AssignStatement();
         assign.setLeftOp(this.assignTo);
@@ -720,8 +803,8 @@ public class BSIRConverter extends BSVisitor {
      * f0 -> <HEAT>
      * f1 -> PrimaryExpression()
      * f2 -> <AT>
-     * f3 -> IntegerLiteral()
-     * f4 -> ( <FOR> IntegerLiteral() )?
+     * f3 -> TempUnit()
+     * f4 -> ( <FOR> TimeUnit() )?
      */
     @Override
     public BSVisitor visit(parser.ast.HeatStatement n) {
@@ -729,19 +812,21 @@ public class BSIRConverter extends BSVisitor {
         n.f1.accept(this);
         Variable f1 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name,
                 this.getCurrentScope());
+
         // Get the name.
         n.f3.accept(this);
-        Variable<Integer> f3 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
+        Property f3 = new Temperature(this.name, this.units, this.integerLiteral);
 
         // Build the IR data structure.
         Statement heat = new HeatStatement(String.format("%s-%d",
                 HeatStatement.INSTRUCTION, this.getNextInstructionId()));
+
         heat.addInputVariable(f1);
         heat.addProperty(Property.TEMP, f3);
 
         if (n.f4.present()) {
             n.f4.accept(this);
-            Variable<Integer> f4 = SymbolTable.INSTANCE.searchScopeHierarchy(this.name, this.getCurrentScope());
+            Property f4 = new Time(this.name, this.units, (float) this.integerLiteral);
             // Add f4 to the data structure.
             heat.addProperty(Property.TIME, f4);
         }
@@ -764,13 +849,11 @@ public class BSIRConverter extends BSVisitor {
 
         Set<ChemTypes> rightOpTypes = new HashSet<ChemTypes>(rightOp.getTypes());
 
-        logger.warn(rightOpTypes);
         rightOpTypes.removeAll(ChemTypes.getNums());
-        logger.warn(rightOpTypes);
 
         if (!ChemTypes.getMaterials().isEmpty()) {
-            Compiler.abandonShip("You cannot assign a material to a variable.");
-            throw new InvalidSyntaxException("You cannot assign a material to a variable.");
+            // Compiler.abandonShip("You cannot assign a material to a variable.");
+            throw new InvalidSyntaxException("You cannot alias a material (e.g. mat x = y.");
         } else {
             AssignStatement assign = new AssignStatement();
             MathStatement math = new MathStatement();
@@ -783,7 +866,6 @@ public class BSIRConverter extends BSVisitor {
             instructions.put(assign.getId(), assign);
             this.addStatement(assign);
         }
-
         return this;
     }
 

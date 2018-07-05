@@ -8,8 +8,11 @@ import java.util.Map;
 
 import chemical.epa.ChemTypes;
 import parser.BSVisitor;
-import shared.variable.DefinedVariable;
+import parser.ast.Manifest;
+import shared.variable.ManifestVariable;
 import shared.variable.Method;
+import shared.properties.Property;
+import shared.variable.NamedVariable;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 
@@ -49,6 +52,11 @@ public class InvokeStatement extends BaseStatement implements Invoke {
     }
 
     @Override
+    public String compose(Property property) {
+        return super.defaultCompose(property);
+    }
+
+    @Override
     public String toJson() {
         return this.toJson("");
     }
@@ -61,7 +69,7 @@ public class InvokeStatement extends BaseStatement implements Invoke {
      */
     @Override
     public String toJson(String indent) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
         // logger.info(this.inputVariables);
         // logger.info(this.method.getIndexedParameters());
@@ -80,22 +88,26 @@ public class InvokeStatement extends BaseStatement implements Invoke {
         }
 
         // TODO: figure out how to return numbers.
-        if (!this.method.getReturnStatement().getOutputVariable().getTypes().contains(ChemTypes.getNums())) {
+        if (!this.method.getReturnStatement().getOutputVariables().get(0).getTypes().contains(ChemTypes.getNums())) {
             sb.append(",").append(NL);
-            MixStatement statement = new MixStatement();
-            statement.addInputVariable(this.method.getReturnStatement().getOutputVariable());
-            statement.addInputVariable(this.method.getReturnStatement().getOutputVariable());
-            statement.addOutputVariable(this.outputVariable);
+            Statement statement = new MixStatement();
+
+            statement.addInputVariable(this.method.getReturnStatement().getOutputVariables().get(0));
+            Variable v = this.method.getReturnStatement().getOutputVariables().get(0);
+            Variable copy = new NamedVariable(v);
+
+            statement.addInputVariable(copy);
+            statement.addOutputVariable(this.outputVariables.get(0));
             sb.append(statement.toJson());
         } else {
             sb.append(",").append(NL);
             MathStatement statement = new MathStatement();
-            statement.addInputVariable(this.method.getReturnStatement().getOutputVariable());
-            Variable v = new DefinedVariable<Integer>(BSVisitor.CONST + "_0");
+            statement.addInputVariable(this.method.getReturnStatement().getOutputVariables().get(0));
+            Variable v = new ManifestVariable<Integer>(BSVisitor.CONST + "_0");
             v.addTypingConstraint(NAT);
             v.setValue(0);
             statement.addInputVariable(v);
-            statement.addOutputVariable(this.outputVariable);
+            statement.addOutputVariable(this.outputVariables.get(0));
             sb.append(statement.toJson());
         }
 

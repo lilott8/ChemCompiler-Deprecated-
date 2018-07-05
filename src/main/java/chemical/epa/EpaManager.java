@@ -317,16 +317,15 @@ public enum EpaManager {
      * @return boolean or exception as to the validity of a reaction
      */
     public boolean validate(ChemTypes x, ChemTypes y) {
-        if (this.config.isDebug()) {
-            // logger.trace(String.format("Testing for: %s, %s", x, y));
-        }
-
+        /*if (this.config.isDebug()) {
+            logger.trace(String.format("Testing for: %s, %s", x, y));
+        }*/
 
         boolean throwException = false;
         if (this.reactionTable.get(x, y) != null) {
             Reaction reaction = this.reactionTable.get(x, y);
             // We are not ignoring warnings.
-            if (config.getErrorLevel().warn()) {
+            if (!config.getErrorLevel().warn()) {
                 if (!reaction.getConsequences().isEmpty()) {
                     throwException = true;
                 }
@@ -342,8 +341,7 @@ public enum EpaManager {
             }
         }
 
-
-        throwException = false;
+        // throwException = false;
         if (throwException) {
             StringBuilder message = new StringBuilder();
             message.append("Combining: (").append(groupMap.get(x).groupId).append(") ")

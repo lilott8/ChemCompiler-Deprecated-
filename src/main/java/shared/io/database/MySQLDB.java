@@ -30,7 +30,7 @@ public class MySQLDB extends DatabaseConnector {
         try {
             String url = String.format("jdbc:mysql://%s/%s?" +
                             "useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
-                    config.getDBAddr(), config.getDBUser());
+                    config.getDBAddr(), config.getDBName());
             if (config.isDebug()) {
                 logger.debug(url);
             }

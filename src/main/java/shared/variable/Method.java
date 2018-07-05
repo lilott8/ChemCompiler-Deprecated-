@@ -77,7 +77,7 @@ public class Method {
 
     public void setReturnStatement(Statement returnStatement) {
         if (this.types.isEmpty()) {
-            this.types.addAll(returnStatement.getOutputVariable().getTypes());
+            this.types.addAll(returnStatement.getOutputVariables().get(0).getTypes());
         }
         this.returnStatement = returnStatement;
     }

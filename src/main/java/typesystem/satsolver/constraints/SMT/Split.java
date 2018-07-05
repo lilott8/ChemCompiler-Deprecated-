@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.constraints.SMTSolver;
@@ -34,7 +35,7 @@ public class Split implements SMTSolver {
             sb.append(compose(v));
         }
 
-        for (Variable v : instruction.getProperties()) {
+        for (Property v : instruction.getProperties()) {
             sb.append(compose(v));
         }
 
@@ -54,5 +55,10 @@ public class Split implements SMTSolver {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String compose(Property property) {
+        return "";
     }
 }

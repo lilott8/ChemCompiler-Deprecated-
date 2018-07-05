@@ -219,6 +219,24 @@ public class CFG implements Serializable {
         return edges;
     }
 
+    public List<BasicBlockEdge> getBasicBlockEdgesBySource(int source) {
+        List<BasicBlockEdge> _ret = new ArrayList<>();
+        for (BasicBlockEdge e : edges) {
+            if (e.getSource() == source)
+                _ret.add(e);
+        }
+        return _ret;
+    }
+
+    public List<BasicBlockEdge> getBasicBlockEdgesByDest(int dest) {
+        List<BasicBlockEdge> _ret = new ArrayList<>();
+        for (BasicBlockEdge e : edges) {
+            if (e.getDestination() == dest)
+                _ret.add(e);
+        }
+        return _ret;
+    }
+
     public Map<Integer, Set<Integer>> getPredecessorTable() {
         return this.basicBlockPredecessorSet;
     }

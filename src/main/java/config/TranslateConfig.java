@@ -1,9 +1,7 @@
 package config;
 
-import java.util.Map;
 import java.util.Set;
 
-import translators.Translator;
 import translators.TranslatorFacade;
 
 /**

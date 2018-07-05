@@ -15,7 +15,7 @@ import parser.visitor.Visitor;
  * f1 -> PrimaryExpression()
  * f2 -> <ON>
  * f3 -> PrimaryExpression()
- * f4 -> ( <FOR> IntegerLiteral() )?
+ * f4 -> ( <FOR> TimeUnit() )?
  */
 public class DetectStatement implements Node {
     public NodeToken f0;

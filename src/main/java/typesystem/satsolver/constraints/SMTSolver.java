@@ -3,6 +3,7 @@ package typesystem.satsolver.constraints;
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
+import shared.properties.Property;
 import shared.variable.Variable;
 import typesystem.elements.Formula;
 import typesystem.satsolver.strategies.SolverStrategy;
@@ -21,6 +22,8 @@ public interface SMTSolver {
 
     String compose(Variable variable);
 
+    String compose(Property property);
+
     default String killSwitch() {
         return "; Nuke it from orbit!" + NL + "(assert (= true false))" + NL;
     }
@@ -36,7 +39,7 @@ public interface SMTSolver {
             sb.append(compose(v));
         }
 
-        for (Variable v : instruction.getProperties()) {
+        for (Property v : instruction.getProperties()) {
             sb.append(compose(v));
         }
 
@@ -51,5 +54,9 @@ public interface SMTSolver {
         }
 
         return sb.toString();
+    }
+
+    default String defaultCompose(Property property) {
+        return "";
     }
 }

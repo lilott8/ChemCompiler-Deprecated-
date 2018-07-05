@@ -40,6 +40,11 @@ public class ConstVariable<Value> extends Variable<Value> {
     }
 
     @Override
+    public String buildDrain() {
+        return null;
+    }
+
+    @Override
     public String buildUsage() {
         StringBuilder sb = new StringBuilder();
         //sb.append("{").append(NL);
@@ -51,13 +56,17 @@ public class ConstVariable<Value> extends Variable<Value> {
     }
 
     @Override
+    public String buildHeat() {
+        return null;
+    }
+
+    @Override
     public String buildDeclaration() {
-        logger.warn("The type for ConstVars should be NUMBER not CHEMICAL");
         StringBuilder sb = new StringBuilder();
 
         sb.append("{").append(NL);
         sb.append("\"VARIABLE_DECLARATION\" : {").append(NL);
-        sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
+        sb.append("\"ID\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"TYPE\" : \"CHEMICAL\", ").append(NL);
         sb.append(this.addInferredTypes());
@@ -65,5 +74,10 @@ public class ConstVariable<Value> extends Variable<Value> {
         sb.append("}").append(NL);
 
         return sb.toString();
+    }
+
+    @Override
+    public String buildVariable() {
+        return "";
     }
 }

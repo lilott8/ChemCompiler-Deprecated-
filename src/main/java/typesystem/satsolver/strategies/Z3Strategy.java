@@ -83,8 +83,8 @@ public class Z3Strategy implements SolverStrategy {
         for (Map.Entry<Integer, Formula> instruction : this.instructions.entrySet()) {
             // if (instruction instanceof MixStatement) {
             // if (instruction.getValue().type == Rule.InstructionType.MIX) {
-                //logger.fatal("need to redo solveConstrains");
-                sb.append(this.composers.get(instruction.getValue().type).compose(instruction.getValue()));
+            //logger.fatal("need to redo solveConstrains");
+            sb.append(this.composers.get(instruction.getValue().type).compose(instruction.getValue()));
             // }
             // }
         }
@@ -92,7 +92,7 @@ public class Z3Strategy implements SolverStrategy {
         if (ConfigFactory.getConfig().isDebug()) {
             // logger.info(variables);
             // logger.info(statements);
-            //logger.info(sb);
+            // logger.info(sb);
         }
         return this.solveWithSMT2(sb.toString());
     }

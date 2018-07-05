@@ -18,8 +18,12 @@ public class MFSimSSADetect extends MFSimSSANode {
         super(id, OperationClassifier.DETECT, detectNode.getName());
         numDetect = detectNode.getInputs().size();
 
-        time = getTime(detectNode);
-
+        Long x = getTime(detectNode);
+        if (x != (long)2)
+            logger.info("Detection for " + getTime(detectNode) + " seconds reduced to 2 " +
+                    "seconds, assuming readings are ascertainable in a very short period of time from a physical sensor.");
+        //time = getTime(detectNode);
+        time = (long)2;
     }
 
     public String toString() {

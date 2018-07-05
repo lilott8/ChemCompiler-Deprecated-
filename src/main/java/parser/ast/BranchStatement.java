@@ -13,26 +13,30 @@ import parser.visitor.Visitor;
  * Grammar production:
  * f0 -> <IF>
  * f1 -> <LPAREN>
- * f2 -> Conditional()
- * f3 -> <RPAREN>
- * f4 -> <LBRACE>
- * f5 -> ( Statements() )+
- * f6 -> <RBRACE>
- * f7 -> ( ElseIfBranchStatement() )*
- * f8 -> ( ElseBranchStatement() )?
+ * f2 -> Identifier()
+ * f3 -> Conditional()
+ * f4 -> Primitives()
+ * f5 -> <RPAREN>
+ * f6 -> <LBRACE>
+ * f7 -> ( Statements() )+
+ * f8 -> <RBRACE>
+ * f9 -> ( ElseIfBranchStatement() )*
+ * f10 -> ( ElseBranchStatement() )?
  */
 public class BranchStatement implements Node {
     public NodeToken f0;
     public NodeToken f1;
-    public Conditional f2;
-    public NodeToken f3;
-    public NodeToken f4;
-    public NodeList f5;
+    public Identifier f2;
+    public Conditional f3;
+    public Primitives f4;
+    public NodeToken f5;
     public NodeToken f6;
-    public NodeListOptional f7;
-    public NodeOptional f8;
+    public NodeList f7;
+    public NodeToken f8;
+    public NodeListOptional f9;
+    public NodeOptional f10;
 
-    public BranchStatement(NodeToken n0, NodeToken n1, Conditional n2, NodeToken n3, NodeToken n4, NodeList n5, NodeToken n6, NodeListOptional n7, NodeOptional n8) {
+    public BranchStatement(NodeToken n0, NodeToken n1, Identifier n2, Conditional n3, Primitives n4, NodeToken n5, NodeToken n6, NodeList n7, NodeToken n8, NodeListOptional n9, NodeOptional n10) {
         f0 = n0;
         f1 = n1;
         f2 = n2;
@@ -42,18 +46,22 @@ public class BranchStatement implements Node {
         f6 = n6;
         f7 = n7;
         f8 = n8;
+        f9 = n9;
+        f10 = n10;
     }
 
-    public BranchStatement(Conditional n0, NodeList n1, NodeListOptional n2, NodeOptional n3) {
+    public BranchStatement(Identifier n0, Conditional n1, Primitives n2, NodeList n3, NodeListOptional n4, NodeOptional n5) {
         f0 = new NodeToken("if");
         f1 = new NodeToken("(");
         f2 = n0;
-        f3 = new NodeToken(")");
-        f4 = new NodeToken("{");
-        f5 = n1;
-        f6 = new NodeToken("}");
-        f7 = n2;
-        f8 = n3;
+        f3 = n1;
+        f4 = n2;
+        f5 = new NodeToken(")");
+        f6 = new NodeToken("{");
+        f7 = n3;
+        f8 = new NodeToken("}");
+        f9 = n4;
+        f10 = n5;
     }
 
     public void accept(Visitor v) {
@@ -63,11 +71,9 @@ public class BranchStatement implements Node {
     public <R, A> R accept(GJVisitor<R, A> v, A argu) {
         return v.visit(this, argu);
     }
-
     public <R> R accept(GJNoArguVisitor<R> v) {
         return v.visit(this);
     }
-
     public <A> void accept(GJVoidVisitor<A> v, A argu) {
         v.visit(this, argu);
     }

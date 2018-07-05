@@ -1,0 +1,14 @@
+manifest test
+manifest test2
+
+functions
+
+function doThis(alpha, beta) {
+    heat alpha at 45c
+    a = mix alpha with beta
+    return a
+}
+
+instructions
+
+a = doThis(test, test2)

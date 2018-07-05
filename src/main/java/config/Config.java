@@ -9,17 +9,12 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import shared.ReportingLevel;
-import translators.Translator;
 import translators.TranslatorFacade;
-import translators.mfsim.MFSimSSATranslator;
-import translators.typesystem.TypeSystemTranslator;
 
 /**
  * @created: 7/26/17
@@ -151,6 +146,11 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
      * DEFAULT: true
      */
     private boolean checkForChemAxon = true;
+    /**
+     * Should the compiler print typing statistics
+     * DEFAULT: false
+     */
+    private boolean printStatistics = false;
 
     /**
      * Build the config object from our command line This method must match that in the main.
@@ -207,7 +207,8 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
                 this.dbAddr = cmd.getOptionValue("dbaddr");
             }
             if (cmd.hasOption("dbdriver")) {
-                this.dbDriver = cmd.getOptionValue("dbdriver");
+                // this.dbDriver = cmd.getOptionValue("dbdriver");
+                this.dbDriver = "org.mariadb.jdbc.MySQLDataSource";
             }
             if (cmd.hasOption("dbtimeout")) {
                 this.dbTimeout = Integer.parseInt(cmd.getOptionValue("dbtimeout"));
@@ -268,6 +269,10 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
 
         if (cmd.hasOption("nochemaxon")) {
             this.checkForChemAxon = false;
+        }
+
+        if (cmd.hasOption("statistics")) {
+            this.printStatistics = true;
         }
     }
 
@@ -466,5 +471,9 @@ public class Config implements AlgorithmConfig, TranslateConfig, DatabaseConfig,
     @Override
     public ReportingLevel getErrorLevel() {
         return this.errorLevel;
+    }
+
+    public boolean printStatistics() {
+        return this.printStatistics;
     }
 }
