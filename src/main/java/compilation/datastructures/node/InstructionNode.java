@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 import executable.instructions.Instruction;
+import shared.variable.Variable;
 import substance.Property;
 
 /**
@@ -153,7 +154,11 @@ public class InstructionNode implements Serializable, Node {
         if (instruction == null) {
             return;
         }
-        inputSymbols.addAll(instruction.getInputs().keySet());
+        //inputSymbols.addAll(instruction.getInputs().keySet());
+        for (variable.Variable v : instruction.getInputsAsList()) {
+            inputSymbols.add(v.getName());
+        }
+        //inputSymbols.addAll(instruction.getInputsAsList());
         outputSymbols.addAll(instruction.getOutputs().keySet());
     }
 

@@ -79,13 +79,20 @@ public class MFSimSSADAG {
             Instruction instruction = instructionNode.getInstruction();
             if (instruction != null) {
                 boolean stationaryInput = false;
-                for (Variable v : instruction.getInputs().values()) {
+                for (Variable v : instruction.getInputsAsList()) {
                     if (v instanceof Instance && ((Instance) v).getIsStationary()) {
                         stationaryInput = true;
                         n = new MFSimSSAReact(uniqueIdGen.getNextID(), instruction, (Instance) v);
                         break;
                     }
                 }
+                /*for (Variable v : instruction.getInputs().values()) {
+                    if (v instanceof Instance && ((Instance) v).getIsStationary()) {
+                        stationaryInput = true;
+                        n = new MFSimSSAReact(uniqueIdGen.getNextID(), instruction, (Instance) v);
+                        break;
+                    }
+                }*/
                 if (stationaryInput) {
                     // already created
                 } else if (instruction instanceof Combine) {
@@ -120,20 +127,41 @@ public class MFSimSSADAG {
             for (String dispense : instructionNode.getDispenseSymbols()) {
 //                boolean dontDispense = false;
 //                boolean stationary = false;
-                if (instructionNode.getInstruction().getInputs().get(dispense) instanceof Instance
-                        && ((Instance) instructionNode.getInstruction().getInputs().get(dispense)).getIsStationary()) {
+                if (instructionNode.getInstruction().getVariableByName(dispense) instanceof Instance
+                        && ((Instance) instructionNode.getInstruction().getVariableByName(dispense)).getIsStationary()) {
                     continue;
+                }
+                //if (instructionNode.getInstruction().getInputs().get(dispense) instanceof Instance
+                //    && ((Instance) instructionNode.getInstruction().getInputs().get(dispense)).getIsStationary()) {
+                //continue;
 //                    stationary = true;
 //                    if (!(instructionNode.getInstruction() instanceof Combine)
 //                            && !(instructionNode.getInstruction() instanceof Output)
 //                            && !(instructionNode.getInstruction() instanceof Heat))
 //                        dontDispense = true;
-                }
+                //}
 
                 // get dispense amount
                 Integer amount = 0;  //template amount
                 Boolean changed = false;
-                for (String input : instruction.getInputs().keySet()) {
+                for (Variable v : instruction.getInputsAsList()) {
+                    if (v.getName().equals(dispense)) {
+                        if (variableStack.containsKey(v.getName())) {
+                            if (v instanceof Instance) {
+                                if (((Instance) v).getSubstance() instanceof Chemical) {
+                                    if (((Instance) v).getSubstance().getVolume() == null) {
+                                        amount = 10;
+                                    } else {
+                                        amount = (int) ((Instance) v).getSubstance().getVolume().getQuantity();
+                                    }
+                                    changed = true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                /*for (String input : instruction.getInputs().keySet()) {
                     if (input.equals(dispense)) {
                         if (variableStack.containsKey(input)) {
                             if (instruction.getInputs().get(input) instanceof Instance) {
@@ -148,7 +176,7 @@ public class MFSimSSADAG {
                             }
                         }
                     }
-                }
+                }*/
                 if (!changed) {
                     amount = 10;
                 }
@@ -184,10 +212,15 @@ public class MFSimSSADAG {
                 node.put(instructionNode.getId(), n);
 
             if (n instanceof MFSimSSAOutput) {
-                for (Variable input : instructionNode.getInstruction().getInputs().values()) {
-                    if (input instanceof Instance && ((Instance) input).getIsStationary())
-                            node.remove(instructionNode.getId());
+                for (Variable v : instructionNode.getInstruction().getInputsAsList()) {
+                    if (v instanceof Instance && ((Instance) v).getIsStationary()) {
+                        node.remove(instructionNode.getId());
+                    }
                 }
+                //for (Variable input : instructionNode.getInstruction().getInputs().values()) {
+                //    if (input instanceof Instance && ((Instance) input).getIsStationary())
+                //            node.remove(instructionNode.getId());
+                //}
                 continue;
             }
 
@@ -253,9 +286,13 @@ public class MFSimSSADAG {
             InstructionNode instr = bb.getInstructions().get(bb.getInstructions().size() - 1);
             if (instr instanceof SigmaInstruction || instr instanceof PHIInstruction) {
                 //continue;
-            } else if (instr.getInstruction().getInputs().containsKey(transferOutDroplet) && instr.getInstruction().getInputs().get(transferOutDroplet) instanceof Instance &&
-                    ((Instance) instr.getInstruction().getInputs().get(transferOutDroplet)).getIsStationary()) {
+            } else if (instr.getInstruction().getVariableByName(transferOutDroplet) != null && instr.getInstruction().getVariableByName(transferOutDroplet) instanceof Instance &&
+                    ((Instance) instr.getInstruction().getVariableByName(transferOutDroplet)).getIsStationary()) {
                 continue;
+                //} else if (instr.getInstruction().getInputs().containsKey(transferOutDroplet) && instr.getInstruction().getInputs().get(transferOutDroplet) instanceof Instance &&
+                //        ((Instance) instr.getInstruction().getInputs().get(transferOutDroplet)).getIsStationary()) {
+                //    continue;
+
             } else if (instr.getInstruction() instanceof Output) {
                 continue;
             }

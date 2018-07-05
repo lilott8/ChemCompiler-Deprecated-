@@ -5,7 +5,8 @@ functions
 
 function doThis(alpha, beta) {
     heat alpha at 45c
-    return beta
+    a = mix alpha with beta
+    return a
 }
 
 instructions

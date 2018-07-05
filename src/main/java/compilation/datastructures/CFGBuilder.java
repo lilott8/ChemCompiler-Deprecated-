@@ -12,6 +12,7 @@ import executable.Executable;
 import executable.Experiment;
 import executable.conditionals.Branch;
 import executable.conditionals.Loop;
+import executable.instructions.Combine;
 import executable.instructions.Instruction;
 
 /**
@@ -196,6 +197,10 @@ public class CFGBuilder {
                     controlFlowGraph.insertInstructionNode(bb, instruction, true);
                 } else {
                     controlFlowGraph.insertInstructionNode(bb, instruction, false);
+                }
+
+                if (instruction instanceof Combine && instruction.getInputsAsList().size() == 1) {
+                    logger.fatal("A mix only has 1 input.");
                 }
 
                 if (instructionIndex == instructionList.size() - 1) {
