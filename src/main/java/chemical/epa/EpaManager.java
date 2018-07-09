@@ -257,6 +257,7 @@ public enum EpaManager {
     private void buildReactiveMatrix() {
         Logger logger = LogManager.getLogger(EpaManager.class);
         FileReader reader = new SimpleReader(config.getReactiveMatrix());
+        logger.info("Using: " + config.getReactiveMatrix());
 
         String line;
         while ((line = reader.nextLine()) != null) {

@@ -233,6 +233,11 @@ public class CliWrapper {
                 " Usage: -dbextras [extra url get options]";
         options.addOption(Option.builder("dbextras").longOpt("dbextras")
                 .desc(desc).hasArg().argName("dbextras").build());
+
+        desc = "Abstract Interpretation Matrix location. \n" +
+                "Usage: -matrix [path/to/matrix]";
+        options.addOption(Option.builder("matrix").longOpt("matrix")
+                .required(true).desc(desc).hasArg().argName("matrix").build());
         // Run a check to make sure ChemAxon is enabled.
         desc = "Disable ChemAxon check.\n" +
                 " Usage: -nca";
