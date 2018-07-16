@@ -20,8 +20,10 @@ b = mix 500 uL of plasmid_dna with 1uL of p3000_reagent
 ccc = mix b with 25uL of opti_mem
 d = mix a with ccc
 e = mix 557uL of opti_mem with d
-heat e at 37c for 86400s
+ffff = mix cells_prime with e
 
-ffff = mix e with hoechst_stain
+heat ffff at 37c for 86400s
 
-y = detect fluorescence on ffff
+g = mix ffff with hoechst_stain
+
+y = detect fluorescence on g
