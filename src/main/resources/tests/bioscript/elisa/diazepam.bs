@@ -1,6 +1,6 @@
 module fluorescence
 
-stationary diazepam_enzyme
+manifest diazepam_enzyme
 
 manifest urinesample
 manifest diazepam_antibody

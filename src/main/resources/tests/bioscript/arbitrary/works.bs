@@ -1,18 +1,14 @@
-manifest PCRMasterMix
+manifest test
+manifest test2
 
 functions
 
-instructions
-
-PCRMix = dispense 100uL of PCRMasterMix
-
-heat PCRMix at 95c for 5s
-
-repeat 20 times {
-  heat PCRMix at 53c for 15s
-  heat PCRMix at 72c for 10s
+function doThis(alpha, beta) {
+    heat alpha at 45c
+    a = mix alpha with beta
+    return a
 }
 
-sensor = detect fluorescence on PCRMix for 3m
+instructions
 
-drain PCRMix
+a = doThis(test, test2)

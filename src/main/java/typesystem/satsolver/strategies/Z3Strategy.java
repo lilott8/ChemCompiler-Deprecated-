@@ -176,16 +176,16 @@ public class Z3Strategy implements SolverStrategy {
             solver.add(expr);
             Status status = solver.check();
             if (status == Status.SATISFIABLE) {
-                if (ConfigFactory.getConfig().isDebug()) {
-                    logger.trace("SAT!");
-                }
+                logger.trace("This BioScript program is safe.");
                 return true;
+                //if (ConfigFactory.getConfig().isDebug()) {
+                //}
             } else {
-                if (ConfigFactory.getConfig().isDebug()) {
-                    // logger.info(smt2);
-                    logger.error("UNSAT");
-                }
+                logger.error("This BioScript may be unsafe for execution, halting compilation.");
                 return false;
+                //if (ConfigFactory.getConfig().isDebug()) {
+                // logger.info(smt2);
+                //}
             }
         } catch (Z3Exception e) {
             logger.error("There was an error solving the given constraints");

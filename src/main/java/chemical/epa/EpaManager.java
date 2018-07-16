@@ -257,6 +257,7 @@ public enum EpaManager {
     private void buildReactiveMatrix() {
         Logger logger = LogManager.getLogger(EpaManager.class);
         FileReader reader = new SimpleReader(config.getReactiveMatrix());
+        logger.info("Using: " + config.getReactiveMatrix());
 
         String line;
         while ((line = reader.nextLine()) != null) {
@@ -290,11 +291,11 @@ public enum EpaManager {
             // logger.trace(String.format("Testing for: %s, %s", x, y));
         }
 
-        try {
+        //try {
             return validate(x, y);
-        } catch (CompatabilityException ce) {
-            return false;
-        }
+        //} catch (CompatabilityException ce) {
+        //    return false;
+        //}
     }
 
     public boolean test(BaseCompound one, BaseCompound two) {
@@ -350,7 +351,8 @@ public enum EpaManager {
                     .append(groupMap.get(y).groupName)
                     .append(" results in: ").append(this.reactionTable.get(x, y).toString());
             //logger.fatal(message.toString());
-            throw new CompatabilityException(message.toString());
+            // throw new CompatabilityException(message.toString());
+            return false;
         }
         return true;
     }

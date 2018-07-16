@@ -59,10 +59,14 @@ public class Compiler {
                 if (!abandonShip) {
                     long beginTime = System.nanoTime();
                     Inference phase = new Inference();
-                    phase.runPhase(experiment);
+                    boolean passed = phase.runPhase(experiment);
                     long inferenceTime = System.nanoTime() - beginTime;
                     Statistics.INSTANCE.addStatsCategory(Statistics.TYPE_CHECKING);
                     Statistics.INSTANCE.addRecord(Statistics.TYPE_CHECKING, String.format("Time (seconds) running inference: %.02f", inferenceTime / 1000000000.0));
+                    if (!passed) {
+                        logger.fatal("Exiting from a non-standard spot in compiler.");
+                        System.exit(1);
+                    }
                 } else {
                     logger.fatal(abandonShipReasons);
                     logger.fatal("Killing program in compiler.");
@@ -168,7 +172,7 @@ public class Compiler {
 
                     DependencySlicedBasicBlock.getInOutSets(this.SSI);
                     experimentControlFlowGraphs.add(this.SSI);
-                    logger.fatal(this.SSI);
+                    //logger.fatal(this.SSI);
                 }
             }
             long finish = System.nanoTime() - start;

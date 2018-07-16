@@ -54,7 +54,7 @@ public class HeatStatement extends BaseNop {
         // The Variable.
         // sb.append("{").append(NL);
         // sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
-        sb.append(this.inputVariables.get(0).buildUsage()).append(",").append(NL);
+        sb.append(this.inputVariables.get(0).buildHeat()).append(",").append(NL);
         // The Temperature.
         sb.append(this.properties.get(Property.TEMP).buildUsage());
 

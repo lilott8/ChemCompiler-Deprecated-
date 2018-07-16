@@ -56,6 +56,11 @@ public class ConstVariable<Value> extends Variable<Value> {
     }
 
     @Override
+    public String buildHeat() {
+        return null;
+    }
+
+    @Override
     public String buildDeclaration() {
         StringBuilder sb = new StringBuilder();
 

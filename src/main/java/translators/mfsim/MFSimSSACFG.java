@@ -66,7 +66,7 @@ public class MFSimSSACFG {
                 boolean stationary = false;
                 InstructionNode node = instructions.get(instructions.size()-1);
                 if (node.getInstruction() instanceof Output) {
-                    for (Variable var : instructions.get(instructions.size() - 1).getInstruction().getInputs().values()) {
+                    for (Variable var : instructions.get(instructions.size() - 1).getInstruction().getInputsAsList()) {
                         if (var instanceof Instance && ((Instance) var).getIsStationary()) {
                             stationary = true;
                         }
@@ -149,7 +149,7 @@ public class MFSimSSACFG {
             conditionalGroup.add(edge);
             if (instructions.get(instructions.size() - 1).getInstruction() instanceof Output) {
                 boolean stationary = false;
-                for (Variable var : instructions.get(instructions.size()-1).getInstruction().getInputs().values()) {
+                for (Variable var : instructions.get(instructions.size() - 1).getInstruction().getInputsAsList()) {
                     if (var instanceof Instance && ((Instance) var).getIsStationary()) {
                         stationary = true;
                     }
@@ -277,7 +277,7 @@ public class MFSimSSACFG {
     private String resolveExpression(String destName, BasicBlockEdge edge, Integer bbID) {
         Integer expressionID = this.uniqueIDGen.getNextID();
         String ret = expressionID + ")\nEXP(" + expressionID;
-        logger.warn(edge + "type: " + edge.getType());
+        // logger.warn(edge + "type: " + edge.getType());
         if (edge.getType().equals("repeat")) {
             ret += ", RUN_COUNT, LT, " + dags.get(bbID).getName() + ", " + edge.getCondition() + ")\n";
         } else { // sensor reading control flow

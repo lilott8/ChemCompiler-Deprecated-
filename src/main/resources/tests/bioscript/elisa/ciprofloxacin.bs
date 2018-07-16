@@ -1,6 +1,6 @@
 module fluorescence
 
-stationary ciprofloxacin_enzyme
+manifest ciprofloxacin_enzyme
 
 manifest distilled_water
 manifest ciprofloxacin_conjugate

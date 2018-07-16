@@ -1,8 +1,8 @@
 module fluorescence
 
-stationary Antigen1
-stationary Antigen2
-stationary Antigen3
+manifest Antigen1
+manifest Antigen2
+manifest Antigen3
 
 manifest morphine_conjugate
 manifest negative_standard

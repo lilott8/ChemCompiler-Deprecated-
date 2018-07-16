@@ -1,6 +1,6 @@
 module fluorescence
 
-stationary antigen
+manifest antigen
 
 manifest urine_sample
 manifest fentanyl_conjugate

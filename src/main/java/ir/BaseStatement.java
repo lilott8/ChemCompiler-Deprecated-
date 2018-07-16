@@ -193,13 +193,16 @@ public abstract class BaseStatement implements Statement {
                     counter++;
                 }
             } else {
-                Variable v = SymbolTable.INSTANCE.getScopedSymbol(method.getName(), this.inputVariables.get(x).getName());
+                Variable v = SymbolTable.INSTANCE.searchScopeHierarchy(this.inputVariables.get(x).getName(), method.getName());
                 if (v != null) {
                     variables.add(v);
+                } else {
+                    logger.fatal("We cannot find a variable: " + this.inputVariables.get(x).getName());
                 }
             }
         }
         this.inputVariables.clear();
+        logger.info(variables);
         this.inputVariables.addAll(variables);
     }
 }

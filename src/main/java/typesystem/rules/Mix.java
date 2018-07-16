@@ -48,7 +48,7 @@ public class Mix extends NodeAnalyzer {
             } else {
                 // Otherwise we probably need to identify it.
                 input.addTypingConstraints(identifier.identifyCompoundForTypes(input.getVarName()));
-                logger.warn(input.getVarName() + " has no previous declarations...");
+                // logger.warn(input.getVarName() + " has no previous declarations...");
             }
             // Add the input to the instruction.
             instruction.addInputVariable(input);

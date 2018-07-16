@@ -1,10 +1,10 @@
 module fluorescence
 
-stationary Anti_Morphine
-stationary Anti_Oxy
-stationary Anti_Fentanyl
-stationary Anti_Ciprofloxcin
-stationary Anti_Heroin
+manifest Anti_Morphine
+manifest Anti_Oxy
+manifest Anti_Fentanyl
+manifest Anti_Ciprofloxcin
+manifest Anti_Heroin
 
 manifest UrineSample
 

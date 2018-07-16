@@ -1,7 +1,6 @@
 module fluorescence
 
-stationary heroin_enzyme
-
+manifest heroin_enzyme
 manifest heroin_conjugate
 manifest urine_sample
 manifest tmb_substrate
@@ -12,7 +11,7 @@ functions
 
 instructions
 
-a = mix 20uL of urine_sample with heroin_enzyme
+a = mix 20uL of urine_sample with 1uL of heroin_enzyme for 10s
 a = mix 100uL of heroin_conjugate with a for 60s
 heat a at 23c for 60m
 drain a

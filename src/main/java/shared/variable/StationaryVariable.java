@@ -32,6 +32,11 @@ public class StationaryVariable<Value> extends Variable<Value> {
     }
 
     @Override
+    public String buildHeat() {
+        return null;
+    }
+
+    @Override
     public String buildDrain() {
         StringBuilder sb = new StringBuilder();
         sb.append("{").append(NL);

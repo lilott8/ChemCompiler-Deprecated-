@@ -29,6 +29,10 @@ public class SensorVariable<Value> extends Variable<Value> {
         super(name, type, scope);
     }
 
+    @Override
+    public String buildHeat() {
+        return null;
+    }
 
     @Override
     public String buildDrain() {

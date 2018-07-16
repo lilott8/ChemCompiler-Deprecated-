@@ -1,0 +1,549 @@
+{
+  "EXPERIMENT": {
+    "NAME": "DEFAULT",
+    "INPUTS": [
+      {
+        "SENSOR_DECLARATION": {
+          "ID": "fluorescence",
+          "NAME": "fluorescence",
+          "TYPE": "SENSOR",
+          "INFERRED TYPES": [
+            -1
+          ]
+        }
+      },
+      {
+        "VARIABLE_DECLARATION": {
+          "ID": "cells",
+          "NAME": "cells",
+          "TYPE": "CHEMICAL",
+          "INFERRED TYPES": [
+            99
+          ]
+        }
+      },
+      {
+        "VARIABLE_DECLARATION": {
+          "ID": "holding",
+          "NAME": "holding",
+          "TYPE": "CHEMICAL",
+          "INFERRED TYPES": [
+            99
+          ]
+        }
+      },
+      {
+        "VARIABLE_DECLARATION": {
+          "ID": "lipofectamine",
+          "NAME": "lipofectamine",
+          "TYPE": "CHEMICAL",
+          "INFERRED TYPES": [
+            99
+          ]
+        }
+      },
+      {
+        "VARIABLE_DECLARATION": {
+          "ID": "opti_mem",
+          "NAME": "opti_mem",
+          "TYPE": "CHEMICAL",
+          "INFERRED TYPES": [
+            99
+          ]
+        }
+      },
+      {
+        "VARIABLE_DECLARATION": {
+          "ID": "plasmid_dna",
+          "NAME": "plasmid_dna",
+          "TYPE": "CHEMICAL",
+          "INFERRED TYPES": [
+            99
+          ]
+        }
+      },
+      {
+        "VARIABLE_DECLARATION": {
+          "ID": "p3000_reagent",
+          "NAME": "p3000_reagent",
+          "TYPE": "CHEMICAL",
+          "INFERRED TYPES": [
+            99
+          ]
+        }
+      },
+      {
+        "VARIABLE_DECLARATION": {
+          "ID": "hoechst_stain",
+          "NAME": "hoechst_stain",
+          "TYPE": "CHEMICAL",
+          "INFERRED TYPES": [
+            99
+          ]
+        }
+      }
+    ],
+    "INSTRUCTIONS": [
+      {
+        "OPERATION": {
+          "ID": 8,
+          "NAME": "MIX",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "cells"
+                },
+                "VOLUME": {
+                  "VALUE": 1600.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "holding"
+                },
+                "VOLUME": {
+                  "VALUE": 10.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 1.0,
+                "UNITS": "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "cells_prime",
+                "NAME": "cells_prime",
+                "TYPE": "VARIABLE",
+                "INFERRED TYPES": [
+                  99
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "NAME": "HEAT",
+          "ID": 10,
+          "CLASSIFICATION": "HEAT",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "cells_prime"
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 37.0,
+                "UNITS": "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 28800.0,
+                "UNITS": "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS": []
+        }
+      },
+      {
+        "OPERATION": {
+          "ID": 11,
+          "NAME": "MIX",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "lipofectamine"
+                },
+                "VOLUME": {
+                  "VALUE": 1.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "opti_mem"
+                },
+                "VOLUME": {
+                  "VALUE": 557.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 1.0,
+                "UNITS": "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "a",
+                "NAME": "a",
+                "TYPE": "VARIABLE",
+                "INFERRED TYPES": [
+                  99
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "ID": 13,
+          "NAME": "MIX",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "plasmid_dna"
+                },
+                "VOLUME": {
+                  "VALUE": 500.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "p3000_reagent"
+                },
+                "VOLUME": {
+                  "VALUE": 1.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 1.0,
+                "UNITS": "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "b",
+                "NAME": "b",
+                "TYPE": "VARIABLE",
+                "INFERRED TYPES": [
+                  99
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "ID": 15,
+          "NAME": "MIX",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "b"
+                },
+                "VOLUME": {
+                  "VALUE": 10.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "opti_mem"
+                },
+                "VOLUME": {
+                  "VALUE": 557.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 1.0,
+                "UNITS": "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "ccc",
+                "NAME": "ccc",
+                "TYPE": "VARIABLE",
+                "INFERRED TYPES": [
+                  99
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "ID": 17,
+          "NAME": "MIX",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "a"
+                },
+                "VOLUME": {
+                  "VALUE": 10.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "ccc"
+                },
+                "VOLUME": {
+                  "VALUE": 10.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 1.0,
+                "UNITS": "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "d",
+                "NAME": "d",
+                "TYPE": "VARIABLE",
+                "INFERRED TYPES": [
+                  99
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "ID": 19,
+          "NAME": "MIX",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "opti_mem"
+                },
+                "VOLUME": {
+                  "VALUE": 557.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "d"
+                },
+                "VOLUME": {
+                  "VALUE": 10.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 1.0,
+                "UNITS": "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "e",
+                "NAME": "e",
+                "TYPE": "VARIABLE",
+                "INFERRED TYPES": [
+                  99
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "NAME": "HEAT",
+          "ID": 21,
+          "CLASSIFICATION": "HEAT",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "e"
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 37.0,
+                "UNITS": "CELSIUS"
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 86400.0,
+                "UNITS": "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS": []
+        }
+      },
+      {
+        "OPERATION": {
+          "ID": 22,
+          "NAME": "MIX",
+          "CLASSIFICATION": "MIX",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "e"
+                },
+                "VOLUME": {
+                  "VALUE": 10.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "hoechst_stain"
+                },
+                "VOLUME": {
+                  "VALUE": 10.0,
+                  "UNITS": "UL"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 1.0,
+                "UNITS": "SECOND"
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "ffff",
+                "NAME": "ffff",
+                "TYPE": "VARIABLE",
+                "INFERRED TYPES": [
+                  99
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "OPERATION": {
+          "NAME": "fluorescence",
+          "ID": 24,
+          "CLASSIFICATION": "DETECT",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "CHEMICAL": {
+                "VARIABLE": {
+                  "NAME": "ffff"
+                }
+              }
+            },
+            {
+              "INPUT_TYPE": "PROPERTY",
+              "TIME": {
+                "VALUE": 10.0,
+                "UNITS": "SECONDS"
+              }
+            }
+          ],
+          "OUTPUTS": [
+            {
+              "VARIABLE_DECLARATION": {
+                "ID": "y",
+                "NAME": "y",
+                "TYPE": "CHEMICAL",
+                "INFERRED TYPES": [
+                  99
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
