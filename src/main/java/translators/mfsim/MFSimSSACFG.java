@@ -277,7 +277,7 @@ public class MFSimSSACFG {
     private String resolveExpression(String destName, BasicBlockEdge edge, Integer bbID) {
         Integer expressionID = this.uniqueIDGen.getNextID();
         String ret = expressionID + ")\nEXP(" + expressionID;
-        logger.warn(edge + "type: " + edge.getType());
+        // logger.warn(edge + "type: " + edge.getType());
         if (edge.getType().equals("repeat")) {
             ret += ", RUN_COUNT, LT, " + dags.get(bbID).getName() + ", " + edge.getCondition() + ")\n";
         } else { // sensor reading control flow

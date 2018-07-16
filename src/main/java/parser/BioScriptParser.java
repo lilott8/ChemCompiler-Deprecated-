@@ -58,7 +58,9 @@ public class BioScriptParser implements Phase {
                 }
                 this.irConverter = new BSIRConverter();
                 program.accept(this.irConverter);
-                // logger.info("JSON String: " + this.irConverter);
+                if (this.config.isDebug()) {
+                    logger.info("JSON String: " + this.irConverter);
+                }
             } catch (ParseException e) {
                 logger.error(e);
                 if (this.config.isDebug()) {

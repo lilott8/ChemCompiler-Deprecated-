@@ -1,6 +1,6 @@
 module fluorescence
 
-stationary morphine_enzyme
+manifest morphine_enzyme
 
 manifest urine_sample
 manifest morphine_conjugate

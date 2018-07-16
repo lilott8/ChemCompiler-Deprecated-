@@ -20,12 +20,12 @@ public class MFSimSSATranslator implements Translator {
 
 
     private IDGen uniqueIDGen;
-    private MFSimSSACFG controlFLow;
+    private MFSimSSACFG controlFlow;
     private CommonConfig config;
 
     private MFSimSSATranslator(CFG controlFlowGraph) {
         uniqueIDGen = new IDGen();
-        controlFLow = new MFSimSSACFG(controlFlowGraph, uniqueIDGen);
+        controlFlow = new MFSimSSACFG(controlFlowGraph, uniqueIDGen);
         this.config = ConfigFactory.getConfig();
         if (!FileWriter.folderExists(this.config.getOutputDir())) {
             throw new NoSuchElementException("Cannot find: " + this.config.getOutputDir());
@@ -36,7 +36,7 @@ public class MFSimSSATranslator implements Translator {
     }
 
     public void toFile(String output) {
-        controlFLow.toFile(FileWriter.getAbsoluteFromRelative(output));
+        controlFlow.toFile(FileWriter.getAbsoluteFromRelative(output));
     }
 
     public void toFile() {

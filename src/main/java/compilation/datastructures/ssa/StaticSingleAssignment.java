@@ -194,7 +194,7 @@ public abstract class StaticSingleAssignment extends CFG {
             }
         }
 
-
+        // here is the error
         for (Integer child : this.dominatorTree.getChildren(bb.getId())) {
             renameSearch(this.getBasicBlock(child));
         }

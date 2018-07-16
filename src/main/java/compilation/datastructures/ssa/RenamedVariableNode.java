@@ -14,12 +14,12 @@ import java.util.List;
  * symbol to use.
  */
 public class RenamedVariableNode {
-    private List<String> renamedNodes;
+    private List<String> renamedNodes = new ArrayList<>();
     private Integer originID;
     private Integer popCount;
 
     public RenamedVariableNode(List<String> nodes, Integer id) {
-        this.renamedNodes = nodes;
+        this.renamedNodes.addAll(nodes);
         this.originID = id;
         this.popCount = 0;
     }

@@ -1,0 +1,27 @@
+module fluorescence
+
+manifest cells
+manifest holding
+manifest lipofectamine
+manifest opti_mem
+manifest plasmid_dna
+manifest p3000_reagent
+manifest hoechst_stain
+
+functions
+
+instructions
+
+cells_prime = mix 1600uL of cells with holding
+heat cells_prime at 37c for 28800s
+
+a = mix 1uL of lipofectamine with 25uL of opti_mem
+b = mix 500 uL of plasmid_dna with 1uL of p3000_reagent
+ccc = mix b with 25uL of opti_mem
+d = mix a with ccc
+e = mix 557uL of opti_mem with d
+heat e at 37c for 86400s
+
+ffff = mix e with hoechst_stain
+
+y = detect fluorescence on ffff

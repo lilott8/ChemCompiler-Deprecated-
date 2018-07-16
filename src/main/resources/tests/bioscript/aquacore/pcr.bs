@@ -8,13 +8,13 @@ instructions
 
 a = dispense pcr_mixture
 
-heat a at 95 C for 5s
+heat a at 95c for 5s
 
 repeat 20 times {
-  heat a at 53 C for 15s
-  heat a at 72 C for 10s
+  heat a at 53c for 15s
+  heat a at 72c for 10s
 }
 
-Perform Capillary Electrophoresis ( 5 cm at 236 V/cm) on a Separate with Separation-Medium
-
 x = detect fluorescence on a for 3m
+
+drain a
