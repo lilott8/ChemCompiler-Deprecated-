@@ -28,7 +28,7 @@ public class Temperature extends Property {
     public String buildUsage() {
         String result = "{" + System.lineSeparator();
         result += "\"INPUT_TYPE\":\"PROPERTY\"," + System.lineSeparator();
-        result += "\"TIME\":" + "{" + System.lineSeparator();
+        result += "\"TEMPERATURE\":" + "{" + System.lineSeparator();
         result += super.getUnitsAndValue() + System.lineSeparator();
         result += "}" + System.lineSeparator();
         result += "}" + System.lineSeparator();

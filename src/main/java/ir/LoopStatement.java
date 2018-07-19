@@ -46,7 +46,7 @@ public class LoopStatement extends BaseConditional {
         sb.append("\"NAME\" : \"REPEAT\",").append(NL);
         sb.append("\"ID\" : ").append(this.id).append(",").append(NL);
         sb.append("\"CLASSIFICATION\" : \"CFG_LOOP\",").append(NL);
-        sb.append("\"CONDITION\" : \"").append(this.condition).append("\",").append(NL);
+        //sb.append("\"CONDITION\" : \"").append(this.condition).append("\",").append(NL);
         sb.append("\"LOOP_NUM\":").append(this.condition).append(",").append(NL);
         // Open operations bracket.
         sb.append("\"OPERATIONS\" : [").append(NL);

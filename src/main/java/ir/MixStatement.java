@@ -1,5 +1,6 @@
 package ir;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -121,6 +122,7 @@ public class MixStatement extends BaseStatement {
 
     @Override
     public String toJson(String indent) {
+        Set<String> inputs = new HashSet<>();
         // Open the object
         StringBuilder sb = new StringBuilder("{").append(NL);
         // Create the operation.
@@ -131,7 +133,8 @@ public class MixStatement extends BaseStatement {
         sb.append("\"INPUTS\" : [").append(NL);
         int x = 0;
         for (Variable v : this.inputVariables) {
-            sb.append(v.buildUsage());
+            sb.append(v.buildMix());
+            inputs.add(v.getName());
             if (x < this.inputVariables.size() - 1) {
                 sb.append(",").append(NL);
             }
@@ -146,7 +149,11 @@ public class MixStatement extends BaseStatement {
         sb.append("\"OUTPUTS\" : [").append(NL);
         // Open the tag.
         // sb.append("{").append(NL);
-        sb.append(this.outputVariables.get(0).redeclare());
+        if (inputs.contains(this.outputVariables.get(0).getName())) {
+            sb.append(this.outputVariables.get(0).redefine());
+        } else {
+            sb.append(this.outputVariables.get(0).redeclare());
+        }
         // Close the open tag.
         // sb.append("}").append(NL);
         sb.append("]").append(NL);

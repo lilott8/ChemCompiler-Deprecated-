@@ -1,5 +1,7 @@
 package ir;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Set;
 
 import chemical.epa.ChemTypes;
@@ -103,7 +105,7 @@ public class DetectStatement extends BaseStatement {
         // Open the input array.
         sb.append("\"INPUTS\" : [").append(NL);
         Variable chemical = this.inputVariables.get(1);
-        sb.append(this.inputVariables.get(1).buildUsage());
+        sb.append(this.inputVariables.get(1).buildDetect());
         //sb.append("{").append(NL);
         //sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
         //sb.append("\"STATIONARY\" : {").append(NL);
@@ -120,7 +122,7 @@ public class DetectStatement extends BaseStatement {
         sb.append("],").append(NL);
         // Add the outputs (there are none).
         sb.append("\"OUTPUTS\" : [").append(NL);
-        sb.append(this.outputVariables.get(0).buildDeclaration()).append(NL);
+        sb.append(this.outputVariables.get(0).buildDetectOutput()).append(NL);
         // Close the output array.
         sb.append("]").append(NL);
         // Close Operation.
