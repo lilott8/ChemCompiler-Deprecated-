@@ -100,4 +100,19 @@ public class ManifestVariable<Value> extends Variable<Value> {
     public String buildVariable() {
         return "";
     }
+
+    @Override
+    public String buildDetect() {
+        return null;
+    }
+
+    @Override
+    public String buildDetectOutput() {
+        return null;
+    }
+
+    @Override
+    public String buildMix() {
+        return this.buildUsage();
+    }
 }

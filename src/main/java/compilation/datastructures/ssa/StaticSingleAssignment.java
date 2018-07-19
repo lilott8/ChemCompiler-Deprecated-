@@ -175,6 +175,7 @@ public abstract class StaticSingleAssignment extends CFG {
             if (instruction instanceof SigmaInstruction) {
                 variableStack.get(oldSymbol).push(new RenamedVariableNode(newOutputSymbols, bb.getId()));
             }
+            logger.info("Done processing: " + instruction);
         }
         if (this.getSuccessors(bb.getId()) != null) {
             for (Integer successorID : this.getSuccessors(bb.getId())) {
@@ -185,7 +186,8 @@ public abstract class StaticSingleAssignment extends CFG {
                     if (instructionNode instanceof PHIInstruction) {
                         String name = ((PHIInstruction) instructionNode).getOriginalName();
                         if (ConfigFactory.getConfig().isDebug()) {
-                            // logger.debug("Inserting PHI: " + variableStack.get(name).peek() + " at index: " + j);
+                            logger.debug("");
+                            logger.debug("Inserting PHI: " + variableStack.get(name).peek() + " at index: " + j);
                         }
                         String PHIInputSymbol = variableStack.get(name).peek().getVariable(whichSucc(successorID, bb.getId()));
                         ((PHIInstruction) instructionNode).insertNodeAtIndex(j, PHIInputSymbol);

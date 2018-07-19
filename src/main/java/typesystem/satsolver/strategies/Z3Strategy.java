@@ -4,6 +4,7 @@ import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
 import com.microsoft.z3.Solver;
 import com.microsoft.z3.Status;
+import com.microsoft.z3.Version;
 import com.microsoft.z3.Z3Exception;
 
 import org.apache.logging.log4j.LogManager;
@@ -92,7 +93,7 @@ public class Z3Strategy implements SolverStrategy {
         if (ConfigFactory.getConfig().isDebug()) {
             // logger.info(variables);
             // logger.info(statements);
-            // logger.info(sb);
+            //logger.info(sb);
         }
         return this.solveWithSMT2(sb.toString());
     }
@@ -169,6 +170,8 @@ public class Z3Strategy implements SolverStrategy {
     }
 
     private boolean solveWithSMT2(String smt2) {
+        logger.info("Using z3 Version: " + Version.getFullVersion());
+        logger.info("Using z3 Version: " + Version.getString());
         try {
             Context context = new Context();
             BoolExpr expr = context.parseSMTLIB2String(smt2, null, null, null, null);
@@ -189,6 +192,7 @@ public class Z3Strategy implements SolverStrategy {
             }
         } catch (Z3Exception e) {
             logger.error("There was an error solving the given constraints");
+            e.printStackTrace();
             logger.error(e);
             return false;
         }

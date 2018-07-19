@@ -1,3 +1,4 @@
+module weight
 manifest PCRMasterMix
 manifest Template
 

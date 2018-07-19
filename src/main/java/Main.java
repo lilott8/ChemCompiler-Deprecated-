@@ -19,6 +19,31 @@ public class Main {
     public static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
+        //runRegular(args);
+         runOverload(args);
+    }
+
+    public static void runOverload(String... args) {
+        CliWrapper cli = new CliWrapper();
+        cli.parseCommandLine(args);
+
+        Config config = ConfigFactory.getConfig();
+
+        if (config.isDebug()) {
+            logger.info("You are in debug mode");
+        }
+        // Run compilation.
+        Compiler compiler = new Compiler(config);
+        try {
+             BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/death.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/biocoder/pcr_droplet_replenishment.json");
+            compiler.compile(1);
+        } catch (Exception e) {
+            //
+        }
+    }
+
+    public static void runRegular(String... args) {
         // Build the command line parser
         CliWrapper cli = new CliWrapper();
         cli.parseCommandLine(args);
@@ -36,37 +61,37 @@ public class Main {
         // runner();
 
         //try {
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/neurotransmitter_sensing.json"); /* split only to one node */
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/neurotransmitter_sensing.json"); /* split only to one node */
 
-            /* confirmed parsing correctly */
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/biocoder/pcr_droplet_replenishment.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/contrived/pcr_probabilistic.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/pcr.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/glucose_detection.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/image_probe_synth.json");
-            /* aiha assays all translate properly, but mfsim is expecting names without special symbols */
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/aiha1.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/aiha2.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/aiha3.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/mustard_gas.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/safety_zone.json");
-            /* elisa assays */
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/dilution.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/broad_spectrum_opiate.json");
+        /* confirmed parsing correctly */
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/biocoder/pcr_droplet_replenishment.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/contrived/pcr_probabilistic.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/pcr.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/glucose_detection.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/aquacoreassays/image_probe_synth.json");
+        /* aiha assays all translate properly, but mfsim is expecting names without special symbols */
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/aiha1.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/aiha2.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/aiha3.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/mustard_gas.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/realworld/safety_zone.json");
+        /* elisa assays */
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/dilution.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/broad_spectrum_opiate.json");
 
 
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/ciprofloxacin.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/diazepam.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/fentanyl.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/full_morphine.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/heroine.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/morphine.json");
-            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/oxycodone.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/ciprofloxacin.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/diazepam.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/fentanyl.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/full_morphine.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/heroine.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/morphine.json");
+        //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/elisa/oxycodone.json");
 
-            /* extra */
+        /* extra */
 
-            // BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/contrived/pcr_probabilistic.json");
-            /* opiate immunoassay positive/false */
+        // BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/contrived/pcr_probabilistic.json");
+        /* opiate immunoassay positive/false */
 
 
         /*}
@@ -82,8 +107,8 @@ public class Main {
 //
 //
 //        /*test*/
-//        //aiha1.bs
-//          aiha2.bs
+//        //aiha2.bs
+//          aiha1.bs
 //          aiha3.bs
 //        /*
 //          mustard_gas.bs
@@ -154,8 +179,8 @@ public class Main {
         compile.add("src/main/resources/tests/bioscript/elisa/oxycodone.bs");
 
         // Real world Tests. (24-33)
-        compile.add("src/main/resources/tests/bioscript/realworld/aiha1.bs");
         compile.add("src/main/resources/tests/bioscript/realworld/aiha2.bs");
+        compile.add("src/main/resources/tests/bioscript/realworld/aiha1.bs");
         compile.add("src/main/resources/tests/bioscript/realworld/aiha3.bs");
         compile.add("src/main/resources/tests/realworld/fail1.json");
         compile.add("src/main/resources/tests/realworld/fail2.json");

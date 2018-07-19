@@ -82,6 +82,12 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
 
     public abstract String buildVariable();
 
+    public abstract String buildDetect();
+
+    public abstract String buildDetectOutput();
+
+    public abstract String buildMix();
+
     public Property getProperty() {
         return this.property;
     }
@@ -229,6 +235,17 @@ public abstract class Variable<Value> implements ScopedVariable, TypedVariable {
         sb.append("\"ID\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
         sb.append("\"TYPE\" : \"VARIABLE\", ").append(NL);
+        sb.append(this.addInferredTypes());
+        sb.append("}").append(NL);
+        sb.append("}").append(NL);
+        return sb.toString();
+    }
+
+    public String redefine() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{").append(NL);
+        sb.append("\"VARIABLE\" : {").append(NL);
+        sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
         sb.append(this.addInferredTypes());
         sb.append("}").append(NL);
         sb.append("}").append(NL);

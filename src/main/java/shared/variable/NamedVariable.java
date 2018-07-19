@@ -109,4 +109,56 @@ public class NamedVariable<Value> extends Variable<Value> {
     public String buildVariable() {
         return "";
     }
+
+    @Override
+    public String buildDetect() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{").append(NL);
+        sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
+        sb.append("\"VARIABLE\" : {").append(NL);
+        sb.append("\"NAME\" : \"").append(this.name).append("\"").append(NL);
+        //if (this.property != null) {
+        //    sb.append("},").append(NL);
+        //    sb.append(this.property.buildUsage()).append(NL);
+        //} else {
+            sb.append("}").append(NL);
+        //}
+        sb.append("}").append(NL);
+
+        return sb.toString();
+    }
+
+    @Override
+    public String buildDetectOutput() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("{").append(NL);
+        sb.append("\"SENSOR_DECLARATION\" : {").append(NL);
+        sb.append("\"ID\" : \"").append(this.name).append("\",").append(NL);
+        sb.append("\"NAME\" : \"").append(this.name).append("\",").append(NL);
+        sb.append("\"TYPE\" : \"SENSOR\", ").append(NL);
+        sb.append(this.addInferredTypes());
+        sb.append("}").append(NL);
+        sb.append("}").append(NL);
+
+        return sb.toString();
+    }
+
+    @Override
+    public String buildMix() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{").append(NL);
+        sb.append("\"INPUT_TYPE\" : \"VARIABLE\",").append(NL);
+        sb.append("\"VARIABLE\" : {").append(NL);
+        sb.append("\"NAME\" : \"").append(this.name).append("\"").append(NL);
+        if (this.property != null) {
+            sb.append("},").append(NL);
+            sb.append(this.property.buildUsage()).append(NL);
+        } else {
+            sb.append("}").append(NL);
+        }
+        sb.append("}").append(NL);
+
+        return sb.toString();
+    }
 }

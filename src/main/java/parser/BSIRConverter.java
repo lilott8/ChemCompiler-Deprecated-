@@ -1,5 +1,6 @@
 package parser;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -475,9 +476,10 @@ public class BSIRConverter extends BSVisitor {
         n.f2.accept(this);
         String conditional = this.name;
         n.f3.accept(this);
-        conditional += n.f3.f0.choice.toString();
+        conditional += " " + StringUtils.strip(n.f3.f0.choice.toString()) + " ";
         n.f4.accept(this);
         conditional += this.integerLiteral;
+        conditional += "ul";
         this.inConditional = false;
 
         Conditional elseBranch = null;
