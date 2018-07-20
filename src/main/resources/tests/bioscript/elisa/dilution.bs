@@ -26,6 +26,7 @@ fourth_dilute = mix substance_b with substance_c
 a = split fourth_dilute into 2
 drain a2
 
-final_dilute = mix third_dilute with fourth_dilute
+final_dilute = mix z1 with a1
 b = split final_dilute into 2
+drain b1
 drain b2

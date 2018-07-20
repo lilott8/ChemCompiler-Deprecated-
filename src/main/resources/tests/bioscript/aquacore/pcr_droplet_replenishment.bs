@@ -23,3 +23,4 @@ repeat 50 times {
 }
 
 heat PCRMix at 68c for 5m
+drain PCRMix

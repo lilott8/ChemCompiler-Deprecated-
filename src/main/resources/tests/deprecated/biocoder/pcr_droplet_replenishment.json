@@ -31,7 +31,7 @@
                   "NAME": "PCRMasterMix"
                 },
                 "VOLUME": {
-                  "VALUE": "50",
+                  "VALUE": 50.0,
                   "UNITS": "UL"
                 }
               }
@@ -43,7 +43,7 @@
                   "NAME": "Template"
                 },
                 "VOLUME": {
-                  "VALUE": "50",
+                  "VALUE": 50.0,
                   "UNITS": "UL"
                 }
               }
@@ -51,7 +51,7 @@
             {
               "INPUT_TYPE": "PROPERTY",
               "TIME": {
-                "VALUE": "1",
+                "VALUE": 1.0,
                 "UNITS": "SECOND"
               }
             }
@@ -72,7 +72,7 @@
           "NAME": "REPEAT",
           "ID": "7456076596031213038",
           "CLASSIFICATION": "CFG_LOOP",
-          "LOOP_NUM": "14",
+          "LOOP_NUM": 14,
           "OPERATIONS": [
             {
               "OPERATION": {
@@ -89,14 +89,14 @@
                   {
                     "INPUT_TYPE": "PROPERTY",
                     "TEMPERATURE": {
-                      "VALUE": "95",
+                      "VALUE": 95.0,
                       "UNITS": "CELSIUS"
                     }
                   },
                   {
                     "INPUT_TYPE": "PROPERTY",
                     "TIME": {
-                      "VALUE": "20",
+                      "VALUE": 20.0,
                       "UNITS": "SECOND"
                     }
                   }
@@ -149,7 +149,7 @@
                               "NAME": "PCRMasterMix"
                             },
                             "VOLUME": {
-                              "VALUE": "25",
+                              "VALUE": 25.0,
                               "UNITS": "UL"
                             }
                           }
@@ -161,7 +161,7 @@
                               "NAME": "Template"
                             },
                             "VOLUME": {
-                              "VALUE": "25",
+                              "VALUE": 25.0,
                               "UNITS": "UL"
                             }
                           }
@@ -169,7 +169,7 @@
                         {
                           "INPUT_TYPE": "PROPERTY",
                           "TIME": {
-                            "VALUE": "5",
+                            "VALUE": 5.0,
                             "UNITS": "SECOND"
                           }
                         }
@@ -200,14 +200,14 @@
                         {
                           "INPUT_TYPE": "PROPERTY",
                           "TEMPERATURE": {
-                            "VALUE": "95",
+                            "VALUE": 95.0,
                             "UNITS": "CELSIUS"
                           }
                         },
                         {
                           "INPUT_TYPE": "PROPERTY",
                           "TIME": {
-                            "VALUE": "45",
+                            "VALUE": 45.0,
                             "UNITS": "SECOND"
                           }
                         }
@@ -237,7 +237,7 @@
                         {
                           "INPUT_TYPE": "PROPERTY",
                           "TIME": {
-                            "VALUE": "5",
+                            "VALUE": 5.0,
                             "UNITS": "SECOND"
                           }
                         }
@@ -273,14 +273,14 @@
                   {
                     "INPUT_TYPE": "PROPERTY",
                     "TEMPERATURE": {
-                      "VALUE": "68",
+                      "VALUE": 68.0,
                       "UNITS": "CELSIUS"
                     }
                   },
                   {
                     "INPUT_TYPE": "PROPERTY",
                     "TIME": {
-                      "VALUE": "30",
+                      "VALUE": 30.0,
                       "UNITS": "SECOND"
                     }
                   }
@@ -304,14 +304,14 @@
                   {
                     "INPUT_TYPE": "PROPERTY",
                     "TEMPERATURE": {
-                      "VALUE": "95",
+                      "VALUE": 95.0,
                       "UNITS": "CELSIUS"
                     }
                   },
                   {
                     "INPUT_TYPE": "PROPERTY",
                     "TIME": {
-                      "VALUE": "45",
+                      "VALUE": 45.0,
                       "UNITS": "SECOND"
                     }
                   }
@@ -338,14 +338,14 @@
             {
               "INPUT_TYPE": "PROPERTY",
               "TEMPERATURE": {
-                "VALUE": "68",
+                "VALUE": 68.0,
                 "UNITS": "CELSIUS"
               }
             },
             {
               "INPUT_TYPE": "PROPERTY",
               "TIME": {
-                "VALUE": "5",
+                "VALUE": 5.0,
                 "UNITS": "MINUTE"
               }
             }

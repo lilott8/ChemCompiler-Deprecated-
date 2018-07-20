@@ -365,6 +365,23 @@
           ],
           "OUTPUTS": []
         }
+      },
+      {
+        "OPERATION": {
+          "NAME": "Save",
+          "ID": "7456076596031674273",
+          "CLASSIFICATION": "OUTPUT",
+          "INPUTS": [
+            {
+              "INPUT_TYPE": "VARIABLE",
+              "VARIABLE": {
+                "NAME": "PCRMix"
+              }
+            }
+          ],
+          "OUTPUTS": [
+          ]
+        }
       }
     ]
   }

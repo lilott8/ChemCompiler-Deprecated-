@@ -19,8 +19,8 @@ public class Main {
     public static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-        //runRegular(args);
-         runOverload(args);
+        runRegular(args);
+        //runOverload(args);
     }
 
     public static void runOverload(String... args) {
@@ -35,7 +35,8 @@ public class Main {
         // Run compilation.
         Compiler compiler = new Compiler(config);
         try {
-             BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/death.json");
+            //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/contrived/pcr_probabilistic.json");
+            BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/death.json");
             //BenchtopParser.parseFromFile("src/main/resources/tests/deprecated/biocoder/pcr_droplet_replenishment.json");
             compiler.compile(1);
         } catch (Exception e) {
