@@ -1,3 +1,5 @@
+# This repository is a relic from OOPSLA's 2018 BioScript publication.  This work has been deprecated and is reflected in the following repos: https://github.com/lilott8/BioScript-Front-end
+
 This is an SSA/SSI compiler for BioScript.  It implements the ChemType type system.
 
 # Requirements:
